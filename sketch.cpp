@@ -3,8 +3,14 @@
 #include <boost/hana/type.hpp>
 #include <boost/hana/size.hpp>
 
+// For printing
+#include <boost/hana/for_each.hpp>
+#include <boost/type_index.hpp>
+#include <iostream>
 
-// TODO: Pretty printer.
+
+#define BOOST_PROTO17_STREAM_OPERATORS // TODO: For testing.
+
 // TODO: Verbose debugging mode for matching.
 // TODO: Proto-style "Fuzzy and Exact Matches of Terminals".
 
@@ -202,6 +208,106 @@ namespace boost { namespace proto17 {
         { return match::placeholder<hana::ic_detail::parse<sizeof...(c)>({c...})>{}; }
 
     }
+
+    namespace detail {
+
+        inline std::ostream & print_impl (std::ostream & os, expr_kind kind)
+        {
+            switch (kind) {
+            case expr_kind::plus: return os << "+";
+            case expr_kind::minus: return os << "-";
+                // TODO
+            default: return os << "** ERROR: UNKNOWN OPERATOR! **";
+            }
+        }
+
+        template <typename T>
+        auto print_object (std::ostream & os, T const & x) -> decltype(os << x)
+        { return os << x; }
+
+        inline std::ostream & print_object (std::ostream & os, ...)
+        { return os << "<<unprintable-value>>"; }
+
+        template <typename T>
+        std::ostream & print_type (std::ostream & os)
+        {
+            os << typeindex::type_id<T>().pretty_name();
+            if (std::is_const_v<T>)
+                os << " const";
+            if (std::is_volatile_v<T>)
+                os << " volatile";
+            using no_cv_t = std::remove_cv_t<T>;
+            if (std::is_lvalue_reference_v<T>)
+                os << " &";
+            if (std::is_rvalue_reference_v<T>)
+                os << " &&";
+            return os;
+        }
+
+        template <typename T>
+        std::ostream & print_impl (
+            std::ostream & os,
+            terminal<T> const & term,
+            int indent,
+            char const * indent_str)
+        {
+            for (int i = 0; i < indent; ++i) {
+                os << indent_str;
+            }
+            os << "term<";
+            print_type<T>(os);
+            os << ">[=";
+            print_object(os, term.value);
+            os << "]\n";
+            return os;
+        }
+
+        template <expr_kind Kind, typename ...T>
+        std::ostream & print_impl (
+            std::ostream & os,
+            expression<Kind, T...> const & expr,
+            int indent,
+            char const * indent_str)
+        {
+            if constexpr (Kind == expr_kind::terminal) {
+                using namespace hana::literals;
+                static_assert(hana::size(expr.elements) == 1_c, "");
+                static_assert(is_terminal(hana::typeid_(expr.elements[0_c])), "");
+                print_impl(os, expr.elements[0_c]);
+            } else {
+                for (int i = 0; i < indent; ++i) {
+                    os << indent_str;
+                }
+                os << "expr<";
+                print_impl(os, Kind);
+                os << ">\n";
+                hana::for_each(expr.elements, [&os, indent, indent_str](auto const & element) {
+                    print_impl(os, element, indent + 1, indent_str);
+                });
+            }
+
+            return os;
+        }
+
+    }
+
+    template <typename T>
+    std::ostream & print (std::ostream & os, terminal<T> const & term)
+    { return detail::print_impl(os, term, 0, "    "); }
+
+    template <expr_kind Kind, typename ...T>
+    std::ostream & print (std::ostream & os, expression<Kind, T...> const & expr)
+    { return detail::print_impl(os, expr, 0, "    "); }
+
+#if defined(BOOST_PROTO17_STREAM_OPERATORS)
+    template <typename T>
+    std::ostream & operator<< (std::ostream & os, terminal<T> const & term)
+    { return detail::print_impl(os, term, 0, "    "); }
+
+    template <expr_kind Kind, typename ...T>
+    std::ostream & operator<< (std::ostream & os, expression<Kind, T...> const & expr)
+    { return detail::print_impl(os, expr, 0, "    "); }
+#endif
 
     namespace detail {
 
@@ -974,12 +1080,50 @@ void term_plus_expr ()
     }
 }
 
+void print ()
+{
+    term<double> unity{1.0};
+    int i_ = 42;
+    term<int &&> i{std::move(i_)};
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<double> &,
+        term<int &&>
+    > expr = unity + std::move(i);
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<double> &,
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<double> &,
+            term<int &&>
+        >
+    > unevaluated_expr = unity + std::move(expr);
+
+    bp17::print(std::cout, unity);
+    bp17::print(std::cout, expr);
+    bp17::print(std::cout, unevaluated_expr);
+
+    struct thing {};
+    term<thing> a_thing{{}};
+    bp17::print(std::cout, a_thing);
+
+#if defined(BOOST_PROTO17_STREAM_OPERATORS)
+    std::cout << unity;
+    std::cout << expr;
+    std::cout << unevaluated_expr;
+    std::cout << a_thing;
+#endif
+}
+
 int main ()
 {
     term_plus_x();
     term_plus_x_this_ref_overloads();
     term_plus_term();
     term_plus_expr();
+
+    print();
 
 #if 0 // TODO
     {
