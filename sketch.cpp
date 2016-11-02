@@ -18,6 +18,7 @@ namespace boost { namespace proto17 {
 
     enum class expr_kind {
         terminal,
+        placeholder,
 
         plus,
         minus,
@@ -93,6 +94,13 @@ namespace boost { namespace proto17 {
         struct rhs_type<T, U, false, false>
         { using type = terminal<U>; };
 
+        constexpr bool is_hana_llong (...)
+        { return false; }
+
+        template <long long I>
+        constexpr bool is_hana_llong(hana::basic_type<hana::llong<I>>)
+        { return true; };
+
     }
 
 #if 0 // TODO
@@ -164,13 +172,16 @@ namespace boost { namespace proto17 {
     };
 
     template <long long I>
-    struct placeholder : hana::llong<I> {};
+    using placeholder = expression<expr_kind::placeholder, hana::llong<I>>;
 
     namespace literals {
 
         template <char ...c>
         constexpr auto operator"" _p ()
-        { return placeholder<hana::ic_detail::parse<sizeof...(c)>({c...})>{}; }
+        {
+            using i = hana::llong<hana::ic_detail::parse<sizeof...(c)>({c...})>;
+            return expression<expr_kind::placeholder, i>(i{});
+        }
 
     }
 
@@ -258,6 +269,10 @@ namespace boost { namespace proto17 {
                 os << ">[=";
                 print_value(os, expr.elements[0_c]);
                 os << "]\n";
+            } else if constexpr (Kind == expr_kind::placeholder) {
+                using namespace hana::literals;
+                static_assert(sizeof...(Ts) == 0);
+                os << "placeholder<" << (long long)expr.elements[0_c] << ">\n";
             } else {
                 os << "expr<";
                 print_kind(os, Kind);
@@ -1061,6 +1076,34 @@ void term_plus_expr ()
     }
 }
 
+void placeholders ()
+{
+    using namespace boost::proto17::literals;
+
+    {
+        bp17::placeholder<0> p0 = 0_p;
+    }
+
+    {
+        bp17::placeholder<0> p0 = 0_p;
+        term<double> unity{1.0};
+        bp17::expression<
+            bp17::expr_kind::plus,
+            bp17::placeholder<0>,
+            term<double>
+        > expr = p0 + unity;
+    }
+
+    {
+        bp17::placeholder<0> p0 = 0_p;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            bp17::placeholder<0>,
+            bp17::placeholder<1>
+        > expr = p0 + 1_p;
+    }
+}
+
 void const_term_expr ()
 {
     {
@@ -1123,6 +1166,7 @@ void const_term_expr ()
         > unevaluated_expr = unity + std::move(expr);
     }
 }
+
 void print ()
 {
     term<double> unity{1.0};
@@ -1143,18 +1187,38 @@ void print ()
         >
     > unevaluated_expr = unity + std::move(expr);
 
+    std::cout << "================================================================================\n";
     bp17::print(std::cout, unity);
+    std::cout << "================================================================================\n";
     bp17::print(std::cout, expr);
+    std::cout << "================================================================================\n";
     bp17::print(std::cout, unevaluated_expr);
 
     struct thing {};
     term<thing> a_thing(thing{});
+    std::cout << "================================================================================\n";
     bp17::print(std::cout, a_thing);
 
+    std::cout << "\n";
+    std::cout << "================================================================================\n";
+    std::cout << "================================================================================\n";
+    {
+        using namespace boost::proto17::literals;
+        std::cout << (0_p + unity);
+        std::cout << (2_p + 3_p);
+        std::cout << (unity + 1_p);
+    }
+
 #if defined(BOOST_PROTO17_STREAM_OPERATORS)
+    std::cout << "\n";
+    std::cout << "================================================================================\n";
+    std::cout << "================================================================================\n";
     std::cout << unity;
+    std::cout << "================================================================================\n";
     std::cout << expr;
+    std::cout << "================================================================================\n";
     std::cout << unevaluated_expr;
+    std::cout << "================================================================================\n";
     std::cout << a_thing;
 #endif
 }
@@ -1165,6 +1229,7 @@ int main ()
     term_plus_x_this_ref_overloads();
     term_plus_term();
     term_plus_expr();
+    placeholders();
 
     const_term_expr();
 
