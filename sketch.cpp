@@ -29,7 +29,7 @@ namespace boost { namespace proto17 {
     struct expression;
 
     template <typename T>
-    struct terminal;
+    using terminal = expression<expr_kind::terminal, T>;
 
     namespace detail {
 
@@ -67,14 +67,6 @@ namespace boost { namespace proto17 {
         struct rhs_value_type_phase_1<T, U, false>
         { using type = U; };
 
-        template <typename T>
-        struct is_term
-        { static bool const value = false; };
-
-        template <typename T>
-        struct is_term<terminal<T>>
-        { static bool const value = true; };
-
         template <typename ...T>
         struct is_expr
         { static bool const value = false; };
@@ -86,7 +78,7 @@ namespace boost { namespace proto17 {
         template <typename T,
                   typename U = typename rhs_value_type_phase_1<T>::type,
                   bool RemoveRefs = std::is_rvalue_reference_v<U>,
-                  bool IsTermOrExpr = is_term<std::decay_t<T>>::value || is_expr<std::decay_t<T>>::value>
+                  bool IsExpr = is_expr<std::decay_t<T>>::value>
         struct rhs_type;
 
         template <typename T, typename U, bool RemoveRefs>
@@ -110,27 +102,11 @@ namespace boost { namespace proto17 {
     };
 #endif
 
-    // TODO: May be a Callable.
-    template <typename T>
-    struct terminal
-    {
-        T value;
-
-        template <typename U>
-        auto operator+ (U && rhs) const
-        {
-            using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::plus, terminal<T>, rhs_type>{
-                hana::tuple<terminal<T>, rhs_type>{*this, rhs_type{static_cast<U &&>(rhs)}}
-            };
-        }
-    };
-
     template <typename T>
     constexpr bool is_terminal (hana::basic_type<T>)
     { return false; }
     template <typename T>
-    constexpr bool is_terminal (hana::basic_type<terminal<T>>)
+    constexpr bool is_terminal (hana::basic_type<expression<expr_kind::terminal, T>>)
     { return true; }
 
     template <expr_kind Kind, typename T>
@@ -143,8 +119,48 @@ namespace boost { namespace proto17 {
     template <expr_kind Kind, typename ...T>
     struct expression
     {
+        using this_type = expression<Kind, T...>;
+        using tuple_type = hana::tuple<T...>;
+
         static const expr_kind kind = Kind;
-        hana::tuple<T...> elements;
+
+        expression (T && ... t) :
+            elements (static_cast<T &&>(t)...)
+        {}
+
+        expression (hana::tuple<T...> const & rhs) :
+            elements (rhs)
+        {}
+
+        expression (hana::tuple<T...> && rhs) :
+            elements (std::move(rhs))
+        {}
+
+        expression & operator= (hana::tuple<T...> const & rhs)
+        { elements = rhs.elements; }
+
+        expression & operator= (hana::tuple<T...> && rhs)
+        { elements = std::move(rhs.elements); }
+
+        tuple_type elements;
+
+        template <typename U>
+        auto operator+ (U && rhs) const &
+        {
+            using rhs_type = typename detail::rhs_type<U>::type;
+            return expression<expr_kind::plus, this_type, rhs_type>{
+                hana::tuple<this_type, rhs_type>{*this, rhs_type{static_cast<U &&>(rhs)}}
+            };
+        }
+
+        template <typename U>
+        auto operator+ (U && rhs) &&
+        {
+            using rhs_type = typename detail::rhs_type<U>::type;
+            return expression<expr_kind::plus, this_type, rhs_type>{
+                hana::tuple<this_type, rhs_type>{std::move(*this), rhs_type{static_cast<U &&>(rhs)}}
+            };
+        }
     };
 
     template <long long I>
@@ -190,7 +206,7 @@ namespace boost { namespace proto17 {
 
     namespace detail {
 
-        inline std::ostream & print_impl (std::ostream & os, expr_kind kind)
+        inline std::ostream & print_kind (std::ostream & os, expr_kind kind)
         {
             switch (kind) {
             case expr_kind::plus: return os << "+";
@@ -201,10 +217,10 @@ namespace boost { namespace proto17 {
         }
 
         template <typename T>
-        auto print_object (std::ostream & os, T const & x) -> decltype(os << x)
+        auto print_value (std::ostream & os, T const & x) -> decltype(os << x)
         { return os << x; }
 
-        inline std::ostream & print_object (std::ostream & os, ...)
+        inline std::ostream & print_value (std::ostream & os, ...)
         { return os << "<<unprintable-value>>"; }
 
         template <typename T>
@@ -223,42 +239,28 @@ namespace boost { namespace proto17 {
             return os;
         }
 
-        template <typename T>
+        template <expr_kind Kind, typename T, typename ...Ts>
         std::ostream & print_impl (
             std::ostream & os,
-            terminal<T> const & term,
+            expression<Kind, T, Ts...> const & expr,
             int indent,
             char const * indent_str)
         {
             for (int i = 0; i < indent; ++i) {
                 os << indent_str;
             }
-            os << "term<";
-            print_type<T>(os);
-            os << ">[=";
-            print_object(os, term.value);
-            os << "]\n";
-            return os;
-        }
 
-        template <expr_kind Kind, typename ...T>
-        std::ostream & print_impl (
-            std::ostream & os,
-            expression<Kind, T...> const & expr,
-            int indent,
-            char const * indent_str)
-        {
             if constexpr (Kind == expr_kind::terminal) {
                 using namespace hana::literals;
-                static_assert(hana::size(expr.elements) == 1_c);
-                static_assert(is_terminal(hana::typeid_(expr.elements[0_c])));
-                print_impl(os, expr.elements[0_c]);
+                static_assert(sizeof...(Ts) == 0);
+                os << "term<";
+                print_type<T>(os);
+                os << ">[=";
+                print_value(os, expr.elements[0_c]);
+                os << "]\n";
             } else {
-                for (int i = 0; i < indent; ++i) {
-                    os << indent_str;
-                }
                 os << "expr<";
-                print_impl(os, Kind);
+                print_kind(os, Kind);
                 os << ">\n";
                 hana::for_each(expr.elements, [&os, indent, indent_str](auto const & element) {
                     print_impl(os, element, indent + 1, indent_str);
@@ -1146,7 +1148,7 @@ void print ()
     bp17::print(std::cout, unevaluated_expr);
 
     struct thing {};
-    term<thing> a_thing{{}};
+    term<thing> a_thing(thing{});
     bp17::print(std::cout, a_thing);
 
 #if defined(BOOST_PROTO17_STREAM_OPERATORS)
