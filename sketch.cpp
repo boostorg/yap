@@ -964,6 +964,8 @@ void print ()
 
 void default_eval ()
 {
+    std::cout << "\ndefault_eva()\n";
+
     term<double> unity{1.0};
     int i_ = 42;
     term<int &&> i{std::move(i_)};
@@ -998,19 +1000,21 @@ void default_eval ()
     }
 
     {
-        double result = evaluate(unity, boost::hana::make_tuple(5, 6, 7));
+        double result = evaluate(unity, 5, 6, 7);
         std::cout << "evaluate(unity)=" << result << "\n"; // 1
     }
 
     {
-        double result = evaluate(expr, boost::hana::make_tuple());
+        double result = evaluate(expr);
         std::cout << "evaluate(expr)=" << result << "\n"; // -41
     }
 
     {
-        double result = evaluate(unevaluated_expr, boost::hana::make_tuple(std::string("15")));
+        double result = evaluate(unevaluated_expr, std::string("15"));
         std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // -40
     }
+
+    std::cout << "\n";
 }
 
 namespace test {
@@ -1023,13 +1027,31 @@ namespace test {
     };
 
     // User-defined binary-plus!  With weird semantics!
-    inline auto eval_plus (number a, number b)
+    template <typename A, typename B>
+    inline auto eval_plus (A a, B b)
     { return number{a.value - b.value}; }
+
+    template <typename E, typename ...T>
+    constexpr auto evaluate_expression_as (
+        E const & expr,
+        boost::hana::basic_type<test::number>,
+        T && ...t)
+    {
+        std::cout << "User eval!  ";
+        return static_cast<test::number>(
+            bp17::detail::default_eval_expr(
+                expr,
+                boost::hana::make_tuple(static_cast<T &&>(t)...)
+            )
+        );
+    }
 
 }
 
 void user_operator_eval ()
 {
+    std::cout << "\nuser_operator_eval()\n";
+
     term<test::number> unity{{1.0}};
     double d_ = 42.0;
     term<test::number> i{{d_}};
@@ -1064,23 +1086,97 @@ void user_operator_eval ()
     }
 
     {
-        double result = (double)evaluate(unity, boost::hana::make_tuple(5, 6, 7));
+        double result = (double)evaluate(unity, 5, 6, 7);
         std::cout << "evaluate(unity)=" << result << "\n"; // 1
     }
 
     {
-        double result = (double)evaluate(expr, boost::hana::make_tuple());
+        double result = (double)evaluate(expr);
         std::cout << "evaluate(expr)=" << result << "\n"; // -41
     }
 
     {
-        double result = (double)evaluate(unevaluated_expr, boost::hana::make_tuple(std::string("15")));
+        double result = (double)evaluate(unevaluated_expr, std::string("15"));
         std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // 42
     }
+
+    std::cout << "\n";
+}
+
+void user_evaluate_expression_as ()
+{
+    term<test::number> unity{{1.0}};
+    double d_ = 42.0;
+    term<test::number> i{{d_}};
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<test::number>,
+        term<test::number>
+    > expr = unity + std::move(i);
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<test::number>,
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<test::number>,
+            term<test::number>
+        >
+    > unevaluated_expr = unity + std::move(expr);
+
+    std::cout << "\nuser_evaluate_expression_as()\n";
+
+    {
+        test::number result = unity;
+        std::cout << "unity=" << result.value << "\n"; // 1
+    }
+
+    {
+        test::number result = expr;
+        std::cout << "expr=" << result.value << "\n"; // -41
+    }
+
+    {
+        test::number result = unevaluated_expr;
+        std::cout << "unevaluated_expr=" << result.value << "\n"; // 42
+    }
+
+    {
+        test::number result = evaluate(unity, 5, 6, 7);
+        std::cout << "evaluate(unity)=" << result.value << "\n"; // 1
+    }
+
+    {
+        double result = (double)evaluate(expr);
+        std::cout << "evaluate(expr)=" << result << "\n"; // -41
+    }
+
+    {
+        double result = (double)evaluate(unevaluated_expr, std::string("15"));
+        std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // 42
+    }
+
+    {
+        test::number result = bp17::evaluate_as<test::number>(unity, 5, 6, 7);
+        std::cout << "evaluate(unity)=" << result.value << "\n"; // 1
+    }
+
+    {
+        test::number result = bp17::evaluate_as<test::number>(expr);
+        std::cout << "evaluate(expr)=" << result.value << "\n"; // -41
+    }
+
+    {
+        test::number result = bp17::evaluate_as<test::number>(unevaluated_expr, std::string("15"));
+        std::cout << "evaluate(unevaluated_expr)=" << result.value << "\n"; // 42
+    }
+
+    std::cout << "\n";
 }
 
 void placeholder_eval ()
 {
+    std::cout << "\nplaceholder_eval()\n";
+
     using namespace boost::proto17::literals;
 
     bp17::placeholder<2> p2 = 2_p;
@@ -1115,6 +1211,8 @@ void placeholder_eval ()
         double result = evaluate(unevaluated_expr, std::string("15"), 2, 3);
         std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // 48
     }
+
+    std::cout << "\n";
 }
 
 int main ()
@@ -1130,6 +1228,7 @@ int main ()
     print();
 
     default_eval();
+    user_evaluate_expression_as();
     user_operator_eval();
 
     placeholder_eval();

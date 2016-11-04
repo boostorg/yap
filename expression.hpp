@@ -6,23 +6,42 @@
 #include "detail/default_eval.hpp"
 
 #include <boost/hana/tuple.hpp>
-//#include <boost/hana/type.hpp>
-//#include <boost/hana/size.hpp>
 
 
 namespace boost::proto17 {
 
-    // TODO: Customization point.
-    // TODO: static assert/SFINAE std::is_callable<>
-    // TODO: static assert/SFINAE no placeholders
-    template <typename R, expr_kind Kind, typename ...T>
-    R evaluate_expression_as (expression<Kind, T...> const & expr)
-    { return static_cast<R>(detail::default_eval_expr(expr, hana::tuple<>())); }
+    namespace adl_detail {
 
-    // TODO: static assert/SFINAE std::is_callable<>
+        template <typename R, typename E, typename ...T>
+        constexpr auto evaluate_expression_as (E const & expr, hana::basic_type<R>, T && ...t)
+        { return static_cast<R>(detail::default_eval_expr(expr, hana::make_tuple(static_cast<T &&>(t)...))); }
+
+        struct evaluate_expression_as_fn
+        {
+            template <typename R, typename E, typename ...T>
+            constexpr auto operator() (E const & expr, hana::basic_type<R> rtype, T && ...t) const
+            { return evaluate_expression_as(expr, rtype, static_cast<T &&>(t)...); }
+        };
+
+    }
+
+    using adl_detail::evaluate_expression_as_fn;
+
+    inline namespace function_objects {
+
+        inline constexpr evaluate_expression_as_fn evaluate_expression_as{};
+
+    }
+
+    // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
     template <typename Expr, typename ...T>
     auto evaluate (Expr const & expr, T && ...t)
     { return detail::default_eval_expr(expr, hana::make_tuple(static_cast<T &&>(t)...)); }
+
+    // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
+    template <typename R, typename Expr, typename ...T>
+    auto evaluate_as (Expr const & expr, T && ...t)
+    { return evaluate_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...); }
 
     template <expr_kind Kind, typename ...T>
     struct expression
@@ -54,7 +73,7 @@ namespace boost::proto17 {
 
         template <typename R>
         operator R ()
-        { return evaluate_expression_as<R>(*this); }
+        { return evaluate_expression_as(*this, hana::basic_type<R>{}); }
 
         template <typename U>
         auto operator+ (U && rhs) const &
