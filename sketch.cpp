@@ -9,12 +9,13 @@
 #include <iostream>
 
 
+#include <cassert> // TODO: For testing.
 #define BOOST_PROTO17_STREAM_OPERATORS // TODO: For testing.
 
 // TODO: Verbose debugging mode for matching.
 // TODO: Proto-style "Fuzzy and Exact Matches of Terminals".
 
-namespace boost { namespace proto17 {
+namespace boost::proto17 {
 
     enum class expr_kind {
         terminal,
@@ -31,6 +32,51 @@ namespace boost { namespace proto17 {
 
     template <typename T>
     using terminal = expression<expr_kind::terminal, T>;
+
+#define BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(expr)                    \
+        noexcept(noexcept(expr)) -> decltype(expr) { return expr; }
+
+    namespace adl_detail {
+
+        template <typename T, typename U>
+        constexpr auto eval_plus (T && t, U && u) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+            static_cast<T &&>(t) + static_cast<U &&>(u)
+        )
+
+        struct eval_plus_fn
+        {
+            template <typename T, typename U>
+            constexpr auto operator() (T && t, U && u) const BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+                eval_plus(static_cast<T &&>(t), static_cast<U &&>(u))
+            )
+        };
+
+        template <typename T, typename U>
+        constexpr auto eval_minus (T && t, U && u) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+            static_cast<T &&>(t) - static_cast<U &&>(u)
+        )
+
+        struct eval_minus_fn
+        {
+            template <typename T, typename U>
+            constexpr auto operator() (T && t, U && u) const BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+                eval_minus(static_cast<T &&>(t), static_cast<U &&>(u))
+            )
+        };
+
+    }
+
+#undef BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN
+
+    using adl_detail::eval_plus_fn;
+    using adl_detail::eval_minus_fn;
+
+    inline namespace function_objects {
+
+        inline constexpr eval_plus_fn eval_plus{};
+        inline constexpr eval_minus_fn eval_minus{};
+
+    }
 
     namespace detail {
 
@@ -101,28 +147,53 @@ namespace boost { namespace proto17 {
         constexpr bool is_hana_llong(hana::basic_type<hana::llong<I>>)
         { return true; };
 
+        // TODO: Fix.
+        template <typename Tuple, long long I>
+        auto get_tuple_element(Tuple && tuple, hana::tuple<hana::llong<I>>)
+        { return hana::at_c<I>(tuple); };
+
+        template <typename Tuple, expr_kind Kind, typename ...T>
+        auto default_eval_expr (expression<Kind, T...> const & expr, Tuple && tuple)
+        {
+            using namespace hana::literals;
+            if constexpr (Kind == expr_kind::terminal) {
+                static_assert(sizeof...(T) == 1);
+                return expr.elements[0_c];
+            } else if constexpr (Kind == expr_kind::placeholder) {
+                static_assert(sizeof...(T) == 1);
+                // TODO: Fix.
+                return get_tuple_element(tuple, expr.elements);
+            } else if constexpr (Kind == expr_kind::plus) {
+                return
+                    eval_plus(
+                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(tuple)),
+                        default_eval_expr(expr.elements[1_c], static_cast<Tuple &&>(tuple))
+                    );
+            } else if constexpr (Kind == expr_kind::minus) {
+                return
+                    eval_minus(
+                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(tuple)),
+                        default_eval_expr(expr.elements[1_c], static_cast<Tuple &&>(tuple))
+                    );
+            } else {
+                assert(false && "Unhandled expr_kind in default_evaluate!");
+                return;
+            }
+        }
+
     }
 
-#if 0 // TODO
-    struct callable
-    {
-        auto operator() (TODO) const;
-    };
-#endif
+    // TODO: Customization point.
+    // TODO: static assert/SFINAE std::is_callable<>
+    // TODO: static assert/SFINAE no placeholders
+    template <typename R, expr_kind Kind, typename ...T>
+    R evaluate_expression_as (expression<Kind, T...> const & expr)
+    { return static_cast<R>(detail::default_eval_expr(expr, hana::tuple<>())); }
 
-    template <typename T>
-    constexpr bool is_terminal (hana::basic_type<T>)
-    { return false; }
-    template <typename T>
-    constexpr bool is_terminal (hana::basic_type<expression<expr_kind::terminal, T>>)
-    { return true; }
-
-    template <expr_kind Kind, typename T>
-    constexpr bool is_expression (hana::basic_type<T>)
-    { return false; }
-    template <expr_kind Kind, typename ...T>
-    constexpr bool is_expression (hana::basic_type<expression<Kind, T...>>)
-    { return true; }
+    // TODO: static assert/SFINAE std::is_callable<>
+    template <typename Expr, typename ...T>
+    auto evaluate (Expr const & expr, T && ...t)
+    { return detail::default_eval_expr(expr, hana::make_tuple(static_cast<T &&>(t)...)); }
 
     template <expr_kind Kind, typename ...T>
     struct expression
@@ -152,6 +223,10 @@ namespace boost { namespace proto17 {
 
         tuple_type elements;
 
+        template <typename R>
+        operator R ()
+        { return evaluate_expression_as<R>(*this); }
+
         template <typename U>
         auto operator+ (U && rhs) const &
         {
@@ -166,6 +241,24 @@ namespace boost { namespace proto17 {
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::plus, this_type, rhs_type>{
+                hana::tuple<this_type, rhs_type>{std::move(*this), rhs_type{static_cast<U &&>(rhs)}}
+            };
+        }
+
+        template <typename U>
+        auto operator- (U && rhs) const &
+        {
+            using rhs_type = typename detail::rhs_type<U>::type;
+            return expression<expr_kind::minus, this_type, rhs_type>{
+                hana::tuple<this_type, rhs_type>{*this, rhs_type{static_cast<U &&>(rhs)}}
+            };
+        }
+
+        template <typename U>
+        auto operator- (U && rhs) &&
+        {
+            using rhs_type = typename detail::rhs_type<U>::type;
+            return expression<expr_kind::minus, this_type, rhs_type>{
                 hana::tuple<this_type, rhs_type>{std::move(*this), rhs_type{static_cast<U &&>(rhs)}}
             };
         }
@@ -222,7 +315,7 @@ namespace boost { namespace proto17 {
             switch (kind) {
             case expr_kind::plus: return os << "+";
             case expr_kind::minus: return os << "-";
-                // TODO
+            // TODO
             default: return os << "** ERROR: UNKNOWN OPERATOR! **";
             }
         }
@@ -375,7 +468,7 @@ namespace boost { namespace proto17 {
 
     }
 
-} }
+}
 
 
 #include <string>
@@ -1223,6 +1316,163 @@ void print ()
 #endif
 }
 
+void default_eval ()
+{
+    term<double> unity{1.0};
+    int i_ = 42;
+    term<int &&> i{std::move(i_)};
+    bp17::expression<
+        bp17::expr_kind::minus,
+        term<double>,
+        term<int &&>
+    > expr = unity - std::move(i);
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<double>,
+        bp17::expression<
+            bp17::expr_kind::minus,
+            term<double>,
+            term<int &&>
+        >
+    > unevaluated_expr = unity + std::move(expr);
+
+    {
+        double result = unity;
+        std::cout << "unity=" << result << "\n"; // 1
+    }
+
+    {
+        double result = expr;
+        std::cout << "expr=" << result << "\n"; // -41
+    }
+
+    {
+        double result = unevaluated_expr;
+        std::cout << "unevaluated_expr=" << result << "\n"; // -40
+    }
+
+    {
+        double result = evaluate(unity, boost::hana::make_tuple(5, 6, 7));
+        std::cout << "evaluate(unity)=" << result << "\n"; // 1
+    }
+
+    {
+        double result = evaluate(expr, boost::hana::make_tuple());
+        std::cout << "evaluate(expr)=" << result << "\n"; // -41
+    }
+
+    {
+        double result = evaluate(unevaluated_expr, boost::hana::make_tuple(std::string("15")));
+        std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // -40
+    }
+}
+
+namespace test {
+
+    struct number
+    {
+        explicit operator double () const { return value; }
+
+        double value;
+    };
+
+    // User-defined binary-plus!  With weird semantics!
+    inline auto eval_plus (number a, number b)
+    { return number{a.value - b.value}; }
+
+}
+
+void eval ()
+{
+    term<test::number> unity{{1.0}};
+    double d_ = 42.0;
+    term<test::number> i{{d_}};
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<test::number>,
+        term<test::number>
+    > expr = unity + std::move(i);
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<test::number>,
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<test::number>,
+            term<test::number>
+        >
+    > unevaluated_expr = unity + std::move(expr);
+
+    {
+        double result = unity;
+        std::cout << "unity=" << result << "\n"; // 1
+    }
+
+    {
+        double result = expr;
+        std::cout << "expr=" << result << "\n"; // -41
+    }
+
+    {
+        double result = unevaluated_expr;
+        std::cout << "unevaluated_expr=" << result << "\n"; // 42
+    }
+
+    {
+        double result = (double)evaluate(unity, boost::hana::make_tuple(5, 6, 7));
+        std::cout << "evaluate(unity)=" << result << "\n"; // 1
+    }
+
+    {
+        double result = (double)evaluate(expr, boost::hana::make_tuple());
+        std::cout << "evaluate(expr)=" << result << "\n"; // -41
+    }
+
+    {
+        double result = (double)evaluate(unevaluated_expr, boost::hana::make_tuple(std::string("15")));
+        std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // 42
+    }
+}
+
+#if 0
+void placeholder_eval ()
+{
+    using namespace boost::proto17::literals;
+
+    bp17::placeholder<2> p2 = 2_p;
+    int i_ = 42;
+    term<int> i{std::move(i_)};
+    bp17::expression<
+        bp17::expr_kind::plus,
+        bp17::placeholder<2>,
+        term<int>
+    > expr = p2 + std::move(i);
+    bp17::expression<
+        bp17::expr_kind::plus,
+        bp17::placeholder<2>,
+        bp17::expression<
+            bp17::expr_kind::plus,
+            bp17::placeholder<2>,
+            term<int>
+        >
+    > unevaluated_expr = p2 + std::move(expr);
+
+    {
+        double result = evaluate(p2, boost::hana::make_tuple(5, 6, 7));
+        std::cout << "evaluate(p2)=" << result << "\n"; // 7
+    }
+
+    {
+        double result = evaluate(expr, boost::hana::make_tuple(std::string("15"), 3, 1));
+        std::cout << "evaluate(expr)=" << result << "\n"; // 43
+    }
+
+    {
+        double result = evaluate(unevaluated_expr, boost::hana::make_tuple(std::string("15"), 2, 3));
+        std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // 48
+    }
+}
+#endif
+
 int main ()
 {
     term_plus_x();
@@ -1234,6 +1484,13 @@ int main ()
     const_term_expr();
 
     print();
+
+    default_eval();
+    eval();
+
+#if 0 // TODO: Fix.
+    placeholder_eval();
+#endif
 
 #if 0 // TODO
     {
