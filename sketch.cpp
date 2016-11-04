@@ -1,7 +1,4 @@
-#include "expression_fwd.hpp"
-
-#include "operators.hpp"
-#include "detail/expression.hpp"
+#include "expression.hpp"
 
 #define BOOST_PROTO17_STREAM_OPERATORS // TODO: For testing.
 #include "print.hpp"
@@ -12,136 +9,10 @@
 #include <boost/hana/size.hpp>
 
 
-#include <cassert> // TODO: For testing.
-
 // TODO: Verbose debugging mode for matching.
 // TODO: Proto-style "Fuzzy and Exact Matches of Terminals".
 
 namespace boost::proto17 {
-
-    namespace detail {
-
-        template <typename Tuple, expr_kind Kind, typename ...T>
-        auto default_eval_expr (expression<Kind, T...> const & expr, Tuple && tuple)
-        {
-            using namespace hana::literals;
-            if constexpr (Kind == expr_kind::terminal) {
-                static_assert(sizeof...(T) == 1);
-                return expr.elements[0_c];
-            } else if constexpr (Kind == expr_kind::placeholder) {
-                static_assert(sizeof...(T) == 1);
-                return tuple[expr.elements[0_c]];
-            } else if constexpr (Kind == expr_kind::plus) {
-                return
-                    eval_plus(
-                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(tuple)),
-                        default_eval_expr(expr.elements[1_c], static_cast<Tuple &&>(tuple))
-                    );
-            } else if constexpr (Kind == expr_kind::minus) {
-                return
-                    eval_minus(
-                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(tuple)),
-                        default_eval_expr(expr.elements[1_c], static_cast<Tuple &&>(tuple))
-                    );
-            } else {
-                assert(false && "Unhandled expr_kind in default_evaluate!");
-                return;
-            }
-        }
-
-    }
-
-    // TODO: Customization point.
-    // TODO: static assert/SFINAE std::is_callable<>
-    // TODO: static assert/SFINAE no placeholders
-    template <typename R, expr_kind Kind, typename ...T>
-    R evaluate_expression_as (expression<Kind, T...> const & expr)
-    { return static_cast<R>(detail::default_eval_expr(expr, hana::tuple<>())); }
-
-    // TODO: static assert/SFINAE std::is_callable<>
-    template <typename Expr, typename ...T>
-    auto evaluate (Expr const & expr, T && ...t)
-    { return detail::default_eval_expr(expr, hana::make_tuple(static_cast<T &&>(t)...)); }
-
-    template <expr_kind Kind, typename ...T>
-    struct expression
-    {
-        using this_type = expression<Kind, T...>;
-        using tuple_type = hana::tuple<T...>;
-
-        static const expr_kind kind = Kind;
-
-        expression (T && ... t) :
-            elements (static_cast<T &&>(t)...)
-        {}
-
-        expression (hana::tuple<T...> const & rhs) :
-            elements (rhs)
-        {}
-
-        expression (hana::tuple<T...> && rhs) :
-            elements (std::move(rhs))
-        {}
-
-        expression & operator= (hana::tuple<T...> const & rhs)
-        { elements = rhs.elements; }
-
-        expression & operator= (hana::tuple<T...> && rhs)
-        { elements = std::move(rhs.elements); }
-
-        tuple_type elements;
-
-        template <typename R>
-        operator R ()
-        { return evaluate_expression_as<R>(*this); }
-
-        template <typename U>
-        auto operator+ (U && rhs) const &
-        {
-            using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::plus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{*this, rhs_type{static_cast<U &&>(rhs)}}
-            };
-        }
-
-        template <typename U>
-        auto operator+ (U && rhs) &&
-        {
-            using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::plus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{std::move(*this), rhs_type{static_cast<U &&>(rhs)}}
-            };
-        }
-
-        template <typename U>
-        auto operator- (U && rhs) const &
-        {
-            using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::minus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{*this, rhs_type{static_cast<U &&>(rhs)}}
-            };
-        }
-
-        template <typename U>
-        auto operator- (U && rhs) &&
-        {
-            using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::minus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{std::move(*this), rhs_type{static_cast<U &&>(rhs)}}
-            };
-        }
-    };
-
-    namespace literals {
-
-        template <char ...c>
-        constexpr auto operator"" _p ()
-        {
-            using i = hana::llong<hana::ic_detail::parse<sizeof...(c)>({c...})>;
-            return expression<expr_kind::placeholder, i>(i{});
-        }
-
-    }
 
     namespace match {
 

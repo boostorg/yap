@@ -1,7 +1,7 @@
 #ifndef BOOST_PROTO17_EXPRESSION_FWD_HPP_INCLUDED
 #define BOOST_PROTO17_EXPRESSION_FWD_HPP_INCLUDED
 
-#include <boost/hana/fwd/integral_constant.hpp>
+#include <boost/hana/integral_constant.hpp>
 
 
 namespace boost::proto17 {
@@ -24,6 +24,17 @@ namespace boost::proto17 {
 
     template <long long I>
     using placeholder = expression<expr_kind::placeholder, hana::llong<I>>;
+
+    namespace literals {
+
+        template <char ...c>
+        constexpr auto operator"" _p ()
+        {
+            using i = hana::llong<hana::ic_detail::parse<sizeof...(c)>({c...})>;
+            return expression<expr_kind::placeholder, i>(i{});
+        }
+
+    }
 
 }
 
