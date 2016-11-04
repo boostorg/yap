@@ -140,18 +140,6 @@ namespace boost::proto17 {
         struct rhs_type<T, U, false, false>
         { using type = terminal<U>; };
 
-        constexpr bool is_hana_llong (...)
-        { return false; }
-
-        template <long long I>
-        constexpr bool is_hana_llong(hana::basic_type<hana::llong<I>>)
-        { return true; };
-
-        // TODO: Fix.
-        template <typename Tuple, long long I>
-        auto get_tuple_element(Tuple && tuple, hana::tuple<hana::llong<I>>)
-        { return hana::at_c<I>(tuple); };
-
         template <typename Tuple, expr_kind Kind, typename ...T>
         auto default_eval_expr (expression<Kind, T...> const & expr, Tuple && tuple)
         {
@@ -161,8 +149,7 @@ namespace boost::proto17 {
                 return expr.elements[0_c];
             } else if constexpr (Kind == expr_kind::placeholder) {
                 static_assert(sizeof...(T) == 1);
-                // TODO: Fix.
-                return get_tuple_element(tuple, expr.elements);
+                return tuple[expr.elements[0_c]];
             } else if constexpr (Kind == expr_kind::plus) {
                 return
                     eval_plus(
@@ -1382,7 +1369,7 @@ namespace test {
 
 }
 
-void eval ()
+void user_operator_eval ()
 {
     term<test::number> unity{{1.0}};
     double d_ = 42.0;
@@ -1433,7 +1420,6 @@ void eval ()
     }
 }
 
-#if 0
 void placeholder_eval ()
 {
     using namespace boost::proto17::literals;
@@ -1457,21 +1443,20 @@ void placeholder_eval ()
     > unevaluated_expr = p2 + std::move(expr);
 
     {
-        double result = evaluate(p2, boost::hana::make_tuple(5, 6, 7));
+        double result = evaluate(p2, 5, 6, 7);
         std::cout << "evaluate(p2)=" << result << "\n"; // 7
     }
 
     {
-        double result = evaluate(expr, boost::hana::make_tuple(std::string("15"), 3, 1));
+        double result = evaluate(expr, std::string("15"), 3, 1);
         std::cout << "evaluate(expr)=" << result << "\n"; // 43
     }
 
     {
-        double result = evaluate(unevaluated_expr, boost::hana::make_tuple(std::string("15"), 2, 3));
+        double result = evaluate(unevaluated_expr, std::string("15"), 2, 3);
         std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // 48
     }
 }
-#endif
 
 int main ()
 {
@@ -1486,11 +1471,9 @@ int main ()
     print();
 
     default_eval();
-    eval();
+    user_operator_eval();
 
-#if 0 // TODO: Fix.
     placeholder_eval();
-#endif
 
 #if 0 // TODO
     {
