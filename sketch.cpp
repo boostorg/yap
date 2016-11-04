@@ -1032,7 +1032,7 @@ namespace test {
     { return number{a.value - b.value}; }
 
     template <typename E, typename ...T>
-    constexpr auto evaluate_expression_as (
+    constexpr auto eval_expression_as (
         E const & expr,
         boost::hana::basic_type<test::number>,
         T && ...t)
@@ -1103,7 +1103,7 @@ void user_operator_eval ()
     std::cout << "\n";
 }
 
-void user_evaluate_expression_as ()
+void user_eval_expression_as ()
 {
     term<test::number> unity{{1.0}};
     double d_ = 42.0;
@@ -1123,7 +1123,7 @@ void user_evaluate_expression_as ()
         >
     > unevaluated_expr = unity + std::move(expr);
 
-    std::cout << "\nuser_evaluate_expression_as()\n";
+    std::cout << "\nuser_eval_expression_as()\n";
 
     {
         test::number result = unity;
@@ -1228,7 +1228,7 @@ int main ()
     print();
 
     default_eval();
-    user_evaluate_expression_as();
+    user_eval_expression_as();
     user_operator_eval();
 
     placeholder_eval();
