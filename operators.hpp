@@ -1,8 +1,6 @@
 #ifndef BOOST_PROTO17_OPERATORS_HPP_INCLUDED
 #define BOOST_PROTO17_OPERATORS_HPP_INCLUDED
 
-#include "expression_fwd.hpp"
-
 
 namespace boost::proto17 {
 
