@@ -3,6 +3,8 @@
 #define BOOST_PROTO17_STREAM_OPERATORS // TODO: For testing.
 #include "print.hpp"
 
+#include <algorithm>
+
 #include <boost/hana/integral_constant.hpp>
 #include <boost/hana/tuple.hpp>
 #include <boost/hana/type.hpp>
@@ -112,6 +114,14 @@ namespace boost::proto17 {
             }
         }
 
+    }
+
+    template <typename F>
+    auto make_terminal (F && f)
+    {
+        return expression<expr_kind::terminal, F>{
+            hana::tuple<F>{static_cast<F &&>(f)}
+        };
     }
 
 }
@@ -1017,7 +1027,7 @@ void default_eval ()
     std::cout << "\n";
 }
 
-namespace test {
+namespace user {
 
     struct number
     {
@@ -1034,11 +1044,11 @@ namespace test {
     template <typename E, typename ...T>
     constexpr auto eval_expression_as (
         E const & expr,
-        boost::hana::basic_type<test::number>,
+        boost::hana::basic_type<user::number>,
         T && ...t)
     {
         std::cout << "User eval!  ";
-        return static_cast<test::number>(
+        return static_cast<user::number>(
             bp17::detail::default_eval_expr(
                 expr,
                 boost::hana::make_tuple(static_cast<T &&>(t)...)
@@ -1052,21 +1062,21 @@ void user_operator_eval ()
 {
     std::cout << "\nuser_operator_eval()\n";
 
-    term<test::number> unity{{1.0}};
+    term<user::number> unity{{1.0}};
     double d_ = 42.0;
-    term<test::number> i{{d_}};
+    term<user::number> i{{d_}};
     bp17::expression<
         bp17::expr_kind::plus,
-        term<test::number>,
-        term<test::number>
+        term<user::number>,
+        term<user::number>
     > expr = unity + std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
-        term<test::number>,
+        term<user::number>,
         bp17::expression<
             bp17::expr_kind::plus,
-            term<test::number>,
-            term<test::number>
+            term<user::number>,
+            term<user::number>
         >
     > unevaluated_expr = unity + std::move(expr);
 
@@ -1105,43 +1115,43 @@ void user_operator_eval ()
 
 void user_eval_expression_as ()
 {
-    term<test::number> unity{{1.0}};
+    term<user::number> unity{{1.0}};
     double d_ = 42.0;
-    term<test::number> i{{d_}};
+    term<user::number> i{{d_}};
     bp17::expression<
         bp17::expr_kind::plus,
-        term<test::number>,
-        term<test::number>
+        term<user::number>,
+        term<user::number>
     > expr = unity + std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
-        term<test::number>,
+        term<user::number>,
         bp17::expression<
             bp17::expr_kind::plus,
-            term<test::number>,
-            term<test::number>
+            term<user::number>,
+            term<user::number>
         >
     > unevaluated_expr = unity + std::move(expr);
 
     std::cout << "\nuser_eval_expression_as()\n";
 
     {
-        test::number result = unity;
+        user::number result = unity;
         std::cout << "unity=" << result.value << "\n"; // 1
     }
 
     {
-        test::number result = expr;
+        user::number result = expr;
         std::cout << "expr=" << result.value << "\n"; // -41
     }
 
     {
-        test::number result = unevaluated_expr;
+        user::number result = unevaluated_expr;
         std::cout << "unevaluated_expr=" << result.value << "\n"; // 42
     }
 
     {
-        test::number result = evaluate(unity, 5, 6, 7);
+        user::number result = evaluate(unity, 5, 6, 7);
         std::cout << "evaluate(unity)=" << result.value << "\n"; // 1
     }
 
@@ -1156,17 +1166,17 @@ void user_eval_expression_as ()
     }
 
     {
-        test::number result = bp17::evaluate_as<test::number>(unity, 5, 6, 7);
+        user::number result = bp17::evaluate_as<user::number>(unity, 5, 6, 7);
         std::cout << "evaluate(unity)=" << result.value << "\n"; // 1
     }
 
     {
-        test::number result = bp17::evaluate_as<test::number>(expr);
+        user::number result = bp17::evaluate_as<user::number>(expr);
         std::cout << "evaluate(expr)=" << result.value << "\n"; // -41
     }
 
     {
-        test::number result = bp17::evaluate_as<test::number>(unevaluated_expr, std::string("15"));
+        user::number result = bp17::evaluate_as<user::number>(unevaluated_expr, std::string("15"));
         std::cout << "evaluate(unevaluated_expr)=" << result.value << "\n"; // 42
     }
 
@@ -1215,6 +1225,193 @@ void placeholder_eval ()
     std::cout << "\n";
 }
 
+namespace user {
+
+    inline auto max (int a, int b)
+    { return a < b ? b : a; };
+
+    struct tag_type {};
+
+    inline number tag_function (double a, double b)
+    { return number{a + b}; }
+
+    // User-defined operator() implementation.
+    template <typename F, typename ...T>
+    inline auto eval_call (F && f, T && ...t)
+    {
+        if constexpr (sizeof...(T) == 2u && std::is_same_v<std::decay_t<F>, tag_type>) {
+            return tag_function((double)t...);
+        } else {
+            assert(!"Unhandled case in eval_call()");
+            return;
+        }
+    }
+
+}
+
+void call_expr ()
+{
+    std::cout << "\ncall_expr()\n";
+
+    using namespace boost::proto17::literals;
+
+    {
+        bp17::expression<
+            bp17::expr_kind::call,
+            bp17::placeholder<0>,
+            bp17::placeholder<1>,
+            bp17::placeholder<2>
+        > expr = 0_p(1_p, 2_p);
+
+        {
+            auto min = [] (int a, int b) { return a < b ? a : b; };
+            int result = evaluate(expr, min, 3, 7);
+            std::cout << "evaluate(expr, min, 3, 7)=" << result << "\n"; // 3
+        }
+
+        {
+            int result = evaluate(expr, &user::max, 3, 7);
+            std::cout << "evaluate(expr, &user::max, 3, 7)=" << result << "\n"; // 7
+        }
+
+        {
+            int result = evaluate(expr, user::max, 3, 7);
+            std::cout << "evaluate(expr, user::max, 3, 7)=" << result << "\n"; // 7
+        }
+    }
+
+    {
+        auto min_lambda = [] (int a, int b) { return a < b ? a : b; };
+
+        {
+            auto min = bp17::make_terminal(min_lambda);
+            auto expr = min(0_p, 1_p);
+
+            {
+                int result = evaluate(expr, 3, 7);
+                std::cout << "evaluate(expr, 3, 7)=" << result << "\n"; // 3
+            }
+        }
+
+        {
+            term<decltype(min_lambda)> min = {{min_lambda}};
+            auto expr = min(0_p, 1_p);
+
+            {
+                int result = evaluate(expr, 3, 7);
+                std::cout << "evaluate(expr, 3, 7)=" << result << "\n"; // 3
+            }
+        }
+    }
+
+    {
+        struct min_function_object_t
+        {
+            auto operator() (int a, int b) const { return a < b ? a : b; }
+        } min_function_object;
+
+        {
+            term<min_function_object_t> min = bp17::make_terminal(min_function_object);
+            auto expr = min(0_p, 1_p);
+
+            {
+                using namespace boost::hana::literals;
+                int result = evaluate(expr, 3, 7);
+                std::cout << "evaluate(expr, 3, 7)=" << result << "\n"; // 3
+            }
+        }
+
+        {
+            term<min_function_object_t> min = {{min_function_object}};
+            auto expr = min(0_p, 1_p);
+
+            {
+                int result = evaluate(expr, 3, 7);
+                std::cout << "evaluate(expr, 3, 7)=" << result << "\n"; // 3
+            }
+        }
+
+        {
+            auto min = bp17::make_terminal(min_function_object_t{});
+            auto expr = min(0_p, 1_p);
+
+            {
+                int result = evaluate(expr, 3, 7);
+                std::cout << "evaluate(expr, 3, 7)=" << result << "\n"; // 3
+            }
+        }
+
+        {
+            term<min_function_object_t> min = {{min_function_object_t{}}};
+            auto expr = min(0_p, 1_p);
+
+            {
+                int result = evaluate(expr, 3, 7);
+                std::cout << "evaluate(expr, 3, 7)=" << result << "\n"; // 3
+            }
+        }
+
+    }
+
+    {
+        auto min_lambda = [] (int a, int b) { return a < b ? a : b; };
+
+        {
+            auto min = bp17::make_terminal(min_lambda);
+            auto expr = min(0, 1);
+
+            {
+                int result = evaluate(expr);
+                std::cout << "evaluate(expr)=" << result << "\n"; // 0
+            }
+        }
+
+        {
+            term<decltype(min_lambda)> min = {{min_lambda}};
+            bp17::expression<
+                bp17::expr_kind::call,
+                term<decltype(min_lambda)>,
+                term<int>,
+                term<int>
+            > expr = min(0, 1);
+
+            {
+                int result = evaluate(expr);
+                std::cout << "evaluate(expr)=" << result << "\n"; // 0
+            }
+        }
+    }
+
+    {
+        {
+            auto plus = bp17::make_terminal(user::tag_type{});
+            auto expr = plus(user::number{13}, 1);
+
+            {
+                user::number result = expr;
+                std::cout << "expr=" << result.value << "\n"; // 42
+            }
+        }
+
+        {
+            term<user::tag_type> plus = {{user::tag_type{}}};
+            bp17::expression<
+                bp17::expr_kind::call,
+                term<user::tag_type>,
+                term<int>,
+                term<int>
+            > expr = plus(0, 1);
+
+            {
+                user::number result = expr;
+                std::cout << "expr=" << result.value << "\n"; // 0
+            }
+        }
+    }
+
+    std::cout << "\n";
+}
+
 int main ()
 {
     term_plus_x();
@@ -1232,6 +1429,8 @@ int main ()
     user_operator_eval();
 
     placeholder_eval();
+
+    call_expr();
 
 #if 0 // TODO
     {

@@ -3,6 +3,8 @@
 
 #include "../expression_fwd.hpp"
 
+#include <boost/hana/tuple.hpp>
+
 #include <type_traits>
 
 
@@ -69,6 +71,21 @@ namespace boost::proto17 {
         template <typename T, typename U>
         struct rhs_type<T, U, false, false>
         { using type = terminal<U>; };
+
+        template <typename T>
+        struct call_expression_from_tuple;
+
+        template <typename ...T>
+        struct call_expression_from_tuple<hana::tuple<T...>>
+        { using type = expression<expr_kind::call, T...>; };
+
+        template <typename Tuple, typename ...T>
+        constexpr auto make_call_expression (T && ...args)
+        {
+            return typename call_expression_from_tuple<Tuple>::type{
+                Tuple{static_cast<T &&>(args)...}
+            };
+        }
 
     }
 

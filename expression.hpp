@@ -80,16 +80,15 @@ namespace boost::proto17 {
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::plus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{*this, rhs_type{static_cast<U &&>(rhs)}}
+                hana::tuple<this_type, rhs_type>{*this, static_cast<U &&>(rhs)}
             };
         }
-
         template <typename U>
         auto operator+ (U && rhs) &&
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::plus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{std::move(*this), rhs_type{static_cast<U &&>(rhs)}}
+                hana::tuple<this_type, rhs_type>{std::move(*this), static_cast<U &&>(rhs)}
             };
         }
 
@@ -98,17 +97,29 @@ namespace boost::proto17 {
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::minus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{*this, rhs_type{static_cast<U &&>(rhs)}}
+                hana::tuple<this_type, rhs_type>{*this, static_cast<U &&>(rhs)}
             };
         }
-
         template <typename U>
         auto operator- (U && rhs) &&
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::minus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{std::move(*this), rhs_type{static_cast<U &&>(rhs)}}
+                hana::tuple<this_type, rhs_type>{std::move(*this), static_cast<U &&>(rhs)}
             };
+        }
+
+        template <typename ...U>
+        auto operator() (U && ...u) const &
+        {
+            using tuple_type = hana::tuple<this_type, typename detail::rhs_type<U>::type...>;
+            return detail::make_call_expression<tuple_type>(*this, static_cast<U &&>(u)...);
+        }
+        template <typename ...U>
+        auto operator() (U && ...u) &&
+        {
+            using tuple_type = hana::tuple<this_type, typename detail::rhs_type<U>::type...>;
+            return detail::make_call_expression<tuple_type>(std::move(*this), static_cast<U &&>(u)...);
         }
     };
 

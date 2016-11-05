@@ -13,7 +13,6 @@ namespace boost::proto17 {
         constexpr auto eval_plus (T && t, U && u) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
             static_cast<T &&>(t) + static_cast<U &&>(u)
         )
-
         struct eval_plus_fn
         {
             template <typename T, typename U>
@@ -26,12 +25,23 @@ namespace boost::proto17 {
         constexpr auto eval_minus (T && t, U && u) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
             static_cast<T &&>(t) - static_cast<U &&>(u)
         )
-
         struct eval_minus_fn
         {
             template <typename T, typename U>
             constexpr auto operator() (T && t, U && u) const BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
                 eval_minus(static_cast<T &&>(t), static_cast<U &&>(u))
+            )
+        };
+
+        template <typename F, typename ...T>
+        constexpr auto eval_call (F && f, T && ...t) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+            static_cast<F &&>(f)(static_cast<T &&>(t)...)
+        )
+        struct eval_call_fn
+        {
+            template <typename F, typename ...T>
+            constexpr auto operator() (F && f, T && ...t) const BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+                eval_call(static_cast<F &&>(f), static_cast<T &&>(t)...)
             )
         };
 
@@ -41,11 +51,13 @@ namespace boost::proto17 {
 
     using adl_detail::eval_plus_fn;
     using adl_detail::eval_minus_fn;
+    using adl_detail::eval_call_fn;
 
     inline namespace function_objects {
 
         inline constexpr eval_plus_fn eval_plus{};
         inline constexpr eval_minus_fn eval_minus{};
+        inline constexpr eval_call_fn eval_call{};
 
     }
 
