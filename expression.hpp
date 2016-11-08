@@ -75,39 +75,81 @@ namespace boost::proto17 {
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
 
+        // TODO: Unary ops.
+
+#define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op, op_name)               \
+        template <typename U>                                           \
+        decltype(auto) operator op (U && rhs) const &                   \
+        {                                                               \
+            using rhs_type = typename detail::rhs_type<U>::type;        \
+            return expression<expr_kind::op_name, this_type, rhs_type>{ \
+                hana::tuple<this_type, rhs_type>{                       \
+                    *this,                                              \
+                    static_cast<U &&>(rhs)                              \
+                }                                                       \
+            };                                                          \
+        }                                                               \
+        template <typename U>                                           \
+        decltype(auto) operator op (U && rhs) &&                        \
+        {                                                               \
+            using rhs_type = typename detail::rhs_type<U>::type;        \
+            return expression<expr_kind::op_name, this_type, rhs_type>{ \
+                hana::tuple<this_type, rhs_type>{                       \
+                    std::move(*this),                                   \
+                    static_cast<U &&>(rhs)                              \
+                }                                                       \
+            };                                                          \
+        }
+
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<<, shift_left) // <<
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>>, shift_right) // >>
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(*, multiplies) // *
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(/, divides) // /
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(%, modulus) // %
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(+, plus) // +
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(-, minus) // -
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<, less) // <
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>, greater) // >
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<=, less_equal) // <=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>=, greater_equal) // >=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(==, equal_to) // ==
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(!=, not_equal_to) // !=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(||, logical_or) // ||
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&&, logical_and) // &&
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&, bitwise_and) // &
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|, bitwise_or) // |
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^, bitwise_xor) // ^
+
         template <typename U>
-        decltype(auto) operator+ (U && rhs) const &
+        decltype(auto) operator, (U && rhs) const &
         {
             using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::plus, this_type, rhs_type>{
+            return expression<expr_kind::comma, this_type, rhs_type>{
                 hana::tuple<this_type, rhs_type>{*this, static_cast<U &&>(rhs)}
             };
         }
         template <typename U>
-        decltype(auto) operator+ (U && rhs) &&
+        decltype(auto) operator, (U && rhs) &&
         {
             using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::plus, this_type, rhs_type>{
+            return expression<expr_kind::comma, this_type, rhs_type>{
                 hana::tuple<this_type, rhs_type>{std::move(*this), static_cast<U &&>(rhs)}
             };
         }
 
-        template <typename U>
-        decltype(auto) operator- (U && rhs) const &
-        {
-            using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::minus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{*this, static_cast<U &&>(rhs)}
-            };
-        }
-        template <typename U>
-        decltype(auto) operator- (U && rhs) &&
-        {
-            using rhs_type = typename detail::rhs_type<U>::type;
-            return expression<expr_kind::minus, this_type, rhs_type>{
-                hana::tuple<this_type, rhs_type>{std::move(*this), static_cast<U &&>(rhs)}
-            };
-        }
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(->*, mem_ptr) // ->*
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(=, assign) // =
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<<=, shift_left_assign) // <<=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>>=, shift_right_assign) // >>=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(*=, multiplies_assign) // *=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(/=, divides_assign) // /=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(%=, modulus_assign) // %=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(+=, plus_assign) // +=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(-=, minus_assign) // -=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&=, bitwise_and_assign) // &=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|=, bitwise_or_assign) // |=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^=, bitwise_xor_assign) // ^=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR([], subscript) // []
 
         template <typename ...U>
         decltype(auto) operator() (U && ...u) const &
