@@ -75,7 +75,32 @@ namespace boost::proto17 {
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
 
-        // TODO: Unary ops.
+#define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
+        decltype(auto) operator op const &                              \
+        {                                                               \
+            return expression<expr_kind::op_name, this_type>{           \
+                hana::tuple<this_type>{*this}                           \
+            };                                                          \
+        }                                                               \
+        decltype(auto) operator op &&                                   \
+        {                                                               \
+            return expression<expr_kind::op_name, this_type>{           \
+                hana::tuple<this_type>{std::move(*this)}                \
+            };                                                          \
+        }
+
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(+(), unary_plus) // +
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(-(), negate) // -
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(*(), dereference) // *
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(~(), complement) // ~
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(&(), address_of) // &
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(!(), logical_not) // !
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(++(), pre_inc) // ++
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(--(), pre_dec) // --
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(++(int), post_inc) // ++(int)
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(--(int), post_dec) // --(int)
+
+#undef BOOST_PROTO17_UNARY_MEMBER_OPERATOR
 
 #define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op, op_name)               \
         template <typename U>                                           \

@@ -9,7 +9,53 @@ namespace boost::proto17 {
 
     namespace adl_detail {
 
-        // TODO: Unary ops.
+#define BOOST_PROTO17_UNARY_OPERATOR(op, op_name)                       \
+        template <typename T>                                           \
+        constexpr auto eval_ ## op_name (T && t) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN( \
+            op static_cast<T &&>(t)                                     \
+        )                                                               \
+        struct eval_ ## op_name ## _fn                                  \
+        {                                                               \
+            template <typename T>                                       \
+            constexpr auto operator() (T && t) const BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN( \
+                eval_ ## op_name(static_cast<T &&>(t))                  \
+            )                                                           \
+        };
+
+        BOOST_PROTO17_UNARY_OPERATOR(+, unary_plus) // +
+        BOOST_PROTO17_UNARY_OPERATOR(-, negate) // -
+        BOOST_PROTO17_UNARY_OPERATOR(*, dereference) // *
+        BOOST_PROTO17_UNARY_OPERATOR(~, complement) // ~
+        BOOST_PROTO17_UNARY_OPERATOR(&, address_of) // &
+        BOOST_PROTO17_UNARY_OPERATOR(!, logical_not) // !
+        BOOST_PROTO17_UNARY_OPERATOR(++, pre_inc) // ++
+        BOOST_PROTO17_UNARY_OPERATOR(--, pre_dec) // --
+
+        template <typename T>
+        constexpr auto eval_post_inc (T && t) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+            static_cast<T &&>(t) ++
+        )
+        struct eval_post_inc_fn
+        {
+            template <typename T>
+            constexpr auto operator() (T && t) const BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+                eval_post_inc(static_cast<T &&>(t))
+            )
+        };
+
+        template <typename T>
+        constexpr auto eval_post_dec (T && t) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+            static_cast<T &&>(t) --
+        )
+        struct eval_post_dec_fn
+        {
+            template <typename T>
+            constexpr auto operator() (T && t) const BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+                eval_post_dec(static_cast<T &&>(t))
+            )
+        };
+
+#undef BOOST_PROTO17_UNARY_OPERATOR
 
 #define BOOST_PROTO17_BINARY_OPERATOR(op, op_name)                      \
         template <typename T, typename U>                               \
@@ -100,6 +146,16 @@ namespace boost::proto17 {
 
 #define BOOST_PROTO17_USING_OPERATOR_FN(op_name) using adl_detail::eval_ ## op_name ## _fn;
 
+    BOOST_PROTO17_USING_OPERATOR_FN(unary_plus) // +
+    BOOST_PROTO17_USING_OPERATOR_FN(negate) // -
+    BOOST_PROTO17_USING_OPERATOR_FN(dereference) // *
+    BOOST_PROTO17_USING_OPERATOR_FN(complement) // ~
+    BOOST_PROTO17_USING_OPERATOR_FN(address_of) // &
+    BOOST_PROTO17_USING_OPERATOR_FN(logical_not) // !
+    BOOST_PROTO17_USING_OPERATOR_FN(pre_inc) // ++
+    BOOST_PROTO17_USING_OPERATOR_FN(pre_dec) // --
+    BOOST_PROTO17_USING_OPERATOR_FN(post_inc) // ++(int)
+    BOOST_PROTO17_USING_OPERATOR_FN(post_dec) // --(int)
     BOOST_PROTO17_USING_OPERATOR_FN(shift_left) // <<
     BOOST_PROTO17_USING_OPERATOR_FN(shift_right) // >>
     BOOST_PROTO17_USING_OPERATOR_FN(multiplies) // *
@@ -141,6 +197,16 @@ namespace boost::proto17 {
 #define BOOST_PROTO17_DECLARE_OPERATOR_FN(op_name)                        \
         inline constexpr eval_ ## op_name ## _fn eval_ ## op_name{};
 
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(unary_plus) // +
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(negate) // -
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(dereference) // *
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(complement) // ~
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(address_of) // &
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(logical_not) // !
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(pre_inc) // ++
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(pre_dec) // --
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(post_inc) // ++(int)
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(post_dec) // --(int)
         BOOST_PROTO17_DECLARE_OPERATOR_FN(shift_left) // <<
         BOOST_PROTO17_DECLARE_OPERATOR_FN(shift_right) // >>
         BOOST_PROTO17_DECLARE_OPERATOR_FN(multiplies) // *
