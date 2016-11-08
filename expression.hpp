@@ -123,6 +123,14 @@ namespace boost::proto17 {
         }
     };
 
+    template <typename F>
+    auto make_terminal (F && f)
+    {
+        return expression<expr_kind::terminal, F>{
+            hana::tuple<F>{static_cast<F &&>(f)}
+        };
+    }
+
 }
 
 #endif
