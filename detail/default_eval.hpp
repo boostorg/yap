@@ -44,7 +44,7 @@ namespace boost::proto17 {
             BOOST_PROTO17_UNARY_OPERATOR_CASE(post_inc) // ++(int)
             BOOST_PROTO17_UNARY_OPERATOR_CASE(post_dec) // --(int)
 
-#define BOOST_PROTO17_UNARY_OPERATOR_CASE
+#undef BOOST_PROTO17_UNARY_OPERATOR_CASE
 
 #define BOOST_PROTO17_BINARY_OPERATOR_CASE(op_name)                     \
             else if constexpr (Kind == expr_kind:: op_name) {           \

@@ -6,6 +6,8 @@
 #include "detail/default_eval.hpp"
 
 #include <boost/hana/tuple.hpp>
+#include <boost/hana/size.hpp>
+#include <boost/hana/comparing.hpp>
 
 
 namespace boost::proto17 {
@@ -74,6 +76,36 @@ namespace boost::proto17 {
         template <typename R>
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
+
+        decltype(auto) value () const
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 1UL,
+                "value() is only defined for unary expressions."
+            );
+            return elements[0_c];
+        }
+
+        decltype(auto) left () const
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 2UL,
+                "left() and right() are only defined for binary expressions."
+            );
+            return elements[0_c];
+        }
+
+        decltype(auto) right () const
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 2UL,
+                "left() and right() are only defined for binary expressions."
+            );
+            return elements[1_c];
+        }
 
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
         decltype(auto) operator op const &                              \
@@ -190,11 +222,11 @@ namespace boost::proto17 {
         }
     };
 
-    template <typename F>
-    auto make_terminal (F && f)
+    template <typename T>
+    auto make_terminal (T && t)
     {
-        return expression<expr_kind::terminal, F>{
-            hana::tuple<F>{static_cast<F &&>(f)}
+        return expression<expr_kind::terminal, T>{
+            hana::tuple<T>{static_cast<T &&>(t)}
         };
     }
 

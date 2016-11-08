@@ -1065,6 +1065,89 @@ void user_eval_expression_as ()
     std::cout << "\n";
 }
 
+namespace user_2 {
+
+    struct number
+    {
+        double value;
+    };
+
+    number naxpy (number a, number x, number y)
+    { return number{a.value * x.value + y.value}; }
+
+#if 0
+    auto eval_expression_as (
+        bp17::expression<
+            bp17::expr_kind::plus,
+            bp17::expression<
+                bp17::expr_kind::multiplies,
+                term<number>,
+                term<number>
+            >,
+            term<number>
+        > const & expr,
+        boost::hana::basic_type<number>)
+    {
+        std::cout << "User naxpy!  ";
+        using namespace boost::hana::literals;
+        return naxpy(
+            expr.elements[0_c].elements[0_c].elements[0_c],
+            expr.elements[0_c].elements[1_c].elements[0_c],
+            expr.elements[1_c].elements[0_c]
+        );
+    }
+#else
+    auto eval_expression_as (
+        decltype(term<number>{{0.0}} * number{} + number{}) const & expr,
+        boost::hana::basic_type<number>)
+    {
+        std::cout << "User naxpy!  ";
+        return naxpy(
+            expr.left().left().value(),
+            expr.left().right().value(),
+            expr.right().value()
+        );
+    }
+#endif
+
+}
+
+void user_expression_transform ()
+{
+    std::cout << "\nuser_expression_transform()\n";
+
+    term<user_2::number> a{{1.0}};
+    term<user_2::number> x{{42.0}};
+    term<user_2::number> y{{3.0}};
+
+    bp17::expression<
+        bp17::expr_kind::plus,
+        bp17::expression<
+            bp17::expr_kind::multiplies,
+            term<user_2::number>,
+            term<user_2::number>
+        >,
+        term<user_2::number>
+    > expr = a * x + y;
+
+    // TODO: This was an error (user:: vs. user_2::).  Document for users that
+    // they should catch an expression in an auto var to diagnose these sorts
+    // of things.
+#if 0
+    bp17::expression<
+        bp17::expr_kind::multiplies,
+        term<user::number>,
+        term<user::number>
+    > expr = a * x;
+#endif
+
+    user_2::number result = expr;
+
+    std::cout << "expr=" << result.value << "\n"; // 45
+
+    std::cout << "\n";
+}
+
 void placeholder_eval ()
 {
     std::cout << "\nplaceholder_eval()\n";
@@ -1358,6 +1441,7 @@ int main ()
     default_eval();
     user_eval_expression_as();
     user_operator_eval();
+    user_expression_transform();
 
     placeholder_eval();
 
