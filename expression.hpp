@@ -13,13 +13,13 @@ namespace boost::proto17 {
     namespace adl_detail {
 
         template <typename R, typename E, typename ...T>
-        constexpr auto eval_expression_as (E const & expr, hana::basic_type<R>, T && ...t)
+        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T && ...t)
         { return static_cast<R>(detail::default_eval_expr(expr, hana::make_tuple(static_cast<T &&>(t)...))); }
 
         struct eval_expression_as_fn
         {
             template <typename R, typename E, typename ...T>
-            constexpr auto operator() (E const & expr, hana::basic_type<R> rtype, T && ...t) const
+            constexpr decltype(auto) operator() (E const & expr, hana::basic_type<R> rtype, T && ...t) const
             { return eval_expression_as(expr, rtype, static_cast<T &&>(t)...); }
         };
 
@@ -35,12 +35,12 @@ namespace boost::proto17 {
 
     // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
     template <typename Expr, typename ...T>
-    auto evaluate (Expr const & expr, T && ...t)
+    decltype(auto) evaluate (Expr const & expr, T && ...t)
     { return detail::default_eval_expr(expr, hana::make_tuple(static_cast<T &&>(t)...)); }
 
     // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
     template <typename R, typename Expr, typename ...T>
-    auto evaluate_as (Expr const & expr, T && ...t)
+    decltype(auto) evaluate_as (Expr const & expr, T && ...t)
     { return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...); }
 
     template <expr_kind Kind, typename ...T>
@@ -76,7 +76,7 @@ namespace boost::proto17 {
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
 
         template <typename U>
-        auto operator+ (U && rhs) const &
+        decltype(auto) operator+ (U && rhs) const &
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::plus, this_type, rhs_type>{
@@ -84,7 +84,7 @@ namespace boost::proto17 {
             };
         }
         template <typename U>
-        auto operator+ (U && rhs) &&
+        decltype(auto) operator+ (U && rhs) &&
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::plus, this_type, rhs_type>{
@@ -93,7 +93,7 @@ namespace boost::proto17 {
         }
 
         template <typename U>
-        auto operator- (U && rhs) const &
+        decltype(auto) operator- (U && rhs) const &
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::minus, this_type, rhs_type>{
@@ -101,7 +101,7 @@ namespace boost::proto17 {
             };
         }
         template <typename U>
-        auto operator- (U && rhs) &&
+        decltype(auto) operator- (U && rhs) &&
         {
             using rhs_type = typename detail::rhs_type<U>::type;
             return expression<expr_kind::minus, this_type, rhs_type>{
@@ -110,13 +110,13 @@ namespace boost::proto17 {
         }
 
         template <typename ...U>
-        auto operator() (U && ...u) const &
+        decltype(auto) operator() (U && ...u) const &
         {
             using tuple_type = hana::tuple<this_type, typename detail::rhs_type<U>::type...>;
             return detail::make_call_expression<tuple_type>(*this, static_cast<U &&>(u)...);
         }
         template <typename ...U>
-        auto operator() (U && ...u) &&
+        decltype(auto) operator() (U && ...u) &&
         {
             using tuple_type = hana::tuple<this_type, typename detail::rhs_type<U>::type...>;
             return detail::make_call_expression<tuple_type>(std::move(*this), static_cast<U &&>(u)...);
