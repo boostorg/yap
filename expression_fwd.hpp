@@ -80,6 +80,13 @@ namespace boost::proto17 {
 
     }
 
+    namespace detail {
+
+        template <typename Tuple, expr_kind Kind, typename ...T>
+        decltype(auto) default_eval_expr (expression<Kind, T...> const & expr, Tuple && args);
+
+    }
+
 }
 
 #endif

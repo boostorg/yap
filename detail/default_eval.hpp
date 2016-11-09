@@ -16,6 +16,8 @@ namespace boost::proto17 {
         template <typename Tuple, expr_kind Kind, typename ...T>
         decltype(auto) default_eval_expr (expression<Kind, T...> const & expr, Tuple && args)
         {
+            using void_type = hana::basic_type<void>;
+
             using namespace hana::literals;
             if constexpr (Kind == expr_kind::terminal) {
                 static_assert(sizeof...(T) == 1);
@@ -28,8 +30,8 @@ namespace boost::proto17 {
 #define BOOST_PROTO17_UNARY_OPERATOR_CASE(op_name)                      \
             else if constexpr (Kind == expr_kind:: op_name) {           \
                 return                                                  \
-                    eval_## op_name(                                    \
-                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(args)) \
+                    eval_ ## op_name(                                   \
+                        eval_expression_as(expr.elements[0_c], void_type{}, static_cast<Tuple &&>(args)) \
                     );                                                  \
             }
 
@@ -49,9 +51,9 @@ namespace boost::proto17 {
 #define BOOST_PROTO17_BINARY_OPERATOR_CASE(op_name)                     \
             else if constexpr (Kind == expr_kind:: op_name) {           \
                 return                                                  \
-                    eval_## op_name(                                    \
-                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(args)), \
-                        default_eval_expr(expr.elements[1_c], static_cast<Tuple &&>(args)) \
+                    eval_ ## op_name(                                   \
+                        eval_expression_as(expr.elements[0_c], void_type{}, static_cast<Tuple &&>(args)), \
+                        eval_expression_as(expr.elements[1_c], void_type{}, static_cast<Tuple &&>(args)) \
                     );                                                  \
             }
 
@@ -77,8 +79,8 @@ namespace boost::proto17 {
             else if constexpr (Kind == expr_kind::comma) {
                 return
                     eval_comma(
-                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(args)),
-                        default_eval_expr(expr.elements[1_c], static_cast<Tuple &&>(args))
+                        eval_expression_as(expr.elements[0_c], void_type{}, static_cast<Tuple &&>(args)),
+                        eval_expression_as(expr.elements[1_c], void_type{}, static_cast<Tuple &&>(args))
                     );
             }
 
@@ -101,7 +103,7 @@ namespace boost::proto17 {
             else if constexpr (Kind == expr_kind::call) {
                 return hana::unpack(
                     hana::transform(expr.elements, [&args] (auto && element) {
-                        return default_eval_expr(element, static_cast<Tuple &&>(args));
+                        return eval_expression_as(element, void_type{}, static_cast<Tuple &&>(args));
                     }),
                     eval_call
                 );

@@ -3,7 +3,6 @@
 
 #include "expression_fwd.hpp"
 #include "detail/expression.hpp"
-#include "detail/default_eval.hpp"
 
 #include <boost/hana/tuple.hpp>
 #include <boost/hana/size.hpp>
@@ -14,15 +13,19 @@ namespace boost::proto17 {
 
     namespace adl_detail {
 
-        template <typename R, typename E, typename ...T>
-        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T && ...t)
-        { return static_cast<R>(detail::default_eval_expr(expr, hana::make_tuple(static_cast<T &&>(t)...))); }
+        template <typename R, typename E, typename Tuple>
+        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, Tuple && args)
+        { return static_cast<R>(detail::default_eval_expr(expr, static_cast<Tuple &&>(args))); }
+
+        template <typename E, typename Tuple>
+        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<void>, Tuple && args)
+        { return detail::default_eval_expr(expr, static_cast<Tuple &&>(args)); }
 
         struct eval_expression_as_fn
         {
-            template <typename R, typename E, typename ...T>
-            constexpr decltype(auto) operator() (E const & expr, hana::basic_type<R> rtype, T && ...t) const
-            { return eval_expression_as(expr, rtype, static_cast<T &&>(t)...); }
+            template <typename R, typename E, typename Tuple>
+            constexpr decltype(auto) operator() (E const & expr, hana::basic_type<R> rtype, Tuple && args) const
+            { return eval_expression_as(expr, rtype, static_cast<Tuple &&>(args)); }
         };
 
     }
@@ -43,7 +46,7 @@ namespace boost::proto17 {
     // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
     template <typename R, typename Expr, typename ...T>
     decltype(auto) evaluate_as (Expr const & expr, T && ...t)
-    { return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...); }
+    { return eval_expression_as(expr, hana::basic_type<R>{}, hana::make_tuple(static_cast<T &&>(t)...)); }
 
     template <expr_kind Kind, typename ...T>
     struct expression
@@ -75,7 +78,7 @@ namespace boost::proto17 {
 
         template <typename R>
         operator R ()
-        { return eval_expression_as(*this, hana::basic_type<R>{}); }
+        { return eval_expression_as(*this, hana::basic_type<R>{}, hana::tuple<>{}); }
 
         decltype(auto) value () const
         {
@@ -231,5 +234,7 @@ namespace boost::proto17 {
     }
 
 }
+
+#include "detail/default_eval.hpp"
 
 #endif

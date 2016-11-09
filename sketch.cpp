@@ -923,18 +923,15 @@ namespace user {
     inline auto eval_plus (A a, B b)
     { return number{a.value - b.value}; }
 
-    template <typename E, typename ...T>
+    template <typename E, typename Tuple>
     constexpr auto eval_expression_as (
         E const & expr,
         boost::hana::basic_type<user::number>,
-        T && ...t)
+        Tuple && args)
     {
         std::cout << "User eval!  ";
         return static_cast<user::number>(
-            bp17::detail::default_eval_expr(
-                expr,
-                boost::hana::make_tuple(static_cast<T &&>(t)...)
-            )
+            bp17::detail::default_eval_expr(expr, static_cast<Tuple &&>(args))
         );
     }
 
@@ -1099,7 +1096,8 @@ namespace user_2 {
 #else
     auto eval_expression_as (
         decltype(term<number>{{0.0}} * number{} + number{}) const & expr,
-        boost::hana::basic_type<number>)
+        boost::hana::basic_type<number>,
+        boost::hana::tuple<>)
     {
         std::cout << "User naxpy!  ";
         return naxpy(
