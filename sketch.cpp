@@ -1244,48 +1244,6 @@ void user_expression_transform ()
     std::cout << "\n";
 }
 
-void placeholder_eval ()
-{
-    std::cout << "\nplaceholder_eval()\n";
-
-    using namespace boost::proto17::literals;
-
-    bp17::placeholder<2> p2 = 2_p;
-    int i_ = 42;
-    term<int> i{std::move(i_)};
-    bp17::expression<
-        bp17::expr_kind::plus,
-        bp17::placeholder<2>,
-        term<int>
-    > expr = p2 + std::move(i);
-    bp17::expression<
-        bp17::expr_kind::plus,
-        bp17::placeholder<2>,
-        bp17::expression<
-            bp17::expr_kind::plus,
-            bp17::placeholder<2>,
-            term<int>
-        >
-    > unevaluated_expr = p2 + std::move(expr);
-
-    {
-        double result = evaluate(p2, 5, 6, 7);
-        std::cout << "evaluate(p2)=" << result << "\n"; // 7
-    }
-
-    {
-        double result = evaluate(expr, std::string("15"), 3, 1);
-        std::cout << "evaluate(expr)=" << result << "\n"; // 43
-    }
-
-    {
-        double result = evaluate(unevaluated_expr, std::string("15"), 2, 3);
-        std::cout << "evaluate(unevaluated_expr)=" << result << "\n"; // 48
-    }
-
-    std::cout << "\n";
-}
-
 int main ()
 {
     term_plus_x();
@@ -1300,6 +1258,4 @@ int main ()
     user_eval_expression_as();
     user_operator_eval();
     user_expression_transform();
-
-    placeholder_eval();
 }
