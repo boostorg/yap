@@ -1,14 +1,13 @@
+#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
-
-#define BOOST_PROTO17_STREAM_OPERATORS // TODO: For testing.
-#include "print.hpp"
-
-#include <algorithm>
 
 #include <boost/hana/integral_constant.hpp>
 #include <boost/hana/tuple.hpp>
 #include <boost/hana/type.hpp>
 #include <boost/hana/size.hpp>
+
+#include <algorithm>
+#include <iostream>
 #include <string>
 
 
@@ -18,6 +17,161 @@ using term = boost::proto17::terminal<T>;
 namespace bp17 = boost::proto17;
 using namespace std::string_literals;
 
+
+void x_plus_term ()
+{
+#if 0
+    // char const * string
+    {
+        term<double> unity{1.0};
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<char const *>,
+            term<double>
+        > unevaluated_expr = "3" + unity;
+    }
+
+    // std::string temporary
+    {
+        term<double> unity{1.0};
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<std::string>,
+            term<double>
+        > unevaluated_expr = "3"s + unity;
+    }
+
+    // arrays
+    {
+        term<double> unity{1.0};
+        int ints[] = {1, 2};
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int *>,
+            term<double>
+        > unevaluated_expr = ints + unity;
+    }
+
+    {
+        term<double> unity{1.0};
+        int const ints[] = {1, 2};
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int const *>,
+            term<double>
+        > unevaluated_expr = ints + unity;
+    }
+
+    {
+        term<double> unity{1.0};
+        int ints[] = {1, 2};
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int *>,
+            term<double>
+        > unevaluated_expr = std::move(ints) + unity;
+    }
+
+    // pointers
+    {
+        term<double> unity{1.0};
+        int ints[] = {1, 2};
+        int * int_ptr = ints;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int * &>,
+            term<double>
+        > unevaluated_expr = int_ptr + unity;
+    }
+
+    {
+        term<double> unity{1.0};
+        int const ints[] = {1, 2};
+        int const * int_ptr = ints;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int const * &>,
+            term<double>
+        > unevaluated_expr = int_ptr + unity;
+    }
+
+    {
+        term<double> unity{1.0};
+        int ints[] = {1, 2};
+        int * int_ptr = ints;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int *>,
+            term<double>
+        > unevaluated_expr = std::move(int_ptr) + unity;
+    }
+
+    // const pointers
+    {
+        term<double> unity{1.0};
+        int ints[] = {1, 2};
+        int * const int_ptr = ints;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int * const &>,
+            term<double>
+        > unevaluated_expr = int_ptr + unity;
+    }
+
+    {
+        term<double> unity{1.0};
+        int const ints[] = {1, 2};
+        int const * const int_ptr = ints;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int const * const &>,
+            term<double>
+        > unevaluated_expr = int_ptr + unity;
+    }
+
+    {
+        term<double> unity{1.0};
+        int ints[] = {1, 2};
+        int * const int_ptr = ints;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int * const>,
+            term<double>
+        > unevaluated_expr = std::move(int_ptr) + unity;
+    }
+
+    // values
+    {
+        term<double> unity{1.0};
+        int i = 1;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int &>,
+            term<double>
+        > unevaluated_expr = i + unity;
+    }
+
+    {
+        term<double> unity{1.0};
+        int const i = 1;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int const &>,
+            term<double>
+        > unevaluated_expr = i + unity;
+    }
+
+    {
+        term<double> unity{1.0};
+        int i = 1;
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<int>,
+            term<double>
+        > unevaluated_expr = std::move(i) + unity;
+    }
+#endif
+}
 
 void term_plus_x ()
 {
@@ -798,62 +952,6 @@ void const_term_expr ()
     }
 }
 
-void print ()
-{
-    term<double> unity{1.0};
-    int i_ = 42;
-    term<int &&> i{std::move(i_)};
-    bp17::expression<
-        bp17::expr_kind::plus,
-        term<double>,
-        term<int &&>
-    > expr = unity + std::move(i);
-    bp17::expression<
-        bp17::expr_kind::plus,
-        term<double>,
-        bp17::expression<
-            bp17::expr_kind::plus,
-            term<double>,
-            term<int &&>
-        >
-    > unevaluated_expr = unity + std::move(expr);
-
-    std::cout << "================================================================================\n";
-    bp17::print(std::cout, unity);
-    std::cout << "================================================================================\n";
-    bp17::print(std::cout, expr);
-    std::cout << "================================================================================\n";
-    bp17::print(std::cout, unevaluated_expr);
-
-    struct thing {};
-    term<thing> a_thing(thing{});
-    std::cout << "================================================================================\n";
-    bp17::print(std::cout, a_thing);
-
-    std::cout << "\n";
-    std::cout << "================================================================================\n";
-    std::cout << "================================================================================\n";
-    {
-        using namespace boost::proto17::literals;
-        std::cout << (0_p + unity);
-        std::cout << (2_p + 3_p);
-        std::cout << (unity + 1_p);
-    }
-
-#if defined(BOOST_PROTO17_STREAM_OPERATORS)
-    std::cout << "\n";
-    std::cout << "================================================================================\n";
-    std::cout << "================================================================================\n";
-    std::cout << unity;
-    std::cout << "================================================================================\n";
-    std::cout << expr;
-    std::cout << "================================================================================\n";
-    std::cout << unevaluated_expr;
-    std::cout << "================================================================================\n";
-    std::cout << a_thing;
-#endif
-}
-
 void default_eval ()
 {
     std::cout << "\ndefault_eva()\n";
@@ -1433,8 +1531,6 @@ int main ()
     placeholders();
 
     const_term_expr();
-
-    print();
 
     default_eval();
     user_eval_expression_as();

@@ -76,9 +76,11 @@ namespace boost::proto17 {
 
         tuple_type elements;
 
+#ifdef BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
         template <typename R>
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}, hana::tuple<>{}); }
+#endif
 
         decltype(auto) value () const
         {
@@ -210,6 +212,8 @@ namespace boost::proto17 {
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|=, bitwise_or_assign) // |=
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^=, bitwise_xor_assign) // ^=
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR([], subscript) // []
+
+#undef BOOST_PROTO17_BINARY_MEMBER_OPERATOR
 
         template <typename ...U>
         decltype(auto) operator() (U && ...u) const &
