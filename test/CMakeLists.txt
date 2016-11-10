@@ -16,6 +16,7 @@ macro(add_test_executable name)
 endmacro()
 
 add_test_executable(print)
+add_test_executable(user_expression_transform)
 add_test_executable(placeholder_eval)
 add_test_executable(call_expr)
 add_test_executable(reference_returns)
