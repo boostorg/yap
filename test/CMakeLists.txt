@@ -16,4 +16,6 @@ macro(add_test_executable name)
 endmacro()
 
 add_test_executable(print)
+add_test_executable(call_expr)
+add_test_executable(reference_returns)
 add_test_executable(depth_stress_test)
