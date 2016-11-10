@@ -143,7 +143,7 @@ namespace boost::proto17 {
         template <typename U>                                           \
         decltype(auto) operator op (U && rhs) const &                   \
         {                                                               \
-            using rhs_type = typename detail::rhs_type<U>::type;        \
+            using rhs_type = typename detail::operand_type<U>::type;    \
             return expression<expr_kind::op_name, this_type, rhs_type>{ \
                 hana::tuple<this_type, rhs_type>{                       \
                     *this,                                              \
@@ -154,7 +154,7 @@ namespace boost::proto17 {
         template <typename U>                                           \
         decltype(auto) operator op (U && rhs) &&                        \
         {                                                               \
-            using rhs_type = typename detail::rhs_type<U>::type;        \
+            using rhs_type = typename detail::operand_type<U>::type;    \
             return expression<expr_kind::op_name, this_type, rhs_type>{ \
                 hana::tuple<this_type, rhs_type>{                       \
                     std::move(*this),                                   \
@@ -185,7 +185,7 @@ namespace boost::proto17 {
         template <typename U>
         decltype(auto) operator, (U && rhs) const &
         {
-            using rhs_type = typename detail::rhs_type<U>::type;
+            using rhs_type = typename detail::operand_type<U>::type;
             return expression<expr_kind::comma, this_type, rhs_type>{
                 hana::tuple<this_type, rhs_type>{*this, static_cast<U &&>(rhs)}
             };
@@ -193,7 +193,7 @@ namespace boost::proto17 {
         template <typename U>
         decltype(auto) operator, (U && rhs) &&
         {
-            using rhs_type = typename detail::rhs_type<U>::type;
+            using rhs_type = typename detail::operand_type<U>::type;
             return expression<expr_kind::comma, this_type, rhs_type>{
                 hana::tuple<this_type, rhs_type>{std::move(*this), static_cast<U &&>(rhs)}
             };
@@ -218,13 +218,13 @@ namespace boost::proto17 {
         template <typename ...U>
         decltype(auto) operator() (U && ...u) const &
         {
-            using tuple_type = hana::tuple<this_type, typename detail::rhs_type<U>::type...>;
+            using tuple_type = hana::tuple<this_type, typename detail::operand_type<U>::type...>;
             return detail::make_call_expression<tuple_type>(*this, static_cast<U &&>(u)...);
         }
         template <typename ...U>
         decltype(auto) operator() (U && ...u) &&
         {
-            using tuple_type = hana::tuple<this_type, typename detail::rhs_type<U>::type...>;
+            using tuple_type = hana::tuple<this_type, typename detail::operand_type<U>::type...>;
             return detail::make_call_expression<tuple_type>(std::move(*this), static_cast<U &&>(u)...);
         }
     };

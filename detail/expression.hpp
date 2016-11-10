@@ -58,18 +58,18 @@ namespace boost::proto17 {
                   typename U = typename rhs_value_type_phase_1<T>::type,
                   bool RemoveRefs = std::is_rvalue_reference_v<U>,
                   bool IsExpr = is_expr<std::decay_t<T>>::value>
-        struct rhs_type;
+        struct operand_type;
 
         template <typename T, typename U, bool RemoveRefs>
-        struct rhs_type<T, U, RemoveRefs, true>
+        struct operand_type<T, U, RemoveRefs, true>
         { using type = std::remove_cv_t<std::remove_reference_t<T>>; };
 
         template <typename T, typename U>
-        struct rhs_type<T, U, true, false>
+        struct operand_type<T, U, true, false>
         { using type = terminal<std::remove_reference_t<U>>; };
 
         template <typename T, typename U>
-        struct rhs_type<T, U, false, false>
+        struct operand_type<T, U, false, false>
         { using type = terminal<U>; };
 
         template <typename T>
