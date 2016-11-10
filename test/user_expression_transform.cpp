@@ -20,7 +20,7 @@ namespace user_2 {
     };
 
     number naxpy (number a, number x, number y)
-    { return number{a.value * x.value + y.value}; }
+    { return number{a.value * x.value + y.value + 100.0}; }
 
 #if 0
     auto eval_expression_as (
@@ -35,7 +35,6 @@ namespace user_2 {
         > const & expr,
         boost::hana::basic_type<number>)
     {
-        std::cout << "User naxpy!  ";
         using namespace boost::hana::literals;
         return naxpy(
             expr.elements[0_c].elements[0_c].elements[0_c],
@@ -49,7 +48,6 @@ namespace user_2 {
         boost::hana::basic_type<number>,
         boost::hana::tuple<>)
     {
-        std::cout << "User naxpy!  ";
         return naxpy(
             expr.left().left().value(),
             expr.left().right().value(),
@@ -88,5 +86,5 @@ TEST(user_expression_transform, test_user_expression_transform)
 #endif
 
     user_2::number result = expr;
-    EXPECT_EQ(result.value, 45);
+    EXPECT_EQ(result.value, 145);
 }
