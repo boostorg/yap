@@ -1,6 +1,6 @@
+#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
-#include <iostream>
 #include <string>
 
 
@@ -8,11 +8,14 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
-using namespace std::string_literals;
 
 
-void x_plus_term ()
+namespace {
+
+void compile ()
 {
+    using namespace std::literals;
+
     // char const * string
     {
         term<double> unity{1.0};
@@ -164,8 +167,4 @@ void x_plus_term ()
     }
 }
 
-
-int main ()
-{
-    x_plus_term();
 }

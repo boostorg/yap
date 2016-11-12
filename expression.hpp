@@ -229,6 +229,45 @@ namespace boost::proto17 {
         }
     };
 
+    namespace detail {
+
+        template <expr_kind OpKind, typename T, typename U,
+                  bool Expr = detail::is_expr<std::decay_t<T>>::value>
+        struct binary_op_result
+        {
+            using lhs_type = typename detail::operand_type<T>::type;
+            using rhs_type = U;
+            using type = expression<OpKind, lhs_type, rhs_type>;
+        };
+
+        template <expr_kind OpKind, typename T, typename U>
+        struct binary_op_result<OpKind, T, U, true>
+        {};
+
+    }
+
+    template <typename T, expr_kind Kind, typename ...U>
+    auto operator+ (T && lhs, expression<Kind, U...> const & rhs)
+        -> typename detail::binary_op_result<expr_kind::plus, T, expression<Kind, U...>>::type
+    {
+        using lhs_type = typename detail::operand_type<T>::type;
+        using rhs_type = expression<Kind, U...>;
+        return {
+            hana::tuple<lhs_type, rhs_type>{static_cast<T &&>(lhs), rhs}
+        };
+    }
+
+    template <typename T, expr_kind Kind, typename ...U>
+    auto operator+ (T && lhs, expression<Kind, U...> && rhs)
+        -> typename detail::binary_op_result<expr_kind::plus, T, expression<Kind, U...>>::type
+    {
+        using lhs_type = typename detail::operand_type<T>::type;
+        using rhs_type = expression<Kind, U...>;
+        return {
+            hana::tuple<lhs_type, rhs_type>{static_cast<T &&>(lhs), static_cast<rhs_type &&>(rhs)}
+        };
+    }
+
     template <typename T>
     auto make_terminal (T && t)
     {

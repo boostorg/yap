@@ -34,6 +34,7 @@ add_executable(
     compile_term_plus_expr.cpp
     compile_term_plus_term.cpp
     compile_term_plus_x.cpp
+    compile_x_plus_term.cpp
     compile_term_plus_x_this_ref_overloads.cpp
     compile_const_term.cpp
 )
