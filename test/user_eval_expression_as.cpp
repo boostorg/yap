@@ -16,15 +16,11 @@ namespace user {
     {
         explicit operator double () const { return value; }
 
+        friend number operator+ (number lhs, number rhs)
+        { return number{lhs.value + rhs.value}; }
+
         double value;
     };
-
-#if 0
-    // User-defined binary-plus!  With weird semantics!
-    template <typename A, typename B>
-    inline auto eval_plus (A a, B b)
-    { return number{a.value - b.value}; }
-#endif
 
     template <typename E, typename Tuple>
     constexpr auto eval_expression_as (
@@ -66,12 +62,12 @@ TEST(user_eval_expression_as, test_user_eval_expression_as)
 
     {
         user::number result = expr;
-        EXPECT_EQ(result.value, -41);
+        EXPECT_EQ(result.value, 43);
     }
 
     {
         user::number result = unevaluated_expr;
-        EXPECT_EQ(result.value, 42);
+        EXPECT_EQ(result.value, 44);
     }
 
     {
@@ -81,12 +77,12 @@ TEST(user_eval_expression_as, test_user_eval_expression_as)
 
     {
         double result = (double)evaluate(expr);
-        EXPECT_EQ(result, -41);
+        EXPECT_EQ(result, 43);
     }
 
     {
         double result = (double)evaluate(unevaluated_expr, std::string("15"));
-        EXPECT_EQ(result, 42);
+        EXPECT_EQ(result, 44);
     }
 
     {
@@ -96,11 +92,11 @@ TEST(user_eval_expression_as, test_user_eval_expression_as)
 
     {
         user::number result = bp17::evaluate_as<user::number>(expr);
-        EXPECT_EQ(result.value, -41);
+        EXPECT_EQ(result.value, 43);
     }
 
     {
         user::number result = bp17::evaluate_as<user::number>(unevaluated_expr, std::string("15"));
-        EXPECT_EQ(result.value, 42);
+        EXPECT_EQ(result.value, 44);
     }
 }
