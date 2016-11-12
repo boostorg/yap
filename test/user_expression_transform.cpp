@@ -17,12 +17,18 @@ namespace user_2 {
     struct number
     {
         double value;
+
+        friend number operator+ (number lhs, number rhs)
+        { return number{lhs.value + rhs.value}; }
+
+        friend number operator* (number lhs, number rhs)
+        { return number{lhs.value * rhs.value}; }
     };
 
     number naxpy (number a, number x, number y)
     { return number{a.value * x.value + y.value + 100.0}; }
 
-#if 0
+#if 0 // TODO: Document this verbose form.
     auto eval_expression_as (
         bp17::expression<
             bp17::expr_kind::plus,
@@ -42,7 +48,8 @@ namespace user_2 {
             expr.elements[1_c].elements[0_c]
         );
     }
-#else
+#endif
+
     auto eval_expression_as (
         decltype(term<number>{{0.0}} * number{} + number{}) const & expr,
         boost::hana::basic_type<number>,
@@ -54,25 +61,69 @@ namespace user_2 {
             expr.right().value()
         );
     }
-#endif
 
 }
 
 TEST(user_expression_transform, test_user_expression_transform)
 {
+    term<user_2::number> k{{2.0}};
+
     term<user_2::number> a{{1.0}};
     term<user_2::number> x{{42.0}};
     term<user_2::number> y{{3.0}};
 
-    bp17::expression<
-        bp17::expr_kind::plus,
+    {
+        bp17::expression<
+            bp17::expr_kind::plus,
+            bp17::expression<
+                bp17::expr_kind::multiplies,
+                bp17::expression<
+                    bp17::expr_kind::multiplies,
+                    term<user_2::number>,
+                    term<user_2::number>
+                >,
+                term<user_2::number>
+            >,
+            term<user_2::number>
+        > expr = k * a * x + y;
+
+        user_2::number result = expr;
+        EXPECT_EQ(result.value, 87);
+    }
+
+    {
+        bp17::expression<
+            bp17::expr_kind::plus,
+            bp17::expression<
+                bp17::expr_kind::multiplies,
+                term<user_2::number>,
+                term<user_2::number>
+            >,
+            term<user_2::number>
+        > expr = a * x + y;
+
+        user_2::number result = expr;
+        EXPECT_EQ(result.value, 145);
+    }
+
+    {
         bp17::expression<
             bp17::expr_kind::multiplies,
             term<user_2::number>,
-            term<user_2::number>
-        >,
-        term<user_2::number>
-    > expr = a * x + y;
+            bp17::expression<
+                bp17::expr_kind::plus,
+                bp17::expression<
+                    bp17::expr_kind::multiplies,
+                    term<user_2::number>,
+                    term<user_2::number>
+                >,
+                term<user_2::number>
+            >
+        > expr = k * (a * x + y);
+
+        user_2::number result = expr;
+        EXPECT_EQ(result.value, 290);
+    }
 
     // TODO: This was an error (user:: vs. user_2::).  Document for users that
     // they should catch an expression in an auto var to diagnose these sorts
@@ -84,7 +135,4 @@ TEST(user_expression_transform, test_user_expression_transform)
         term<user::number>
     > expr = a * x;
 #endif
-
-    user_2::number result = expr;
-    EXPECT_EQ(result.value, 145);
 }
