@@ -25,3 +25,15 @@ add_test_executable(placeholder_eval)
 add_test_executable(call_expr)
 add_test_executable(reference_returns)
 add_test_executable(depth_stress_test)
+
+add_executable(
+    compile_tests
+    compile_tests_main.cpp
+    compile_const_term.cpp
+    compile_placeholders.cpp
+    compile_term_plus_expr.cpp
+    compile_term_plus_term.cpp
+    compile_term_plus_x.cpp
+    compile_term_plus_x_this_ref_overloads.cpp
+    compile_const_term.cpp
+)
