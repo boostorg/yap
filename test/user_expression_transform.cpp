@@ -26,7 +26,7 @@ namespace user_2 {
     };
 
     number naxpy (number a, number x, number y)
-    { return number{a.value * x.value + y.value + 100.0}; }
+    { return number{a.value * x.value + y.value + 10.0}; }
 
 #if 0 // TODO: Document this verbose form.
     auto eval_expression_as (
@@ -50,7 +50,7 @@ namespace user_2 {
     }
 #endif
 
-    auto eval_expression_as (
+    decltype(auto) eval_expression_as (
         decltype(term<number>{{0.0}} * number{} + number{}) const & expr,
         boost::hana::basic_type<number>,
         boost::hana::tuple<>)
@@ -59,6 +59,17 @@ namespace user_2 {
             expr.left().left().value(),
             expr.left().right().value(),
             expr.right().value()
+        );
+    }
+
+    decltype(auto) transform_expression (
+        decltype(term<number>{{0.0}} * number{} + number{}) const & expr,
+        boost::hana::tuple<>
+    ) {
+        return naxpy(
+            evaluate(expr.left().left()),
+            evaluate(expr.left().right()),
+            evaluate(expr.right())
         );
     }
 
@@ -103,7 +114,7 @@ TEST(user_expression_transform, test_user_expression_transform)
         > expr = a * x + y;
 
         user_2::number result = expr;
-        EXPECT_EQ(result.value, 145);
+        EXPECT_EQ(result.value, 55);
     }
 
     {
@@ -122,7 +133,16 @@ TEST(user_expression_transform, test_user_expression_transform)
         > expr = k * (a * x + y);
 
         user_2::number result = expr;
-        EXPECT_EQ(result.value, 290);
+        EXPECT_EQ(result.value, 110);
+    }
+
+    {
+        auto expr = (a * x + y) * (a * x + y) + (a * x + y);
+
+        user_2::number result = expr;
+
+        // Note: +10 not done at the top level naxpy opportunity.
+        EXPECT_EQ(result.value, 55 * 55 + 55);
     }
 
     // TODO: This was an error (user:: vs. user_2::).  Document for users that

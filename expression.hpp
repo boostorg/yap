@@ -17,10 +17,6 @@ namespace boost::proto17 {
         constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, Tuple && args)
         { return static_cast<R>(detail::default_eval_expr(expr, static_cast<Tuple &&>(args))); }
 
-        template <typename E, typename Tuple>
-        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<void>, Tuple && args)
-        { return detail::default_eval_expr(expr, static_cast<Tuple &&>(args)); }
-
         struct eval_expression_as_fn
         {
             template <typename R, typename E, typename Tuple>
