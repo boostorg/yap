@@ -12,7 +12,7 @@ using term = boost::proto17::terminal<T>;
 namespace bp17 = boost::proto17;
 
 
-namespace user_2 {
+namespace user {
 
     struct number
     {
@@ -77,11 +77,11 @@ namespace user_2 {
 
 TEST(user_expression_transform, test_user_expression_transform)
 {
-    term<user_2::number> k{{2.0}};
+    term<user::number> k{{2.0}};
 
-    term<user_2::number> a{{1.0}};
-    term<user_2::number> x{{42.0}};
-    term<user_2::number> y{{3.0}};
+    term<user::number> a{{1.0}};
+    term<user::number> x{{42.0}};
+    term<user::number> y{{3.0}};
 
     {
         bp17::expression<
@@ -90,15 +90,15 @@ TEST(user_expression_transform, test_user_expression_transform)
                 bp17::expr_kind::multiplies,
                 bp17::expression<
                     bp17::expr_kind::multiplies,
-                    term<user_2::number>,
-                    term<user_2::number>
+                    term<user::number>,
+                    term<user::number>
                 >,
-                term<user_2::number>
+                term<user::number>
             >,
-            term<user_2::number>
+            term<user::number>
         > expr = k * a * x + y;
 
-        user_2::number result = expr;
+        user::number result = expr;
         EXPECT_EQ(result.value, 87);
     }
 
@@ -107,39 +107,39 @@ TEST(user_expression_transform, test_user_expression_transform)
             bp17::expr_kind::plus,
             bp17::expression<
                 bp17::expr_kind::multiplies,
-                term<user_2::number>,
-                term<user_2::number>
+                term<user::number>,
+                term<user::number>
             >,
-            term<user_2::number>
+            term<user::number>
         > expr = a * x + y;
 
-        user_2::number result = expr;
+        user::number result = expr;
         EXPECT_EQ(result.value, 55);
     }
 
     {
         bp17::expression<
             bp17::expr_kind::multiplies,
-            term<user_2::number>,
+            term<user::number>,
             bp17::expression<
                 bp17::expr_kind::plus,
                 bp17::expression<
                     bp17::expr_kind::multiplies,
-                    term<user_2::number>,
-                    term<user_2::number>
+                    term<user::number>,
+                    term<user::number>
                 >,
-                term<user_2::number>
+                term<user::number>
             >
         > expr = k * (a * x + y);
 
-        user_2::number result = expr;
+        user::number result = expr;
         EXPECT_EQ(result.value, 110);
     }
 
     {
         auto expr = (a * x + y) * (a * x + y) + (a * x + y);
 
-        user_2::number result = expr;
+        user::number result = expr;
 
         // Note: +10 not done at the top level naxpy opportunity.
         EXPECT_EQ(result.value, 55 * 55 + 55);
@@ -151,8 +151,8 @@ TEST(user_expression_transform, test_user_expression_transform)
 #if 0
     bp17::expression<
         bp17::expr_kind::multiplies,
-        term<user::number>,
-        term<user::number>
+        term<user_2::number>,
+        term<user_2::number>
     > expr = a * x;
 #endif
 }
