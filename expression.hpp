@@ -246,6 +246,50 @@ namespace boost::proto17 {
 
     }
 
+#define BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(op, op_name)           \
+    template <typename T, expr_kind Kind, typename ...U>                \
+    auto operator op (T && lhs, expression<Kind, U...> const & rhs)     \
+        -> typename detail::binary_op_result<expr_kind::op_name, T, expression<Kind, U...>>::type \
+    {                                                                   \
+        using lhs_type = typename detail::operand_type<T>::type;        \
+        using rhs_type = expression<Kind, U...>;                        \
+        return {                                                        \
+            hana::tuple<lhs_type, rhs_type>{static_cast<T &&>(lhs), rhs} \
+        };                                                              \
+    }                                                                   \
+    template <typename T, expr_kind Kind, typename ...U>                \
+    auto operator op (T && lhs, expression<Kind, U...> && rhs)          \
+        -> typename detail::binary_op_result<expr_kind::op_name, T, expression<Kind, U...>>::type \
+    {                                                                   \
+        using lhs_type = typename detail::operand_type<T>::type;        \
+        using rhs_type = expression<Kind, U...>;                        \
+        return {                                                        \
+            hana::tuple<lhs_type, rhs_type>{static_cast<T &&>(lhs), static_cast<rhs_type &&>(rhs)} \
+        };                                                              \
+    }
+
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(<<, shift_left) // <<
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(>>, shift_right) // >>
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(*, multiplies) // *
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(/, divides) // /
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(%, modulus) // %
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(+, plus) // +
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(-, minus) // -
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(<, less) // <
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(>, greater) // >
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(<=, less_equal) // <=
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(>=, greater_equal) // >=
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(==, equal_to) // ==
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(!=, not_equal_to) // !=
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(||, logical_or) // ||
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(&&, logical_and) // &&
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(&, bitwise_and) // &
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(|, bitwise_or) // |
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(^, bitwise_xor) // ^
+
+#undef BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR
+
+#if 0
     template <typename T, expr_kind Kind, typename ...U>
     auto operator+ (T && lhs, expression<Kind, U...> const & rhs)
         -> typename detail::binary_op_result<expr_kind::plus, T, expression<Kind, U...>>::type
@@ -267,6 +311,7 @@ namespace boost::proto17 {
             hana::tuple<lhs_type, rhs_type>{static_cast<T &&>(lhs), static_cast<rhs_type &&>(rhs)}
         };
     }
+#endif
 
     template <typename T>
     auto make_terminal (T && t)

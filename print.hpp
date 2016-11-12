@@ -129,12 +129,6 @@ namespace boost::proto17 {
     std::ostream & print (std::ostream & os, expression<Kind, T...> const & expr)
     { return detail::print_impl(os, expr, 0, "    "); }
 
-#if defined(BOOST_PROTO17_STREAM_OPERATORS)
-    template <expr_kind Kind, typename ...T>
-    std::ostream & operator<< (std::ostream & os, expression<Kind, T...> const & expr)
-    { return detail::print_impl(os, expr, 0, "    "); }
-#endif
-
 }
 
 #endif
