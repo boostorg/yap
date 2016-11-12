@@ -113,11 +113,15 @@ namespace boost::proto17 {
 
             else if constexpr (Kind == expr_kind::call) {
                 return hana::unpack(
-                    hana::transform(expr.elements, [&args] (auto && element) {
-                        return default_eval_expr(element, static_cast<Tuple &&>(args));
-                    }),
-                    eval_call
-                );
+                    expr.elements,
+                    [&args] (auto && ... element) {
+                        return eval_call(
+                            default_eval_expr(
+                                static_cast<decltype(element) &&>(element),
+                                static_cast<Tuple &&>(args)
+                            )...
+                        );
+                    });
             } else {
                 assert(false && "Unhandled expr_kind in default_evaluate!");
                 return;
