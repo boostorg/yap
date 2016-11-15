@@ -26,7 +26,8 @@ add_test_executable(user_expression_transform_2)
 add_test_executable(placeholder_eval)
 add_test_executable(call_expr)
 add_test_executable(reference_returns)
-add_test_executable(depth_stress_test)
+add_test_executable(depth_stress_test_left)
+add_test_executable(depth_stress_test_right)
 
 add_executable(
     compile_tests
