@@ -3,8 +3,6 @@
 
 #include <gtest/gtest.h>
 
-#include <sstream>
-
 
 template <typename T>
 using term = boost::proto17::terminal<T>;
@@ -32,7 +30,7 @@ TEST(reference_returns, test_reference_returns)
     term<reference_returning::number> unity = {{1.0}};
     auto expr = unity + reference_returning::number{1.0};
 
-    // TODO: This has to fail due to the general implicit declaration rules
+    // TODO: This has to fail due to the general implicit conversion rules
     // (see [conv]/3-6).  This needs to be noted in docs.
 #if 0
     {

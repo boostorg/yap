@@ -13,6 +13,7 @@ macro(add_test_executable name)
     add_executable(${name} ${name}.cpp)
     target_link_libraries(${name} gtest gtest_main)
     add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name} --gtest_catch_exceptions=1)
+    target_link_libraries(${name} c++)
 endmacro()
 
 add_test_executable(print)
