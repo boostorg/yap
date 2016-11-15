@@ -36,14 +36,14 @@ namespace boost::proto17 {
         template <typename T,
                   typename U = typename detail::partial_decay<T>::type,
                   bool AddRValueRef = std::is_same_v<T, U> && !std::is_const_v<U>>
-        struct rhs_value_type_phase_1;
+        struct operand_value_type_phase_1;
 
         template <typename T, typename U>
-        struct rhs_value_type_phase_1<T, U, true>
+        struct operand_value_type_phase_1<T, U, true>
         { using type = U &&; };
 
         template <typename T, typename U>
-        struct rhs_value_type_phase_1<T, U, false>
+        struct operand_value_type_phase_1<T, U, false>
         { using type = U; };
 
         template <typename ...T>
@@ -55,7 +55,7 @@ namespace boost::proto17 {
         { static bool const value = true; };
 
         template <typename T,
-                  typename U = typename rhs_value_type_phase_1<T>::type,
+                  typename U = typename operand_value_type_phase_1<T>::type,
                   bool RemoveRefs = std::is_rvalue_reference_v<U>,
                   bool IsExpr = is_expr<std::decay_t<T>>::value>
         struct operand_type;
