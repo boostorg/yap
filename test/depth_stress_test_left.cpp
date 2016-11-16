@@ -52,12 +52,7 @@ TEST(left, depth_stress_test)
             (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr +
             (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr +
             (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr +
-            (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr +
-
-            (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr +
-            (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr +
-            (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr +
-            (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
-        EXPECT_EQ(result, 64.0 * 64.0);
+            (expr + (expr + (expr + (expr +    (expr + (expr + (expr + (expr))))))))))))))))))))))))))))))));
+        EXPECT_EQ(result, 64.0 * 32.0);
     }
 }
