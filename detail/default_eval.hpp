@@ -131,7 +131,7 @@ namespace boost::proto17 {
             BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_and_assign) // &=
             BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_or_assign) // |=
             BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_xor_assign) // ^=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_xor_assign) // []
+            BOOST_PROTO17_BINARY_OPERATOR_CASE(subscript) // []
 
 #undef BOOST_PROTO17_BINARY_OPERATOR_CASE
 
