@@ -49,7 +49,7 @@ term<user::number> a{{1.0}};
 term<user::number> x{{42.0}};
 term<user::number> y{{3.0}};
 
-#define HANDLE_COMMON_SUBEXPRESSION 1
+#define HANDLE_COMMON_SUBEXPRESSION 0
 #if HANDLE_COMMON_SUBEXPRESSION
 
 user::number eval_as_proto_expr (
@@ -60,7 +60,6 @@ user::number eval_as_proto_expr (
 }
 
 /* LLVM produces this for eval_as_proto_expr under -O3:
-Dump of assembler code for function eval_as_proto_expr(boost::proto17::expression<(boost::proto17::expr_kind)17, boost::proto17::expression<(boost::proto17::expr_kind)14, boost::proto17::expression<(boost::proto17::expr_kind)17, boost::proto17::expression<(boost::proto17::expr_kind)14, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number>, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> >, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> >, boost::proto17::expression<(boost::proto17::expr_kind)17, boost::proto17::expression<(boost::proto17::expr_kind)14, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number>, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> >, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> > >, boost::proto17::expression<(boost::proto17::expr_kind)17, boost::proto17::expression<(boost::proto17::expr_kind)14, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number>, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> >, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> > >&):
    0x00000000004005e0 <+0>:     movsd  0x30(%rdi),%xmm1
    0x00000000004005e5 <+5>:     mulsd  0x38(%rdi),%xmm1
    0x00000000004005ea <+10>:    addsd  0x40(%rdi),%xmm1
@@ -69,7 +68,21 @@ Dump of assembler code for function eval_as_proto_expr(boost::proto17::expressio
    0x00000000004005fb <+27>:    mulsd  %xmm0,%xmm0
    0x00000000004005ff <+31>:    addsd  %xmm1,%xmm0
    0x0000000000400603 <+35>:    retq   
-End of assembler dump.
+*/
+
+user::number eval_as_proto_expr_4x (
+    decltype(
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y)
+    ) & expr
+) {
+    auto const tmp = evaluate(expr.right());
+    return user::number{4} * (tmp * tmp + tmp);
+}
+
+/* LLVM produces this for eval_as_proto_expr under -O3:
 */
 
 #else
@@ -81,7 +94,6 @@ user::number eval_as_proto_expr (
 }
 
 /* LLVM produces this for eval_as_proto_expr under -O3:
-Dump of assembler code for function eval_as_proto_expr(boost::proto17::expression<(boost::proto17::expr_kind)17, boost::proto17::expression<(boost::proto17::expr_kind)14, boost::proto17::expression<(boost::proto17::expr_kind)17, boost::proto17::expression<(boost::proto17::expr_kind)14, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number>, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> >, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> >, boost::proto17::expression<(boost::proto17::expr_kind)17, boost::proto17::expression<(boost::proto17::expr_kind)14, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number>, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> >, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> > >, boost::proto17::expression<(boost::proto17::expr_kind)17, boost::proto17::expression<(boost::proto17::expr_kind)14, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number>, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> >, boost::proto17::expression<(boost::proto17::expr_kind)0, user::number> > >&):
    0x00000000004005e0 <+0>:     movsd  (%rdi),%xmm1
    0x00000000004005e4 <+4>:     movsd  0x18(%rdi),%xmm0
    0x00000000004005e9 <+9>:     mulsd  0x8(%rdi),%xmm1
@@ -99,7 +111,25 @@ Dump of assembler code for function eval_as_proto_expr(boost::proto17::expressio
    0x0000000000400624 <+68>:    addsd  %xmm3,%xmm0
    0x0000000000400628 <+72>:    addsd  %xmm2,%xmm0
    0x000000000040062c <+76>:    retq   
-End of assembler dump.
+*/
+
+user::number eval_as_proto_expr_4x (
+    decltype(
+#if 0
+        // TODO: Somewhere between 36 and 45 terminals, LLVM gives up on
+        // inlining this function.  Document this.
+        (a * x + y) * (a * x + y) + (a * x + y) +
+#endif
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y)
+    ) & expr
+) {
+    return expr;
+}
+
+/* LLVM produces this for eval_as_proto_expr under -O3:
 */
 
 #endif
@@ -110,7 +140,6 @@ user::number eval_as_cpp_expr (user::number a, user::number x, user::number y)
 }
 
 /* LLVM produces this for eval_as_cpp_expr under -O3:
-Dump of assembler code for function eval_as_cpp_expr(user::number, user::number, user::number):
    0x0000000000400630 <+0>:     mulsd  %xmm1,%xmm0
    0x0000000000400634 <+4>:     addsd  %xmm2,%xmm0
    0x0000000000400638 <+8>:     movapd %xmm0,%xmm1
@@ -118,7 +147,19 @@ Dump of assembler code for function eval_as_cpp_expr(user::number, user::number,
    0x0000000000400640 <+16>:    addsd  %xmm0,%xmm1
    0x0000000000400644 <+20>:    movapd %xmm1,%xmm0
    0x0000000000400648 <+24>:    retq   
-End of assembler dump.
+*/
+
+
+user::number eval_as_cpp_expr_4x (user::number a, user::number x, user::number y)
+{
+    return
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y) +
+        (a * x + y) * (a * x + y) + (a * x + y);
+}
+
+/* LLVM produces this for eval_as_cpp_expr under -O3:
 */
 
 
