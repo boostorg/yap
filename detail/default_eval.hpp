@@ -24,7 +24,7 @@ namespace boost::proto17 {
         { static expr_kind const value = Kind; };
 
         template <typename I, typename T>
-        auto eval_placeholder (I, T && arg)
+        decltype(auto) eval_placeholder (I, T && arg)
         {
             static_assert(I::value == 0);
             return static_cast<T &&>(arg);
