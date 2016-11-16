@@ -41,5 +41,3 @@ add_executable(
     compile_term_plus_x_this_ref_overloads.cpp
     compile_const_term.cpp
 )
-
-add_executable(code_gen_samples code_gen_samples.cpp)

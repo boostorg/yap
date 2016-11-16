@@ -12,3 +12,4 @@ if (NOT CMAKE_CXX_COMPILER_ID STREQUAL Clang)
 endif()
 
 add_subdirectory(test)
+add_subdirectory(perf)
