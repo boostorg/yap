@@ -38,8 +38,7 @@ namespace user {
                 Expr2
             >,
             Expr3
-        > const & expr,
-        boost::hana::tuple<>
+        > const & expr
     ) {
         return naxpy(
             evaluate(expr.left().left()),

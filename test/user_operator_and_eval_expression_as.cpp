@@ -24,15 +24,15 @@ namespace user {
     inline auto eval_plus (A a, B b)
     { return number{a.value - b.value}; }
 
-    template <typename E, typename Tuple>
+    template <typename E, typename ...T>
     constexpr auto eval_expression_as (
         E const & expr,
         boost::hana::basic_type<user::number>,
-        Tuple && args)
+        T &&... args)
     {
-        return static_cast<user::number>(
-            bp17::detail::default_eval_expr(expr, static_cast<Tuple &&>(args))
-        );
+        user::number const x =
+            bp17::detail::default_eval_expr(expr, static_cast<T &&>(args)...);
+        return user::number{x.value + 5.0};
     }
 
 }
@@ -59,17 +59,17 @@ TEST(user_eval_expression_as, test_user_eval_expression_as)
 
     {
         user::number result = unity;
-        EXPECT_EQ(result.value, 1);
+        EXPECT_EQ(result.value, 6);
     }
 
     {
         user::number result = expr;
-        EXPECT_EQ(result.value, -41);
+        EXPECT_EQ(result.value, -36);
     }
 
     {
         user::number result = unevaluated_expr;
-        EXPECT_EQ(result.value, 42);
+        EXPECT_EQ(result.value, 47);
     }
 
     {
@@ -89,16 +89,16 @@ TEST(user_eval_expression_as, test_user_eval_expression_as)
 
     {
         user::number result = bp17::evaluate_as<user::number>(unity, 5, 6, 7);
-        EXPECT_EQ(result.value, 1);
+        EXPECT_EQ(result.value, 6);
     }
 
     {
         user::number result = bp17::evaluate_as<user::number>(expr);
-        EXPECT_EQ(result.value, -41);
+        EXPECT_EQ(result.value, -36);
     }
 
     {
         user::number result = bp17::evaluate_as<user::number>(unevaluated_expr, std::string("15"));
-        EXPECT_EQ(result.value, 42);
+        EXPECT_EQ(result.value, 47);
     }
 }

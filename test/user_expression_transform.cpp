@@ -52,8 +52,7 @@ namespace user {
 
     decltype(auto) eval_expression_as (
         decltype(term<number>{{0.0}} * number{} + number{}) const & expr,
-        boost::hana::basic_type<number>,
-        boost::hana::tuple<>)
+        boost::hana::basic_type<number>)
     {
         return naxpy(
             expr.left().left().value(),
@@ -63,8 +62,7 @@ namespace user {
     }
 
     decltype(auto) transform_expression (
-        decltype(term<number>{{0.0}} * number{} + number{}) const & expr,
-        boost::hana::tuple<>
+        decltype(term<number>{{0.0}} * number{} + number{}) const & expr
     ) {
         return naxpy(
             evaluate(expr.left().left()),

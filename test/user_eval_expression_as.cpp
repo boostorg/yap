@@ -22,14 +22,14 @@ namespace user {
         double value;
     };
 
-    template <typename E, typename Tuple>
+    template <typename E, typename ...T>
     constexpr auto eval_expression_as (
         E const & expr,
         boost::hana::basic_type<user::number>,
-        Tuple && args)
+        T &&... args)
     {
         return static_cast<user::number>(
-            bp17::detail::default_eval_expr(expr, static_cast<Tuple &&>(args))
+            bp17::detail::default_eval_expr(expr, static_cast<T &&>(args)...)
         );
     }
 

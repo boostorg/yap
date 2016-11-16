@@ -16,33 +16,57 @@ namespace boost::proto17 {
         struct nonexistent_transform {};
         inline nonexistent_transform transform_expression (...) { return {}; }
 
-        template <typename Tuple, expr_kind Kind, typename ...T>
-        decltype(auto) default_eval_expr (expression<Kind, T...> const & expr, Tuple && args) // TODO: Take args directly, instead of in a tuple.
+        template <typename T>
+        struct kind_of;
+
+        template <expr_kind Kind, typename ...T>
+        struct kind_of<expression<Kind, T...>>
+        { static expr_kind const value = Kind; };
+
+        template <typename I, typename T>
+        auto eval_placeholder (I, T && arg)
         {
-            using void_type = hana::basic_type<void>;
+            static_assert(I::value == 0);
+            return static_cast<T &&>(arg);
+        }
+
+        template <typename I, typename T, typename ...Ts>
+        auto eval_placeholder (I, T && arg, Ts &&... args)
+        {
+            if constexpr (I::value == 0) {
+                return arg;
+            } else {
+                return eval_placeholder(hana::llong<I::value - 1>{}, static_cast<Ts &&>(args)...);
+            }
+        }
+
+        template <typename Expr, typename ...T>
+        decltype(auto) default_eval_expr (Expr const & expr, T &&... args)
+        {
+            constexpr expr_kind kind = kind_of<Expr>::value;
 
             using namespace hana::literals;
 
             if constexpr (
                 !std::is_same_v<
-                    decltype(transform_expression(expr, static_cast<Tuple &&>(args))),
+                    decltype(transform_expression(expr, static_cast<T &&>(args)...)),
                     nonexistent_transform
                 >
             ) {
-                return transform_expression(expr, static_cast<Tuple &&>(args));
-            } else if constexpr (Kind == expr_kind::terminal) {
-                static_assert(sizeof...(T) == 1);
+                return transform_expression(expr, static_cast<T &&>(args)...);
+            } else if constexpr (kind == expr_kind::terminal) {
+                static_assert(decltype(hana::size(expr.elements))::value == 1UL);
                 return expr.elements[0_c];
-            } else if constexpr (Kind == expr_kind::placeholder) {
-                static_assert(sizeof...(T) == 1);
-                return args[expr.elements[0_c]];
+            } else if constexpr (kind == expr_kind::placeholder) {
+                static_assert(decltype(hana::size(expr.elements))::value == 1UL);
+                return eval_placeholder(expr.elements[0_c], static_cast<T &&>(args)...);
             }
 
 #define BOOST_PROTO17_UNARY_OPERATOR_CASE(op_name)                      \
-            else if constexpr (Kind == expr_kind:: op_name) {           \
+            else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
                     eval_ ## op_name(                                   \
-                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(args)) \
+                        default_eval_expr(expr.elements[0_c], static_cast<T &&>(args)...) \
                     );                                                  \
             }
 
@@ -60,11 +84,11 @@ namespace boost::proto17 {
 #undef BOOST_PROTO17_UNARY_OPERATOR_CASE
 
 #define BOOST_PROTO17_BINARY_OPERATOR_CASE(op_name)                     \
-            else if constexpr (Kind == expr_kind:: op_name) {           \
+            else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
                     eval_ ## op_name(                                   \
-                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(args)), \
-                        default_eval_expr(expr.elements[1_c], static_cast<Tuple &&>(args)) \
+                        default_eval_expr(expr.elements[0_c], static_cast<T &&>(args)...), \
+                        default_eval_expr(expr.elements[1_c], static_cast<T &&>(args)...) \
                     );                                                  \
             }
 
@@ -87,11 +111,11 @@ namespace boost::proto17 {
             BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_or) // |
             BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_xor) // ^
 
-            else if constexpr (Kind == expr_kind::comma) {
+            else if constexpr (kind == expr_kind::comma) {
                 return
                     eval_comma(
-                        default_eval_expr(expr.elements[0_c], static_cast<Tuple &&>(args)),
-                        default_eval_expr(expr.elements[1_c], static_cast<Tuple &&>(args))
+                        default_eval_expr(expr.elements[0_c], static_cast<T &&>(args)...),
+                        default_eval_expr(expr.elements[1_c], static_cast<T &&>(args)...)
                     );
             }
 
@@ -111,15 +135,19 @@ namespace boost::proto17 {
 
 #undef BOOST_PROTO17_BINARY_OPERATOR_CASE
 
-            else if constexpr (Kind == expr_kind::call) {
+            else if constexpr (kind == expr_kind::call) {
+                auto expand_args = [&](auto && element) {
+                    return default_eval_expr(
+                        static_cast<decltype(element) &&>(element),
+                        static_cast<T &&>(args)...
+                    );
+                };
+
                 return hana::unpack(
                     expr.elements,
-                    [&args] (auto && ... element) {
+                    [&] (auto && ... elements) {
                         return eval_call(
-                            default_eval_expr(
-                                static_cast<decltype(element) &&>(element),
-                                static_cast<Tuple &&>(args)
-                            )...
+                            expand_args(static_cast<decltype(elements) &&>(elements))...
                         );
                     });
             } else {
