@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <sstream>
-
 
 template <typename T>
 using term = boost::proto17::terminal<T>;
@@ -25,9 +23,6 @@ namespace user {
 
         friend number operator* (number lhs, number rhs)
         { return number{lhs.value * rhs.value}; }
-
-        friend std::ostream & operator<< (std::ostream & os, number x) // TODO
-        { return os << x.value; }
     };
 
     number naxpy (number a, number x, number y)
@@ -102,11 +97,6 @@ namespace user {
     };
 
 }
-
-// TODO: Add a unit test for moved expressions and expressions containing
-// move-only types or rvalue refs.
-
-// TODO: Use move-only type in other tests that test moves as well.
 
 TEST(user_expression_transform_3, test_user_expression_transform_3)
 {
@@ -210,4 +200,39 @@ TEST(user_expression_transform_3, test_user_expression_transform_3)
             EXPECT_EQ(result.value, 55 * 55 + 55 + 10);
         }
     }
+}
+
+auto double_to_float (term<double> expr)
+{ return term<float>{(float)expr.value()}; }
+
+auto check_unique_ptrs_equal_7 (term<std::unique_ptr<int>> && expr)
+{
+    using namespace boost::hana::literals;
+    EXPECT_EQ(*expr.elements[0_c], 7);
+    return std::move(expr);
+}
+
+TEST(move_only, test_user_expression_transform_3)
+{
+    term<double> unity{1.0};
+    term<std::unique_ptr<int>> i{new int{7}};
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<double>,
+        term<std::unique_ptr<int>>
+    > expr_1 = unity + std::move(i);
+
+    bp17::expression<
+        bp17::expr_kind::plus,
+        term<double>,
+        bp17::expression<
+            bp17::expr_kind::plus,
+            term<double>,
+            term<std::unique_ptr<int>>
+        >
+    > expr_2 = unity + std::move(expr_1);
+
+    auto transformed_expr = transform(std::move(expr_2), double_to_float);
+
+    transform(std::move(transformed_expr), check_unique_ptrs_equal_7);
 }

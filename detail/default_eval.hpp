@@ -156,6 +156,9 @@ namespace boost::proto17 {
             }
         }
 
+        template <expr_kind Kind, typename Tuple, typename Transform>
+        auto transform_nonterminal_tuple (Tuple && tuple, Transform && transform);
+
         template <typename Expr, typename Transform, typename = std::void_t<>>
         struct default_transform_expression
         {
@@ -163,17 +166,12 @@ namespace boost::proto17 {
             {
                 constexpr expr_kind kind = kind_of<remove_cv_ref_t<Expr>>::value;
                 if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
-                    return expr;
+                    return static_cast<Expr &&>(expr);
                 } else {
-                    auto tuple = hana::transform(
-                        expr.elements,
-                        [&transform](auto && element) {
-                            default_transform_expression<decltype(element), Transform> transformer;
-                            return transformer(element, static_cast<Transform &&>(transform));
-                        }
+                    return transform_nonterminal_tuple<kind>(
+                        static_cast<decltype(expr.elements) &&>(expr.elements),
+                        static_cast<Transform &&>(transform)
                     );
-                    using return_type = typename expression_from_tuple<kind, decltype(tuple)>::type;
-                    return return_type(std::move(tuple));
                 }
             }
         };
@@ -188,6 +186,24 @@ namespace boost::proto17 {
             auto operator() (Expr && expr, Transform && transform)
             { return static_cast<Transform &&>(transform)(static_cast<Expr &&>(expr)); }
         };
+
+        template <expr_kind Kind, typename Tuple, typename Transform>
+        auto transform_nonterminal_tuple (Tuple && tuple, Transform && transform)
+        {
+            auto transformed_tuple = hana::transform(
+                static_cast<Tuple &&>(tuple),
+                [&transform](auto && element) {
+                    using element_t = decltype(element);
+                    default_transform_expression<element_t, Transform> transformer;
+                    return transformer(
+                        static_cast<element_t &&>(element),
+                        static_cast<Transform &&>(transform)
+                    );
+                }
+            );
+            using return_type = typename expression_from_tuple<Kind, decltype(transformed_tuple)>::type;
+            return return_type(std::move(transformed_tuple));
+        }
 
     }
 
