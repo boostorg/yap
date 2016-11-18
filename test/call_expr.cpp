@@ -21,6 +21,9 @@ namespace user {
         double value;
     };
 
+    number naxpy (number a, number x, number y)
+    { return number{a.value * x.value + y.value + 10.0}; }
+
     inline auto max (int a, int b)
     { return a < b ? b : a; };
 
@@ -29,11 +32,10 @@ namespace user {
     inline number tag_function (double a, double b)
     { return number{a + b}; }
 
-    // User-defined operator() implementation.
-    template <typename F, typename ...T>
-    inline auto eval_call (F && f, T && ...t)
+    template <typename ...T>
+    inline auto eval_call (tag_type, T && ...t)
     {
-        if constexpr (sizeof...(T) == 2u && std::is_same_v<std::decay_t<F>, tag_type>) {
+        if constexpr (sizeof...(T) == 2u) {
             return tag_function((double)t...);
         } else {
             assert(!"Unhandled case in eval_call()");
@@ -199,6 +201,19 @@ TEST(call_expr, test_call_expr)
                 user::number result = expr;
                 EXPECT_EQ(result.value, 1);
             }
+        }
+    }
+
+    {
+        term<user::number> a{{1.0}};
+        term<user::number> x{{42.0}};
+        term<user::number> y{{3.0}};
+        auto n = bp17::make_terminal(user::naxpy);
+
+        auto expr = n(a, x, y);
+        {
+            user::number result = evaluate(expr);
+            EXPECT_EQ(result.value, 55);
         }
     }
 }
