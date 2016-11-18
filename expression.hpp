@@ -14,8 +14,7 @@ namespace boost::proto17 {
     namespace adl_detail {
 
         template <typename R, typename E, typename ...T>
-        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T &&... args)
-        { return static_cast<R>(detail::default_eval_expr(expr, static_cast<T &&>(args)...)); }
+        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T &&... args);
 
         struct eval_expression_as_fn
         {
@@ -34,15 +33,14 @@ namespace boost::proto17 {
 
     }
 
-    // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
     template <typename Expr, typename ...T>
-    decltype(auto) evaluate (Expr const & expr, T && ...t)
-    { return detail::default_eval_expr(expr, static_cast<T &&>(t)...); }
+    decltype(auto) evaluate (Expr const & expr, T && ...t);
 
-    // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
     template <typename R, typename Expr, typename ...T>
-    decltype(auto) evaluate_as (Expr const & expr, T && ...t)
-    { return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...); }
+    decltype(auto) evaluate_as (Expr const & expr, T && ...t);
+
+    template <typename Expr, typename Transform>
+    auto transform (Expr && expr, Transform && transform);
 
     template <expr_kind Kind, typename ...T>
     struct expression
@@ -56,19 +54,9 @@ namespace boost::proto17 {
             elements (static_cast<T &&>(t)...)
         {}
 
-        expression (hana::tuple<T...> const & rhs) :
-            elements (rhs)
-        {}
-
         expression (hana::tuple<T...> && rhs) :
             elements (std::move(rhs))
         {}
-
-        expression & operator= (hana::tuple<T...> const & rhs)
-        { elements = rhs.elements; }
-
-        expression & operator= (hana::tuple<T...> && rhs)
-        { elements = std::move(rhs.elements); }
 
         tuple_type elements;
 
@@ -228,7 +216,7 @@ namespace boost::proto17 {
     namespace detail {
 
         template <expr_kind OpKind, typename T, typename U,
-                  bool Expr = detail::is_expr<std::decay_t<T>>::value>
+                  bool Expr = detail::is_expr<remove_cv_ref_t<T>>::value>
         struct binary_op_result
         {
             using lhs_type = typename detail::operand_type<T>::type;
@@ -285,6 +273,14 @@ namespace boost::proto17 {
 
 #undef BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR
 
+    template <expr_kind Kind, typename ...T>
+    auto make_expression (T &&... t)
+    {
+        return expression<Kind, T...>{
+            hana::tuple<T...>{static_cast<T &&>(t)...}
+        };
+    }
+
     template <typename T>
     auto make_terminal (T && t)
     {
@@ -296,5 +292,36 @@ namespace boost::proto17 {
 }
 
 #include "detail/default_eval.hpp"
+
+namespace boost::proto17 {
+
+    // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
+    template <typename Expr, typename ...T>
+    decltype(auto) evaluate (Expr const & expr, T && ...t)
+    { return detail::default_eval_expr(expr, static_cast<T &&>(t)...); }
+
+    // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder + 1
+    template <typename R, typename Expr, typename ...T>
+    decltype(auto) evaluate_as (Expr const & expr, T && ...t)
+    { return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...); }
+
+    template <typename Expr, typename Transform>
+    auto transform (Expr && expr, Transform && transform)
+    {
+        return detail::default_transform_expression<Expr, Transform>{}(
+            static_cast<Expr &&>(expr),
+            static_cast<Transform &&>(transform)
+        );
+    }
+
+    namespace adl_detail {
+
+        template <typename R, typename E, typename ...T>
+        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T &&... args)
+        { return static_cast<R>(detail::default_eval_expr(expr, static_cast<T &&>(args)...)); }
+
+    }
+
+}
 
 #endif

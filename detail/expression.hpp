@@ -54,15 +54,22 @@ namespace boost::proto17 {
         struct is_expr<expression<Kind, T...>>
         { static bool const value = true; };
 
+        template <typename T>
+        struct remove_cv_ref : std::remove_cv<std::remove_reference_t<T>>
+        {};
+
+        template <typename T>
+        using remove_cv_ref_t = typename remove_cv_ref<T>::type;
+
         template <typename T,
                   typename U = typename operand_value_type_phase_1<T>::type,
                   bool RemoveRefs = std::is_rvalue_reference_v<U>,
-                  bool IsExpr = is_expr<std::decay_t<T>>::value>
+                  bool IsExpr = is_expr<remove_cv_ref_t<T>>::value>
         struct operand_type;
 
         template <typename T, typename U, bool RemoveRefs>
         struct operand_type<T, U, RemoveRefs, true>
-        { using type = std::remove_cv_t<std::remove_reference_t<T>>; };
+        { using type = remove_cv_ref_t<T>; };
 
         template <typename T, typename U>
         struct operand_type<T, U, true, false>
@@ -72,17 +79,17 @@ namespace boost::proto17 {
         struct operand_type<T, U, false, false>
         { using type = terminal<U>; };
 
-        template <typename T>
-        struct call_expression_from_tuple;
+        template <expr_kind Kind, typename T>
+        struct expression_from_tuple;
 
-        template <typename ...T>
-        struct call_expression_from_tuple<hana::tuple<T...>>
-        { using type = expression<expr_kind::call, T...>; };
+        template <expr_kind Kind, typename ...T>
+        struct expression_from_tuple<Kind, hana::tuple<T...>>
+        { using type = expression<Kind, T...>; };
 
         template <typename Tuple, typename ...T>
         constexpr auto make_call_expression (T && ...args)
         {
-            return typename call_expression_from_tuple<Tuple>::type{
+            return typename expression_from_tuple<expr_kind::call, Tuple>::type{
                 Tuple{static_cast<T &&>(args)...}
             };
         }

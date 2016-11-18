@@ -156,6 +156,39 @@ namespace boost::proto17 {
             }
         }
 
+        template <typename Expr, typename Transform, typename = std::void_t<>>
+        struct default_transform_expression
+        {
+            auto operator() (Expr && expr, Transform && transform)
+            {
+                constexpr expr_kind kind = kind_of<remove_cv_ref_t<Expr>>::value;
+                if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
+                    return expr;
+                } else {
+                    auto tuple = hana::transform(
+                        expr.elements,
+                        [&transform](auto && element) {
+                            default_transform_expression<decltype(element), Transform> transformer;
+                            return transformer(element, static_cast<Transform &&>(transform));
+                        }
+                    );
+                    using return_type = typename expression_from_tuple<kind, decltype(tuple)>::type;
+                    return return_type(std::move(tuple));
+                }
+            }
+        };
+
+        template <typename Expr, typename Transform>
+        struct default_transform_expression<
+            Expr,
+            Transform,
+            std::void_t<decltype(std::declval<Transform>()(std::declval<Expr>()))>
+        >
+        {
+            auto operator() (Expr && expr, Transform && transform)
+            { return static_cast<Transform &&>(transform)(static_cast<Expr &&>(expr)); }
+        };
+
     }
 
 }

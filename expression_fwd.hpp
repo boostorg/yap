@@ -80,13 +80,6 @@ namespace boost::proto17 {
 
     }
 
-    namespace detail {
-
-        template <typename Expr, typename ...T>
-        decltype(auto) default_eval_expr (Expr const & expr, T &&... args);
-
-    }
-
 }
 
 #endif
