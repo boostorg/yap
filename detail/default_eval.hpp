@@ -145,7 +145,7 @@ namespace boost::proto17 {
 
                 return hana::unpack(
                     expr.elements,
-                    [&] (auto && ... elements) {
+                    [&](auto && ... elements) {
                         return eval_call(
                             expand_args(static_cast<decltype(elements) &&>(elements))...
                         );
