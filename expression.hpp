@@ -66,7 +66,7 @@ namespace boost::proto17 {
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
 #endif
 
-        decltype(auto) value () const
+        decltype(auto) value () const &
         {
             using namespace hana::literals;
             static_assert(
@@ -76,7 +76,27 @@ namespace boost::proto17 {
             return elements[0_c];
         }
 
-        decltype(auto) left () const
+        decltype(auto) value () &
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 1UL,
+                "value() is only defined for unary expressions."
+            );
+            return elements[0_c];
+        }
+
+        decltype(auto) value () &&
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 1UL,
+                "value() is only defined for unary expressions."
+            );
+            return static_cast<tuple_type &&>(elements)[0_c];
+        }
+
+        decltype(auto) left () const &
         {
             using namespace hana::literals;
             static_assert(
@@ -86,7 +106,27 @@ namespace boost::proto17 {
             return elements[0_c];
         }
 
-        decltype(auto) right () const
+        decltype(auto) left () &
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 2UL,
+                "left() and right() are only defined for binary expressions."
+            );
+            return elements[0_c];
+        }
+
+        decltype(auto) left () &&
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 2UL,
+                "left() and right() are only defined for binary expressions."
+            );
+            return static_cast<tuple_type &&>(elements)[0_c];
+        }
+
+        decltype(auto) right () const &
         {
             using namespace hana::literals;
             static_assert(
@@ -94,6 +134,26 @@ namespace boost::proto17 {
                 "left() and right() are only defined for binary expressions."
             );
             return elements[1_c];
+        }
+
+        decltype(auto) right () &
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 2UL,
+                "left() and right() are only defined for binary expressions."
+            );
+            return elements[1_c];
+        }
+
+        decltype(auto) right () &&
+        {
+            using namespace hana::literals;
+            static_assert(
+                decltype(hana::size(elements))::value == 2UL,
+                "left() and right() are only defined for binary expressions."
+            );
+            return static_cast<tuple_type &&>(elements)[1_c];
         }
 
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
@@ -212,6 +272,105 @@ namespace boost::proto17 {
             return detail::make_call_expression<tuple_type>(std::move(*this), static_cast<U &&>(u)...);
         }
     };
+
+    template <typename Expr>
+    decltype(auto) value (Expr const & expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 1UL,
+            "value() is only defined for unary expressions."
+        );
+        return expr.elements[0_c];
+    }
+
+    template <typename Expr>
+    decltype(auto) value (Expr & expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 1UL,
+            "value() is only defined for unary expressions."
+        );
+        return expr.elements[0_c];
+    }
+
+    template <typename Expr>
+    decltype(auto) value (std::remove_reference_t<Expr> && expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 1UL,
+            "value() is only defined for unary expressions."
+        );
+        return static_cast<decltype(expr.elements) &&>(expr.elements)[0_c];
+    }
+
+    template <typename Expr>
+    decltype(auto) left (Expr const & expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 2UL,
+            "left() and right() are only defined for binary expressions."
+        );
+        return expr.elements[0_c];
+    }
+
+    template <typename Expr>
+    decltype(auto) left (Expr & expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 2UL,
+            "left() and right() are only defined for binary expressions."
+        );
+        return expr.elements[0_c];
+    }
+
+    template <typename Expr>
+    decltype(auto) left (std::remove_reference_t<Expr> && expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 2UL,
+            "left() and right() are only defined for binary expressions."
+        );
+        return static_cast<decltype(expr.elements) &&>(expr.elements)[0_c];
+    }
+
+    template <typename Expr>
+    decltype(auto) right (Expr const & expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 2UL,
+            "left() and right() are only defined for binary expressions."
+        );
+        return expr.elements[1_c];
+    }
+
+    template <typename Expr>
+    decltype(auto) right (Expr & expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 2UL,
+            "left() and right() are only defined for binary expressions."
+        );
+        return expr.elements[1_c];
+    }
+
+    template <typename Expr>
+    decltype(auto) right (std::remove_reference_t<Expr> && expr)
+    {
+        using namespace hana::literals;
+        static_assert(
+            decltype(hana::size(expr.elements))::value == 2UL,
+            "left() and right() are only defined for binary expressions."
+        );
+        return static_cast<decltype(expr.elements) &&>(expr.elements)[1_c];
+    }
 
     namespace detail {
 
