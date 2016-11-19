@@ -289,6 +289,20 @@ namespace boost::proto17 {
         };
     }
 
+    template <expr_kind Kind, typename ...T>
+    struct expression_function
+    {
+        template <typename ...U>
+        decltype(auto) operator() (U &&... u)
+        { return evaluate(expr, static_cast<U &&>(u)...); }
+
+        expression<Kind, T...> expr;
+    };
+
+    template <expr_kind Kind, typename ...T>
+    auto make_expression_function (expression<Kind, T...> && expr)
+    { return expression_function<Kind, T...>{std::move(expr)}; }
+
 }
 
 #include "detail/default_eval.hpp"
