@@ -7,14 +7,13 @@ using term = boost::proto17::terminal<T>;
 namespace bp17 = boost::proto17;
 
 
-namespace {
-
-void compile()
+void compile_placeholders ()
 {
     using namespace boost::proto17::literals;
 
     {
         bp17::placeholder<0> p0 = 0_p;
+        (void)p0;
     }
 
     {
@@ -25,6 +24,7 @@ void compile()
             bp17::placeholder<0>,
             term<double>
         > expr = p0 + unity;
+        (void)expr;
     }
 
     {
@@ -34,7 +34,6 @@ void compile()
             bp17::placeholder<0>,
             bp17::placeholder<1>
         > expr = p0 + 1_p;
+        (void)expr;
     }
-}
-
 }

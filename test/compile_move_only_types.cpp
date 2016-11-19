@@ -8,12 +8,10 @@ using term = boost::proto17::terminal<T>;
 namespace bp17 = boost::proto17;
 
 
-namespace {
-
-auto double_to_float (term<double> expr)
+inline auto double_to_float (term<double> expr)
 { return term<float>{(float)expr.value()}; }
 
-void compile()
+void compile_move_only_types ()
 {
     term<double> unity{1.0};
     term<std::unique_ptr<int>> i{new int{7}};
@@ -34,6 +32,5 @@ void compile()
     > expr_2 = unity + std::move(expr_1);
 
     auto transformed_expr = transform(std::move(expr_2), double_to_float);
-}
-
+    (void)transformed_expr;
 }

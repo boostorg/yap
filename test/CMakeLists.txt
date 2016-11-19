@@ -42,5 +42,5 @@ add_executable(
     compile_term_plus_x_this_ref_overloads.cpp
     compile_const_term.cpp
     compile_move_only_types.cpp
-    # ICE! compile_copy_only_types.cpp
+    compile_copy_only_types.cpp
 )

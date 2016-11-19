@@ -7,9 +7,7 @@ using term = boost::proto17::terminal<T>;
 namespace bp17 = boost::proto17;
 
 
-namespace {
-
-void compile ()
+void compile_term_plus_expr ()
 {
     // values
     {
@@ -29,6 +27,7 @@ void compile ()
                 term<int>
             >
         > unevaluated_expr = unity + expr;
+        (void)unevaluated_expr;
     }
 
     {
@@ -48,6 +47,7 @@ void compile ()
                 term<int const>
             >
         > unevaluated_expr = unity + expr;
+        (void)unevaluated_expr;
     }
 
     {
@@ -67,6 +67,7 @@ void compile ()
                 term<int>
             >
         > unevaluated_expr = unity + expr;
+        (void)unevaluated_expr;
     }
 
     // const value terminals/expressions
@@ -87,6 +88,7 @@ void compile ()
                 term<int>
             >
         > unevaluated_expr = unity + expr;
+        (void)unevaluated_expr;
     }
 
     {
@@ -106,6 +108,7 @@ void compile ()
                 term<int>
             >
         > unevaluated_expr = unity + expr;
+        (void)unevaluated_expr;
     }
 
     // lvalue refs
@@ -127,6 +130,7 @@ void compile ()
                 term<int &>
             >
         > unevaluated_expr = unity + expr;
+        (void)unevaluated_expr;
     }
 
     {
@@ -147,6 +151,7 @@ void compile ()
                 term<int const &>
             >
         > unevaluated_expr = unity + expr;
+        (void)unevaluated_expr;
     }
 
     {
@@ -167,6 +172,7 @@ void compile ()
                 term<int &>
             >
         > unevaluated_expr = unity + expr;
+        (void)unevaluated_expr;
     }
 
     {
@@ -187,6 +193,7 @@ void compile ()
                 term<int &>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
 
     {
@@ -207,6 +214,7 @@ void compile ()
                 term<int const &>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
 
     {
@@ -227,6 +235,7 @@ void compile ()
                 term<int &>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
 
     // rvalue refs
@@ -248,6 +257,7 @@ void compile ()
                 term<int &&>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
 
     {
@@ -268,6 +278,7 @@ void compile ()
                 term<int &&>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
 
     {
@@ -288,6 +299,7 @@ void compile ()
                 term<int &&>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
 
     {
@@ -308,7 +320,6 @@ void compile ()
                 term<int &&>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
-}
-
 }

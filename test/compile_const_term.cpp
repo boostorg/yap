@@ -7,9 +7,7 @@ using term = boost::proto17::terminal<T>;
 namespace bp17 = boost::proto17;
 
 
-namespace {
-
-void compile()
+void compile_const_term ()
 {
     {
         term<double const> unity{1.0};
@@ -29,6 +27,7 @@ void compile()
                 term<int &&>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
 
     {
@@ -49,6 +48,7 @@ void compile()
                 term<int &&>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
 
     {
@@ -69,7 +69,6 @@ void compile()
                 term<int const &>
             >
         > unevaluated_expr = unity + std::move(expr);
+        (void)unevaluated_expr;
     }
-}
-
 }

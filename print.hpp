@@ -80,7 +80,6 @@ namespace boost::proto17 {
                 os << " const";
             if (std::is_volatile_v<T>)
                 os << " volatile";
-            using no_cv_t = std::remove_cv_t<T>;
             if (std::is_lvalue_reference_v<T>)
                 os << " &";
             if (std::is_rvalue_reference_v<T>)

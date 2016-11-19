@@ -8,9 +8,7 @@ using term = boost::proto17::terminal<T>;
 namespace bp17 = boost::proto17;
 
 
-namespace {
-
-auto double_to_float (term<double> expr)
+inline auto double_to_float (term<double> expr)
 { return term<float>{(float)expr.value()}; }
 
 struct copy_only_t
@@ -21,8 +19,9 @@ struct copy_only_t
     int value;
 };
 
-void compile()
+void compile_copy_only_types ()
 {
+#if 0 // TODO: This ICEs!
     term<copy_only_t> unity{1};
     term<double> d{3.5};
     bp17::expression<
@@ -42,6 +41,6 @@ void compile()
     > expr_2 = unity + expr_1;
 
     auto transformed_expr = transform(expr_2, double_to_float);
-}
-
+    (void)transformed_expr;
+#endif
 }

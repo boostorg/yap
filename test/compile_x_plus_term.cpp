@@ -10,9 +10,7 @@ using term = boost::proto17::terminal<T>;
 namespace bp17 = boost::proto17;
 
 
-namespace {
-
-void compile ()
+void compile_x_plus_term ()
 {
     using namespace std::literals;
 
@@ -24,6 +22,7 @@ void compile ()
             term<char const *>,
             term<double>
         > unevaluated_expr = "3" + unity;
+        (void)unevaluated_expr;
     }
 
     // std::string temporary
@@ -34,6 +33,7 @@ void compile ()
             term<std::string>,
             term<double>
         > unevaluated_expr = "3"s + unity;
+        (void)unevaluated_expr;
     }
 
     // arrays
@@ -45,6 +45,7 @@ void compile ()
             term<int *>,
             term<double>
         > unevaluated_expr = ints + unity;
+        (void)unevaluated_expr;
     }
 
     {
@@ -55,6 +56,7 @@ void compile ()
             term<int const *>,
             term<double>
         > unevaluated_expr = ints + unity;
+        (void)unevaluated_expr;
     }
 
     {
@@ -65,6 +67,7 @@ void compile ()
             term<int *>,
             term<double>
         > unevaluated_expr = std::move(ints) + unity;
+        (void)unevaluated_expr;
     }
 
     // pointers
@@ -77,6 +80,7 @@ void compile ()
             term<int * &>,
             term<double>
         > unevaluated_expr = int_ptr + unity;
+        (void)unevaluated_expr;
     }
 
     {
@@ -88,6 +92,7 @@ void compile ()
             term<int const * &>,
             term<double>
         > unevaluated_expr = int_ptr + unity;
+        (void)unevaluated_expr;
     }
 
     {
@@ -99,6 +104,7 @@ void compile ()
             term<int *>,
             term<double>
         > unevaluated_expr = std::move(int_ptr) + unity;
+        (void)unevaluated_expr;
     }
 
     // const pointers
@@ -111,6 +117,7 @@ void compile ()
             term<int * const &>,
             term<double>
         > unevaluated_expr = int_ptr + unity;
+        (void)unevaluated_expr;
     }
 
     {
@@ -122,6 +129,7 @@ void compile ()
             term<int const * const &>,
             term<double>
         > unevaluated_expr = int_ptr + unity;
+        (void)unevaluated_expr;
     }
 
     {
@@ -133,6 +141,7 @@ void compile ()
             term<int * const>,
             term<double>
         > unevaluated_expr = std::move(int_ptr) + unity;
+        (void)unevaluated_expr;
     }
 
     // values
@@ -144,6 +153,7 @@ void compile ()
             term<int &>,
             term<double>
         > unevaluated_expr = i + unity;
+        (void)unevaluated_expr;
     }
 
     {
@@ -154,6 +164,7 @@ void compile ()
             term<int const &>,
             term<double>
         > unevaluated_expr = i + unity;
+        (void)unevaluated_expr;
     }
 
     {
@@ -164,7 +175,6 @@ void compile ()
             term<int>,
             term<double>
         > unevaluated_expr = std::move(i) + unity;
+        (void)unevaluated_expr;
     }
-}
-
 }

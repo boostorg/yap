@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-add_definitions(-std=c++1z -stdlib=libc++ -g)
+add_definitions(-std=c++1z -stdlib=libc++ -g -Wall)
 
 add_subdirectory(googletest-release-1.8.0)
 

@@ -169,5 +169,8 @@ int main ()
     user::number result_1 = eval_as_proto_expr(expr);
     user::number result_2 = eval_as_cpp_expr(a, x, y);
 
+    (void)result_1;
+    (void)result_2;
+
     return 0;
 }
