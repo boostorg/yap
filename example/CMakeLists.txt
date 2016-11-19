@@ -6,3 +6,7 @@ macro(add_sample name)
 endmacro()
 
 add_sample(hello_world)
+add_sample(calc1)
+add_sample(calc2a)
+add_sample(calc2b)
+add_sample(calc3)

@@ -26,7 +26,11 @@ namespace boost::proto17 {
         template <typename I, typename T>
         decltype(auto) eval_placeholder (I, T && arg)
         {
-            static_assert(I::value == 1);
+            static_assert(
+                I::value == 1,
+                "The current placeholder's index is out of bounds.  Did you perhaps call "
+                "evaluate() with too few arguments?"
+            );
             return static_cast<T &&>(arg);
         }
 
