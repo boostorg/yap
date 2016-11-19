@@ -16,13 +16,6 @@ namespace boost::proto17 {
         struct nonexistent_transform {};
         inline nonexistent_transform transform_expression (...) { return {}; }
 
-        template <typename T>
-        struct kind_of;
-
-        template <expr_kind Kind, typename ...T>
-        struct kind_of<expression<Kind, T...>>
-        { static expr_kind const value = Kind; };
-
         template <typename I, typename T>
         decltype(auto) eval_placeholder (I, T && arg)
         {
@@ -47,7 +40,7 @@ namespace boost::proto17 {
         template <typename Expr, typename ...T>
         decltype(auto) default_eval_expr (Expr const & expr, T &&... args)
         {
-            constexpr expr_kind kind = kind_of<Expr>::value;
+            constexpr expr_kind kind = Expr::kind;
 
             using namespace hana::literals;
 
@@ -168,7 +161,7 @@ namespace boost::proto17 {
         {
             auto operator() (Expr && expr, Transform && transform)
             {
-                constexpr expr_kind kind = kind_of<remove_cv_ref_t<Expr>>::value;
+                constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
                 if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
                     return static_cast<Expr &&>(expr);
                 } else {
