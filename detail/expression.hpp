@@ -79,6 +79,9 @@ namespace boost::proto17 {
         struct operand_type<T, U, false, false>
         { using type = terminal<U>; };
 
+        template <typename T>
+        using operand_type_t = typename operand_type<T>::type;
+
         template <expr_kind Kind, typename T>
         struct expression_from_tuple;
 
