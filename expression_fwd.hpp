@@ -75,6 +75,7 @@ namespace boost::proto17 {
         constexpr auto operator"" _p ()
         {
             using i = hana::llong<hana::ic_detail::parse<sizeof...(c)>({c...})>;
+            static_assert(1 <= i::value, "Placeholders must be >= 1.");
             return expression<expr_kind::placeholder, i>(i{});
         }
 

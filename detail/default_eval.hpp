@@ -26,14 +26,14 @@ namespace boost::proto17 {
         template <typename I, typename T>
         decltype(auto) eval_placeholder (I, T && arg)
         {
-            static_assert(I::value == 0);
+            static_assert(I::value == 1);
             return static_cast<T &&>(arg);
         }
 
         template <typename I, typename T, typename ...Ts>
         auto eval_placeholder (I, T && arg, Ts &&... args)
         {
-            if constexpr (I::value == 0) {
+            if constexpr (I::value == 1) {
                 return arg;
             } else {
                 return eval_placeholder(hana::llong<I::value - 1>{}, static_cast<Ts &&>(args)...);

@@ -12,28 +12,28 @@ void compile_placeholders ()
     using namespace boost::proto17::literals;
 
     {
-        bp17::placeholder<0> p0 = 0_p;
-        (void)p0;
+        bp17::placeholder<1> p1 = 1_p;
+        (void)p1;
     }
 
     {
-        bp17::placeholder<0> p0 = 0_p;
+        bp17::placeholder<1> p1 = 1_p;
         term<double> unity{1.0};
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::placeholder<0>,
+            bp17::placeholder<1>,
             term<double>
-        > expr = p0 + unity;
+        > expr = p1 + unity;
         (void)expr;
     }
 
     {
-        bp17::placeholder<0> p0 = 0_p;
+        bp17::placeholder<1> p1 = 1_p;
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::placeholder<0>,
-            bp17::placeholder<1>
-        > expr = p0 + 1_p;
+            bp17::placeholder<1>,
+            bp17::placeholder<2>
+        > expr = p1 + 2_p;
         (void)expr;
     }
 }

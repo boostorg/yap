@@ -72,25 +72,25 @@ TEST(reference_returns, test_reference_returns)
     using namespace bp17::literals;
 
     {
-        reference_returning::number & n = evaluate(0_p, reference_returning::a_result);
+        reference_returning::number & n = evaluate(1_p, reference_returning::a_result);
         EXPECT_EQ(&n, &reference_returning::a_result);
     }
 
     static_assert(
         std::is_same_v<
-            decltype(evaluate(0_p, reference_returning::a_result)),
+            decltype(evaluate(1_p, reference_returning::a_result)),
             reference_returning::number &
         >
     );
 
     {
-        reference_returning::number const & n = evaluate(0_p, reference_returning::the_result);
+        reference_returning::number const & n = evaluate(1_p, reference_returning::the_result);
         EXPECT_EQ(&n, &reference_returning::the_result);
     }
 
     static_assert(
         std::is_same_v<
-            decltype(evaluate(0_p, reference_returning::the_result)),
+            decltype(evaluate(1_p, reference_returning::the_result)),
             reference_returning::number const &
         >
     );

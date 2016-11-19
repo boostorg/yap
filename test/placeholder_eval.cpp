@@ -15,26 +15,26 @@ TEST(placeholder_eval, test_placeholder_eval)
 {
     using namespace boost::proto17::literals;
 
-    bp17::placeholder<2> p2 = 2_p;
+    bp17::placeholder<3> p3 = 3_p;
     int i_ = 42;
     term<int> i{std::move(i_)};
     bp17::expression<
         bp17::expr_kind::plus,
-        bp17::placeholder<2>,
+        bp17::placeholder<3>,
         term<int>
-    > expr = p2 + std::move(i);
+    > expr = p3 + std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
-        bp17::placeholder<2>,
+        bp17::placeholder<3>,
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::placeholder<2>,
+            bp17::placeholder<3>,
             term<int>
         >
-    > unevaluated_expr = p2 + std::move(expr);
+    > unevaluated_expr = p3 + std::move(expr);
 
     {
-        double result = evaluate(p2, 5, 6, 7);
+        double result = evaluate(p3, 5, 6, 7);
         EXPECT_EQ(result, 7);
     }
 

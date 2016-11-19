@@ -53,10 +53,10 @@ TEST(call_expr, test_call_expr)
     {
         bp17::expression<
             bp17::expr_kind::call,
-            bp17::placeholder<0>,
             bp17::placeholder<1>,
-            bp17::placeholder<2>
-        > expr = 0_p(1_p, 2_p);
+            bp17::placeholder<2>,
+            bp17::placeholder<3>
+        > expr = 1_p(2_p, 3_p);
 
         {
             auto min = [] (int a, int b) { return a < b ? a : b; };
@@ -80,7 +80,7 @@ TEST(call_expr, test_call_expr)
 
         {
             auto min = bp17::make_terminal(min_lambda);
-            auto expr = min(0_p, 1_p);
+            auto expr = min(1_p, 2_p);
 
             {
                 int result = evaluate(expr, 3, 7);
@@ -90,7 +90,7 @@ TEST(call_expr, test_call_expr)
 
         {
             term<decltype(min_lambda)> min = {{min_lambda}};
-            auto expr = min(0_p, 1_p);
+            auto expr = min(1_p, 2_p);
 
             {
                 int result = evaluate(expr, 3, 7);
@@ -107,7 +107,7 @@ TEST(call_expr, test_call_expr)
 
         {
             term<min_function_object_t> min = bp17::make_terminal(min_function_object);
-            auto expr = min(0_p, 1_p);
+            auto expr = min(1_p, 2_p);
 
             {
                 using namespace boost::hana::literals;
@@ -118,7 +118,7 @@ TEST(call_expr, test_call_expr)
 
         {
             term<min_function_object_t> min = {{min_function_object}};
-            auto expr = min(0_p, 1_p);
+            auto expr = min(1_p, 2_p);
 
             {
                 int result = evaluate(expr, 3, 7);
@@ -128,7 +128,7 @@ TEST(call_expr, test_call_expr)
 
         {
             auto min = bp17::make_terminal(min_function_object_t{});
-            auto expr = min(0_p, 1_p);
+            auto expr = min(1_p, 2_p);
 
             {
                 int result = evaluate(expr, 3, 7);
@@ -138,7 +138,7 @@ TEST(call_expr, test_call_expr)
 
         {
             term<min_function_object_t> min = {{min_function_object_t{}}};
-            auto expr = min(0_p, 1_p);
+            auto expr = min(1_p, 2_p);
 
             {
                 int result = evaluate(expr, 3, 7);
