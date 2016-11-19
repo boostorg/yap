@@ -73,7 +73,7 @@ namespace boost::proto17 {
         { return os << "<<unprintable-value>>"; }
 
         template <typename T>
-        std::ostream & print_type (std::ostream & os)
+        std::ostream & print_type (std::ostream & os, hana::tuple<T> const &)
         {
             os << typeindex::type_id<T>().pretty_name();
             if (std::is_const_v<T>)
@@ -87,10 +87,10 @@ namespace boost::proto17 {
             return os;
         }
 
-        template <expr_kind Kind, typename T, typename ...Ts>
+        template <typename Expr>
         std::ostream & print_impl (
             std::ostream & os,
-            expression<Kind, T, Ts...> const & expr,
+            Expr const & expr,
             int indent,
             char const * indent_str)
         {
@@ -98,21 +98,17 @@ namespace boost::proto17 {
                 os << indent_str;
             }
 
-            if constexpr (Kind == expr_kind::terminal) {
-                using namespace hana::literals;
-                static_assert(sizeof...(Ts) == 0);
+            if constexpr (Expr::kind == expr_kind::terminal) {
                 os << "term<";
-                print_type<T>(os);
+                print_type(os, expr.elements);
                 os << ">[=";
-                print_value(os, expr.elements[0_c]);
+                print_value(os, value(expr));
                 os << "]\n";
-            } else if constexpr (Kind == expr_kind::placeholder) {
-                using namespace hana::literals;
-                static_assert(sizeof...(Ts) == 0);
-                os << "placeholder<" << (long long)expr.elements[0_c] << ">\n";
+            } else if constexpr (Expr::kind == expr_kind::placeholder) {
+                os << "placeholder<" << (long long)value(expr) << ">\n";
             } else {
                 os << "expr<";
-                print_kind(os, Kind);
+                print_kind(os, Expr::kind);
                 os << ">\n";
                 hana::for_each(expr.elements, [&os, indent, indent_str](auto const & element) {
                     print_impl(os, element, indent + 1, indent_str);
@@ -124,8 +120,8 @@ namespace boost::proto17 {
 
     }
 
-    template <expr_kind Kind, typename ...T>
-    std::ostream & print (std::ostream & os, expression<Kind, T...> const & expr)
+    template <typename Expr>
+    std::ostream & print (std::ostream & os, Expr const & expr)
     { return detail::print_impl(os, expr, 0, "    "); }
 
 }
