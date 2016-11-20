@@ -33,6 +33,7 @@ add_test_executable(depth_stress_test_right)
 add_executable(
     compile_tests
     compile_tests_main.cpp
+    compile_is_expr.cpp
     compile_const_term.cpp
     compile_placeholders.cpp
     compile_term_plus_expr.cpp

@@ -1,3 +1,4 @@
+void compile_is_expr();
 void compile_const_term();
 void compile_copy_only_types();
 void compile_move_only_types();
@@ -10,6 +11,7 @@ void compile_x_plus_term();
 
 int main ()
 {
+    compile_is_expr();
     compile_const_term();
     compile_copy_only_types();
     compile_move_only_types();

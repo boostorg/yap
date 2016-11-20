@@ -46,20 +46,36 @@ namespace boost::proto17 {
         struct operand_value_type_phase_1<T, U, false>
         { using type = U; };
 
-        template <typename ...T>
-        struct is_expr
-        { static bool const value = false; };
-
-        template <expr_kind Kind, typename ...T>
-        struct is_expr<expression<Kind, T...>>
-        { static bool const value = true; };
-
         template <typename T>
         struct remove_cv_ref : std::remove_cv<std::remove_reference_t<T>>
         {};
 
         template <typename T>
         using remove_cv_ref_t = typename remove_cv_ref<T>::type;
+
+        template <typename T>
+        struct is_hana_tuple
+        { static bool const value = false; };
+
+        template <typename ...T>
+        struct is_hana_tuple<hana::tuple<T...>>
+        { static bool const value = true; };
+
+        template <typename Expr, typename = std::void_t<>, typename = std::void_t<>>
+        struct is_expr
+        { static bool const value = false; };
+
+        template <typename Expr>
+        struct is_expr<
+            Expr,
+            std::void_t<decltype(Expr::kind)>,
+            std::void_t<decltype(std::declval<Expr>().elements)>
+        >
+        {
+            static bool const value =
+                std::is_same<remove_cv_ref_t<decltype(Expr::kind)>, expr_kind>{} &&
+                is_hana_tuple<remove_cv_ref_t<decltype(std::declval<Expr>().elements)>>::value;
+        };
 
         template <typename T,
                   typename U = typename operand_value_type_phase_1<T>::type,
