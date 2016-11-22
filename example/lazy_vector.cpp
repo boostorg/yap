@@ -88,33 +88,6 @@ int main ()
     lazy_vector v2{{std::vector<double>(4, 2.0)}};
     lazy_vector v3{{std::vector<double>(4, 3.0)}};
 
-#if 1 // TODO
-    // Type of the plus expression.  Note the mix of boost::proto17 and user types.
-    lazy_vector_expr<
-        boost::proto17::expr_kind::plus,
-        boost::hana::tuple<
-            boost::proto17::expression<
-                boost::proto17::expr_kind::expr_ref,
-                // This is expanded into a lazy_vector_expr, because
-                // lazy_vector_expr::operator+() does not know whether it is a
-                // lazy_vector or not.
-                lazy_vector_expr<
-                    boost::proto17::expr_kind::terminal,
-                    boost::hana::tuple<std::vector<double>>
-                > const &
-            >,
-            boost::proto17::expression<
-                boost::proto17::expr_kind::expr_ref,
-                // This is preserved as a lazy_vector, since the rhs of
-                // lazy_vector_expr::operator+() just wraps whatever Expr type
-                // it is given.
-                lazy_vector &
-            >
-        >
-    > plus_expr = v2 + v3;
-    (void)plus_expr;
-#endif
-
     double d1 = (v2 + v3)[2];
     std::cout << d1 << "\n";
 
