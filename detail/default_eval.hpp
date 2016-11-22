@@ -153,8 +153,8 @@ namespace boost::proto17 {
             }
         }
 
-        template <expr_kind Kind, typename Tuple, typename Transform>
-        auto transform_nonterminal_tuple (Tuple && tuple, Transform && transform);
+        template <typename Expr, typename Tuple, typename Transform>
+        auto transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform);
 
         template <typename Expr, typename Transform, typename = std::void_t<>>
         struct default_transform_expression
@@ -169,7 +169,8 @@ namespace boost::proto17 {
                 } else if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
                     return static_cast<Expr &&>(expr);
                 } else {
-                    return transform_nonterminal_tuple<kind>(
+                    return transform_nonterminal(
+                        expr,
                         static_cast<decltype(expr.elements) &&>(expr.elements),
                         static_cast<Transform &&>(transform)
                     );
@@ -188,8 +189,20 @@ namespace boost::proto17 {
             { return static_cast<Transform &&>(transform)(static_cast<Expr &&>(expr)); }
         };
 
-        template <expr_kind Kind, typename Tuple, typename Transform>
-        auto transform_nonterminal_tuple (Tuple && tuple, Transform && transform)
+        // TODO: Add a test that exercises this witht aome expression template
+        // other than expression<>.
+        template <
+            template<expr_kind, class, class ...> class Expr,
+            expr_kind Kind,
+            typename OldTuple,
+            typename NewTuple,
+            typename ...T
+        >
+        auto make_expr_from_tuple (Expr<Kind, OldTuple, T...> const & expr, NewTuple && tuple)
+        { return Expr<Kind, NewTuple, T...>(std::move(tuple)); }
+
+        template <typename Expr, typename Tuple, typename Transform>
+        auto transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform)
         {
             auto transformed_tuple = hana::transform(
                 static_cast<Tuple &&>(tuple),
@@ -202,8 +215,7 @@ namespace boost::proto17 {
                     );
                 }
             );
-            using return_type = expression<Kind, decltype(transformed_tuple)>; // TODO: Don't turn this into an expression<>!
-            return return_type(std::move(transformed_tuple));
+            return make_expr_from_tuple(expr, std::move(transformed_tuple));
         }
 
     }
