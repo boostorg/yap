@@ -332,66 +332,6 @@ namespace boost::proto17 {
             return static_cast<tuple_type &&>(elements)[0_c];
         }
 
-        decltype(auto) left () const &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return elements[0_c];
-        }
-
-        decltype(auto) left () &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return elements[0_c];
-        }
-
-        decltype(auto) left () &&
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return static_cast<tuple_type &&>(elements)[0_c];
-        }
-
-        decltype(auto) right () const &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return elements[1_c];
-        }
-
-        decltype(auto) right () &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return elements[1_c];
-        }
-
-        decltype(auto) right () &&
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return static_cast<tuple_type &&>(elements)[1_c];
-        }
-
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
         auto operator op const &                                        \
         {                                                               \
