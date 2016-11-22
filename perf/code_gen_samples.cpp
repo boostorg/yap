@@ -129,7 +129,24 @@ user::number eval_as_proto_expr_4x (
     return expr;
 }
 
-/* LLVM produces this for eval_as_proto_expr under -O3:
+/* LLVM produces this for eval_as_proto_expr_4x under -O3:
+   0x00000000004005e0 <+0>:     movsd  (%rdi),%xmm1
+   0x00000000004005e4 <+4>:     movsd  0x18(%rdi),%xmm0
+   0x00000000004005e9 <+9>:     mulsd  0x8(%rdi),%xmm1
+   0x00000000004005ee <+14>:    addsd  0x10(%rdi),%xmm1
+   0x00000000004005f3 <+19>:    movsd  0x28d(%rip),%xmm2        # 0x400888
+   0x00000000004005fb <+27>:    addsd  %xmm2,%xmm1
+   0x00000000004005ff <+31>:    mulsd  0x20(%rdi),%xmm0
+   0x0000000000400604 <+36>:    addsd  0x28(%rdi),%xmm0
+   0x0000000000400609 <+41>:    addsd  %xmm2,%xmm0
+   0x000000000040060d <+45>:    movsd  0x30(%rdi),%xmm3
+   0x0000000000400612 <+50>:    mulsd  0x38(%rdi),%xmm3
+   0x0000000000400617 <+55>:    addsd  0x40(%rdi),%xmm3
+   0x000000000040061c <+60>:    addsd  %xmm2,%xmm3
+   0x0000000000400620 <+64>:    mulsd  %xmm1,%xmm0
+   0x0000000000400624 <+68>:    addsd  %xmm3,%xmm0
+   0x0000000000400628 <+72>:    addsd  %xmm2,%xmm0
+   0x000000000040062c <+76>:    retq   
 */
 
 #endif
@@ -159,7 +176,21 @@ user::number eval_as_cpp_expr_4x (user::number a, user::number x, user::number y
         (a * x + y) * (a * x + y) + (a * x + y);
 }
 
-/* LLVM produces this for eval_as_cpp_expr under -O3:
+/* LLVM produces this for eval_as_cpp_expr_4x under -O3:
+   0x00000000004007b0 <+0>:     mulsd  %xmm1,%xmm0
+   0x00000000004007b4 <+4>:     addsd  %xmm2,%xmm0
+   0x00000000004007b8 <+8>:     movapd %xmm0,%xmm2
+   0x00000000004007bc <+12>:    mulsd  %xmm2,%xmm2
+   0x00000000004007c0 <+16>:    movapd %xmm0,%xmm1
+   0x00000000004007c4 <+20>:    addsd  %xmm2,%xmm1
+   0x00000000004007c8 <+24>:    addsd  %xmm2,%xmm1
+   0x00000000004007cc <+28>:    addsd  %xmm0,%xmm1
+   0x00000000004007d0 <+32>:    addsd  %xmm2,%xmm1
+   0x00000000004007d4 <+36>:    addsd  %xmm0,%xmm1
+   0x00000000004007d8 <+40>:    addsd  %xmm2,%xmm1
+   0x00000000004007dc <+44>:    addsd  %xmm0,%xmm1
+   0x00000000004007e0 <+48>:    movapd %xmm1,%xmm0
+   0x00000000004007e4 <+52>:    retq   
 */
 
 
