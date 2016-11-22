@@ -780,12 +780,10 @@ namespace boost::proto17 {
 
 namespace boost::proto17 {
 
-    // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr const & expr, T && ...t)
     { return detail::default_eval_expr(expr, static_cast<T &&>(t)...); }
 
-    // TODO: static assert/SFINAE sizeof...(T) >= highest-indexed placeholder
     template <typename R, typename Expr, typename ...T>
     decltype(auto) evaluate_as (Expr const & expr, T && ...t)
     { return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...); }
