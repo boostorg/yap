@@ -2,6 +2,7 @@
 #define BOOST_PROTO17_EXPRESSION_FWD_HPP_INCLUDED
 
 #include <boost/hana/integral_constant.hpp>
+#include <boost/hana/tuple.hpp>
 
 
 namespace boost::proto17 {
@@ -60,14 +61,11 @@ namespace boost::proto17 {
         call // ()
     };
 
-    template <expr_kind Kind, typename ...T>
+    template <expr_kind Kind, typename Tuple>
     struct expression;
 
     template <typename T>
     using terminal = expression<expr_kind::terminal, T>;
-
-    template <long long I>
-    using placeholder = expression<expr_kind::placeholder, hana::llong<I>>;
 
     namespace literals {
 
@@ -76,7 +74,7 @@ namespace boost::proto17 {
         {
             using i = hana::llong<hana::ic_detail::parse<sizeof...(c)>({c...})>;
             static_assert(1 <= i::value, "Placeholders must be >= 1.");
-            return expression<expr_kind::placeholder, i>(i{});
+            return expression<expr_kind::placeholder, hana::tuple<i>>(i{});
         }
 
     }

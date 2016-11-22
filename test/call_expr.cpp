@@ -10,6 +10,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 namespace user {
@@ -53,9 +54,11 @@ TEST(call_expr, test_call_expr)
     {
         bp17::expression<
             bp17::expr_kind::call,
-            bp17::placeholder<1>,
-            bp17::placeholder<2>,
-            bp17::placeholder<3>
+            bh::tuple<
+                bp17::placeholder<1>,
+                bp17::placeholder<2>,
+                bp17::placeholder<3>
+            >
         > expr = 1_p(2_p, 3_p);
 
         {
@@ -103,10 +106,12 @@ TEST(call_expr, test_call_expr)
         struct min_function_object_t
         {
             auto operator() (int a, int b) const { return a < b ? a : b; }
-        } min_function_object;
+        };
+
+        min_function_object_t min_function_object;
 
         {
-            term<min_function_object_t> min = bp17::make_terminal(min_function_object);
+            term<min_function_object_t &> min = bp17::make_terminal(min_function_object);
             auto expr = min(1_p, 2_p);
 
             {
@@ -165,9 +170,11 @@ TEST(call_expr, test_call_expr)
             term<decltype(min_lambda)> min = {{min_lambda}};
             bp17::expression<
                 bp17::expr_kind::call,
-                term<decltype(min_lambda)>,
-                term<int>,
-                term<int>
+                bh::tuple<
+                    term<decltype(min_lambda)>,
+                    term<int>,
+                    term<int>
+                >
             > expr = min(0, 1);
 
             {
@@ -192,9 +199,11 @@ TEST(call_expr, test_call_expr)
             term<user::tag_type> plus = {{user::tag_type{}}};
             bp17::expression<
                 bp17::expr_kind::call,
-                term<user::tag_type>,
-                term<int>,
-                term<int>
+                bh::tuple<
+                    term<user::tag_type>,
+                    term<int>,
+                    term<int>
+                >
             > expr = plus(0, 1);
 
             {

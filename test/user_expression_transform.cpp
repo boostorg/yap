@@ -10,6 +10,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 namespace user {
@@ -32,12 +33,16 @@ namespace user {
     auto eval_expression_as (
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::expression<
-                bp17::expr_kind::multiplies,
-                term<number>,
+            bh::tuple<
+                bp17::expression<
+                    bp17::expr_kind::multiplies,
+                    bh::tuple<
+                        term<number>,
+                        term<number>
+                    >,
+                >,
                 term<number>
-            >,
-            term<number>
+            >
         > const & expr,
         boost::hana::basic_type<number>)
     {
@@ -84,16 +89,22 @@ TEST(user_expression_transform, test_user_expression_transform)
     {
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::expression<
-                bp17::expr_kind::multiplies,
+            bh::tuple<
                 bp17::expression<
                     bp17::expr_kind::multiplies,
-                    term<user::number>,
-                    term<user::number>
+                    bh::tuple<
+                        bp17::expression<
+                            bp17::expr_kind::multiplies,
+                            bh::tuple<
+                                term<user::number>,
+                                term<user::number>
+                            >
+                        >,
+                        term<user::number>
+                    >
                 >,
                 term<user::number>
-            >,
-            term<user::number>
+            >
         > expr = k * a * x + y;
 
         user::number result = expr;
@@ -103,12 +114,16 @@ TEST(user_expression_transform, test_user_expression_transform)
     {
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::expression<
-                bp17::expr_kind::multiplies,
-                term<user::number>,
+            bh::tuple<
+                bp17::expression<
+                    bp17::expr_kind::multiplies,
+                    bh::tuple<
+                        term<user::number>,
+                        term<user::number>
+                    >
+                >,
                 term<user::number>
-            >,
-            term<user::number>
+            >
         > expr = a * x + y;
 
         user::number result = expr;
@@ -118,15 +133,21 @@ TEST(user_expression_transform, test_user_expression_transform)
     {
         bp17::expression<
             bp17::expr_kind::multiplies,
-            term<user::number>,
-            bp17::expression<
-                bp17::expr_kind::plus,
+            bh::tuple<
+                term<user::number>,
                 bp17::expression<
-                    bp17::expr_kind::multiplies,
-                    term<user::number>,
-                    term<user::number>
-                >,
-                term<user::number>
+                    bp17::expr_kind::plus,
+                    bh::tuple<
+                        bp17::expression<
+                            bp17::expr_kind::multiplies,
+                            bh::tuple<
+                                term<user::number>,
+                                term<user::number>
+                            >
+                        >,
+                        term<user::number>
+                    >
+                >
             >
         > expr = k * (a * x + y);
 

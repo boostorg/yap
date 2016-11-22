@@ -10,6 +10,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 TEST(print, test_print)
@@ -19,16 +20,22 @@ TEST(print, test_print)
     term<int &&> i{std::move(i_)};
     bp17::expression<
         bp17::expr_kind::plus,
-        term<double>,
-        term<int &&>
+        bh::tuple<
+            term<double>,
+            term<int &&>
+        >
     > expr = unity + std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
-        term<double>,
-        bp17::expression<
-            bp17::expr_kind::plus,
+        bh::tuple<
             term<double>,
-            term<int &&>
+            bp17::expression<
+                bp17::expr_kind::plus,
+                bh::tuple<
+                    term<double>,
+                    term<int &&>
+                >
+            >
         >
     > unevaluated_expr = unity + std::move(expr);
 

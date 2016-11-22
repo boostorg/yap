@@ -9,6 +9,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 TEST(placeholder_eval, test_placeholder_eval)
@@ -20,16 +21,22 @@ TEST(placeholder_eval, test_placeholder_eval)
     term<int> i{std::move(i_)};
     bp17::expression<
         bp17::expr_kind::plus,
-        bp17::placeholder<3>,
-        term<int>
+        bh::tuple<
+            bp17::placeholder<3>,
+            term<int>
+        >
     > expr = p3 + std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
-        bp17::placeholder<3>,
-        bp17::expression<
-            bp17::expr_kind::plus,
+        bh::tuple<
             bp17::placeholder<3>,
-            term<int>
+            bp17::expression<
+                bp17::expr_kind::plus,
+                bh::tuple<
+                    bp17::placeholder<3>,
+                    term<int>
+                >
+            >
         >
     > unevaluated_expr = p3 + std::move(expr);
 

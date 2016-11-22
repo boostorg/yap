@@ -6,6 +6,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 inline auto double_to_float (term<double> expr)
@@ -17,17 +18,23 @@ void compile_move_only_types ()
     term<std::unique_ptr<int>> i{new int{7}};
     bp17::expression<
         bp17::expr_kind::plus,
-        term<double>,
-        term<std::unique_ptr<int>>
+        bh::tuple<
+            term<double>,
+            term<std::unique_ptr<int>>
+        >
     > expr_1 = unity + std::move(i);
 
     bp17::expression<
         bp17::expr_kind::plus,
-        term<double>,
-        bp17::expression<
-            bp17::expr_kind::plus,
+        bh::tuple<
             term<double>,
-            term<std::unique_ptr<int>>
+            bp17::expression<
+                bp17::expr_kind::plus,
+                bh::tuple<
+                    term<double>,
+                    term<std::unique_ptr<int>>
+                >
+            >
         >
     > expr_2 = unity + std::move(expr_1);
 

@@ -6,6 +6,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 namespace user {
@@ -28,12 +29,16 @@ namespace user {
     decltype(auto) transform_expression (
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::expression<
-                bp17::expr_kind::multiplies,
-                Expr1,
-                Expr2
-            >,
-            Expr3
+            bh::tuple<
+                bp17::expression<
+                    bp17::expr_kind::multiplies,
+                    bh::tuple<
+                        Expr1,
+                        Expr2
+                    >
+                >,
+                Expr3
+            >
         > const & expr
     ) {
         return naxpy(

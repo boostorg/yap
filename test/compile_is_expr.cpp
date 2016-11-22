@@ -65,8 +65,8 @@ void compile_is_expr ()
 
     static_assert(bp17::detail::is_expr<bp17::terminal<double>>::value);
     static_assert(bp17::detail::is_expr<bp17::placeholder<1>>::value);
-    static_assert(bp17::detail::is_expr<bp17::expression<bp17::expr_kind::unary_plus, bp17::terminal<double>>>::value);
-    static_assert(bp17::detail::is_expr<bp17::expression<bp17::expr_kind::plus, bp17::terminal<double>, bp17::terminal<double>>>::value);
+    static_assert(bp17::detail::is_expr<bp17::expression<bp17::expr_kind::unary_plus, boost::hana::tuple<bp17::terminal<double>>>>::value);
+    static_assert(bp17::detail::is_expr<bp17::expression<bp17::expr_kind::plus, boost::hana::tuple<bp17::terminal<double>, bp17::terminal<double>>>>::value);
 
     static_assert(bp17::detail::is_expr<alternate_expr_1>::value);
     static_assert(bp17::detail::is_expr<alternate_expr_2>::value);

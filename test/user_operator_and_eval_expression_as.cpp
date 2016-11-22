@@ -8,6 +8,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 namespace user {
@@ -44,16 +45,22 @@ TEST(user_eval_expression_as, test_user_eval_expression_as)
     term<user::number> i{{d_}};
     bp17::expression<
         bp17::expr_kind::plus,
-        term<user::number>,
-        term<user::number>
+        bh::tuple<
+            term<user::number>,
+            term<user::number>
+        >
     > expr = unity + std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
-        term<user::number>,
-        bp17::expression<
-            bp17::expr_kind::plus,
+        bh::tuple<
             term<user::number>,
-            term<user::number>
+            bp17::expression<
+                bp17::expr_kind::plus,
+                bh::tuple<
+                    term<user::number>,
+                    term<user::number>
+                >
+            >
         >
     > unevaluated_expr = unity + std::move(expr);
 

@@ -7,6 +7,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 namespace user {
@@ -37,19 +38,23 @@ namespace user {
     struct plus_to_minus_xform
     {
         template <typename Expr1, typename Expr2>
-        decltype(auto) operator() (bp17::expression<bp17::expr_kind::plus, Expr1, Expr2> const & expr)
+        decltype(auto) operator() (bp17::expression<bp17::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
         { return bp17::make_expression<bp17::expr_kind::minus>(expr.left(), expr.right()); }
     };
 
     decltype(auto) naxpy_eager_nontemplate_xform (
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::expression<
-                bp17::expr_kind::multiplies,
-                term<user::number>,
+            bh::tuple<
+                bp17::expression<
+                    bp17::expr_kind::multiplies,
+                    bh::tuple<
+                        term<user::number>,
+                        term<user::number>
+                    >
+                >,
                 term<user::number>
-            >,
-            term<user::number>
+            >
         > const & expr
     ) {
         auto a = evaluate(expr.left().left());
@@ -61,12 +66,16 @@ namespace user {
     decltype(auto) naxpy_lazy_nontemplate_xform (
         bp17::expression<
             bp17::expr_kind::plus,
-            bp17::expression<
-                bp17::expr_kind::multiplies,
-                term<user::number>,
+            bh::tuple<
+                bp17::expression<
+                    bp17::expr_kind::multiplies,
+                    bh::tuple<
+                        term<user::number>,
+                        term<user::number>
+                    >
+                >,
                 term<user::number>
-            >,
-            term<user::number>
+            >
         > const & expr
     ) {
         auto a = expr.left().left();
@@ -81,12 +90,16 @@ namespace user {
         decltype(auto) operator() (
             bp17::expression<
                 bp17::expr_kind::plus,
-                bp17::expression<
-                    bp17::expr_kind::multiplies,
-                    Expr1,
-                    Expr2
-                >,
-                Expr3
+                bh::tuple<
+                    bp17::expression<
+                        bp17::expr_kind::multiplies,
+                        bh::tuple<
+                            Expr1,
+                            Expr2
+                        >
+                    >,
+                    Expr3
+                >
             > const & expr
         ) {
             auto a = transform(expr.left().left(), naxpy_xform{});
@@ -218,17 +231,23 @@ TEST(move_only, test_user_expression_transform_3)
     term<std::unique_ptr<int>> i{new int{7}};
     bp17::expression<
         bp17::expr_kind::plus,
-        term<double>,
-        term<std::unique_ptr<int>>
+        bh::tuple<
+            term<double>,
+            term<std::unique_ptr<int>>
+        >
     > expr_1 = unity + std::move(i);
 
     bp17::expression<
         bp17::expr_kind::plus,
-        term<double>,
-        bp17::expression<
-            bp17::expr_kind::plus,
+        bh::tuple<
             term<double>,
-            term<std::unique_ptr<int>>
+            bp17::expression<
+                bp17::expr_kind::plus,
+                bh::tuple<
+                    term<double>,
+                    term<std::unique_ptr<int>>
+                >
+            >
         >
     > expr_2 = unity + std::move(expr_1);
 

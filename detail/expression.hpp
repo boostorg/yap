@@ -14,9 +14,7 @@ namespace boost::proto17 {
 
         template <typename T>
         struct partial_decay
-        {
-            using type = T;
-        };
+        { using type = T; };
 
         template <typename T>
         struct partial_decay<T[]> { using type = T *; };
@@ -33,9 +31,11 @@ namespace boost::proto17 {
         template <typename R, typename ...A>
         struct partial_decay<R(A..., ...)> { using type = R(*)(A..., ...); };
 
-        template <typename T,
-                  typename U = typename detail::partial_decay<T>::type,
-                  bool AddRValueRef = std::is_same_v<T, U> && !std::is_const_v<U>>
+        template <
+            typename T,
+            typename U = typename detail::partial_decay<T>::type,
+            bool AddRValueRef = std::is_same_v<T, U> && !std::is_const_v<U>
+        >
         struct operand_value_type_phase_1;
 
         template <typename T, typename U>
@@ -73,14 +73,16 @@ namespace boost::proto17 {
         >
         {
             static bool const value =
-                std::is_same<remove_cv_ref_t<decltype(Expr::kind)>, expr_kind>{} &&
+                std::is_same<std::remove_cv_t<decltype(Expr::kind)>, expr_kind>{} &&
                 is_hana_tuple<remove_cv_ref_t<decltype(std::declval<Expr>().elements)>>::value;
         };
 
-        template <typename T,
-                  typename U = typename operand_value_type_phase_1<T>::type,
-                  bool RemoveRefs = std::is_rvalue_reference_v<U>,
-                  bool IsExpr = is_expr<remove_cv_ref_t<T>>::value>
+        template <
+            typename T,
+            typename U = typename operand_value_type_phase_1<T>::type,
+            bool RemoveRefs = std::is_rvalue_reference_v<U>,
+            bool IsExpr = is_expr<remove_cv_ref_t<T>>::value
+        >
         struct operand_type;
 
         template <typename T, typename U, bool RemoveRefs>
@@ -97,21 +99,6 @@ namespace boost::proto17 {
 
         template <typename T>
         using operand_type_t = typename operand_type<T>::type;
-
-        template <expr_kind Kind, typename T>
-        struct expression_from_tuple;
-
-        template <expr_kind Kind, typename ...T>
-        struct expression_from_tuple<Kind, hana::tuple<T...>>
-        { using type = expression<Kind, T...>; };
-
-        template <typename Tuple, typename ...T>
-        constexpr auto make_call_expression (T && ...args)
-        {
-            return typename expression_from_tuple<expr_kind::call, Tuple>::type{
-                Tuple{static_cast<T &&>(args)...}
-            };
-        }
 
     }
 

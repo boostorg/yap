@@ -198,7 +198,7 @@ namespace boost::proto17 {
                     );
                 }
             );
-            using return_type = typename expression_from_tuple<Kind, decltype(transformed_tuple)>::type;
+            using return_type = expression<Kind, decltype(transformed_tuple)>;
             return return_type(std::move(transformed_tuple));
         }
 

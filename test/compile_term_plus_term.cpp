@@ -8,6 +8,7 @@ template <typename T>
 using term = boost::proto17::terminal<T>;
 
 namespace bp17 = boost::proto17;
+namespace bh = boost::hana;
 
 
 void compile_term_plus_term ()
@@ -19,8 +20,10 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<char const *>
+            bh::tuple<
+                term<double>,
+                term<char const *>
+            >
         > unevaluated_expr = unity + term<char const *>{"3"};
         (void)unevaluated_expr;
     }
@@ -30,8 +33,10 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<std::string>
+            bh::tuple<
+                term<double>,
+                term<std::string>
+            >
         > unevaluated_expr = unity + term<std::string>{"3"s};
         (void)unevaluated_expr;
     }
@@ -43,8 +48,10 @@ void compile_term_plus_term ()
         term<int *> ints = {ints_};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int *>
+            bh::tuple<
+                term<double>,
+                term<int *>
+            >
         > unevaluated_expr = unity + ints;
         (void)unevaluated_expr;
     }
@@ -55,8 +62,10 @@ void compile_term_plus_term ()
         term<int const *> ints = {ints_};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int const *>
+            bh::tuple<
+                term<double>,
+                term<int const *>
+            >
         > unevaluated_expr = unity + ints;
         (void)unevaluated_expr;
     }
@@ -67,8 +76,10 @@ void compile_term_plus_term ()
         term<int *> ints = {ints_};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int *>
+            bh::tuple<
+                term<double>,
+                term<int *>
+            >
         > unevaluated_expr = unity + std::move(ints);
         (void)unevaluated_expr;
     }
@@ -80,8 +91,10 @@ void compile_term_plus_term ()
         term<int * const> int_ptr = {ints};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int * const>
+            bh::tuple<
+                term<double>,
+                term<int * const>
+            >
         > unevaluated_expr = unity + int_ptr;
         (void)unevaluated_expr;
     }
@@ -92,8 +105,10 @@ void compile_term_plus_term ()
         term<int const * const> int_ptr = {ints};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int const * const>
+            bh::tuple<
+                term<double>,
+                term<int const * const>
+            >
         > unevaluated_expr = unity + int_ptr;
         (void)unevaluated_expr;
     }
@@ -104,8 +119,10 @@ void compile_term_plus_term ()
         term<int * const> int_ptr = {ints};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int * const>
+            bh::tuple<
+                term<double>,
+                term<int * const>
+            >
         > unevaluated_expr = unity + std::move(int_ptr);
         (void)unevaluated_expr;
     }
@@ -116,8 +133,10 @@ void compile_term_plus_term ()
         term<int> i = {1};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int>
+            bh::tuple<
+                term<double>,
+                term<int>
+            >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
     }
@@ -127,8 +146,10 @@ void compile_term_plus_term ()
         term<int const> i = {1};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int const>
+            bh::tuple<
+                term<double>,
+                term<int const>
+            >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
     }
@@ -138,8 +159,10 @@ void compile_term_plus_term ()
         term<int> i = {1};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int>
+            bh::tuple<
+                term<double>,
+                term<int>
+            >
         > unevaluated_expr = unity + std::move(i);
         (void)unevaluated_expr;
     }
@@ -150,8 +173,10 @@ void compile_term_plus_term ()
         term<int> const i = {1};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int>
+            bh::tuple<
+                term<double>,
+                term<int>
+            >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
     }
@@ -161,8 +186,10 @@ void compile_term_plus_term ()
         term<int const> const i = {1};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int const>
+            bh::tuple<
+                term<double>,
+                term<int const>
+            >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
     }
@@ -174,8 +201,10 @@ void compile_term_plus_term ()
         term<int &> i{i_};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int &>
+            bh::tuple<
+                term<double>,
+                term<int &>
+            >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
     }
@@ -186,8 +215,10 @@ void compile_term_plus_term ()
         term<int const &> i{i_};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int const &>
+            bh::tuple<
+                term<double>,
+                term<int const &>
+            >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
     }
@@ -198,8 +229,10 @@ void compile_term_plus_term ()
         term<int &> i{i_};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int &>
+            bh::tuple<
+                term<double>,
+                term<int &>
+            >
         > unevaluated_expr = unity + std::move(i);
         (void)unevaluated_expr;
     }
@@ -211,8 +244,10 @@ void compile_term_plus_term ()
         term<int &&> i{std::move(i_)};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int &&>
+            bh::tuple<
+                term<double>,
+                term<int &&>
+            >
         > unevaluated_expr = unity + std::move(i);
         (void)unevaluated_expr;
     }
@@ -223,8 +258,10 @@ void compile_term_plus_term ()
         term<int &&> i{std::move(i_)};
         bp17::expression<
             bp17::expr_kind::plus,
-            term<double>,
-            term<int &&>
+            bh::tuple<
+                term<double>,
+                term<int &&>
+            >
         > unevaluated_expr = unity + std::move(i);
         (void)unevaluated_expr;
     }
