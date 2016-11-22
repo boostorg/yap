@@ -154,9 +154,19 @@ namespace boost::proto17 {
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
         auto operator op const &                                        \
         {                                                               \
-            using tuple_type = hana::tuple<this_type>;                  \
+            using lhs_type = expression<expr_kind::expr_ref, this_type const &>; \
+            using tuple_type = hana::tuple<lhs_type>;                   \
             return expression<expr_kind::op_name, tuple_type>{          \
-                tuple_type{*this}                                       \
+                tuple_type{lhs_type{*this}}                             \
+            };                                                          \
+        }                                                               \
+        template <typename U>                                           \
+        auto operator op &                                              \
+        {                                                               \
+            using lhs_type = expression<expr_kind::expr_ref, this_type &>; \
+            using tuple_type = hana::tuple<lhs_type>;                   \
+            return expression<expr_kind::op_name, tuple_type>{          \
+                tuple_type{lhs_type{*this}}                             \
             };                                                          \
         }                                                               \
         auto operator op &&                                             \
@@ -180,17 +190,26 @@ namespace boost::proto17 {
 
 #undef BOOST_PROTO17_UNARY_MEMBER_OPERATOR
 
+        // TODO: Add test coverage for all the operators, for expression and terminal.
 #define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op, op_name)               \
         template <typename U>                                           \
         auto operator op (U && rhs) const &                             \
         {                                                               \
+            using lhs_type = expression<expr_kind::expr_ref, this_type const &>; \
             using rhs_type = detail::operand_type_t<U>;                 \
-            using tuple_type = hana::tuple<this_type, rhs_type>;        \
+            using tuple_type = hana::tuple<lhs_type, rhs_type>;         \
             return expression<expr_kind::op_name, tuple_type>{          \
-                tuple_type{                                             \
-                    *this,                                              \
-                    static_cast<U &&>(rhs)                              \
-                }                                                       \
+                tuple_type{lhs_type{*this}, static_cast<U &&>(rhs)}     \
+            };                                                          \
+        }                                                               \
+        template <typename U>                                           \
+        auto operator op (U && rhs) &                                   \
+        {                                                               \
+            using lhs_type = expression<expr_kind::expr_ref, this_type &>; \
+            using rhs_type = detail::operand_type_t<U>;                 \
+            using tuple_type = hana::tuple<lhs_type, rhs_type>;         \
+            return expression<expr_kind::op_name, tuple_type>{          \
+                tuple_type{lhs_type{*this}, static_cast<U &&>(rhs)}     \
             };                                                          \
         }                                                               \
         template <typename U>                                           \
@@ -199,10 +218,7 @@ namespace boost::proto17 {
             using rhs_type = detail::operand_type_t<U>;                 \
             using tuple_type = hana::tuple<this_type, rhs_type>;        \
             return expression<expr_kind::op_name, tuple_type>{          \
-                tuple_type{                                             \
-                    std::move(*this),                                   \
-                    static_cast<U &&>(rhs)                              \
-                }                                                       \
+                tuple_type{std::move(*this), static_cast<U &&>(rhs)}    \
             };                                                          \
         }
 
@@ -228,10 +244,21 @@ namespace boost::proto17 {
         template <typename U>
         auto operator, (U && rhs) const &
         {
+            using lhs_type = expression<expr_kind::expr_ref, this_type const &>;
             using rhs_type = detail::operand_type_t<U>;
             using tuple_type = hana::tuple<this_type, rhs_type>;
             return expression<expr_kind::comma, tuple_type>{
-                tuple_type{*this, static_cast<U &&>(rhs)}
+                tuple_type{lhs_type{*this}, static_cast<U &&>(rhs)}
+            };
+        }
+        template <typename U>
+        auto operator, (U && rhs) &
+        {
+            using lhs_type = expression<expr_kind::expr_ref, this_type &>;
+            using rhs_type = detail::operand_type_t<U>;
+            using tuple_type = hana::tuple<this_type, rhs_type>;
+            return expression<expr_kind::comma, tuple_type>{
+                tuple_type{lhs_type{*this}, static_cast<U &&>(rhs)}
             };
         }
         template <typename U>
@@ -263,9 +290,19 @@ namespace boost::proto17 {
         template <typename ...U>
         auto operator() (U && ...u) const &
         {
-            using tuple_type = hana::tuple<this_type, detail::operand_type_t<U>...>;
+            using lhs_type = expression<expr_kind::expr_ref, this_type const &>;
+            using tuple_type = hana::tuple<lhs_type, detail::operand_type_t<U>...>;
             return expression<expr_kind::call, tuple_type>{
-                tuple_type{*this, static_cast<U &&>(u)...}
+                tuple_type{lhs_type{*this}, static_cast<U &&>(u)...}
+            };
+        }
+        template <typename ...U>
+        auto operator() (U && ...u) &
+        {
+            using lhs_type = expression<expr_kind::expr_ref, this_type &>;
+            using tuple_type = hana::tuple<lhs_type, detail::operand_type_t<U>...>;
+            return expression<expr_kind::call, tuple_type>{
+                tuple_type{lhs_type{*this}, static_cast<U &&>(u)...}
             };
         }
         template <typename ...U>
@@ -277,6 +314,32 @@ namespace boost::proto17 {
             };
         }
     };
+
+    template <typename T>
+    struct expression<expr_kind::expr_ref, T>
+    {
+        static_assert(std::is_lvalue_reference<T>{});
+
+        using this_type = expression<expr_kind::expr_ref, T>;
+        using tuple_type = hana::tuple<std::remove_reference_t<T> *>;
+
+        static const expr_kind kind = expr_kind::expr_ref;
+
+        expression (T t) :
+            elements (std::addressof(t))
+        {}
+
+        tuple_type elements;
+
+        T value () const
+        {
+            using namespace hana::literals;
+            return *elements[0_c];
+        }
+    };
+
+    template <typename T>
+    using expression_ref = expression<expr_kind::expr_ref, T>;
 
     template <typename T>
     struct expression<expr_kind::terminal, T>
@@ -305,39 +368,37 @@ namespace boost::proto17 {
         decltype(auto) value () const &
         {
             using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 1UL,
-                "value() is only defined for unary expressions."
-            );
             return elements[0_c];
         }
 
         decltype(auto) value () &
         {
             using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 1UL,
-                "value() is only defined for unary expressions."
-            );
             return elements[0_c];
         }
 
         decltype(auto) value () &&
         {
             using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 1UL,
-                "value() is only defined for unary expressions."
-            );
             return static_cast<tuple_type &&>(elements)[0_c];
         }
 
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
         auto operator op const &                                        \
         {                                                               \
-            using tuple_type = hana::tuple<this_type>;                  \
+            using lhs_type = expression<expr_kind::expr_ref, this_type const &>; \
+            using tuple_type = hana::tuple<lhs_type>;                   \
             return expression<expr_kind::op_name, tuple_type>{          \
-                tuple_type{*this}                                       \
+                tuple_type{lhs_type{*this}}                             \
+            };                                                          \
+        }                                                               \
+        template <typename U>                                           \
+        auto operator op &                                              \
+        {                                                               \
+            using lhs_type = expression<expr_kind::expr_ref, this_type &>; \
+            using tuple_type = hana::tuple<lhs_type>;                   \
+            return expression<expr_kind::op_name, tuple_type>{          \
+                tuple_type{lhs_type{*this}}                             \
             };                                                          \
         }                                                               \
         auto operator op &&                                             \
@@ -365,10 +426,21 @@ namespace boost::proto17 {
         template <typename U>                                           \
         auto operator op (U && rhs) const &                             \
         {                                                               \
+            using lhs_type = expression<expr_kind::expr_ref, this_type const &>; \
             using rhs_type = detail::operand_type_t<U>;                 \
-            using tuple_type = hana::tuple<this_type, rhs_type>;        \
+            using tuple_type = hana::tuple<lhs_type, rhs_type>;         \
             return expression<expr_kind::op_name, tuple_type>{          \
-                tuple_type{std::move(*this), static_cast<U &&>(rhs)}    \
+                tuple_type{lhs_type{*this}, static_cast<U &&>(rhs)}     \
+            };                                                          \
+        }                                                               \
+        template <typename U>                                           \
+        auto operator op (U && rhs) &                                   \
+        {                                                               \
+            using lhs_type = expression<expr_kind::expr_ref, this_type &>; \
+            using rhs_type = detail::operand_type_t<U>;                 \
+            using tuple_type = hana::tuple<lhs_type, rhs_type>;         \
+            return expression<expr_kind::op_name, tuple_type>{          \
+                tuple_type{lhs_type{*this}, static_cast<U &&>(rhs)}     \
             };                                                          \
         }                                                               \
         template <typename U>                                           \
@@ -403,10 +475,21 @@ namespace boost::proto17 {
         template <typename U>
         auto operator, (U && rhs) const &
         {
+            using lhs_type = expression<expr_kind::expr_ref, this_type const &>;
             using rhs_type = detail::operand_type_t<U>;
             using tuple_type = hana::tuple<this_type, rhs_type>;
             return expression<expr_kind::comma, tuple_type>{
-                tuple_type{*this, static_cast<U &&>(rhs)}
+                tuple_type{lhs_type{*this}, static_cast<U &&>(rhs)}
+            };
+        }
+        template <typename U>
+        auto operator, (U && rhs) &
+        {
+            using lhs_type = expression<expr_kind::expr_ref, this_type &>;
+            using rhs_type = detail::operand_type_t<U>;
+            using tuple_type = hana::tuple<this_type, rhs_type>;
+            return expression<expr_kind::comma, tuple_type>{
+                tuple_type{lhs_type{*this}, static_cast<U &&>(rhs)}
             };
         }
         template <typename U>
@@ -438,9 +521,19 @@ namespace boost::proto17 {
         template <typename ...U>
         auto operator() (U && ...u) const &
         {
-            using tuple_type = hana::tuple<this_type, detail::operand_type_t<U>...>;
+            using lhs_type = expression<expr_kind::expr_ref, this_type const &>;
+            using tuple_type = hana::tuple<lhs_type, detail::operand_type_t<U>...>;
             return expression<expr_kind::call, tuple_type>{
-                tuple_type{*this, static_cast<U &&>(u)...}
+                tuple_type{lhs_type{*this}, static_cast<U &&>(u)...}
+            };
+        }
+        template <typename ...U>
+        auto operator() (U && ...u) &
+        {
+            using lhs_type = expression<expr_kind::expr_ref, this_type &>;
+            using tuple_type = hana::tuple<lhs_type, detail::operand_type_t<U>...>;
+            return expression<expr_kind::call, tuple_type>{
+                tuple_type{lhs_type{*this}, static_cast<U &&>(u)...}
             };
         }
         template <typename ...U>
@@ -464,7 +557,11 @@ namespace boost::proto17 {
             decltype(hana::size(expr.elements))::value == 1UL,
             "value() is only defined for unary expressions."
         );
-        return expr.elements[0_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return expr.value();
+        } else {
+            return expr.elements[0_c];
+        }
     }
 
     template <typename Expr>
@@ -475,7 +572,11 @@ namespace boost::proto17 {
             decltype(hana::size(expr.elements))::value == 1UL,
             "value() is only defined for unary expressions."
         );
-        return expr.elements[0_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return expr.value();
+        } else {
+            return expr.elements[0_c];
+        }
     }
 
     template <typename Expr>
@@ -486,7 +587,11 @@ namespace boost::proto17 {
             decltype(hana::size(expr.elements))::value == 1UL,
             "value() is only defined for unary expressions."
         );
-        return static_cast<decltype(expr.elements) &&>(expr.elements)[0_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return std::move(expr.value());
+        } else {
+            return std::move(expr.elements[0_c]);
+        }
     }
 
     template <typename Expr>
@@ -561,12 +666,12 @@ namespace boost::proto17 {
             expr_kind OpKind, typename T, typename U,
             bool TNonExprUExpr =
                 !detail::is_expr<remove_cv_ref_t<T>>::value &&
-                detail::is_expr<U>::value
+                detail::is_expr<remove_cv_ref_t<U>>::value
         >
         struct binary_op_result
         {
             using lhs_type = detail::operand_type_t<T>;
-            using rhs_type = U;
+            using rhs_type = expression<expr_kind::expr_ref, U>;
             using type = expression<OpKind, hana::tuple<lhs_type, rhs_type>>;
         };
 
@@ -574,27 +679,45 @@ namespace boost::proto17 {
         struct binary_op_result<OpKind, T, U, false>
         {};
 
+        template <expr_kind OpKind, typename T, typename U>
+        using binary_op_result_t = typename binary_op_result<OpKind, T, U>::type;
+
     }
 
 #define BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(op, op_name)           \
     template <typename T, typename Expr>                                \
     auto operator op (T && lhs, Expr const & rhs)                       \
-        -> typename detail::binary_op_result<expr_kind::op_name, T, Expr>::type \
+        -> detail::binary_op_result_t<expr_kind::op_name, T, Expr const &> \
     {                                                                   \
-        using lhs_type = detail::operand_type_t<T>;                     \
-        using rhs_type = Expr;                                          \
+        using result_types = detail::binary_op_result<expr_kind::op_name, T, Expr const &>; \
+        using lhs_type = typename result_types::lhs_type;               \
+        using rhs_type = typename result_types::rhs_type;               \
+        using tuple_type = hana::tuple<lhs_type, rhs_type>;             \
         return {                                                        \
-            hana::tuple<lhs_type, rhs_type>{static_cast<T &&>(lhs), rhs} \
+            tuple_type{static_cast<T &&>(lhs), rhs_type{rhs}}           \
+        };                                                              \
+    }                                                                   \
+    template <typename T, typename Expr>                                \
+    auto operator op (T && lhs, Expr & rhs)                             \
+        -> detail::binary_op_result_t<expr_kind::op_name, T, Expr &>    \
+    {                                                                   \
+        using result_types = detail::binary_op_result<expr_kind::op_name, T, Expr &>; \
+        using lhs_type = typename result_types::lhs_type;               \
+        using rhs_type = typename result_types::rhs_type;               \
+        using tuple_type = hana::tuple<lhs_type, rhs_type>;             \
+        return {                                                        \
+            tuple_type{static_cast<T &&>(lhs), rhs_type{rhs}}           \
         };                                                              \
     }                                                                   \
     template <typename T, typename Expr>                                \
     auto operator op (T && lhs, detail::remove_cv_ref_t<Expr> && rhs)   \
-        -> typename detail::binary_op_result<expr_kind::op_name, T, detail::remove_cv_ref_t<Expr>>::type \
+        -> detail::binary_op_result_t<expr_kind::op_name, T, detail::remove_cv_ref_t<Expr>> \
     {                                                                   \
-        using lhs_type = detail::operand_type_t<T>;                     \
-        using rhs_type = detail::remove_cv_ref_t<Expr>;                 \
+        using result_types = detail::binary_op_result<expr_kind::op_name, T, detail::remove_cv_ref_t<Expr>>; \
+        using lhs_type = typename result_types::lhs_type;               \
+        using rhs_type = typename result_types::rhs_type;               \
         return {                                                        \
-            hana::tuple<lhs_type, rhs_type>{static_cast<T &&>(lhs), static_cast<rhs_type &&>(rhs)} \
+            hana::tuple<lhs_type, rhs_type>{static_cast<T &&>(lhs), std::move(rhs)} \
         };                                                              \
     }
 

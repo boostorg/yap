@@ -105,7 +105,7 @@ TEST(user_expression_transform, test_user_expression_transform)
                 >,
                 term<user::number>
             >
-        > expr = k * a * x + y;
+        > expr = term<user::number>{{2.0}} * user::number{1.0} * user::number{42.0} + user::number{3.0};
 
         user::number result = expr;
         EXPECT_EQ(result.value, 87);
@@ -124,7 +124,7 @@ TEST(user_expression_transform, test_user_expression_transform)
                 >,
                 term<user::number>
             >
-        > expr = a * x + y;
+        > expr = term<user::number>{{1.0}} * user::number{42.0} + user::number{3.0};
 
         user::number result = expr;
         EXPECT_EQ(result.value, 55);
@@ -149,14 +149,17 @@ TEST(user_expression_transform, test_user_expression_transform)
                     >
                 >
             >
-        > expr = k * (a * x + y);
+        > expr = term<user::number>{{2.0}} * (term<user::number>{{1.0}} * user::number{42.0} + user::number{3.0});
 
         user::number result = expr;
         EXPECT_EQ(result.value, 110);
     }
 
     {
-        auto expr = (a * x + y) * (a * x + y) + (a * x + y);
+        auto expr =
+            (term<user::number>{{1.0}} * user::number{42.0} + user::number{3.0}) *
+            (term<user::number>{{1.0}} * user::number{42.0} + user::number{3.0}) +
+            (term<user::number>{{1.0}} * user::number{42.0} + user::number{3.0});
 
         user::number result = expr;
 

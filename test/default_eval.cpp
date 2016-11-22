@@ -19,23 +19,40 @@ TEST(default_eval, default_eval)
     bp17::expression<
         bp17::expr_kind::minus,
         bh::tuple<
-            term<double>,
+            boost::proto17::expression_ref<term<double> &>,
             term<int &&>
         >
     > expr = unity - std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            term<double>,
+            boost::proto17::expression_ref<term<double> &>,
             bp17::expression<
                 bp17::expr_kind::minus,
                 bh::tuple<
-                    term<double>,
+                    boost::proto17::expression_ref<term<double> &>,
                     term<int &&>
                 >
             >
         >
-    > unevaluated_expr = unity + std::move(expr);
+    > unevaluated_expr_1 = unity + std::move(expr);
+
+    bp17::expression<
+        bp17::expr_kind::plus,
+        bh::tuple<
+            boost::proto17::expression_ref<term<double> &>,
+            boost::proto17::expression_ref<term<double> &>
+        >
+    > unevaluated_expr_2 = unity + unity;
+
+    term<double> const const_unity{1.0};
+    bp17::expression<
+        bp17::expr_kind::plus,
+        bh::tuple<
+            boost::proto17::expression_ref<term<double> &>,
+            boost::proto17::expression_ref<term<double> const &>
+        >
+    > unevaluated_expr_3 = unity + const_unity;
 
     {
         double result = unity;
@@ -48,8 +65,18 @@ TEST(default_eval, default_eval)
     }
 
     {
-        double result = unevaluated_expr;
+        double result = unevaluated_expr_1;
         EXPECT_EQ(result, -40);
+    }
+
+    {
+        double result = unevaluated_expr_2;
+        EXPECT_EQ(result, 2);
+    }
+
+    {
+        double result = unevaluated_expr_3;
+        EXPECT_EQ(result, 2);
     }
 
     {
@@ -63,7 +90,17 @@ TEST(default_eval, default_eval)
     }
 
     {
-        double result = evaluate(unevaluated_expr, std::string("15"));
+        double result = evaluate(unevaluated_expr_1, std::string("15"));
         EXPECT_EQ(result, -40);
+    }
+
+    {
+        double result = evaluate(unevaluated_expr_2, std::string("15"));
+        EXPECT_EQ(result, 2);
+    }
+
+    {
+        double result = evaluate(unevaluated_expr_3, std::string("15"));
+        EXPECT_EQ(result, 2);
     }
 }

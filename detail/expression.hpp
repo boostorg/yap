@@ -81,20 +81,25 @@ namespace boost::proto17 {
             typename T,
             typename U = typename operand_value_type_phase_1<T>::type,
             bool RemoveRefs = std::is_rvalue_reference_v<U>,
-            bool IsExpr = is_expr<remove_cv_ref_t<T>>::value
+            bool IsExpr = is_expr<remove_cv_ref_t<T>>::value,
+            bool IsLRef = std::is_lvalue_reference<T>{}
         >
         struct operand_type;
 
         template <typename T, typename U, bool RemoveRefs>
-        struct operand_type<T, U, RemoveRefs, true>
+        struct operand_type<T, U, RemoveRefs, true, false>
         { using type = remove_cv_ref_t<T>; };
 
-        template <typename T, typename U>
-        struct operand_type<T, U, true, false>
+        template <typename T, typename U, bool RemoveRefs>
+        struct operand_type<T, U, RemoveRefs, true, true>
+        { using type = expression<expr_kind::expr_ref, T>; };
+
+        template <typename T, typename U, bool IsLRef>
+        struct operand_type<T, U, true, false, IsLRef>
         { using type = terminal<std::remove_reference_t<U>>; };
 
-        template <typename T, typename U>
-        struct operand_type<T, U, false, false>
+        template <typename T, typename U, bool IsLRef>
+        struct operand_type<T, U, false, false, IsLRef>
         { using type = terminal<U>; };
 
         template <typename T>

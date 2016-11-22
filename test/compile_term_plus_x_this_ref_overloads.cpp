@@ -1,4 +1,3 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 #include <string>
@@ -21,7 +20,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<char const *>
             >
         > unevaluated_expr = unity + "3";
@@ -34,7 +33,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<std::string>
             >
         > unevaluated_expr = unity + "3"s;
@@ -48,7 +47,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int *>
             >
         > unevaluated_expr = unity + ints;
@@ -61,7 +60,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int const *>
             >
         > unevaluated_expr = unity + ints;
@@ -74,7 +73,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int *>
             >
         > unevaluated_expr = unity + std::move(ints);
@@ -89,7 +88,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int * &>
             >
         > unevaluated_expr = unity + int_ptr;
@@ -103,7 +102,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int const * &>
             >
         > unevaluated_expr = unity + int_ptr;
@@ -117,7 +116,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int *>
             >
         > unevaluated_expr = unity + std::move(int_ptr);
@@ -132,7 +131,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int * const &>
             >
         > unevaluated_expr = unity + int_ptr;
@@ -146,7 +145,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int const * const &>
             >
         > unevaluated_expr = unity + int_ptr;
@@ -160,7 +159,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int * const>
             >
         > unevaluated_expr = unity + std::move(int_ptr);
@@ -174,7 +173,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int &>
             >
         > unevaluated_expr = unity + i;
@@ -187,7 +186,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int const &>
             >
         > unevaluated_expr = unity + i;
@@ -200,7 +199,7 @@ void compile_term_plus_x_this_ref_overloads ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int>
             >
         > unevaluated_expr = unity + std::move(i);

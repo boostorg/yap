@@ -1,4 +1,3 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 template <typename T>
@@ -17,21 +16,21 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                term<int>
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<term<int> &>
             >
         > expr = unity + i;
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                bp17::expression<
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
-                        term<int>
+                        bp17::expression_ref<term<double> &>,
+                        bp17::expression_ref<term<int> &>
                     >
-                >
+                > &>
             >
         > unevaluated_expr = unity + expr;
         (void)unevaluated_expr;
@@ -43,21 +42,21 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                term<int const>
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<term<int const> &>
             >
         > expr = unity + i;
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                bp17::expression<
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
-                        term<int const>
+                        bp17::expression_ref<term<double> &>,
+                        bp17::expression_ref<term<int const> &>
                     >
-                >
+                > &>
             >
         > unevaluated_expr = unity + expr;
         (void)unevaluated_expr;
@@ -69,21 +68,21 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                bp17::expression<
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> &>,
                         term<int>
                     >
-                >
+                > &>
             >
         > unevaluated_expr = unity + expr;
         (void)unevaluated_expr;
@@ -96,21 +95,21 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                term<int>
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<term<int> const &>
             >
         > const expr = unity + i;
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                bp17::expression<
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
-                        term<int>
+                        bp17::expression_ref<term<double> &>,
+                        bp17::expression_ref<term<int> const &>
                     >
-                >
+                > const &>
             >
         > unevaluated_expr = unity + expr;
         (void)unevaluated_expr;
@@ -122,21 +121,21 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                term<int>
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<term<int> &>
             >
         > const expr = unity + i;
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                bp17::expression<
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
-                        term<int>
+                        bp17::expression_ref<term<double> &>,
+                        bp17::expression_ref<term<int> &>
                     >
-                >
+                > const &>
             >
         > unevaluated_expr = unity + expr;
         (void)unevaluated_expr;
@@ -150,21 +149,21 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                term<int &>
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<term<int &> &>
             >
         > expr = unity + i;
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                bp17::expression<
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
-                        term<int &>
+                        bp17::expression_ref<term<double> &>,
+                        bp17::expression_ref<term<int &> &>
                     >
-                >
+                > &>
             >
         > unevaluated_expr = unity + expr;
         (void)unevaluated_expr;
@@ -177,21 +176,21 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                term<int const &>
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<term<int const &> &>
             >
         > expr = unity + i;
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                bp17::expression<
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
-                        term<int const &>
+                        bp17::expression_ref<term<double> &>,
+                        bp17::expression_ref<term<int const &> &>
                     >
-                >
+                > &>
             >
         > unevaluated_expr = unity + expr;
         (void)unevaluated_expr;
@@ -204,21 +203,21 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int &>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                bp17::expression<
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> &>,
                         term<int &>
                     >
-                >
+                > &>
             >
         > unevaluated_expr = unity + expr;
         (void)unevaluated_expr;
@@ -231,19 +230,19 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                term<int &>
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<term<int &> &>
             >
         > expr = unity + i;
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
-                        term<int &>
+                        bp17::expression_ref<term<double> &>,
+                        bp17::expression_ref<term<int &> &>
                     >
                 >
             >
@@ -258,19 +257,19 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
-                term<int const &>
+                bp17::expression_ref<term<double> &>,
+                bp17::expression_ref<term<int const &> &>
             >
         > expr = unity + i;
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
-                        term<int const &>
+                        bp17::expression_ref<term<double> &>,
+                        bp17::expression_ref<term<int const &> &>
                     >
                 >
             >
@@ -285,18 +284,18 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int &>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> &>,
                         term<int &>
                     >
                 >
@@ -313,18 +312,18 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> &>,
                         term<int &&>
                     >
                 >
@@ -340,18 +339,18 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> &>,
                         term<int &&>
                     >
                 >
@@ -367,18 +366,18 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> &>,
                         term<int &&>
                     >
                 >
@@ -394,18 +393,18 @@ void compile_term_plus_expr ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> &>,
                         term<int &&>
                     >
                 >

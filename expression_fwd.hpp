@@ -8,6 +8,8 @@
 namespace boost::proto17 {
 
     enum class expr_kind {
+        expr_ref,
+
         terminal,
         placeholder,
 

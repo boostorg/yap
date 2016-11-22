@@ -1,4 +1,3 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 template <typename T>
@@ -23,8 +22,8 @@ void compile_placeholders ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                bp17::placeholder<1>,
-                term<double>
+                bp17::expression_ref<bp17::placeholder<1> &>,
+                bp17::expression_ref<term<double> &>
             >
         > expr = p1 + unity;
         (void)expr;
@@ -35,7 +34,7 @@ void compile_placeholders ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                bp17::placeholder<1>,
+                bp17::expression_ref<bp17::placeholder<1> &>,
                 bp17::placeholder<2>
             >
         > expr = p1 + 2_p;

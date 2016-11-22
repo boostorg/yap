@@ -51,12 +51,12 @@ namespace boost::proto17 {
                 >
             ) {
                 return transform_expression(expr, static_cast<T &&>(args)...);
+            } else if constexpr (kind == expr_kind::expr_ref) {
+                return default_eval_expr(expr.value(), static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::terminal) {
-                static_assert(decltype(hana::size(expr.elements))::value == 1UL);
-                return expr.elements[0_c];
+                return expr.value();
             } else if constexpr (kind == expr_kind::placeholder) {
-                static_assert(decltype(hana::size(expr.elements))::value == 1UL);
-                return eval_placeholder(expr.elements[0_c], static_cast<T &&>(args)...);
+                return eval_placeholder(expr.value(), static_cast<T &&>(args)...);
             }
 
 #define BOOST_PROTO17_UNARY_OPERATOR_CASE(op_name)                      \
@@ -142,7 +142,7 @@ namespace boost::proto17 {
 
                 return hana::unpack(
                     expr.elements,
-                    [&](auto && ... elements) {
+                    [expand_args](auto && ... elements) {
                         return eval_call(
                             expand_args(static_cast<decltype(elements) &&>(elements))...
                         );
@@ -162,7 +162,11 @@ namespace boost::proto17 {
             auto operator() (Expr && expr, Transform && transform)
             {
                 constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
-                if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
+                if constexpr (kind == expr_kind::expr_ref) {
+                    decltype(auto) ref = expr.value();
+                    default_transform_expression<decltype(ref), Transform> transformer;
+                    return transformer(ref, static_cast<Transform &&>(transform));
+                } else if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
                     return static_cast<Expr &&>(expr);
                 } else {
                     return transform_nonterminal_tuple<kind>(
@@ -198,7 +202,7 @@ namespace boost::proto17 {
                     );
                 }
             );
-            using return_type = expression<Kind, decltype(transformed_tuple)>;
+            using return_type = expression<Kind, decltype(transformed_tuple)>; // TODO: Don't turn this into an expression<>!
             return return_type(std::move(transformed_tuple));
         }
 

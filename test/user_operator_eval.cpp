@@ -35,18 +35,18 @@ TEST(user_operator_eval, test_user_operator_eval)
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            term<user::number>,
+            bp17::expression_ref<term<user::number>& >,
             term<user::number>
         >
     > expr = unity + std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            term<user::number>,
+            bp17::expression_ref<term<user::number>& >,
             bp17::expression<
                 bp17::expr_kind::plus,
                 bh::tuple<
-                    term<user::number>,
+                    bp17::expression_ref<term<user::number>& >,
                     term<user::number>
                 >
             >

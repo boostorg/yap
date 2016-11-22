@@ -19,7 +19,7 @@ void compile_move_only_types ()
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            term<double>,
+            bp17::expression_ref<term<double> &>,
             term<std::unique_ptr<int>>
         >
     > expr_1 = unity + std::move(i);
@@ -27,11 +27,11 @@ void compile_move_only_types ()
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            term<double>,
+            bp17::expression_ref<term<double> &>,
             bp17::expression<
                 bp17::expr_kind::plus,
                 bh::tuple<
-                    term<double>,
+                    bp17::expression_ref<term<double> &>,
                     term<std::unique_ptr<int>>
                 >
             >

@@ -171,7 +171,7 @@ TEST(call_expr, test_call_expr)
             bp17::expression<
                 bp17::expr_kind::call,
                 bh::tuple<
-                    term<decltype(min_lambda)>,
+                    bp17::expression_ref<term<decltype(min_lambda)>& >,
                     term<int>,
                     term<int>
                 >
@@ -200,7 +200,7 @@ TEST(call_expr, test_call_expr)
             bp17::expression<
                 bp17::expr_kind::call,
                 bh::tuple<
-                    term<user::tag_type>,
+                    bp17::expression_ref<term<user::tag_type>& >,
                     term<int>,
                     term<int>
                 >

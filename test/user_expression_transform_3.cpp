@@ -1,5 +1,7 @@
 #include "expression.hpp"
 
+#include "print.hpp"
+
 #include <gtest/gtest.h>
 
 
@@ -49,11 +51,11 @@ namespace user {
                 bp17::expression<
                     bp17::expr_kind::multiplies,
                     bh::tuple<
-                        term<user::number>,
-                        term<user::number>
+                        bp17::expression_ref<term<user::number> &>,
+                        bp17::expression_ref<term<user::number> &>
                     >
                 >,
-                term<user::number>
+                bp17::expression_ref<term<user::number> &>
             >
         > const & expr
     ) {
@@ -70,17 +72,17 @@ namespace user {
                 bp17::expression<
                     bp17::expr_kind::multiplies,
                     bh::tuple<
-                        term<user::number>,
-                        term<user::number>
+                        bp17::expression_ref<term<user::number> &>,
+                        bp17::expression_ref<term<user::number> &>
                     >
                 >,
-                term<user::number>
+                bp17::expression_ref<term<user::number> &>
             >
         > const & expr
     ) {
-        auto a = expr.left().left();
-        auto x = expr.left().right();
-        auto y = expr.right();
+        decltype(auto) a = expr.left().left().value();
+        decltype(auto) x = expr.left().right().value();
+        decltype(auto) y = expr.right().value();
         return bp17::make_terminal(naxpy)(a, x, y);
     }
 
@@ -102,10 +104,11 @@ namespace user {
                 >
             > const & expr
         ) {
-            auto a = transform(expr.left().left(), naxpy_xform{});
-            auto x = transform(expr.left().right(), naxpy_xform{});
-            auto y = transform(expr.right(), naxpy_xform{});
-            return bp17::make_terminal(naxpy)(a, x, y);
+            return bp17::make_terminal(naxpy)(
+                transform(expr.left().left(), naxpy_xform{}),
+                transform(expr.left().right(), naxpy_xform{}),
+                transform(expr.right(), naxpy_xform{})
+            );
         }
     };
 
@@ -232,7 +235,7 @@ TEST(move_only, test_user_expression_transform_3)
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            term<double>,
+            bp17::expression_ref<term<double> &>,
             term<std::unique_ptr<int>>
         >
     > expr_1 = unity + std::move(i);
@@ -240,11 +243,11 @@ TEST(move_only, test_user_expression_transform_3)
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            term<double>,
+            bp17::expression_ref<term<double> &>,
             bp17::expression<
                 bp17::expr_kind::plus,
                 bh::tuple<
-                    term<double>,
+                    bp17::expression_ref<term<double> &>,
                     term<std::unique_ptr<int>>
                 >
             >

@@ -87,32 +87,57 @@ namespace boost::proto17 {
             return os;
         }
 
+        bool is_const_expr_ref (...) { return false; }
+        template <typename T>
+        bool is_const_expr_ref (expression_ref<T const &> const &) { return true; }
+
         template <typename Expr>
         std::ostream & print_impl (
             std::ostream & os,
             Expr const & expr,
             int indent,
-            char const * indent_str)
+            char const * indent_str,
+            bool is_ref = false,
+            bool is_const_ref = false)
         {
-            for (int i = 0; i < indent; ++i) {
-                os << indent_str;
-            }
-
-            if constexpr (Expr::kind == expr_kind::terminal) {
-                os << "term<";
-                print_type(os, expr.elements);
-                os << ">[=";
-                print_value(os, value(expr));
-                os << "]\n";
-            } else if constexpr (Expr::kind == expr_kind::placeholder) {
-                os << "placeholder<" << (long long)value(expr) << ">\n";
+            if constexpr (Expr::kind == expr_kind::expr_ref) {
+                print_impl(os, expr.value(), indent, indent_str, true, is_const_expr_ref(expr));
             } else {
-                os << "expr<";
-                print_kind(os, Expr::kind);
-                os << ">\n";
-                hana::for_each(expr.elements, [&os, indent, indent_str](auto const & element) {
-                    print_impl(os, element, indent + 1, indent_str);
-                });
+                for (int i = 0; i < indent; ++i) {
+                    os << indent_str;
+                }
+
+                if constexpr (Expr::kind == expr_kind::terminal) {
+                    os << "term<";
+                    print_type(os, expr.elements);
+                    os << ">[=";
+                    print_value(os, expr.value());
+                    os << "]";
+                    if (is_const_ref)
+                        os << " const &";
+                    else if (is_ref)
+                        os << " &";
+                    os << "\n";
+                } else if constexpr (Expr::kind == expr_kind::placeholder) {
+                    os << "placeholder<" << (long long)expr.value() << ">";
+                    if (is_const_ref)
+                        os << " const &";
+                    else if (is_ref)
+                        os << " &";
+                    os << "\n";
+                } else {
+                    os << "expr<";
+                    print_kind(os, Expr::kind);
+                    os << ">";
+                    if (is_const_ref)
+                        os << " const &";
+                    else if (is_ref)
+                        os << " &";
+                    os << "\n";
+                    hana::for_each(expr.elements, [&os, indent, indent_str](auto const & element) {
+                        print_impl(os, element, indent + 1, indent_str);
+                    });
+                }
             }
 
             return os;

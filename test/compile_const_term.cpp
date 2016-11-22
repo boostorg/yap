@@ -1,4 +1,3 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 template <typename T>
@@ -17,18 +16,18 @@ void compile_const_term ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double const>,
+                bp17::expression_ref<term<double const> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double const>,
+                bp17::expression_ref<term<double const> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double const>,
+                        bp17::expression_ref<term<double const> &>,
                         term<int &&>
                     >
                 >
@@ -44,18 +43,18 @@ void compile_const_term ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> const &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> const &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> const &>,
                         term<int &&>
                     >
                 >
@@ -71,18 +70,18 @@ void compile_const_term ()
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 term<int const &>
             >
         > const expr = unity + std::move(i);
         bp17::expression<
             bp17::expr_kind::plus,
             bh::tuple<
-                term<double>,
+                bp17::expression_ref<term<double> &>,
                 bp17::expression<
                     bp17::expr_kind::plus,
                     bh::tuple<
-                        term<double>,
+                        bp17::expression_ref<term<double> &>,
                         term<int const &>
                     >
                 >

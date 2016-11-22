@@ -22,18 +22,18 @@ TEST(placeholder_eval, test_placeholder_eval)
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            bp17::placeholder<3>,
+            bp17::expression_ref<bp17::placeholder<3> &>,
             term<int>
         >
     > expr = p3 + std::move(i);
     bp17::expression<
         bp17::expr_kind::plus,
         bh::tuple<
-            bp17::placeholder<3>,
+            bp17::expression_ref<bp17::placeholder<3> &>,
             bp17::expression<
                 bp17::expr_kind::plus,
                 bh::tuple<
-                    bp17::placeholder<3>,
+                    bp17::expression_ref<bp17::placeholder<3> &>,
                     term<int>
                 >
             >

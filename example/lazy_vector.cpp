@@ -13,12 +13,13 @@ struct eval_nth
     auto operator() (Expr const & expr)
     {
         using boost::proto17::transform;
-        using boost::proto17::value;
         using boost::proto17::left;
         using boost::proto17::right;
 
         if constexpr (Expr::kind == boost::proto17::expr_kind::terminal) {
-            return value(expr)[n];
+            return boost::proto17::value(expr)[n];
+        } else if constexpr (Expr::kind == boost::proto17::expr_kind::expr_ref) {
+            return transform(boost::proto17::value(expr), *this);
         } else if constexpr (Expr::kind == boost::proto17::expr_kind::plus) {
             return transform(left(expr), *this) + transform(right(expr), *this);
         } else if constexpr (Expr::kind == boost::proto17::expr_kind::minus) {
@@ -29,30 +30,34 @@ struct eval_nth
     std::size_t n;
 };
 
-template <boost::proto17::expr_kind Kind, typename ...T>
+template <boost::proto17::expr_kind Kind, typename Tuple>
 struct lazy_vector_expr
 {
-    using this_type = lazy_vector_expr<Kind, T...>;
+    using this_type = lazy_vector_expr<Kind, Tuple>;
 
     static const boost::proto17::expr_kind kind = Kind;
 
-    boost::hana::tuple<T...> elements;
+    Tuple elements;
 
-    template <boost::proto17::expr_kind Kind2, typename ...U>
-    auto operator+ (lazy_vector_expr<Kind2, U...> const & rhs)
+    template <typename Expr>
+    auto operator+ (Expr && rhs)
     {
-        using rhs_type = lazy_vector_expr<Kind2, U...>;
-        return lazy_vector_expr<boost::proto17::expr_kind::plus, this_type, rhs_type>{
-            boost::hana::tuple<this_type, rhs_type>{*this, rhs}
+        using lhs_type = boost::proto17::expression_ref<this_type const &>;
+        using rhs_type = boost::proto17::detail::operand_type_t<Expr>;
+        using tuple_type = boost::hana::tuple<lhs_type, rhs_type>;
+        return lazy_vector_expr<boost::proto17::expr_kind::plus, tuple_type>{
+            tuple_type{lhs_type{*this}, rhs_type{rhs}}
         };
     }
 
-    template <boost::proto17::expr_kind Kind2, typename ...U>
-    auto operator- (lazy_vector_expr<Kind2, U...> const & rhs)
+    template <typename Expr>
+    auto operator- (Expr && rhs)
     {
-        using rhs_type = lazy_vector_expr<Kind2, U...>;
-        return lazy_vector_expr<boost::proto17::expr_kind::minus, this_type, rhs_type>{
-            boost::hana::tuple<this_type, rhs_type>{*this, rhs}
+        using lhs_type = boost::proto17::expression_ref<this_type const &>;
+        using rhs_type = boost::proto17::detail::operand_type_t<Expr>;
+        using tuple_type = boost::hana::tuple<lhs_type, rhs_type>;
+        return lazy_vector_expr<boost::proto17::expr_kind::minus, tuple_type>{
+            tuple_type{lhs_type{*this}, rhs_type{rhs}}
         };
     }
 
@@ -63,11 +68,11 @@ struct lazy_vector_expr
 struct lazy_vector :
     lazy_vector_expr<
         boost::proto17::expr_kind::terminal,
-        std::vector<double> // TODO: Use a reference?
+        boost::hana::tuple<std::vector<double>>
     >
 {
-    template <boost::proto17::expr_kind Kind, typename ...T>
-    auto operator+= (lazy_vector_expr<Kind, T...> const & rhs)
+    template <boost::proto17::expr_kind Kind, typename Tuple>
+    lazy_vector & operator+= (lazy_vector_expr<Kind, Tuple> const & rhs)
     {
         std::vector<double> & this_vec = boost::proto17::value(*this);
         for (int i = 0, size = (int)this_vec.size(); i < size; ++i) {
@@ -83,7 +88,33 @@ int main ()
     lazy_vector v2{{std::vector<double>(4, 2.0)}};
     lazy_vector v3{{std::vector<double>(4, 3.0)}};
 
-    // TODO: Restore reference preservation when building expression trees.
+#if 1 // TODO
+    // Type of the plus expression.  Note the mix of boost::proto17 and user types.
+    lazy_vector_expr<
+        boost::proto17::expr_kind::plus,
+        boost::hana::tuple<
+            boost::proto17::expression<
+                boost::proto17::expr_kind::expr_ref,
+                // This is expanded into a lazy_vector_expr, because
+                // lazy_vector_expr::operator+() does not know whether it is a
+                // lazy_vector or not.
+                lazy_vector_expr<
+                    boost::proto17::expr_kind::terminal,
+                    boost::hana::tuple<std::vector<double>>
+                > const &
+            >,
+            boost::proto17::expression<
+                boost::proto17::expr_kind::expr_ref,
+                // This is preserved as a lazy_vector, since the rhs of
+                // lazy_vector_expr::operator+() just wraps whatever Expr type
+                // it is given.
+                lazy_vector &
+            >
+        >
+    > plus_expr = v2 + v3;
+    (void)plus_expr;
+#endif
+
     double d1 = (v2 + v3)[2];
     std::cout << d1 << "\n";
 
