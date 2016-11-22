@@ -50,16 +50,8 @@ struct lazy_vector_expr
         };
     }
 
-    template <typename Expr>
-    auto operator- (Expr && rhs)
-    {
-        using lhs_type = boost::proto17::expression_ref<this_type const &>;
-        using rhs_type = boost::proto17::detail::operand_type_t<Expr>;
-        using tuple_type = boost::hana::tuple<lhs_type, rhs_type>;
-        return lazy_vector_expr<boost::proto17::expr_kind::minus, tuple_type>{
-            tuple_type{lhs_type{*this}, rhs_type{rhs}}
-        };
-    }
+    // For simple member operators, you can also use this macro.
+    BOOST_PROTO17_USER_MEMBER_OPERATOR_IMPL(-, minus, this_type, lazy_vector_expr)
 
     auto operator[] (std::size_t n) const
     { return boost::proto17::transform(*this, eval_nth{n}); }

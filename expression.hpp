@@ -809,4 +809,17 @@ namespace boost::proto17 {
 
 }
 
+// TODO: Find a better place for this.  (Reuse it for impls above?)
+#define BOOST_PROTO17_USER_MEMBER_OPERATOR_IMPL(op, op_name, this_type, expr_template) \
+    template <typename Expr>                                            \
+    auto operator op (Expr && rhs)                                      \
+    {                                                                   \
+        using lhs_type = boost::proto17::expression_ref<this_type const &>; \
+        using rhs_type = boost::proto17::detail::operand_type_t<Expr>;  \
+        using tuple_type = boost::hana::tuple<lhs_type, rhs_type>;      \
+        return expr_template<boost::proto17::expr_kind::op_name, tuple_type>{ \
+            tuple_type{lhs_type{*this}, rhs_type{rhs}}                  \
+        };                                                              \
+    }
+
 #endif
