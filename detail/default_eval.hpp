@@ -52,11 +52,11 @@ namespace boost::proto17 {
             ) {
                 return transform_expression(expr, static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::expr_ref) {
-                return default_eval_expr(expr.value(), static_cast<T &&>(args)...);
+                return default_eval_expr(::boost::proto17::value(expr), static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::terminal) {
-                return expr.value();
+                return ::boost::proto17::value(expr);
             } else if constexpr (kind == expr_kind::placeholder) {
-                return eval_placeholder(expr.value(), static_cast<T &&>(args)...);
+                return eval_placeholder(::boost::proto17::value(expr), static_cast<T &&>(args)...);
             }
 
 #define BOOST_PROTO17_UNARY_OPERATOR_CASE(op_name)                      \
@@ -163,7 +163,7 @@ namespace boost::proto17 {
             {
                 constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
                 if constexpr (kind == expr_kind::expr_ref) {
-                    decltype(auto) ref = expr.value();
+                    decltype(auto) ref = ::boost::proto17::value(expr);
                     default_transform_expression<decltype(ref), Transform> transformer;
                     return transformer(ref, static_cast<Transform &&>(transform));
                 } else if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
@@ -189,7 +189,7 @@ namespace boost::proto17 {
             { return static_cast<Transform &&>(transform)(static_cast<Expr &&>(expr)); }
         };
 
-        // TODO: Add a test that exercises this witht aome expression template
+        // TODO: Add a test that exercises this with some expression template
         // other than expression<>.
         template <
             template<expr_kind, class, class ...> class Expr,

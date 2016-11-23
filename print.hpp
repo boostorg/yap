@@ -91,6 +91,7 @@ namespace boost::proto17 {
         template <typename T>
         bool is_const_expr_ref (expression_ref<T const &> const &) { return true; }
 
+        // TODO: Test printing user expression templates.
         template <typename Expr>
         std::ostream & print_impl (
             std::ostream & os,
@@ -101,7 +102,14 @@ namespace boost::proto17 {
             bool is_const_ref = false)
         {
             if constexpr (Expr::kind == expr_kind::expr_ref) {
-                print_impl(os, expr.value(), indent, indent_str, true, is_const_expr_ref(expr));
+                print_impl(
+                    os,
+                    ::boost::proto17::value(expr),
+                    indent,
+                    indent_str,
+                    true,
+                    is_const_expr_ref(expr)
+                );
             } else {
                 for (int i = 0; i < indent; ++i) {
                     os << indent_str;
@@ -111,7 +119,7 @@ namespace boost::proto17 {
                     os << "term<";
                     print_type(os, expr.elements);
                     os << ">[=";
-                    print_value(os, expr.value());
+                    print_value(os, ::boost::proto17::value(expr));
                     os << "]";
                     if (is_const_ref)
                         os << " const &";
@@ -119,7 +127,7 @@ namespace boost::proto17 {
                         os << " &";
                     os << "\n";
                 } else if constexpr (Expr::kind == expr_kind::placeholder) {
-                    os << "placeholder<" << (long long)expr.value() << ">";
+                    os << "placeholder<" << (long long)::boost::proto17::value(expr) << ">";
                     if (is_const_ref)
                         os << " const &";
                     else if (is_ref)

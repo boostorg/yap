@@ -456,7 +456,7 @@ namespace boost::proto17 {
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return expr.value();
+            return *expr.elements[0_c];
         } else {
             return expr.elements[0_c];
         }
@@ -471,7 +471,7 @@ namespace boost::proto17 {
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return expr.value();
+            return *expr.elements[0_c];
         } else {
             return expr.elements[0_c];
         }
@@ -486,7 +486,7 @@ namespace boost::proto17 {
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return std::move(expr.value());
+            return std::move(*expr.elements[0_c]); // TODO: Move-through as here, or re-bind?
         } else {
             return std::move(expr.elements[0_c]);
         }
