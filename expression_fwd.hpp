@@ -69,6 +69,9 @@ namespace boost::proto17 {
     template <typename T>
     using terminal = expression<expr_kind::terminal, T>;
 
+    template <typename T>
+    using expression_ref = expression<expr_kind::expr_ref, T>;
+
     namespace literals {
 
         template <char ...c>
