@@ -45,3 +45,4 @@ add_executable(
     compile_move_only_types.cpp
     compile_copy_only_types.cpp
 )
+target_link_libraries(compile_tests c++)
