@@ -80,62 +80,60 @@ namespace boost::proto17 {
         decltype(auto) right () &&
         { return ::boost::proto17::right(std::move(*this)); }
 
-#define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
-        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, ::boost::proto17::expression)
+#define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op_name)                    \
+        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::proto17::expression)
 
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(+(), unary_plus) // +
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(-(), negate) // -
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(*(), dereference) // *
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(~(), complement) // ~
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(&(), address_of) // &
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(!(), logical_not) // !
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(++(), pre_inc) // ++
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(--(), pre_dec) // --
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(++(int), post_inc) // ++(int)
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(--(int), post_dec) // --(int)
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(unary_plus) // +
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(negate) // -
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(dereference) // *
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(complement) // ~
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(address_of) // &
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(logical_not) // !
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(pre_inc) // ++
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(pre_dec) // --
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(post_inc) // ++(int)
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(post_dec) // --(int)
 
 #undef BOOST_PROTO17_UNARY_MEMBER_OPERATOR
 
         // TODO: Add test coverage for all the operators (with all three qual
         // types), for expression and terminal.  Don't forget the free
         // operators.
-#define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op, op_name)               \
-        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op, op_name, this_type, ::boost::proto17::expression)
+#define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op_name)                   \
+        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, ::boost::proto17::expression)
 
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<<, shift_left) // <<
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>>, shift_right) // >>
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(*, multiplies) // *
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(/, divides) // /
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(%, modulus) // %
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(+, plus) // +
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(-, minus) // -
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<, less) // <
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>, greater) // >
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<=, less_equal) // <=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>=, greater_equal) // >=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(==, equal_to) // ==
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(!=, not_equal_to) // !=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(||, logical_or) // ||
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&&, logical_and) // &&
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&, bitwise_and) // &
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|, bitwise_or) // |
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^, bitwise_xor) // ^
-
-        BOOST_PROTO17_USER_MEMBER_COMMA_OPERATOR(this_type, ::boost::proto17::expression)
-
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(->*, mem_ptr) // ->*
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(=, assign) // =
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<<=, shift_left_assign) // <<=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>>=, shift_right_assign) // >>=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(*=, multiplies_assign) // *=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(/=, divides_assign) // /=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(%=, modulus_assign) // %=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(+=, plus_assign) // +=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(-=, minus_assign) // -=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&=, bitwise_and_assign) // &=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|=, bitwise_or_assign) // |=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^=, bitwise_xor_assign) // ^=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR([], subscript) // []
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_left) // <<
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_right) // >>
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(multiplies) // *
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(divides) // /
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(modulus) // %
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(plus) // +
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(minus) // -
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(less) // <
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(greater) // >
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(less_equal) // <=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(greater_equal) // >=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(equal_to) // ==
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(not_equal_to) // !=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(logical_or) // ||
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(logical_and) // &&
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_and) // &
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_or) // |
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_xor) // ^
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(comma) // ,
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(mem_ptr) // ->*
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(assign) // =
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_left_assign) // <<=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_right_assign) // >>=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(multiplies_assign) // *=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(divides_assign) // /=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(modulus_assign) // %=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(plus_assign) // +=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(minus_assign) // -=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_and_assign) // &=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_or_assign) // |=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_xor_assign) // ^=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(subscript) // []
 
 #undef BOOST_PROTO17_BINARY_MEMBER_OPERATOR
 
@@ -175,59 +173,57 @@ namespace boost::proto17 {
         decltype(auto) value () &&
         { return ::boost::proto17::value(std::move(*this)); }
 
-#define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
-        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, ::boost::proto17::expression)
+#define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op_name)                    \
+        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::proto17::expression)
 
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(+(), unary_plus) // +
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(-(), negate) // -
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(*(), dereference) // *
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(~(), complement) // ~
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(&(), address_of) // &
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(!(), logical_not) // !
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(++(), pre_inc) // ++
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(--(), pre_dec) // --
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(++(int), post_inc) // ++(int)
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(--(int), post_dec) // --(int)
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(unary_plus) // +
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(negate) // -
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(dereference) // *
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(complement) // ~
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(address_of) // &
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(logical_not) // !
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(pre_inc) // ++
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(pre_dec) // --
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(post_inc) // ++(int)
+        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(post_dec) // --(int)
 
 #undef BOOST_PROTO17_UNARY_MEMBER_OPERATOR
 
-#define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op, op_name)               \
-        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op, op_name, this_type, ::boost::proto17::expression)
+#define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op_name)                   \
+        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, ::boost::proto17::expression)
 
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<<, shift_left) // <<
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>>, shift_right) // >>
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(*, multiplies) // *
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(/, divides) // /
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(%, modulus) // %
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(+, plus) // +
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(-, minus) // -
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<, less) // <
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>, greater) // >
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<=, less_equal) // <=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>=, greater_equal) // >=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(==, equal_to) // ==
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(!=, not_equal_to) // !=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(||, logical_or) // ||
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&&, logical_and) // &&
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&, bitwise_and) // &
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|, bitwise_or) // |
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^, bitwise_xor) // ^
-
-        BOOST_PROTO17_USER_MEMBER_COMMA_OPERATOR(this_type, ::boost::proto17::expression)
-
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(->*, mem_ptr) // ->*
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(=, assign) // =
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<<=, shift_left_assign) // <<=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>>=, shift_right_assign) // >>=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(*=, multiplies_assign) // *=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(/=, divides_assign) // /=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(%=, modulus_assign) // %=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(+=, plus_assign) // +=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(-=, minus_assign) // -=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(&=, bitwise_and_assign) // &=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|=, bitwise_or_assign) // |=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^=, bitwise_xor_assign) // ^=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR([], subscript) // []
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_left) // <<
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_right) // >>
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(multiplies) // *
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(divides) // /
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(modulus) // %
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(plus) // +
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(minus) // -
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(less) // <
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(greater) // >
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(less_equal) // <=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(greater_equal) // >=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(equal_to) // ==
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(not_equal_to) // !=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(logical_or) // ||
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(logical_and) // &&
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_and) // &
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_or) // |
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_xor) // ^
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(comma) // ,
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(mem_ptr) // ->*
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(assign) // =
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_left_assign) // <<=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_right_assign) // >>=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(multiplies_assign) // *=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(divides_assign) // /=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(modulus_assign) // %=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(plus_assign) // +=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(minus_assign) // -=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_and_assign) // &=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_or_assign) // |=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_xor_assign) // ^=
+        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(subscript) // []
 
 #undef BOOST_PROTO17_BINARY_MEMBER_OPERATOR
 
@@ -348,27 +344,27 @@ namespace boost::proto17 {
         return static_cast<decltype(expr.elements) &&>(expr.elements)[1_c];
     }
 
-#define BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(op, op_name)           \
-    BOOST_PROTO17_USER_NON_MEMBER_BINARY_OPERATOR(op, op_name, expression)
+#define BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(op_name)               \
+    BOOST_PROTO17_USER_NON_MEMBER_BINARY_OPERATOR(op_name, expression)
 
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(<<, shift_left) // <<
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(>>, shift_right) // >>
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(*, multiplies) // *
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(/, divides) // /
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(%, modulus) // %
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(+, plus) // +
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(-, minus) // -
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(<, less) // <
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(>, greater) // >
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(<=, less_equal) // <=
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(>=, greater_equal) // >=
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(==, equal_to) // ==
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(!=, not_equal_to) // !=
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(||, logical_or) // ||
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(&&, logical_and) // &&
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(&, bitwise_and) // &
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(|, bitwise_or) // |
-    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(^, bitwise_xor) // ^
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(shift_left) // <<
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(shift_right) // >>
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(multiplies) // *
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(divides) // /
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(modulus) // %
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(plus) // +
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(minus) // -
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(less) // <
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(greater) // >
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(less_equal) // <=
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(greater_equal) // >=
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(equal_to) // ==
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(not_equal_to) // !=
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(logical_or) // ||
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(logical_and) // &&
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(bitwise_and) // &
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(bitwise_or) // |
+    BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(bitwise_xor) // ^
 
 #undef BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR
 

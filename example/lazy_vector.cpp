@@ -40,8 +40,8 @@ struct lazy_vector_expr
 
     Tuple elements;
 
-    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(+, plus, this_type, ::lazy_vector_expr)
-    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(-, minus, this_type, ::lazy_vector_expr)
+    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::lazy_vector_expr)
+    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::lazy_vector_expr)
 
     auto operator[] (std::size_t n) const
     { return boost::proto17::transform(*this, eval_nth{n}); }
