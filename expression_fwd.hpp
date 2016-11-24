@@ -72,6 +72,42 @@ namespace boost::proto17 {
     template <typename T>
     using expression_ref = expression<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
 
+    template <typename Expr, typename ...T>
+    decltype(auto) evaluate (Expr const & expr, T && ...t);
+
+    template <typename R, typename Expr, typename ...T>
+    decltype(auto) evaluate_as (Expr const & expr, T && ...t);
+
+    template <typename Expr, typename Transform>
+    auto transform (Expr && expr, Transform && transform);
+
+    template <typename Expr>
+    decltype(auto) value (Expr const & expr);
+
+    template <typename Expr>
+    decltype(auto) value (Expr & expr);
+
+    template <typename Expr>
+    decltype(auto) value (std::remove_reference_t<Expr> && expr);
+
+    template <typename Expr>
+    decltype(auto) left (Expr const & expr);
+
+    template <typename Expr>
+    decltype(auto) left (Expr & expr);
+
+    template <typename Expr>
+    decltype(auto) left (std::remove_reference_t<Expr> && expr);
+
+    template <typename Expr>
+    decltype(auto) right (Expr const & expr);
+
+    template <typename Expr>
+    decltype(auto) right (Expr & expr);;
+
+    template <typename Expr>
+    decltype(auto) right (std::remove_reference_t<Expr> && expr);
+
     namespace literals {
 
         template <char ...c>

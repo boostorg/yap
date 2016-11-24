@@ -33,15 +33,6 @@ namespace boost::proto17 {
 
     }
 
-    template <typename Expr, typename ...T>
-    decltype(auto) evaluate (Expr const & expr, T && ...t);
-
-    template <typename R, typename Expr, typename ...T>
-    decltype(auto) evaluate_as (Expr const & expr, T && ...t);
-
-    template <typename Expr, typename Transform>
-    auto transform (Expr && expr, Transform && transform);
-
     template <expr_kind Kind, typename Tuple>
     struct expression
     {
@@ -63,106 +54,31 @@ namespace boost::proto17 {
 #endif
 
         decltype(auto) value () const &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 1UL,
-                "value() is only defined for unary expressions."
-            );
-            if constexpr (kind == expr_kind::expr_ref) {
-                return *elements[0_c];
-            } else {
-                return elements[0_c];
-            }
-        }
+        { return ::boost::proto17::value(*this); }
 
         decltype(auto) value () &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 1UL,
-                "value() is only defined for unary expressions."
-            );
-            if constexpr (kind == expr_kind::expr_ref) {
-                return *elements[0_c];
-            } else {
-                return elements[0_c];
-            }
-        }
+        { return ::boost::proto17::value(*this); }
 
         decltype(auto) value () &&
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 1UL,
-                "value() is only defined for unary expressions."
-            );
-            if constexpr (kind == expr_kind::expr_ref) {
-                return std::move(*elements[0_c]); // TODO: Move-through as here, or re-bind?
-            } else {
-                return std::move(elements[0_c]);
-            }
-        }
+        { return ::boost::proto17::value(std::move(*this)); }
 
         decltype(auto) left () const &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return elements[0_c];
-        }
+        { return ::boost::proto17::left(*this); }
 
         decltype(auto) left () &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return elements[0_c];
-        }
+        { return ::boost::proto17::left(*this); }
 
         decltype(auto) left () &&
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return static_cast<tuple_type &&>(elements)[0_c];
-        }
+        { return ::boost::proto17::left(std::move(*this)); }
 
         decltype(auto) right () const &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return elements[1_c];
-        }
+        { return ::boost::proto17::right(*this); }
 
         decltype(auto) right () &
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return elements[1_c];
-        }
+        { return ::boost::proto17::right(*this); }
 
         decltype(auto) right () &&
-        {
-            using namespace hana::literals;
-            static_assert(
-                decltype(hana::size(elements))::value == 2UL,
-                "left() and right() are only defined for binary expressions."
-            );
-            return static_cast<tuple_type &&>(elements)[1_c];
-        }
+        { return ::boost::proto17::right(std::move(*this)); }
 
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
         BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, expression)
@@ -251,22 +167,13 @@ namespace boost::proto17 {
 #endif
 
         decltype(auto) value () const &
-        {
-            using namespace hana::literals;
-            return elements[0_c];
-        }
+        { return ::boost::proto17::value(*this); }
 
         decltype(auto) value () &
-        {
-            using namespace hana::literals;
-            return elements[0_c];
-        }
+        { return ::boost::proto17::value(*this); }
 
         decltype(auto) value () &&
-        {
-            using namespace hana::literals;
-            return static_cast<tuple_type &&>(elements)[0_c];
-        }
+        { return ::boost::proto17::value(std::move(*this)); }
 
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
         BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, expression)
