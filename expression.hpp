@@ -81,7 +81,7 @@ namespace boost::proto17 {
         { return ::boost::proto17::right(std::move(*this)); }
 
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
-        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, expression)
+        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, ::boost::proto17::expression)
 
         BOOST_PROTO17_UNARY_MEMBER_OPERATOR(+(), unary_plus) // +
         BOOST_PROTO17_UNARY_MEMBER_OPERATOR(-(), negate) // -
@@ -100,7 +100,7 @@ namespace boost::proto17 {
         // types), for expression and terminal.  Don't forget the free
         // operators.
 #define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op, op_name)               \
-        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op, op_name, this_type, expression)
+        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op, op_name, this_type, ::boost::proto17::expression)
 
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<<, shift_left) // <<
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>>, shift_right) // >>
@@ -121,7 +121,7 @@ namespace boost::proto17 {
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|, bitwise_or) // |
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^, bitwise_xor) // ^
 
-        BOOST_PROTO17_USER_MEMBER_COMMA_OPERATOR(this_type, expression)
+        BOOST_PROTO17_USER_MEMBER_COMMA_OPERATOR(this_type, ::boost::proto17::expression)
 
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(->*, mem_ptr) // ->*
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(=, assign) // =
@@ -139,7 +139,7 @@ namespace boost::proto17 {
 
 #undef BOOST_PROTO17_BINARY_MEMBER_OPERATOR
 
-        BOOST_PROTO17_USER_MEMBER_CALL_OPERATOR(this_type, expression)
+        BOOST_PROTO17_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::proto17::expression)
     };
 
     template <typename T>
@@ -176,7 +176,7 @@ namespace boost::proto17 {
         { return ::boost::proto17::value(std::move(*this)); }
 
 #define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op, op_name)                \
-        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, expression)
+        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, ::boost::proto17::expression)
 
         BOOST_PROTO17_UNARY_MEMBER_OPERATOR(+(), unary_plus) // +
         BOOST_PROTO17_UNARY_MEMBER_OPERATOR(-(), negate) // -
@@ -192,7 +192,7 @@ namespace boost::proto17 {
 #undef BOOST_PROTO17_UNARY_MEMBER_OPERATOR
 
 #define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op, op_name)               \
-        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op, op_name, this_type, expression)
+        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op, op_name, this_type, ::boost::proto17::expression)
 
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(<<, shift_left) // <<
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(>>, shift_right) // >>
@@ -213,7 +213,7 @@ namespace boost::proto17 {
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(|, bitwise_or) // |
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(^, bitwise_xor) // ^
 
-        BOOST_PROTO17_USER_MEMBER_COMMA_OPERATOR(this_type, expression)
+        BOOST_PROTO17_USER_MEMBER_COMMA_OPERATOR(this_type, ::boost::proto17::expression)
 
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(->*, mem_ptr) // ->*
         BOOST_PROTO17_BINARY_MEMBER_OPERATOR(=, assign) // =
@@ -231,7 +231,7 @@ namespace boost::proto17 {
 
 #undef BOOST_PROTO17_BINARY_MEMBER_OPERATOR
 
-        BOOST_PROTO17_USER_MEMBER_CALL_OPERATOR(this_type, expression)
+        BOOST_PROTO17_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::proto17::expression)
     };
 
     template <long long I>
@@ -375,10 +375,21 @@ namespace boost::proto17 {
     template <expr_kind Kind, typename ...T>
     auto make_expression (T &&... t)
     {
-        using tuple_type = hana::tuple<detail::operand_type_t<T>...>;
+        using tuple_type = hana::tuple<detail::operand_type_t<expression, T>...>;
         return expression<Kind, tuple_type>{
             tuple_type{
-                detail::make_operand<detail::operand_type_t<T>>{}(static_cast<T &&>(t))...
+                detail::make_operand<detail::operand_type_t<expression, T>>{}(static_cast<T &&>(t))...
+            }
+        };
+    }
+
+    template <template <expr_kind, class> class ExprTemplate, expr_kind Kind, typename ...T>
+    auto make_expression (T &&... t)
+    {
+        using tuple_type = hana::tuple<detail::operand_type_t<ExprTemplate, T>...>;
+        return ExprTemplate<Kind, tuple_type>{
+            tuple_type{
+                detail::make_operand<detail::operand_type_t<ExprTemplate, T>>{}(static_cast<T &&>(t))...
             }
         };
     }
@@ -387,7 +398,16 @@ namespace boost::proto17 {
     auto make_terminal (T && t)
     {
         static_assert(!detail::is_expr<T>::value);
-        using result_type = detail::operand_type_t<T>;
+        using result_type = detail::operand_type_t<expression, T>;
+        using tuple_type = typename result_type::tuple_type;
+        return result_type{tuple_type{static_cast<T &&>(t)}};
+    }
+
+    template <template <expr_kind, class> class ExprTemplate, typename T>
+    auto make_terminal (T && t)
+    {
+        static_assert(!detail::is_expr<T>::value);
+        using result_type = detail::operand_type_t<ExprTemplate, T>;
         using tuple_type = typename result_type::tuple_type;
         return result_type{tuple_type{static_cast<T &&>(t)}};
     }

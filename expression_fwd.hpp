@@ -66,11 +66,11 @@ namespace boost::proto17 {
     template <expr_kind Kind, typename Tuple>
     struct expression;
 
-    template <typename T>
-    using terminal = expression<expr_kind::terminal, T>;
+    template <typename T, template <expr_kind, class> class expr_template = expression>
+    using terminal = expr_template<expr_kind::terminal, T>;
 
-    template <typename T>
-    using expression_ref = expression<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
+    template <typename T, template <expr_kind, class> class expr_template = expression>
+    using expression_ref = expr_template<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
 
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr const & expr, T && ...t);

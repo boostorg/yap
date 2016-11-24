@@ -5,8 +5,8 @@
 #define BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op, op_name, this_type, expr_template) \
     auto operator op const &                                            \
     {                                                                   \
-        using lhs_type = ::boost::proto17::detail::expr_ref_t<this_type const &>; \
-        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<lhs_type>; \
+        using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type const &>; \
+        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
         using tuple_type = ::boost::hana::tuple<lhs_type>;              \
         return expr_template< ::boost::proto17::expr_kind::op_name, tuple_type>{ \
             tuple_type{lhs_type{lhs_tuple_type{this}}}                  \
@@ -14,8 +14,8 @@
     }                                                                   \
     auto operator op &                                                  \
     {                                                                   \
-        using lhs_type = ::boost::proto17::detail::expr_ref_t<this_type &>; \
-        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<lhs_type>; \
+        using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type &>; \
+        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
         using tuple_type = ::boost::hana::tuple<lhs_type>;              \
         return expr_template< ::boost::proto17::expr_kind::op_name, tuple_type>{ \
             tuple_type{lhs_type{lhs_tuple_type{this}}}                  \
@@ -33,9 +33,9 @@
     template <typename Expr>                                            \
     auto operator op (Expr && rhs) const &                              \
     {                                                                   \
-        using lhs_type = ::boost::proto17::detail::expr_ref_t<this_type const &>; \
-        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<lhs_type>; \
-        using rhs_type = ::boost::proto17::detail::operand_type_t<Expr>; \
+        using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type const &>; \
+        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using rhs_type = ::boost::proto17::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return expr_template< ::boost::proto17::expr_kind::op_name, tuple_type>{ \
             tuple_type{                                                 \
@@ -47,9 +47,9 @@
     template <typename Expr>                                            \
     auto operator op (Expr && rhs) &                                    \
     {                                                                   \
-        using lhs_type = ::boost::proto17::detail::expr_ref_t<this_type &>; \
-        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<lhs_type>; \
-        using rhs_type = ::boost::proto17::detail::operand_type_t<Expr>; \
+        using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type &>; \
+        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using rhs_type = ::boost::proto17::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return expr_template< ::boost::proto17::expr_kind::op_name, tuple_type>{ \
             tuple_type{                                                 \
@@ -61,7 +61,7 @@
     template <typename Expr>                                            \
     auto operator op (Expr && rhs) &&                                   \
     {                                                                   \
-        using rhs_type = ::boost::proto17::detail::operand_type_t<Expr>; \
+        using rhs_type = ::boost::proto17::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<this_type, rhs_type>;   \
         return expr_template< ::boost::proto17::expr_kind::op_name, tuple_type>{ \
             tuple_type{                                                 \
@@ -75,9 +75,9 @@
     template <typename Expr>                                            \
     auto operator, (Expr && rhs) const &                                \
     {                                                                   \
-        using lhs_type = ::boost::proto17::detail::expr_ref_t<this_type const &>; \
-        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<lhs_type>; \
-        using rhs_type = ::boost::proto17::detail::operand_type_t<Expr>; \
+        using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type const &>; \
+        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using rhs_type = ::boost::proto17::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return expr_template< ::boost::proto17::expr_kind::comma, tuple_type>{ \
             tuple_type{                                                 \
@@ -89,9 +89,9 @@
     template <typename Expr>                                            \
     auto operator, (Expr && rhs) &                                      \
     {                                                                   \
-        using lhs_type = ::boost::proto17::detail::expr_ref_t<this_type &>; \
-        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<lhs_type>; \
-        using rhs_type = ::boost::proto17::detail::operand_type_t<Expr>; \
+        using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type &>; \
+        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using rhs_type = ::boost::proto17::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return expr_template< ::boost::proto17::expr_kind::comma, tuple_type>{ \
             tuple_type{                                                 \
@@ -103,7 +103,7 @@
     template <typename Expr>                                            \
     auto operator, (Expr && rhs) &&                                     \
     {                                                                   \
-        using rhs_type = ::boost::proto17::detail::operand_type_t<Expr>; \
+        using rhs_type = ::boost::proto17::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<this_type, rhs_type>;   \
         return expr_template< ::boost::proto17::expr_kind::comma, tuple_type>{ \
             tuple_type{                                                 \
@@ -117,17 +117,17 @@
     template <typename ...U>                                            \
     auto operator() (U && ...u) const &                                 \
     {                                                                   \
-        using lhs_type = ::boost::proto17::detail::expr_ref_t<this_type const &>; \
-        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<lhs_type>; \
+        using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type const &>; \
+        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
         using tuple_type = ::boost::hana::tuple<                        \
             lhs_type,                                                   \
-            ::boost::proto17::detail::operand_type_t<U>...              \
+            ::boost::proto17::detail::operand_type_t<expr_template, U>... \
         >;                                                              \
         return expr_template< ::boost::proto17::expr_kind::call, tuple_type>{ \
             tuple_type{                                                 \
                 lhs_type{lhs_tuple_type{this}},                         \
                 ::boost::proto17::detail::make_operand<                 \
-                    ::boost::proto17::detail::operand_type_t<U>         \
+                    ::boost::proto17::detail::operand_type_t<expr_template, U> \
                 >{}(static_cast<U &&>(u))...                            \
             }                                                           \
         };                                                              \
@@ -135,17 +135,17 @@
     template <typename ...U>                                            \
     auto operator() (U && ...u) &                                       \
     {                                                                   \
-        using lhs_type = ::boost::proto17::detail::expr_ref_t<this_type &>; \
-        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<lhs_type>; \
+        using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type &>; \
+        using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
         using tuple_type = ::boost::hana::tuple<                        \
             lhs_type,                                                   \
-            ::boost::proto17::detail::operand_type_t<U>...              \
+            ::boost::proto17::detail::operand_type_t<expr_template, U>... \
         >;                                                              \
         return expr_template< ::boost::proto17::expr_kind::call, tuple_type>{ \
             tuple_type{                                                 \
                 lhs_type{lhs_tuple_type{this}},                         \
                 ::boost::proto17::detail::make_operand<                 \
-                    ::boost::proto17::detail::operand_type_t<U>         \
+                    ::boost::proto17::detail::operand_type_t<expr_template, U> \
                 >{}(static_cast<U &&>(u))...                            \
             }                                                           \
         };                                                              \
@@ -155,13 +155,13 @@
     {                                                                   \
         using tuple_type = ::boost::hana::tuple<                        \
             this_type,                                                  \
-            ::boost::proto17::detail::operand_type_t<U>...              \
+            ::boost::proto17::detail::operand_type_t<expr_template, U>... \
         >;                                                              \
         return expr_template< ::boost::proto17::expr_kind::call, tuple_type>{ \
             tuple_type{                                                 \
                 std::move(*this),                                       \
                 ::boost::proto17::detail::make_operand<                 \
-                    ::boost::proto17::detail::operand_type_t<U>         \
+                    ::boost::proto17::detail::operand_type_t<expr_template, U> \
                 >{}(static_cast<U &&>(u))...                            \
             }                                                           \
         };                                                              \
@@ -172,17 +172,17 @@
     template <typename T, typename Expr>                                \
     auto operator op (T && lhs, Expr const & rhs)                       \
         -> ::boost::proto17::detail::free_binary_op_result_t<           \
+            expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
-            Expr const &,                                               \
-            expr_template                                               \
+            Expr const &                                                \
         >                                                               \
     {                                                                   \
         using result_types = ::boost::proto17::detail::free_binary_op_result< \
+            expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
-            Expr const &,                                               \
-            expr_template                                               \
+            Expr const &                                                \
         >;                                                              \
         using lhs_type = typename result_types::lhs_type;               \
         using rhs_type = typename result_types::rhs_type;               \
@@ -195,17 +195,17 @@
     template <typename T, typename Expr>                                \
     auto operator op (T && lhs, Expr & rhs)                             \
         -> ::boost::proto17::detail::free_binary_op_result_t<           \
+            expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
-            Expr &,                                                     \
-            expr_template                                               \
+            Expr &                                                      \
         >                                                               \
     {                                                                   \
         using result_types = ::boost::proto17::detail::free_binary_op_result< \
+            expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
-            Expr &,                                                     \
-            expr_template                                               \
+            Expr &                                                      \
         >;                                                              \
         using lhs_type = typename result_types::lhs_type;               \
         using rhs_type = typename result_types::rhs_type;               \
@@ -218,17 +218,17 @@
     template <typename T, typename Expr>                                \
     auto operator op (T && lhs, ::boost::proto17::detail::remove_cv_ref_t<Expr> && rhs) \
         -> ::boost::proto17::detail::free_binary_op_result_t<           \
+            expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
-            ::boost::proto17::detail::remove_cv_ref_t<Expr>,            \
-            expr_template                                               \
+            ::boost::proto17::detail::remove_cv_ref_t<Expr>             \
         >                                                               \
     {                                                                   \
         using result_types = ::boost::proto17::detail::free_binary_op_result< \
+            expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
-            ::boost::proto17::detail::remove_cv_ref_t<Expr>,            \
-            expr_template                                               \
+            ::boost::proto17::detail::remove_cv_ref_t<Expr>             \
         >;                                                              \
         using lhs_type = typename result_types::lhs_type;               \
         using rhs_type = typename result_types::rhs_type;               \

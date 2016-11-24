@@ -192,14 +192,13 @@ namespace boost::proto17 {
         // TODO: Add a test that exercises this with some expression template
         // other than expression<>.
         template <
-            template<expr_kind, class, class ...> class Expr,
+            template<expr_kind, class> class ExprTemplate,
             expr_kind Kind,
             typename OldTuple,
-            typename NewTuple,
-            typename ...T
+            typename NewTuple
         >
-        auto make_expr_from_tuple (Expr<Kind, OldTuple, T...> const & expr, NewTuple && tuple)
-        { return Expr<Kind, NewTuple, T...>(std::move(tuple)); }
+        auto make_expr_from_tuple (ExprTemplate<Kind, OldTuple> const & expr, NewTuple && tuple)
+        { return ExprTemplate<Kind, NewTuple>(std::move(tuple)); }
 
         template <typename Expr, typename Tuple, typename Transform>
         auto transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform)
