@@ -70,7 +70,7 @@ namespace boost::proto17 {
     using terminal = expression<expr_kind::terminal, T>;
 
     template <typename T>
-    using expression_ref = expression<expr_kind::expr_ref, T>;
+    using expression_ref = expression<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
 
     namespace literals {
 

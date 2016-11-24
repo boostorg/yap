@@ -77,6 +77,31 @@ namespace boost::proto17 {
                 is_hana_tuple<remove_cv_ref_t<decltype(std::declval<Expr>().elements)>>::value;
         };
 
+        template <typename T>
+        struct expr_ref
+        { using type = expression_ref<T>; };
+
+        template <typename Tuple>
+        struct expr_ref<expression<expr_kind::expr_ref, Tuple> &>
+        { using type = expression<expr_kind::expr_ref, Tuple>; };
+
+        template <typename Tuple>
+        struct expr_ref<expression<expr_kind::expr_ref, Tuple> const &>
+        { using type = expression<expr_kind::expr_ref, Tuple>; };
+
+        template <typename T>
+        using expr_ref_t = typename expr_ref<T>::type;
+
+        template <typename T>
+        struct expr_ref_tuple;
+
+        template <typename Tuple>
+        struct expr_ref_tuple<expression<expr_kind::expr_ref, Tuple>>
+        { using type = Tuple; };
+
+        template <typename T>
+        using expr_ref_tuple_t = typename expr_ref_tuple<T>::type;
+
         template <
             typename T,
             typename U = typename operand_value_type_phase_1<T>::type,
@@ -92,7 +117,11 @@ namespace boost::proto17 {
 
         template <typename T, typename U, bool RemoveRefs>
         struct operand_type<T, U, RemoveRefs, true, true>
-        { using type = expression<expr_kind::expr_ref, T>; };
+        { using type = expr_ref_t<T>; };
+
+        template <typename T, typename U, bool RemoveRefs, bool IsLRef>
+        struct operand_type<T, U, RemoveRefs, true, IsLRef>
+        { using type = remove_cv_ref_t<T>; };
 
         template <typename T, typename U, bool IsLRef>
         struct operand_type<T, U, true, false, IsLRef>
@@ -104,6 +133,59 @@ namespace boost::proto17 {
 
         template <typename T>
         using operand_type_t = typename operand_type<T>::type;
+
+        template <typename R>
+        struct make_operand
+        {
+            template <typename U>
+            auto operator() (U && u)
+            { return R{static_cast<U &&>(u)}; }
+        };
+
+        template <typename Tuple>
+        struct make_operand<expression<expr_kind::expr_ref, Tuple>>
+        {
+            auto operator() (expression<expr_kind::expr_ref, Tuple> expr)
+            { return expr; }
+
+            template <typename U>
+            auto operator() (U && u)
+            { return expression<expr_kind::expr_ref, Tuple>{Tuple{std::addressof(u)}}; }
+        };
+
+        template <
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <expr_kind, class, class ...> class expr_template,
+            bool TNonExprUExpr =
+                !detail::is_expr<remove_cv_ref_t<T>>::value &&
+                detail::is_expr<remove_cv_ref_t<U>>::value
+        >
+        struct free_binary_op_result
+        {
+            using lhs_type = detail::operand_type_t<T>;
+            using rhs_type = detail::expr_ref_t<U>;
+            using rhs_tuple_type = detail::expr_ref_tuple_t<rhs_type>;
+            using type = expr_template<OpKind, hana::tuple<lhs_type, rhs_type>>;
+        };
+
+        template <
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <expr_kind, class, class ...> class expr_template
+        >
+        struct free_binary_op_result<OpKind, T, U, expr_template, false>
+        {};
+
+        template <
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <expr_kind, class, class ...> class expr_template
+        >
+        using free_binary_op_result_t = typename free_binary_op_result<OpKind, T, U, expr_template>::type;
 
     }
 
