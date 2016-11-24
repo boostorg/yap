@@ -141,9 +141,9 @@ namespace boost::proto17 {
     };
 
     template <typename T>
-    struct expression<expr_kind::terminal, T>
+    struct expression<expr_kind::terminal, hana::tuple<T>>
     {
-        using this_type = expression<expr_kind::terminal, T>;
+        using this_type = expression<expr_kind::terminal, hana::tuple<T>>;
         using tuple_type = hana::tuple<T>;
 
         static const expr_kind kind = expr_kind::terminal;

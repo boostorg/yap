@@ -67,7 +67,7 @@ namespace boost::proto17 {
     struct expression;
 
     template <typename T, template <expr_kind, class> class expr_template = expression>
-    using terminal = expr_template<expr_kind::terminal, T>;
+    using terminal = expr_template<expr_kind::terminal, hana::tuple<T>>;
 
     template <typename T, template <expr_kind, class> class expr_template = expression>
     using expression_ref = expr_template<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
