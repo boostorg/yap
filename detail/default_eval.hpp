@@ -169,11 +169,19 @@ namespace boost::proto17 {
                 } else if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
                     return static_cast<Expr &&>(expr);
                 } else {
-                    return transform_nonterminal(
-                        expr,
-                        static_cast<decltype(expr.elements) &&>(expr.elements),
-                        static_cast<Transform &&>(transform)
-                    );
+                    if constexpr (std::is_lvalue_reference<Expr>{}) {
+                        return transform_nonterminal(
+                            expr,
+                            expr.elements,
+                            static_cast<Transform &&>(transform)
+                        );
+                    } else {
+                        return transform_nonterminal(
+                            expr,
+                            std::move(expr.elements),
+                            static_cast<Transform &&>(transform)
+                        );
+                    }
                 }
             }
         };
@@ -198,7 +206,7 @@ namespace boost::proto17 {
             typename NewTuple
         >
         auto make_expr_from_tuple (ExprTemplate<Kind, OldTuple> const & expr, NewTuple && tuple)
-        { return ExprTemplate<Kind, NewTuple>(std::move(tuple)); }
+        { return ExprTemplate<Kind, NewTuple>{std::move(tuple)}; }
 
         template <typename Expr, typename Tuple, typename Transform>
         auto transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform)

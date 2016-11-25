@@ -308,7 +308,7 @@ namespace boost::proto17 {
             decltype(hana::size(expr.elements))::value == 2UL,
             "left() and right() are only defined for binary expressions."
         );
-        return static_cast<decltype(expr.elements) &&>(expr.elements)[0_c];
+        return std::move(expr.elements)[0_c];
     }
 
     template <typename Expr>
@@ -341,7 +341,7 @@ namespace boost::proto17 {
             decltype(hana::size(expr.elements))::value == 2UL,
             "left() and right() are only defined for binary expressions."
         );
-        return static_cast<decltype(expr.elements) &&>(expr.elements)[1_c];
+        return std::move(expr.elements)[1_c];
     }
 
 #define BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(op_name)               \
@@ -400,12 +400,21 @@ namespace boost::proto17 {
     }
 
     template <template <expr_kind, class> class ExprTemplate, typename T>
-    auto make_terminal (T && t)
+    auto make_terminal (T const & t)
     {
         static_assert(!detail::is_expr<T>::value);
         using result_type = detail::operand_type_t<ExprTemplate, T>;
-        using tuple_type = typename result_type::tuple_type;
-        return result_type{tuple_type{static_cast<T &&>(t)}};
+        using tuple_type = decltype(std::declval<result_type>().elements);
+        return result_type{tuple_type{t}};
+    }
+
+    template <template <expr_kind, class> class ExprTemplate, typename T>
+    auto make_terminal (std::remove_reference_t<T> && t)
+    {
+        static_assert(!detail::is_expr<T>::value);
+        using result_type = detail::operand_type_t<ExprTemplate, std::remove_reference_t<T> &&>;
+        using tuple_type = decltype(std::declval<result_type>().elements);
+        return result_type{tuple_type{std::move(t)}};
     }
 
     template <typename Expr>
