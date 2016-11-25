@@ -197,7 +197,10 @@
         using rhs_tuple_type = typename result_types::rhs_tuple_type;   \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return {                                                        \
-            tuple_type{static_cast<T &&>(lhs), rhs_type{rhs_tuple_type{std::addressof(rhs)}}} \
+            tuple_type{                                                 \
+                lhs_type{static_cast<T &&>(lhs)},                       \
+                rhs_type{rhs_tuple_type{std::addressof(rhs)}}           \
+            }                                                           \
         };                                                              \
     }                                                                   \
     template <typename T, typename Expr>                                \
@@ -220,7 +223,10 @@
         using rhs_tuple_type = typename result_types::rhs_tuple_type;   \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return {                                                        \
-            tuple_type{static_cast<T &&>(lhs), rhs_type{rhs_tuple_type{std::addressof(rhs)}}} \
+            tuple_type{                                                 \
+                lhs_type{static_cast<T &&>(lhs)},                       \
+                rhs_type{rhs_tuple_type{std::addressof(rhs)}}           \
+            }                                                           \
         };                                                              \
     }                                                                   \
     template <typename T, typename Expr>                                \
@@ -242,7 +248,7 @@
         using rhs_type = typename result_types::rhs_type;               \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return {                                                        \
-            tuple_type{static_cast<T &&>(lhs), std::move(rhs)}          \
+            tuple_type{lhs_type{static_cast<T &&>(lhs)}, std::move(rhs)} \
         };                                                              \
     }
 
