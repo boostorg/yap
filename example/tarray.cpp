@@ -49,7 +49,7 @@ BOOST_PROTO17_USER_NON_MEMBER_BINARY_OPERATOR(divides, ::tarray_expr)
 boost::proto17::terminal<int, tarray_expr>
 take_nth::operator() (boost::proto17::terminal<std::array<int, 3>, tarray_expr> const & expr)
 {
-    int x = boost::proto17::value(expr)[n];
+    int const x = boost::proto17::value(expr)[n];
     return boost::proto17::make_terminal<tarray_expr, int>(x);
 }
 

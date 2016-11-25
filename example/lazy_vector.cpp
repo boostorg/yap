@@ -8,25 +8,15 @@
 
 
 // TODO: Turn this into a test that counts the number of allocations.
-struct eval_nth
-{
-    template <typename Expr>
-    auto operator() (Expr const & expr)
-    {
-        using boost::proto17::transform;
-        using boost::proto17::left;
-        using boost::proto17::right;
 
-        if constexpr (Expr::kind == boost::proto17::expr_kind::terminal) {
-            return boost::proto17::value(expr)[n];
-        } else if constexpr (Expr::kind == boost::proto17::expr_kind::expr_ref) {
-            return transform(boost::proto17::value(expr), *this);
-        } else if constexpr (Expr::kind == boost::proto17::expr_kind::plus) {
-            return transform(left(expr), *this) + transform(right(expr), *this);
-        } else if constexpr (Expr::kind == boost::proto17::expr_kind::minus) {
-            return transform(left(expr), *this) - transform(right(expr), *this);
-        }
-    }
+template <boost::proto17::expr_kind Kind, typename Tuple>
+struct lazy_vector_expr;
+
+
+struct take_nth
+{
+    boost::proto17::terminal<double, lazy_vector_expr>
+    operator() (boost::proto17::terminal<std::vector<double>, lazy_vector_expr> const & expr);
 
     std::size_t n;
 };
@@ -44,8 +34,15 @@ struct lazy_vector_expr
     BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::lazy_vector_expr)
 
     auto operator[] (std::size_t n) const
-    { return boost::proto17::transform(*this, eval_nth{n}); }
+    { return boost::proto17::evaluate(boost::proto17::transform(*this, take_nth{n})); }
+
 };
+boost::proto17::terminal<double, lazy_vector_expr>
+take_nth::operator() (boost::proto17::terminal<std::vector<double>, lazy_vector_expr> const & expr)
+{
+    double const x = boost::proto17::value(expr)[n];
+    return boost::proto17::make_terminal<lazy_vector_expr, double>(x);
+}
 
 struct lazy_vector :
     lazy_vector_expr<
