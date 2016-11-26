@@ -465,6 +465,26 @@ namespace boost::proto17 {
         return result_type{tuple_type{static_cast<T &&>(t)}};
     }
 
+    template <typename T>
+    decltype(auto) as_expr (T && t)
+    {
+        if constexpr (detail::is_expr<T>::value) {
+            return static_cast<T &&>(t);
+        } else {
+            return make_terminal(static_cast<T &&>(t));
+        }
+    }
+
+    template <template <expr_kind, class> class ExprTemplate, typename T>
+    decltype(auto) as_expr (T && t)
+    {
+        if constexpr (detail::is_expr<T>::value) {
+            return static_cast<T &&>(t);
+        } else {
+            return make_terminal<ExprTemplate>(static_cast<T &&>(t));
+        }
+    }
+
     template <typename Expr>
     struct expression_function
     {
