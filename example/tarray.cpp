@@ -79,20 +79,20 @@ std::ostream & operator<< (std::ostream & os, tarray_expr<Kind, Tuple> const & e
 }
 
 
-struct TArray :
+struct tarray :
     tarray_expr<
         boost::proto17::expr_kind::terminal,
         boost::hana::tuple<std::array<int, 3>>
     >
 {
-    explicit TArray (int i = 0, int j = 0, int k = 0)
+    explicit tarray (int i = 0, int j = 0, int k = 0)
     {
         (*this)[0] = i;
         (*this)[1] = j;
         (*this)[2] = k;
     }
 
-    explicit TArray (std::array<int, 3> a)
+    explicit tarray (std::array<int, 3> a)
     {
         (*this)[0] = a[0];
         (*this)[1] = a[1];
@@ -105,21 +105,21 @@ struct TArray :
     int const & operator[] (std::ptrdiff_t i) const
     { return boost::proto17::value(*this)[i]; }
 
-    TArray & operator= (int i)
-    { return assign(TArray(i)); }
+    tarray & operator= (int i)
+    { return assign(tarray(i)); }
 
     template <typename Expr>
-    TArray & operator= (Expr const & expr)
+    tarray & operator= (Expr const & expr)
     {
         if constexpr (Expr::kind == boost::proto17::expr_kind::terminal) {
-            return assign(TArray(boost::proto17::value(expr)));
+            return assign(tarray(boost::proto17::value(expr)));
         } else {
             return assign(expr);
         }
     }
 
     template <typename Expr>
-    TArray & printAssign (Expr const & expr)
+    tarray & printAssign (Expr const & expr)
     {
         *this = expr;
         std::cout << *this << " = " << expr << std::endl;
@@ -128,7 +128,7 @@ struct TArray :
 
 private:
     template <typename Expr>
-    TArray & assign (Expr const & expr)
+    tarray & assign (Expr const & expr)
     {
         (*this)[0] = expr[0];
         (*this)[1] = expr[1];
@@ -140,16 +140,16 @@ private:
 
 int main()
 {
-    TArray a(3,1,2);
+    tarray a(3,1,2);
 
-    TArray b;
+    tarray b;
 
     std::cout << a << std::endl;
     std::cout << b << std::endl;
 
     b[0] = 7; b[1] = 33; b[2] = -99;
 
-    TArray c(a);
+    tarray c(a);
 
     std::cout << c << std::endl;
 
