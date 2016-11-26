@@ -42,19 +42,13 @@ struct vec3 : vec3_terminal
     int const & operator[] (std::ptrdiff_t i) const
     { return boost::proto17::value(*this)[i]; }
 
-    vec3 & operator= (int i)
-    { return *this = vec3(i, i, i); }
-
-    template <typename Expr>
-    vec3 & operator= (Expr const & expr)
+    template <typename T>
+    vec3 & operator= (T const & t)
     {
-        if constexpr (Expr::kind == boost::proto17::expr_kind::terminal) {
-            *this = vec3(boost::proto17::value(expr));
-        } else {
-            (*this)[0] = boost::proto17::evaluate(boost::proto17::transform(expr, take_nth{0}));
-            (*this)[1] = boost::proto17::evaluate(boost::proto17::transform(expr, take_nth{1}));
-            (*this)[2] = boost::proto17::evaluate(boost::proto17::transform(expr, take_nth{2}));
-        }
+        decltype(auto) expr = boost::proto17::as_expr(t);
+        (*this)[0] = boost::proto17::evaluate(boost::proto17::transform(expr, take_nth{0}));
+        (*this)[1] = boost::proto17::evaluate(boost::proto17::transform(expr, take_nth{1}));
+        (*this)[2] = boost::proto17::evaluate(boost::proto17::transform(expr, take_nth{2}));
         return *this;
     }
 

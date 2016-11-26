@@ -21,6 +21,8 @@ struct tarray_expr
 {
     static_assert(
         Kind != boost::proto17::expr_kind::terminal ||
+        std::is_same<Tuple, boost::hana::tuple<int const &>>{} ||
+        std::is_same<Tuple, boost::hana::tuple<int &>>{} ||
         std::is_same<Tuple, boost::hana::tuple<int>>{} ||
         std::is_same<Tuple, boost::hana::tuple<std::array<int, 3>>>{}
     );
@@ -78,7 +80,6 @@ std::ostream & operator<< (std::ostream & os, tarray_expr<Kind, Tuple> const & e
     return os;
 }
 
-
 struct tarray :
     tarray_expr<
         boost::proto17::expr_kind::terminal,
@@ -105,18 +106,9 @@ struct tarray :
     int const & operator[] (std::ptrdiff_t i) const
     { return boost::proto17::value(*this)[i]; }
 
-    tarray & operator= (int i)
-    { return assign(tarray(i, i, i)); }
-
-    template <typename Expr>
-    tarray & operator= (Expr const & expr)
-    {
-        if constexpr (Expr::kind == boost::proto17::expr_kind::terminal) {
-            return assign(tarray(boost::proto17::value(expr)));
-        } else {
-            return assign(expr);
-        }
-    }
+    template <typename T>
+    tarray & operator= (T const & t)
+    { return assign(boost::proto17::as_expr< ::tarray_expr>(t)); }
 
     template <typename Expr>
     tarray & printAssign (Expr const & expr)
