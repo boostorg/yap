@@ -68,12 +68,12 @@ namespace boost::proto17 {
         template <typename Expr>
         struct is_expr<
             Expr,
-            std::void_t<decltype(Expr::kind)>,
+            std::void_t<decltype(remove_cv_ref_t<Expr>::kind)>,
             std::void_t<decltype(std::declval<Expr>().elements)>
         >
         {
             static bool const value =
-                std::is_same<std::remove_cv_t<decltype(Expr::kind)>, expr_kind>{} &&
+                std::is_same<std::remove_cv_t<decltype(remove_cv_ref_t<Expr>::kind)>, expr_kind>{} &&
                 is_hana_tuple<remove_cv_ref_t<decltype(std::declval<Expr>().elements)>>::value;
         };
 
@@ -107,7 +107,7 @@ namespace boost::proto17 {
             typename T,
             typename U = typename operand_value_type_phase_1<T>::type,
             bool RemoveRefs = std::is_rvalue_reference_v<U>,
-            bool IsExpr = is_expr<remove_cv_ref_t<T>>::value,
+            bool IsExpr = is_expr<T>::value,
             bool IsLRef = std::is_lvalue_reference<T>{}
         >
         struct operand_type;
@@ -159,9 +159,7 @@ namespace boost::proto17 {
             expr_kind OpKind,
             typename T,
             typename U,
-            bool TNonExprUExpr =
-                !detail::is_expr<remove_cv_ref_t<T>>::value &&
-                detail::is_expr<remove_cv_ref_t<U>>::value
+            bool TNonExprUExpr = !detail::is_expr<T>::value && detail::is_expr<U>::value
         >
         struct free_binary_op_result
         {
