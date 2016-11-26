@@ -197,8 +197,6 @@ namespace boost::proto17 {
             { return static_cast<Transform &&>(transform)(static_cast<Expr &&>(expr)); }
         };
 
-        // TODO: Add a test that exercises this with some expression template
-        // other than expression<>.
         template <
             template<expr_kind, class> class ExprTemplate,
             expr_kind Kind,
