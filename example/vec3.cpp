@@ -43,7 +43,7 @@ struct vec3 : vec3_terminal
     { return boost::proto17::value(*this)[i]; }
 
     vec3 & operator= (int i)
-    { return *this = vec3(i); }
+    { return *this = vec3(i, i, i); }
 
     template <typename Expr>
     vec3 & operator= (Expr const & expr)

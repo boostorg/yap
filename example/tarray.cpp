@@ -106,7 +106,7 @@ struct tarray :
     { return boost::proto17::value(*this)[i]; }
 
     tarray & operator= (int i)
-    { return assign(tarray(i)); }
+    { return assign(tarray(i, i, i)); }
 
     template <typename Expr>
     tarray & operator= (Expr const & expr)
