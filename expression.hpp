@@ -94,6 +94,8 @@ namespace boost::proto17 {
 
         static const expr_kind kind = Kind;
 
+        expression () {}
+
         expression (tuple_type && rhs) :
             elements (std::move(rhs))
         {}
@@ -200,6 +202,8 @@ namespace boost::proto17 {
         using tuple_type = hana::tuple<T>;
 
         static const expr_kind kind = expr_kind::terminal;
+
+        expression () {}
 
         expression (T && t) :
             elements (static_cast<T &&>(t))
@@ -453,21 +457,12 @@ namespace boost::proto17 {
     }
 
     template <template <expr_kind, class> class ExprTemplate, typename T>
-    auto make_terminal (T const & t)
+    auto make_terminal (T && t)
     {
         static_assert(!detail::is_expr<T>::value);
         using result_type = detail::operand_type_t<ExprTemplate, T>;
         using tuple_type = decltype(std::declval<result_type>().elements);
-        return result_type{tuple_type{t}};
-    }
-
-    template <template <expr_kind, class> class ExprTemplate, typename T>
-    auto make_terminal (std::remove_reference_t<T> && t)
-    {
-        static_assert(!detail::is_expr<T>::value);
-        using result_type = detail::operand_type_t<ExprTemplate, std::remove_reference_t<T> &&>;
-        using tuple_type = decltype(std::declval<result_type>().elements);
-        return result_type{tuple_type{std::move(t)}};
+        return result_type{tuple_type{static_cast<T &&>(t)}};
     }
 
     template <typename Expr>

@@ -40,8 +40,8 @@ struct lazy_vector_expr
 boost::proto17::terminal<double, lazy_vector_expr>
 take_nth::operator() (boost::proto17::terminal<std::vector<double>, lazy_vector_expr> const & expr)
 {
-    double const x = boost::proto17::value(expr)[n];
-    return boost::proto17::make_terminal<lazy_vector_expr, double>(x);
+    double x = boost::proto17::value(expr)[n];
+    return boost::proto17::make_terminal<lazy_vector_expr, double>(std::move(x));
 }
 
 struct lazy_vector :
