@@ -120,6 +120,62 @@ namespace boost::proto17 {
 
     }
 
+    // Tag types -- one per expr_kind:
+
+    struct expr_ref_tag {}; // TODO: Needed?
+
+    struct terminal_tag {};
+    struct placeholder_tag {};
+
+    // unary
+    struct unary_plus_tag {}; // +
+    struct negate_tag {}; // -
+    struct dereference_tag {}; // *
+    struct complement_tag {}; // ~
+    struct address_of_tag {}; // &
+    struct logical_not_tag {}; // !
+    struct pre_inc_tag {}; // ++
+    struct pre_dec_tag {}; // --
+    struct post_inc_tag {}; // ++(int)
+    struct post_dec_tag {}; // --(int)
+
+    // binary
+    struct shift_left_tag {}; // <<
+    struct shift_right_tag {}; // >>
+    struct multiplies_tag {}; // *
+    struct divides_tag {}; // /
+    struct modulus_tag {}; // %
+    struct plus_tag {}; // +
+    struct minus_tag {}; // -
+    struct less_tag {}; // <
+    struct greater_tag {}; // >
+    struct less_equal_tag {}; // <=
+    struct greater_equal_tag {}; // >=
+    struct equal_to_tag {}; // ==
+    struct not_equal_to_tag {}; // !=
+    struct logical_or_tag {}; // ||
+    struct logical_and_tag {}; // &&
+    struct bitwise_and_tag {}; // &
+    struct bitwise_or_tag {}; // |
+    struct bitwise_xor_tag {}; // ^
+    struct comma_tag {}; // _tag {};
+    struct mem_ptr_tag {}; // ->*
+    struct assign_tag {}; // =
+    struct shift_left_assign_tag {}; // <<=
+    struct shift_right_assign_tag {}; // >>=
+    struct multiplies_assign_tag {}; // *=
+    struct divides_assign_tag {}; // /=
+    struct modulus_assign_tag {}; // %=
+    struct plus_assign_tag {}; // +=
+    struct minus_assign_tag {}; // -=
+    struct bitwise_and_assign_tag {}; // &=
+    struct bitwise_or_assign_tag {}; // |=
+    struct bitwise_xor_assign_tag {}; // ^=
+    struct subscript_tag {}; // []
+
+    // n-ary
+    struct call_tag {}; // ()
+
 }
 
 #endif

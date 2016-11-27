@@ -295,7 +295,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 1UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::one,
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
@@ -310,7 +310,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 1UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::one,
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
@@ -325,7 +325,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 1UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::one,
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
@@ -340,7 +340,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 2UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
             "left() and right() are only defined for binary expressions."
         );
         return expr.elements[0_c];
@@ -351,7 +351,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 2UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
             "left() and right() are only defined for binary expressions."
         );
         return expr.elements[0_c];
@@ -362,7 +362,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 2UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
             "left() and right() are only defined for binary expressions."
         );
         return std::move(expr.elements)[0_c];
@@ -373,7 +373,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 2UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
             "left() and right() are only defined for binary expressions."
         );
         return expr.elements[1_c];
@@ -384,7 +384,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 2UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
             "left() and right() are only defined for binary expressions."
         );
         return expr.elements[1_c];
@@ -395,7 +395,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            decltype(hana::size(expr.elements))::value == 2UL,
+            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
             "left() and right() are only defined for binary expressions."
         );
         return std::move(expr.elements)[1_c];
@@ -516,7 +516,8 @@ namespace boost::proto17 {
     template <typename Expr, typename Transform>
     auto transform (Expr && expr, Transform && transform)
     {
-        return detail::default_transform_expression<Expr, Transform>{}(
+        constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
+        return detail::default_transform_expression<Expr, Transform, detail::arity_of<kind>()>{}(
             static_cast<Expr &&>(expr),
             static_cast<Transform &&>(transform)
         );

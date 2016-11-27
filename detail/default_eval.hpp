@@ -156,7 +156,7 @@ namespace boost::proto17 {
         template <typename Expr, typename Tuple, typename Transform>
         auto transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform);
 
-        template <typename Expr, typename Transform, typename = std::void_t<>>
+        template <typename Expr, typename Transform, expr_arity Arity, typename = std::void_t<>>
         struct default_transform_expression
         {
             auto operator() (Expr && expr, Transform && transform)
@@ -164,7 +164,11 @@ namespace boost::proto17 {
                 constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
                 if constexpr (kind == expr_kind::expr_ref) {
                     decltype(auto) ref = ::boost::proto17::value(expr);
-                    default_transform_expression<decltype(ref), Transform> transformer;
+                    default_transform_expression<
+                        decltype(ref),
+                        Transform,
+                        detail::arity_of<kind>()
+                    > transformer;
                     return transformer(ref, static_cast<Transform &&>(transform));
                 } else if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
                     return static_cast<Expr &&>(expr);
@@ -186,10 +190,11 @@ namespace boost::proto17 {
             }
         };
 
-        template <typename Expr, typename Transform>
+        template <typename Expr, typename Transform, expr_arity Arity>
         struct default_transform_expression<
             Expr,
             Transform,
+            Arity,
             std::void_t<decltype(std::declval<Transform>()(std::declval<Expr>()))>
         >
         {
@@ -213,7 +218,7 @@ namespace boost::proto17 {
                 static_cast<Tuple &&>(tuple),
                 [&transform](auto && element) {
                     using element_t = decltype(element);
-                    default_transform_expression<element_t, Transform> transformer;
+                    default_transform_expression<element_t, Transform, detail::arity_of<Expr::kind>()> transformer;
                     return transformer(
                         static_cast<element_t &&>(element),
                         static_cast<Transform &&>(transform)

@@ -4,6 +4,7 @@
 #include "../expression_fwd.hpp"
 
 #include <boost/hana/tuple.hpp>
+#include <boost/hana/size.hpp>
 
 #include <type_traits>
 
@@ -190,6 +191,142 @@ namespace boost::proto17 {
             T,
             U
         >::type;
+
+        enum class expr_arity {
+            invalid,
+            one,
+            two,
+            n
+        };
+
+        template <expr_kind Kind>
+        constexpr expr_arity arity_of ()
+        {
+            switch (Kind) {
+            case expr_kind::expr_ref:
+
+            case expr_kind::terminal:
+            case expr_kind::placeholder:
+
+            // unary
+            case expr_kind::unary_plus: // +
+            case expr_kind::negate: // -
+            case expr_kind::dereference: // *
+            case expr_kind::complement: // ~
+            case expr_kind::address_of: // &
+            case expr_kind::logical_not: // !
+            case expr_kind::pre_inc: // ++
+            case expr_kind::pre_dec: // --
+            case expr_kind::post_inc: // ++(int)
+            case expr_kind::post_dec: // --(int)
+                return expr_arity::one;
+
+            // binary
+            case expr_kind::shift_left: // <<
+            case expr_kind::shift_right: // >>
+            case expr_kind::multiplies: // *
+            case expr_kind::divides: // /
+            case expr_kind::modulus: // %
+            case expr_kind::plus: // +
+            case expr_kind::minus: // -
+            case expr_kind::less: // <
+            case expr_kind::greater: // >
+            case expr_kind::less_equal: // <=
+            case expr_kind::greater_equal: // >=
+            case expr_kind::equal_to: // ==
+            case expr_kind::not_equal_to: // !=
+            case expr_kind::logical_or: // ||
+            case expr_kind::logical_and: // &&
+            case expr_kind::bitwise_and: // &
+            case expr_kind::bitwise_or: // |
+            case expr_kind::bitwise_xor: // ^
+            case expr_kind::comma: // :
+            case expr_kind::mem_ptr: // ->*
+            case expr_kind::assign: // =
+            case expr_kind::shift_left_assign: // <<=
+            case expr_kind::shift_right_assign: // >>=
+            case expr_kind::multiplies_assign: // *=
+            case expr_kind::divides_assign: // /=
+            case expr_kind::modulus_assign: // %=
+            case expr_kind::plus_assign: // +=
+            case expr_kind::minus_assign: // -=
+            case expr_kind::bitwise_and_assign: // &=
+            case expr_kind::bitwise_or_assign: // |=
+            case expr_kind::bitwise_xor_assign: // ^=
+            case expr_kind::subscript: // []
+                return expr_arity::two;
+
+            // n-ary
+            case expr_kind::call: // ()
+                return expr_arity::n;
+
+            default:
+                return expr_arity::invalid;
+            }
+        }
+
+        template <expr_kind Kind>
+        constexpr auto tag_for ()
+        {
+#define CASE(x) if constexpr (Kind == expr_kind::x) return x ## _tag{}
+
+            CASE(expr_ref);
+
+            CASE(terminal);
+            CASE(placeholder);
+
+            // unary
+            CASE(unary_plus); // +
+            CASE(negate); // -
+            CASE(dereference); // *
+            CASE(complement); // ~
+            CASE(address_of); // &
+            CASE(logical_not); // !
+            CASE(pre_inc); // ++
+            CASE(pre_dec); // --
+            CASE(post_inc); // ++(int)
+            CASE(post_dec); // --(int)
+
+            // binary
+            CASE(shift_left); // <<
+            CASE(shift_right); // >>
+            CASE(multiplies); // *
+            CASE(divides); // /
+            CASE(modulus); // %
+            CASE(plus); // +
+            CASE(minus); // -
+            CASE(less); // <
+            CASE(greater); // >
+            CASE(less_equal); // <=
+            CASE(greater_equal); // >=
+            CASE(equal_to); // ==
+            CASE(not_equal_to); // !=
+            CASE(logical_or); // ||
+            CASE(logical_and); // &&
+            CASE(bitwise_and); // &
+            CASE(bitwise_or); // |
+            CASE(bitwise_xor); // ^
+            CASE(comma); // );
+            CASE(mem_ptr); // ->*
+            CASE(assign); // =
+            CASE(shift_left_assign); // <<=
+            CASE(shift_right_assign); // >>=
+            CASE(multiplies_assign); // *=
+            CASE(divides_assign); // /=
+            CASE(modulus_assign); // %=
+            CASE(plus_assign); // +=
+            CASE(minus_assign); // -=
+            CASE(bitwise_and_assign); // &=
+            CASE(bitwise_or_assign); // |=
+            CASE(bitwise_xor_assign); // ^=
+            CASE(subscript); // []
+
+            // n-ary
+            CASE(call); // ()
+
+#undef CASE
+    };
+
 
     }
 
