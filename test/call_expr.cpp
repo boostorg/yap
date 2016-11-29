@@ -82,6 +82,10 @@ namespace user {
     {
         decltype(auto) operator() (bp17::call_tag, tag_type, double a, double b)
         {
+            // TODO: Document that this differs from the behavior for
+            // non-call_tag tagged overloads, which will always be preferred
+            // to expr-overloads.  Moreover, document that mixing expr- and
+            // tag-based overloads is usually a bad idea.
             throw std::logic_error("Oops!  Picked the wrong overload!");
             return tag_function(a, b);
         }
