@@ -311,7 +311,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::one,
+            detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::one,
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
@@ -326,7 +326,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::one,
+            detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::one,
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
@@ -341,7 +341,7 @@ namespace boost::proto17 {
     {
         using namespace hana::literals;
         static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::one,
+            detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::one,
             "value() is only defined for unary expressions."
         );
         if constexpr (Expr::kind == expr_kind::expr_ref) {
@@ -355,66 +355,90 @@ namespace boost::proto17 {
     decltype(auto) left (Expr const & expr)
     {
         using namespace hana::literals;
-        static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
-            "left() and right() are only defined for binary expressions."
-        );
-        return expr.elements[0_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return left(*expr.elements[0_c]);
+        } else {
+            static_assert(
+                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
+                "left() and right() are only defined for binary expressions."
+            );
+            return expr.elements[0_c];
+        }
     }
 
     template <typename Expr>
     decltype(auto) left (Expr & expr)
     {
         using namespace hana::literals;
-        static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
-            "left() and right() are only defined for binary expressions."
-        );
-        return expr.elements[0_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return left(*expr.elements[0_c]);
+        } else {
+            static_assert(
+                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
+                "left() and right() are only defined for binary expressions."
+            );
+            return expr.elements[0_c];
+        }
     }
 
     template <typename Expr>
     decltype(auto) left (std::remove_reference_t<Expr> && expr)
     {
         using namespace hana::literals;
-        static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
-            "left() and right() are only defined for binary expressions."
-        );
-        return std::move(expr.elements)[0_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return left(std::move(*expr.elements[0_c]));
+        } else {
+            static_assert(
+                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
+                "left() and right() are only defined for binary expressions."
+            );
+            return std::move(expr.elements)[0_c];
+        }
     }
 
     template <typename Expr>
     decltype(auto) right (Expr const & expr)
     {
         using namespace hana::literals;
-        static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
-            "left() and right() are only defined for binary expressions."
-        );
-        return expr.elements[1_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return right(*expr.elements[1_c]);
+        } else {
+            static_assert(
+                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
+                "left() and right() are only defined for binary expressions."
+            );
+            return expr.elements[1_c];
+        }
     }
 
     template <typename Expr>
     decltype(auto) right (Expr & expr)
     {
         using namespace hana::literals;
-        static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
-            "left() and right() are only defined for binary expressions."
-        );
-        return expr.elements[1_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return right(*expr.elements[1_c]);
+        } else {
+            static_assert(
+                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
+                "left() and right() are only defined for binary expressions."
+            );
+            return expr.elements[1_c];
+        }
     }
 
     template <typename Expr>
     decltype(auto) right (std::remove_reference_t<Expr> && expr)
     {
         using namespace hana::literals;
-        static_assert(
-            detail::arity_of<Expr::kind>() == detail::expr_arity::two,
-            "left() and right() are only defined for binary expressions."
-        );
-        return std::move(expr.elements)[1_c];
+        if constexpr (Expr::kind == expr_kind::expr_ref) {
+            return right(std::move(*expr.elements[1_c]));
+        } else {
+            static_assert(
+                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
+                "left() and right() are only defined for binary expressions."
+            );
+            return std::move(expr.elements)[1_c];
+        }
     }
 
 #define BOOST_PROTO17_BINARY_NON_MEMBER_OPERATOR(op_name)               \
@@ -520,6 +544,8 @@ namespace boost::proto17 {
 #include "detail/default_eval.hpp"
 
 namespace boost::proto17 {
+
+    // TODO: static_assert is_expr in these?  In others?
 
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr const & expr, T && ...t)
