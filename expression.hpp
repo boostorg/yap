@@ -514,7 +514,7 @@ namespace boost::proto17 {
     { return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...); }
 
     template <typename Expr, typename Transform>
-    auto transform (Expr && expr, Transform && transform)
+    decltype(auto) transform (Expr && expr, Transform && transform)
     {
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         return detail::default_transform_expression<Expr, Transform, detail::arity_of<kind>()>{}(

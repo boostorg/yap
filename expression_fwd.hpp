@@ -79,7 +79,7 @@ namespace boost::proto17 {
     decltype(auto) evaluate_as (Expr const & expr, T && ...t);
 
     template <typename Expr, typename Transform>
-    auto transform (Expr && expr, Transform && transform);
+    decltype(auto) transform (Expr && expr, Transform && transform);
 
     template <typename Expr>
     decltype(auto) value (Expr const & expr);
