@@ -290,6 +290,22 @@ namespace boost::proto17 {
     template <long long I>
     using placeholder = expression<expr_kind::placeholder, hana::tuple<hana::llong<I>>>;
 
+    // TODO: Test all the cases here.
+
+    template <typename T>
+    decltype(auto) deref (T && x)
+    {
+        if constexpr (detail::is_expr<T>::value) {
+            if constexpr (detail::remove_cv_ref_t<T>::kind == expr_kind::expr_ref) {
+                return ::boost::proto17::value(::boost::proto17::value(static_cast<T &&>(x)));
+            } else {
+                return static_cast<T &&>(x);
+            }
+        } else {
+            return static_cast<T &&>(x);
+        }
+    }
+
     template <typename Expr>
     decltype(auto) value (Expr const & expr)
     {
