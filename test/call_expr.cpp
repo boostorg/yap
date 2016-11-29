@@ -33,6 +33,94 @@ namespace user {
     inline number tag_function (double a, double b)
     { return number{a + b}; }
 
+    struct eval_xform_tag
+    {
+        decltype(auto) operator() (bp17::call_tag, tag_type, double a, double b)
+        { return tag_function(a, b); }
+    };
+
+    struct empty_xform {};
+
+    struct eval_xform_expr
+    {
+        decltype(auto) operator() (
+            bp17::expression<
+                bp17::expr_kind::call,
+                bh::tuple<
+                    bp17::expression_ref<term<user::tag_type> >,
+                    term<user::number>,
+                    term<int>
+                >
+            > const & expr
+        ) {
+            using namespace boost::hana::literals;
+            return tag_function(
+                (double)bp17::value(expr.elements[1_c]).value,
+                (double)bp17::value(expr.elements[2_c])
+            );
+        }
+
+        decltype(auto) operator() (
+            bp17::expression<
+                bp17::expr_kind::call,
+                bh::tuple<
+                    bp17::expression_ref<term<user::tag_type> >,
+                    bp17::expression_ref<term<user::number>>,
+                    term<int>
+                >
+            > const & expr
+        ) {
+            using namespace boost::hana::literals;
+            return tag_function(
+                (double)bp17::deref(expr.elements[1_c]).value,
+                (double)bp17::value(expr.elements[2_c])
+            );
+        }
+    };
+
+    struct eval_xform_both
+    {
+        decltype(auto) operator() (bp17::call_tag, tag_type, double a, double b)
+        {
+            throw std::logic_error("Oops!  Picked the wrong overload!");
+            return tag_function(a, b);
+        }
+
+        decltype(auto) operator() (
+            bp17::expression<
+                bp17::expr_kind::call,
+                bh::tuple<
+                    bp17::expression_ref<term<user::tag_type> >,
+                    term<user::number>,
+                    term<int>
+                >
+            > const & expr
+        ) {
+            using namespace boost::hana::literals;
+            return tag_function(
+                (double)bp17::value(expr.elements[1_c]).value,
+                (double)bp17::value(expr.elements[2_c])
+            );
+        }
+
+        decltype(auto) operator() (
+            bp17::expression<
+                bp17::expr_kind::call,
+                bh::tuple<
+                    bp17::expression_ref<term<user::tag_type> >,
+                    bp17::expression_ref<term<user::number>>,
+                    term<int>
+                >
+            > const & expr
+        ) {
+            using namespace boost::hana::literals;
+            return tag_function(
+                (double)bp17::deref(expr.elements[1_c]).value,
+                (double)bp17::value(expr.elements[2_c])
+            );
+        }
+    };
+
     template <typename ...T>
     inline auto eval_call (tag_type, T && ...t)
     {
@@ -209,6 +297,53 @@ TEST(call_expr, test_call_expr)
             {
                 user::number result = expr;
                 EXPECT_EQ(result.value, 1);
+            }
+        }
+
+        {
+            auto plus = bp17::make_terminal(user::tag_type{});
+            auto expr = plus(user::number{13}, 1);
+
+            {
+                auto transformed_expr = transform(expr, user::empty_xform{});
+                user::number result = transformed_expr;
+                EXPECT_EQ(result.value, 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_tag{});
+                EXPECT_EQ(result.value, 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_expr{});
+                EXPECT_EQ(result.value, 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_both{});
+                EXPECT_EQ(result.value, 14);
+            }
+        }
+
+        {
+            auto plus = bp17::make_terminal(user::tag_type{});
+            auto thirteen = bp17::make_terminal(user::number{13});
+            auto expr = plus(thirteen, 1);
+
+            {
+                user::number result = transform(expr, user::eval_xform_tag{});
+                EXPECT_EQ(result.value, 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_expr{});
+                EXPECT_EQ(result.value, 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_both{});
+                EXPECT_EQ(result.value, 14);
             }
         }
     }

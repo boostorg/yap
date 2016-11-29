@@ -164,11 +164,8 @@ namespace boost::proto17 {
                 constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
                 if constexpr (kind == expr_kind::expr_ref) {
                     decltype(auto) ref = ::boost::proto17::value(expr);
-                    default_transform_expression<
-                        decltype(ref),
-                        Transform,
-                        detail::arity_of<kind>()
-                    > transformer;
+                    constexpr expr_kind kind = remove_cv_ref_t<decltype(ref)>::kind;
+                    default_transform_expression<decltype(ref), Transform, detail::arity_of<kind>()> transformer;
                     return transformer(ref, static_cast<Transform &&>(transform));
                 } else if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
                     return static_cast<Expr &&>(expr);
@@ -198,8 +195,103 @@ namespace boost::proto17 {
             std::void_t<decltype(std::declval<Transform>()(std::declval<Expr>()))>
         >
         {
-            auto operator() (Expr && expr, Transform && transform)
+            decltype(auto) operator() (Expr && expr, Transform && transform)
             { return static_cast<Transform &&>(transform)(static_cast<Expr &&>(expr)); }
+        };
+
+        template <typename Expr, typename Transform>
+        struct default_transform_expression<
+            Expr,
+            Transform,
+            expr_arity::one,
+            std::void_t<decltype(
+                std::declval<Transform>()(
+                    detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
+                    deref(::boost::proto17::value(std::declval<Expr>()))
+                )
+            )>
+        >
+        {
+            decltype(auto) operator() (Expr && expr, Transform && transform)
+            {
+                return static_cast<Transform &&>(transform)(
+                    detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
+                    deref(::boost::proto17::value(static_cast<Expr &&>(expr)))
+                );
+            }
+        };
+
+        template <typename Expr, typename Transform>
+        struct default_transform_expression<
+            Expr,
+            Transform,
+            expr_arity::two,
+            std::void_t<decltype(
+                std::declval<Transform>()(
+                    detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
+                    deref(::boost::proto17::left(std::declval<Expr>())),
+                    deref(::boost::proto17::right(std::declval<Expr>()))
+                )
+            )>
+        >
+        {
+            decltype(auto) operator() (Expr && expr, Transform && transform)
+            {
+                return static_cast<Transform &&>(transform)(
+                    detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
+                    deref(::boost::proto17::left(static_cast<Expr &&>(expr))),
+                    deref(::boost::proto17::right(static_cast<Expr &&>(expr)))
+                );
+            }
+        };
+
+        template <typename Expr, typename Transform, expr_kind Kind>
+        struct transform_call_unpacker
+        {
+            template <typename Tuple, typename TransformT, long long ...I>
+            auto operator() (Tuple && tuple, TransformT && transform, std::integer_sequence<long long, I...>)
+                -> decltype(
+                    static_cast<TransformT &&>(transform)(
+                        detail::tag_for<Kind>(),
+                        static_cast<Tuple &&>(tuple)[hana::llong_c<I>]...
+                    )
+                )
+            {
+                return static_cast<TransformT &&>(transform)(
+                    detail::tag_for<Kind>(),
+                    static_cast<Tuple &&>(tuple)[hana::llong_c<I>]...);
+            }
+        };
+
+        template <typename Expr>
+        constexpr auto indices_for (Expr const & expr)
+        {
+            constexpr long long size = decltype(hana::size(expr))::value;
+            return std::make_integer_sequence<long long, size>();
+        }
+
+        template <typename Expr, typename Transform>
+        struct default_transform_expression<
+            Expr,
+            Transform,
+            expr_arity::n,
+            std::void_t<decltype(
+                transform_call_unpacker<Expr, Transform, remove_cv_ref_t<Expr>::kind>{}(
+                    std::declval<Expr>().elements,
+                    std::declval<Transform>(),
+                    indices_for<Expr>()
+                )
+            )>
+        >
+        {
+            decltype(auto) operator() (Expr && expr, Transform && transform)
+            {
+                return transform_call_unpacker<Expr, Transform, remove_cv_ref_t<Expr>::kind>{}(
+                    static_cast<Expr &&>(expr).elements,
+                    static_cast<Transform &&>(transform),
+                    indices_for<Expr>()
+                );
+            }
         };
 
         template <
@@ -218,7 +310,8 @@ namespace boost::proto17 {
                 static_cast<Tuple &&>(tuple),
                 [&transform](auto && element) {
                     using element_t = decltype(element);
-                    default_transform_expression<element_t, Transform, detail::arity_of<Expr::kind>()> transformer;
+                    constexpr expr_kind kind = remove_cv_ref_t<element_t>::kind;
+                    default_transform_expression<element_t, Transform, detail::arity_of<kind>()> transformer;
                     return transformer(
                         static_cast<element_t &&>(element),
                         static_cast<Transform &&>(transform)

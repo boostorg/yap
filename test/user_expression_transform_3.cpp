@@ -29,17 +29,74 @@ namespace user {
     number naxpy (number a, number x, number y)
     { return number{a.value * x.value + y.value + 10.0}; }
 
-    struct eval_xform
+    struct empty_xform {};
+
+    struct eval_xform_tag
     {
-        decltype(auto) operator() (term<user::number> const & expr)
-        { return expr.value(); }
+        decltype(auto) operator() (bp17::terminal_tag, user::number const & n)
+        { return n; }
     };
 
-    struct plus_to_minus_xform
+    struct eval_xform_expr
+    {
+        decltype(auto) operator() (term<user::number> const & expr)
+        { return ::boost::proto17::value(expr); }
+    };
+
+    struct eval_xform_both
+    {
+        decltype(auto) operator() (bp17::terminal_tag, user::number const & n)
+        { return n; }
+
+        decltype(auto) operator() (term<user::number> const & expr)
+        {
+            throw std::logic_error("Oops!  Picked the wrong overload!");
+            return ::boost::proto17::value(expr);
+        }
+    };
+
+    struct plus_to_minus_xform_tag
+    {
+        decltype(auto) operator() (bp17::plus_tag, user::number const & lhs, user::number const & rhs)
+        {
+            return bp17::make_expression<bp17::expr_kind::minus>(
+                term<user::number>{lhs},
+                term<user::number>{rhs}
+            );
+        }
+    };
+
+    struct plus_to_minus_xform_expr
     {
         template <typename Expr1, typename Expr2>
         decltype(auto) operator() (bp17::expression<bp17::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
-        { return bp17::make_expression<bp17::expr_kind::minus>(expr.left(), expr.right()); }
+        {
+            return bp17::make_expression<bp17::expr_kind::minus>(
+                ::boost::proto17::left(expr),
+                ::boost::proto17::right(expr)
+            );
+        }
+    };
+
+    struct plus_to_minus_xform_both
+    {
+        decltype(auto) operator() (bp17::plus_tag, user::number const & lhs, user::number const & rhs)
+        {
+            return bp17::make_expression<bp17::expr_kind::minus>(
+                term<user::number>{lhs},
+                term<user::number>{rhs}
+            );
+        }
+
+        template <typename Expr1, typename Expr2>
+        decltype(auto) operator() (bp17::expression<bp17::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
+        {
+            throw std::logic_error("Oops!  Picked the wrong overload!");
+            return bp17::make_expression<bp17::expr_kind::minus>(
+                ::boost::proto17::left(expr),
+                ::boost::proto17::right(expr)
+            );
+        }
     };
 
     decltype(auto) naxpy_eager_nontemplate_xform (
@@ -125,8 +182,24 @@ TEST(user_expression_transform_3, test_user_expression_transform_3)
             EXPECT_EQ(result.value, 1);
         }
 
-        auto transformed_expr = transform(expr, user::eval_xform{});
         {
+            auto transformed_expr = transform(expr, user::empty_xform{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 1);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::eval_xform_tag{});
+            EXPECT_EQ(transformed_expr.value, 1);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::eval_xform_expr{});
+            EXPECT_EQ(transformed_expr.value, 1);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::eval_xform_both{});
             EXPECT_EQ(transformed_expr.value, 1);
         }
     }
@@ -138,8 +211,20 @@ TEST(user_expression_transform_3, test_user_expression_transform_3)
             EXPECT_EQ(result.value, 45);
         }
 
-        auto transformed_expr = transform(expr, user::plus_to_minus_xform{});
         {
+            auto transformed_expr = transform(expr, user::plus_to_minus_xform_tag{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 39);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::plus_to_minus_xform_expr{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 39);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::plus_to_minus_xform_both{});
             user::number result = evaluate(transformed_expr);
             EXPECT_EQ(result.value, 39);
         }
