@@ -307,47 +307,26 @@ namespace boost::proto17 {
     }
 
     template <typename Expr>
-    decltype(auto) value (Expr const & expr)
+    decltype(auto) value (Expr && expr)
     {
         using namespace hana::literals;
+        constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         static_assert(
-            detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::one,
+            detail::arity_of<kind>() == detail::expr_arity::one,
             "value() is only defined for unary expressions."
         );
-        if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return *expr.elements[0_c];
+        if constexpr (kind == expr_kind::expr_ref) {
+            if constexpr (std::is_rvalue_reference<Expr>{} && !std::is_const<std::remove_reference_t<Expr>>{}) {
+                return std::move(*expr.elements[0_c]);
+            } else {
+                return *expr.elements[0_c];
+            }
         } else {
-            return expr.elements[0_c];
-        }
-    }
-
-    template <typename Expr>
-    decltype(auto) value (Expr & expr)
-    {
-        using namespace hana::literals;
-        static_assert(
-            detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::one,
-            "value() is only defined for unary expressions."
-        );
-        if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return *expr.elements[0_c];
-        } else {
-            return expr.elements[0_c];
-        }
-    }
-
-    template <typename Expr>
-    decltype(auto) value (std::remove_reference_t<Expr> && expr)
-    {
-        using namespace hana::literals;
-        static_assert(
-            detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::one,
-            "value() is only defined for unary expressions."
-        );
-        if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return std::move(*expr.elements[0_c]); // TODO: Move-through as here, or re-bind?
-        } else {
-            return std::move(expr.elements[0_c]);
+            if constexpr (std::is_lvalue_reference<Expr>{}) {
+                return expr.elements[0_c];
+            } else {
+                return std::move(expr.elements[0_c]);
+            }
         }
     }
 

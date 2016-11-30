@@ -82,13 +82,7 @@ namespace boost::proto17 {
     decltype(auto) transform (Expr && expr, Transform && transform);
 
     template <typename Expr>
-    decltype(auto) value (Expr const & expr);
-
-    template <typename Expr>
-    decltype(auto) value (Expr & expr);
-
-    template <typename Expr>
-    decltype(auto) value (std::remove_reference_t<Expr> && expr);
+    decltype(auto) value (Expr && expr);
 
     template <typename Expr>
     decltype(auto) left (Expr const & expr);

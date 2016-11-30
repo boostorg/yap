@@ -17,6 +17,7 @@ macro(add_test_executable name)
 endmacro()
 
 add_test_executable(deref)
+add_test_executable(value)
 add_test_executable(print)
 add_test_executable(default_eval)
 add_test_executable(user_operator_eval)
