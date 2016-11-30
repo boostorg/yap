@@ -107,7 +107,7 @@ namespace boost::proto17 {
 
     // Tag types -- one per expr_kind:
 
-    struct expr_ref_tag {}; // TODO: Needed?
+    struct expr_ref_tag {};
 
     struct terminal_tag {};
     struct placeholder_tag {};

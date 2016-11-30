@@ -69,15 +69,4 @@ TEST(user_expression_transform_2, test_user_expression_transform_2)
 
         EXPECT_EQ(result.value, 55 * 55 + 55 + 10);
     }
-
-    // TODO: This was an error (user:: vs. user_2::).  Document for users that
-    // they should catch an expression in an auto var to diagnose these sorts
-    // of things.
-#if 0
-    bp17::expression<
-        bp17::expr_kind::multiplies,
-        term<user_2::number>,
-        term<user_2::number>
-    > expr = a * x;
-#endif
 }
