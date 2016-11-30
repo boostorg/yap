@@ -160,13 +160,22 @@ namespace boost::proto17 {
             expr_kind OpKind,
             typename T,
             typename U,
-            bool TNonExprUExpr = !detail::is_expr<T>::value && detail::is_expr<U>::value
+            bool TNonExprUExpr = !is_expr<T>::value && is_expr<U>::value,
+            bool ULvalueRef = std::is_lvalue_reference<U>{}
         >
-        struct free_binary_op_result
+        struct free_binary_op_result;
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            typename U
+        >
+        struct free_binary_op_result<ExprTemplate, OpKind, T, U, true, true>
         {
-            using lhs_type = detail::operand_type_t<ExprTemplate, T>;
-            using rhs_type = detail::expr_ref_t<ExprTemplate, U>;
-            using rhs_tuple_type = detail::expr_ref_tuple_t<ExprTemplate, rhs_type>;
+            using lhs_type = operand_type_t<ExprTemplate, T>;
+            using rhs_type = expr_ref_t<ExprTemplate, U>;
+            using rhs_tuple_type = expr_ref_tuple_t<ExprTemplate, rhs_type>;
             using type = ExprTemplate<OpKind, hana::tuple<lhs_type, rhs_type>>;
         };
 
@@ -176,7 +185,21 @@ namespace boost::proto17 {
             typename T,
             typename U
         >
-        struct free_binary_op_result<ExprTemplate, OpKind, T, U, false>
+        struct free_binary_op_result<ExprTemplate, OpKind, T, U, true, false>
+        {
+            using lhs_type = operand_type_t<ExprTemplate, T>;
+            using rhs_type = remove_cv_ref_t<U>;
+            using type = ExprTemplate<OpKind, hana::tuple<lhs_type, rhs_type>>;
+        };
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            bool ULvalueRef
+        >
+        struct free_binary_op_result<ExprTemplate, OpKind, T, U, false, ULvalueRef>
         {};
 
         template <

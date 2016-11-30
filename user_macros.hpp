@@ -178,78 +178,39 @@
 
 #define BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(op_name, expr_template) \
     template <typename T, typename Expr>                                \
-    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() (T && lhs, Expr const & rhs) \
+    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() (T && lhs, Expr && rhs) \
         -> ::boost::proto17::detail::free_binary_op_result_t<           \
             expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
-            Expr const &                                                \
+            Expr &&                                                     \
         >                                                               \
     {                                                                   \
         using result_types = ::boost::proto17::detail::free_binary_op_result< \
             expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
-            Expr const &                                                \
+            Expr &&                                                     \
         >;                                                              \
         using lhs_type = typename result_types::lhs_type;               \
         using rhs_type = typename result_types::rhs_type;               \
-        using rhs_tuple_type = typename result_types::rhs_tuple_type;   \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
-        return {                                                        \
-            tuple_type{                                                 \
-                lhs_type{static_cast<T &&>(lhs)},                       \
-                rhs_type{rhs_tuple_type{std::addressof(rhs)}}           \
-            }                                                           \
-        };                                                              \
+        if constexpr (std::is_lvalue_reference<Expr>{}) {               \
+            using rhs_tuple_type = typename result_types::rhs_tuple_type; \
+            return {                                                    \
+                tuple_type{                                             \
+                    lhs_type{static_cast<T &&>(lhs)},                   \
+                    rhs_type{rhs_tuple_type{std::addressof(rhs)}}       \
+                }                                                       \
+            };                                                          \
+        } else {                                                        \
+            return {                                                    \
+                tuple_type{                                             \
+                    lhs_type{static_cast<T &&>(lhs)},                   \
+                    std::move(rhs)                                      \
+                }                                                       \
+            };                                                          \
+        }                                                               \
     }                                                                   \
-    template <typename T, typename Expr>                                \
-    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() (T && lhs, Expr & rhs) \
-        -> ::boost::proto17::detail::free_binary_op_result_t<           \
-            expr_template,                                              \
-            ::boost::proto17::expr_kind::op_name,                       \
-            T,                                                          \
-            Expr &                                                      \
-        >                                                               \
-    {                                                                   \
-        using result_types = ::boost::proto17::detail::free_binary_op_result< \
-            expr_template,                                              \
-            ::boost::proto17::expr_kind::op_name,                       \
-            T,                                                          \
-            Expr &                                                      \
-        >;                                                              \
-        using lhs_type = typename result_types::lhs_type;               \
-        using rhs_type = typename result_types::rhs_type;               \
-        using rhs_tuple_type = typename result_types::rhs_tuple_type;   \
-        using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
-        return {                                                        \
-            tuple_type{                                                 \
-                lhs_type{static_cast<T &&>(lhs)},                       \
-                rhs_type{rhs_tuple_type{std::addressof(rhs)}}           \
-            }                                                           \
-        };                                                              \
-    }                                                                   \
-    template <typename T, typename Expr>                                \
-    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() (T && lhs, ::boost::proto17::detail::remove_cv_ref_t<Expr> && rhs) \
-        -> ::boost::proto17::detail::free_binary_op_result_t<           \
-            expr_template,                                              \
-            ::boost::proto17::expr_kind::op_name,                       \
-            T,                                                          \
-            ::boost::proto17::detail::remove_cv_ref_t<Expr>             \
-        >                                                               \
-    {                                                                   \
-        using result_types = ::boost::proto17::detail::free_binary_op_result< \
-            expr_template,                                              \
-            ::boost::proto17::expr_kind::op_name,                       \
-            T,                                                          \
-            ::boost::proto17::detail::remove_cv_ref_t<Expr>             \
-        >;                                                              \
-        using lhs_type = typename result_types::lhs_type;               \
-        using rhs_type = typename result_types::rhs_type;               \
-        using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
-        return {                                                        \
-            tuple_type{lhs_type{static_cast<T &&>(lhs)}, std::move(rhs)} \
-        };                                                              \
-    }
 
 #endif
