@@ -176,7 +176,7 @@
     }
 
 
-#define BOOST_PROTO17_USER_NON_MEMBER_BINARY_OPERATOR(op_name, expr_template) \
+#define BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(op_name, expr_template) \
     template <typename T, typename Expr>                                \
     auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() (T && lhs, Expr const & rhs) \
         -> ::boost::proto17::detail::free_binary_op_result_t<           \

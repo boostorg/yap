@@ -42,10 +42,10 @@ struct tarray_expr
     { return boost::proto17::evaluate(boost::proto17::transform(*this, take_nth{n})); }
 };
 
-BOOST_PROTO17_USER_NON_MEMBER_BINARY_OPERATOR(plus, ::tarray_expr)
-BOOST_PROTO17_USER_NON_MEMBER_BINARY_OPERATOR(minus, ::tarray_expr)
-BOOST_PROTO17_USER_NON_MEMBER_BINARY_OPERATOR(multiplies, ::tarray_expr)
-BOOST_PROTO17_USER_NON_MEMBER_BINARY_OPERATOR(divides, ::tarray_expr)
+BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(plus, ::tarray_expr)
+BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(minus, ::tarray_expr)
+BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(multiplies, ::tarray_expr)
+BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(divides, ::tarray_expr)
 
 
 boost::proto17::terminal<int, tarray_expr>
