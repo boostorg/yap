@@ -16,6 +16,7 @@ macro(add_test_executable name)
     target_link_libraries(${name} c++)
 endmacro()
 
+add_test_executable(deref)
 add_test_executable(print)
 add_test_executable(default_eval)
 add_test_executable(user_operator_eval)
