@@ -307,6 +307,11 @@ namespace boost::proto17 {
     template <typename Expr>
     decltype(auto) value (Expr && expr)
     {
+        static_assert(
+            detail::is_expr<Expr>::value,
+            "value() is only defined for expression templates."
+        );
+
         using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         static_assert(
@@ -331,6 +336,11 @@ namespace boost::proto17 {
     template <typename Expr>
     decltype(auto) left (Expr && expr)
     {
+        static_assert(
+            detail::is_expr<Expr>::value,
+            "left() is only defined for expression templates."
+        );
+
         using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         if constexpr (kind == expr_kind::expr_ref) {
@@ -351,6 +361,11 @@ namespace boost::proto17 {
     template <typename Expr>
     decltype(auto) right (Expr && expr)
     {
+        static_assert(
+            detail::is_expr<Expr>::value,
+            "right() is only defined for expression templates."
+        );
+
         using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         if constexpr (kind == expr_kind::expr_ref) {
@@ -417,7 +432,10 @@ namespace boost::proto17 {
     template <typename T>
     auto make_terminal (T && t)
     {
-        static_assert(!detail::is_expr<T>::value);
+        static_assert(
+            !detail::is_expr<T>::value,
+            "make_terminal() is only defined for non expressions."
+        );
         using result_type = detail::operand_type_t<expression, T>;
         using tuple_type = typename result_type::tuple_type;
         return result_type{tuple_type{static_cast<T &&>(t)}};
@@ -426,7 +444,10 @@ namespace boost::proto17 {
     template <template <expr_kind, class> class ExprTemplate, typename T>
     auto make_terminal (T && t)
     {
-        static_assert(!detail::is_expr<T>::value);
+        static_assert(
+            !detail::is_expr<T>::value,
+            "make_terminal() is only defined for non expressions."
+        );
         using result_type = detail::operand_type_t<ExprTemplate, T>;
         using tuple_type = decltype(std::declval<result_type>().elements);
         return result_type{tuple_type{static_cast<T &&>(t)}};
@@ -464,7 +485,13 @@ namespace boost::proto17 {
 
     template <typename Expr>
     auto make_expression_function (Expr && expr)
-    { return expression_function<Expr>{std::move(expr)}; }
+    {
+        static_assert(
+            detail::is_expr<Expr>::value,
+            "make_expression_function() is only defined for expression templates."
+        );
+        return expression_function<Expr>{std::move(expr)};
+    }
 
 }
 
@@ -472,19 +499,33 @@ namespace boost::proto17 {
 
 namespace boost::proto17 {
 
-    // TODO: static_assert is_expr in these?  In others?
-
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr const & expr, T && ...t)
-    { return detail::default_eval_expr(expr, static_cast<T &&>(t)...); }
+    {
+        static_assert(
+            detail::is_expr<Expr>::value,
+            "evaluate() is only defined for expression templates."
+        );
+        return detail::default_eval_expr(expr, static_cast<T &&>(t)...);
+    }
 
     template <typename R, typename Expr, typename ...T>
     decltype(auto) evaluate_as (Expr const & expr, T && ...t)
-    { return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...); }
+    {
+        static_assert(
+            detail::is_expr<Expr>::value,
+            "evaluate_as() is only defined for expression templates."
+        );
+        return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...);
+    }
 
     template <typename Expr, typename Transform>
     decltype(auto) transform (Expr && expr, Transform && transform)
     {
+        static_assert(
+            detail::is_expr<Expr>::value,
+            "transform() is only defined for expression templates."
+        );
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         return detail::default_transform_expression<Expr, Transform, detail::arity_of<kind>()>{}(
             static_cast<Expr &&>(expr),
