@@ -38,10 +38,9 @@ namespace boost::proto17 {
         }
 
         bool is_const_expr_ref (...) { return false; }
-        template <typename T>
-        bool is_const_expr_ref (expression<expr_kind::expr_ref, hana::tuple<T const *>> const &) { return true; }
+        template <typename T, template <expr_kind, class> class expr_template>
+        bool is_const_expr_ref (expr_template<expr_kind::expr_ref, hana::tuple<T const *>> const &) { return true; }
 
-        // TODO: Test printing user expression templates.
         template <typename Expr>
         std::ostream & print_impl (
             std::ostream & os,
