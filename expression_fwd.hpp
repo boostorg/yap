@@ -81,6 +81,9 @@ namespace boost::proto17 {
     template <typename Expr, typename Transform>
     decltype(auto) transform (Expr && expr, Transform && transform);
 
+    template <typename T>
+    decltype(auto) deref (T && x);
+
     template <typename Expr>
     decltype(auto) value (Expr && expr);
 
