@@ -290,8 +290,6 @@ namespace boost::proto17 {
     template <long long I>
     using placeholder = expression<expr_kind::placeholder, hana::tuple<hana::llong<I>>>;
 
-    // TODO: Test all the cases here.
-
     template <typename T>
     decltype(auto) deref (T && x)
     {
@@ -351,47 +349,22 @@ namespace boost::proto17 {
     }
 
     template <typename Expr>
-    decltype(auto) right (Expr const & expr)
+    decltype(auto) right (Expr && expr)
     {
         using namespace hana::literals;
-        if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return right(*expr.elements[1_c]);
+        constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
+        if constexpr (kind == expr_kind::expr_ref) {
+            return right(::boost::proto17::value(static_cast<Expr &&>(expr)));
         } else {
             static_assert(
-                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
+                detail::arity_of<kind>() == detail::expr_arity::two,
                 "right() is only defined for binary expressions."
             );
-            return expr.elements[1_c];
-        }
-    }
-
-    template <typename Expr>
-    decltype(auto) right (Expr & expr)
-    {
-        using namespace hana::literals;
-        if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return right(*expr.elements[1_c]);
-        } else {
-            static_assert(
-                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
-                "left() and right() are only defined for binary expressions."
-            );
-            return expr.elements[1_c];
-        }
-    }
-
-    template <typename Expr>
-    decltype(auto) right (std::remove_reference_t<Expr> && expr)
-    {
-        using namespace hana::literals;
-        if constexpr (Expr::kind == expr_kind::expr_ref) {
-            return right(std::move(*expr.elements[1_c]));
-        } else {
-            static_assert(
-                detail::arity_of<detail::remove_cv_ref_t<Expr>::kind>() == detail::expr_arity::two,
-                "left() and right() are only defined for binary expressions."
-            );
-            return std::move(expr.elements)[1_c];
+            if constexpr (std::is_lvalue_reference<Expr>{}) {
+                return expr.elements[1_c];
+            } else {
+                return std::move(expr.elements[1_c]);
+            }
         }
     }
 
