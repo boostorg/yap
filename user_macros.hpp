@@ -214,10 +214,10 @@
     }                                                                   \
 
 
-#define BOOST_PROTO17_USER_UDT_BINARY_OPERATOR(op_name, expr_template, t_udt_trait, u_udt_trait) \
+#define BOOST_PROTO17_USER_UDT_UDT_BINARY_OPERATOR(op_name, expr_template, t_udt_trait, u_udt_trait) \
     template <typename T, typename U>                                   \
     auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() (T && lhs, U && rhs) \
-        -> ::boost::proto17::detail::udt_binary_op_result_t<            \
+        -> ::boost::proto17::detail::udt_udt_binary_op_result_t<        \
             expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
@@ -226,13 +226,43 @@
             u_udt_trait                                                 \
         >                                                               \
     {                                                                   \
-        using result_types = ::boost::proto17::detail::udt_binary_op_result< \
+        using result_types = ::boost::proto17::detail::udt_udt_binary_op_result< \
             expr_template,                                              \
             ::boost::proto17::expr_kind::op_name,                       \
             T,                                                          \
             U,                                                          \
             t_udt_trait,                                                \
             u_udt_trait                                                 \
+        >;                                                              \
+        using lhs_type = typename result_types::lhs_type;               \
+        using rhs_type = typename result_types::rhs_type;               \
+        using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
+        return {                                                        \
+            tuple_type{                                                 \
+                lhs_type{static_cast<T &&>(lhs)},                       \
+                rhs_type{static_cast<U &&>(rhs)},                       \
+            }                                                           \
+        };                                                              \
+    }                                                                   \
+
+
+#define BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(op_name, expr_template, udt_trait) \
+    template <typename T, typename U>                                   \
+    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() (T && lhs, U && rhs) \
+        -> ::boost::proto17::detail::udt_any_binary_op_result_t<        \
+            expr_template,                                              \
+            ::boost::proto17::expr_kind::op_name,                       \
+            T,                                                          \
+            U,                                                          \
+            udt_trait                                                   \
+        >                                                               \
+    {                                                                   \
+        using result_types = ::boost::proto17::detail::udt_any_binary_op_result< \
+            expr_template,                                              \
+            ::boost::proto17::expr_kind::op_name,                       \
+            T,                                                          \
+            U,                                                          \
+            udt_trait                                                   \
         >;                                                              \
         using lhs_type = typename result_types::lhs_type;               \
         using rhs_type = typename result_types::rhs_type;               \

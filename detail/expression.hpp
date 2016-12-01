@@ -247,7 +247,8 @@ namespace boost::proto17 {
         >::type;
 
 
-        // udt_binary_op_result
+        // TODO: Add affine operator test.
+        // udt_udt_binary_op_result
 
         template <typename T, template <class> class UdtTrait>
         struct is_udt_arg
@@ -262,7 +263,7 @@ namespace boost::proto17 {
             template <class> class UUdtTrait,
             bool Valid = is_udt_arg<T, TUdtTrait>::value && is_udt_arg<U, UUdtTrait>::value
         >
-        struct udt_binary_op_result;
+        struct udt_udt_binary_op_result;
 
         template <
             template <expr_kind, class> class ExprTemplate,
@@ -272,7 +273,7 @@ namespace boost::proto17 {
             template <class> class TUdtTrait,
             template <class> class UUdtTrait
         >
-        struct udt_binary_op_result<ExprTemplate, OpKind, T, U, TUdtTrait, UUdtTrait, true>
+        struct udt_udt_binary_op_result<ExprTemplate, OpKind, T, U, TUdtTrait, UUdtTrait, true>
         {
             using lhs_type = operand_type_t<ExprTemplate, T>;
             using rhs_type = operand_type_t<ExprTemplate, U>;
@@ -287,13 +288,58 @@ namespace boost::proto17 {
             template <class> class TUdtTrait,
             template <class> class UUdtTrait
         >
-        using udt_binary_op_result_t = typename udt_binary_op_result<
+        using udt_udt_binary_op_result_t = typename udt_udt_binary_op_result<
             ExprTemplate,
             OpKind,
             T,
             U,
             TUdtTrait,
             UUdtTrait
+        >::type;
+
+
+        // udt_any_binary_op_result
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <class> class UdtTrait,
+            bool Valid =
+                !is_expr<T>::value &&
+                !is_expr<U>::value &&
+                (UdtTrait<remove_cv_ref_t<T>>::value || UdtTrait<remove_cv_ref_t<U>>::value)
+        >
+        struct udt_any_binary_op_result;
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <class> class UdtTrait
+        >
+        struct udt_any_binary_op_result<ExprTemplate, OpKind, T, U, UdtTrait, true>
+        {
+            using lhs_type = operand_type_t<ExprTemplate, T>;
+            using rhs_type = operand_type_t<ExprTemplate, U>;
+            using type = ExprTemplate<OpKind, hana::tuple<lhs_type, rhs_type>>;
+        };
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <class> class UdtTrait
+        >
+        using udt_any_binary_op_result_t = typename udt_any_binary_op_result<
+            ExprTemplate,
+            OpKind,
+            T,
+            U,
+            UdtTrait
         >::type;
 
 
