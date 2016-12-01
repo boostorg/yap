@@ -1,4 +1,4 @@
-#include "expression.hpp"
+#include <boost/yap/expression.hpp>
 
 namespace yap = boost::yap;
 

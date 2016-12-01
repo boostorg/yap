@@ -1,9 +1,9 @@
 #ifndef BOOST_YAP_EXPRESSION_HPP_INCLUDED
 #define BOOST_YAP_EXPRESSION_HPP_INCLUDED
 
-#include "expression_fwd.hpp"
-#include "user_macros.hpp"
-#include "detail/expression.hpp"
+#include <boost/yap/expression_fwd.hpp>
+#include <boost/yap/user_macros.hpp>
+#include <boost/yap/detail/expression.hpp>
 
 #include <boost/hana/size.hpp>
 #include <boost/hana/comparing.hpp>
@@ -499,7 +499,7 @@ namespace boost::yap {
 
 }
 
-#include "detail/default_eval.hpp"
+#include <boost/yap/detail/default_eval.hpp>
 
 namespace boost::yap {
 

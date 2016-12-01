@@ -1,4 +1,4 @@
-#include "expression.hpp"
+#include <boost/yap/expression.hpp>
 
 template <typename T>
 using term = boost::yap::terminal<T>;

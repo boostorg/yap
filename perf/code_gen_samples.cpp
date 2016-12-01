@@ -1,5 +1,5 @@
 #define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
-#include "expression.hpp"
+#include <boost/yap/expression.hpp>
 
 
 template <typename T>

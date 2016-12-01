@@ -1,5 +1,5 @@
-#include "expression.hpp"
-#include "print.hpp"
+#include <boost/yap/expression.hpp>
+#include <boost/yap/print.hpp>
 
 #include <gtest/gtest.h>
 
