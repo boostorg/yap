@@ -181,6 +181,11 @@ namespace boost::proto17 {
 
         // free_binary_op_result
 
+        // TODO: Must is_expr<> below be an ExprTemplate instantiation?
+        // Without that, we potentially have one kind of expression template
+        // making another one when a non-expr value appears of the lhs of one
+        // of its binary ops.
+
         template <
             template <expr_kind, class> class ExprTemplate,
             expr_kind OpKind,
@@ -239,6 +244,56 @@ namespace boost::proto17 {
             OpKind,
             T,
             U
+        >::type;
+
+
+        // udt_binary_op_result
+
+        template <typename T, template <class> class UdtTrait>
+        struct is_udt_arg
+        { static bool const value = !is_expr<T>::value && UdtTrait<remove_cv_ref_t<T>>::value; };
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <class> class TUdtTrait,
+            template <class> class UUdtTrait,
+            bool Valid = is_udt_arg<T, TUdtTrait>::value && is_udt_arg<U, UUdtTrait>::value
+        >
+        struct udt_binary_op_result;
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <class> class TUdtTrait,
+            template <class> class UUdtTrait
+        >
+        struct udt_binary_op_result<ExprTemplate, OpKind, T, U, TUdtTrait, UUdtTrait, true>
+        {
+            using lhs_type = operand_type_t<ExprTemplate, T>;
+            using rhs_type = operand_type_t<ExprTemplate, U>;
+            using type = ExprTemplate<OpKind, hana::tuple<lhs_type, rhs_type>>;
+        };
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            typename U,
+            template <class> class TUdtTrait,
+            template <class> class UUdtTrait
+        >
+        using udt_binary_op_result_t = typename udt_binary_op_result<
+            ExprTemplate,
+            OpKind,
+            T,
+            U,
+            TUdtTrait,
+            UUdtTrait
         >::type;
 
 
