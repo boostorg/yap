@@ -1,11 +1,11 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
+#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
@@ -27,11 +27,11 @@ namespace user {
 
     template <typename Expr1, typename Expr2, typename Expr3>
     decltype(auto) transform_expression (
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression<
-                    bp17::expr_kind::multiplies,
+                yap::expression<
+                    yap::expr_kind::multiplies,
                     bh::tuple<
                         Expr1,
                         Expr2

@@ -4,9 +4,9 @@
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
@@ -33,33 +33,33 @@ namespace user {
 
     struct eval_xform_tag
     {
-        decltype(auto) operator() (bp17::terminal_tag, user::number const & n)
+        decltype(auto) operator() (yap::terminal_tag, user::number const & n)
         { return n; }
     };
 
     struct eval_xform_expr
     {
         decltype(auto) operator() (term<user::number> const & expr)
-        { return ::boost::proto17::value(expr); }
+        { return ::boost::yap::value(expr); }
     };
 
     struct eval_xform_both
     {
-        decltype(auto) operator() (bp17::terminal_tag, user::number const & n)
+        decltype(auto) operator() (yap::terminal_tag, user::number const & n)
         { return n; }
 
         decltype(auto) operator() (term<user::number> const & expr)
         {
             throw std::logic_error("Oops!  Picked the wrong overload!");
-            return ::boost::proto17::value(expr);
+            return ::boost::yap::value(expr);
         }
     };
 
     struct plus_to_minus_xform_tag
     {
-        decltype(auto) operator() (bp17::plus_tag, user::number const & lhs, user::number const & rhs)
+        decltype(auto) operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
         {
-            return bp17::make_expression<bp17::expr_kind::minus>(
+            return yap::make_expression<yap::expr_kind::minus>(
                 term<user::number>{lhs},
                 term<user::number>{rhs}
             );
@@ -69,87 +69,87 @@ namespace user {
     struct plus_to_minus_xform_expr
     {
         template <typename Expr1, typename Expr2>
-        decltype(auto) operator() (bp17::expression<bp17::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
+        decltype(auto) operator() (yap::expression<yap::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
         {
-            return bp17::make_expression<bp17::expr_kind::minus>(
-                ::boost::proto17::left(expr),
-                ::boost::proto17::right(expr)
+            return yap::make_expression<yap::expr_kind::minus>(
+                ::boost::yap::left(expr),
+                ::boost::yap::right(expr)
             );
         }
     };
 
     struct plus_to_minus_xform_both
     {
-        decltype(auto) operator() (bp17::plus_tag, user::number const & lhs, user::number const & rhs)
+        decltype(auto) operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
         {
-            return bp17::make_expression<bp17::expr_kind::minus>(
+            return yap::make_expression<yap::expr_kind::minus>(
                 term<user::number>{lhs},
                 term<user::number>{rhs}
             );
         }
 
         template <typename Expr1, typename Expr2>
-        decltype(auto) operator() (bp17::expression<bp17::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
+        decltype(auto) operator() (yap::expression<yap::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
         {
             throw std::logic_error("Oops!  Picked the wrong overload!");
-            return bp17::make_expression<bp17::expr_kind::minus>(
-                ::boost::proto17::left(expr),
-                ::boost::proto17::right(expr)
+            return yap::make_expression<yap::expr_kind::minus>(
+                ::boost::yap::left(expr),
+                ::boost::yap::right(expr)
             );
         }
     };
 
     decltype(auto) naxpy_eager_nontemplate_xform (
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression<
-                    bp17::expr_kind::multiplies,
+                yap::expression<
+                    yap::expr_kind::multiplies,
                     bh::tuple<
-                        bp17::expression_ref<term<user::number> &>,
-                        bp17::expression_ref<term<user::number> &>
+                        yap::expression_ref<term<user::number> &>,
+                        yap::expression_ref<term<user::number> &>
                     >
                 >,
-                bp17::expression_ref<term<user::number> &>
+                yap::expression_ref<term<user::number> &>
             >
         > const & expr
     ) {
         auto a = evaluate(expr.left().left());
         auto x = evaluate(expr.left().right());
         auto y = evaluate(expr.right());
-        return bp17::make_terminal(naxpy(a, x, y));
+        return yap::make_terminal(naxpy(a, x, y));
     }
 
     decltype(auto) naxpy_lazy_nontemplate_xform (
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression<
-                    bp17::expr_kind::multiplies,
+                yap::expression<
+                    yap::expr_kind::multiplies,
                     bh::tuple<
-                        bp17::expression_ref<term<user::number> &>,
-                        bp17::expression_ref<term<user::number> &>
+                        yap::expression_ref<term<user::number> &>,
+                        yap::expression_ref<term<user::number> &>
                     >
                 >,
-                bp17::expression_ref<term<user::number> &>
+                yap::expression_ref<term<user::number> &>
             >
         > const & expr
     ) {
         decltype(auto) a = expr.left().left().value();
         decltype(auto) x = expr.left().right().value();
         decltype(auto) y = expr.right().value();
-        return bp17::make_terminal(naxpy)(a, x, y);
+        return yap::make_terminal(naxpy)(a, x, y);
     }
 
     struct naxpy_xform
     {
         template <typename Expr1, typename Expr2, typename Expr3>
         decltype(auto) operator() (
-            bp17::expression<
-                bp17::expr_kind::plus,
+            yap::expression<
+                yap::expr_kind::plus,
                 bh::tuple<
-                    bp17::expression<
-                        bp17::expr_kind::multiplies,
+                    yap::expression<
+                        yap::expr_kind::multiplies,
                         bh::tuple<
                             Expr1,
                             Expr2
@@ -159,7 +159,7 @@ namespace user {
                 >
             > const & expr
         ) {
-            return bp17::make_terminal(naxpy)(
+            return yap::make_terminal(naxpy)(
                 transform(expr.left().left(), naxpy_xform{}),
                 transform(expr.left().right(), naxpy_xform{}),
                 transform(expr.right(), naxpy_xform{})
@@ -315,22 +315,22 @@ TEST(move_only, test_user_expression_transform_3)
 {
     term<double> unity{1.0};
     term<std::unique_ptr<int>> i{new int{7}};
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<double> &>,
+            yap::expression_ref<term<double> &>,
             term<std::unique_ptr<int>>
         >
     > expr_1 = unity + std::move(i);
 
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<double> &>,
-            bp17::expression<
-                bp17::expr_kind::plus,
+            yap::expression_ref<term<double> &>,
+            yap::expression<
+                yap::expr_kind::plus,
                 bh::tuple<
-                    bp17::expression_ref<term<double> &>,
+                    yap::expression_ref<term<double> &>,
                     term<std::unique_ptr<int>>
                 >
             >

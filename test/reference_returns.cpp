@@ -1,13 +1,13 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
+#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 #include <gtest/gtest.h>
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 
 namespace reference_returning {
 
@@ -69,7 +69,7 @@ TEST(reference_returns, test_reference_returns)
         >
     );
 
-    using namespace bp17::literals;
+    using namespace yap::literals;
 
     {
         reference_returning::number & n = evaluate(1_p, reference_returning::a_result);

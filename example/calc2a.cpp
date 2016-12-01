@@ -5,7 +5,7 @@
 
 int main ()
 {
-    using namespace boost::proto17::literals;
+    using namespace boost::yap::literals;
 
     auto expr_1 = 1_p + 2.0;
 

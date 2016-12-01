@@ -4,23 +4,23 @@
 #include <iostream>
 
 
-template <boost::proto17::expr_kind Kind, typename Tuple>
+template <boost::yap::expr_kind Kind, typename Tuple>
 struct tarray_expr;
 
 
 struct take_nth
 {
-    boost::proto17::terminal<int, tarray_expr>
-    operator() (boost::proto17::terminal<std::array<int, 3>, tarray_expr> const & expr);
+    boost::yap::terminal<int, tarray_expr>
+    operator() (boost::yap::terminal<std::array<int, 3>, tarray_expr> const & expr);
 
     std::size_t n;
 };
 
-template <boost::proto17::expr_kind Kind, typename Tuple>
+template <boost::yap::expr_kind Kind, typename Tuple>
 struct tarray_expr
 {
     static_assert(
-        Kind != boost::proto17::expr_kind::terminal ||
+        Kind != boost::yap::expr_kind::terminal ||
         std::is_same<Tuple, boost::hana::tuple<int const &>>{} ||
         std::is_same<Tuple, boost::hana::tuple<int &>>{} ||
         std::is_same<Tuple, boost::hana::tuple<int>>{} ||
@@ -29,60 +29,60 @@ struct tarray_expr
 
     using this_type = tarray_expr<Kind, Tuple>;
 
-    static const boost::proto17::expr_kind kind = Kind;
+    static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
 
-    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::tarray_expr)
-    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::tarray_expr)
-    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(multiplies, this_type, ::tarray_expr)
-    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(divides, this_type, ::tarray_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::tarray_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::tarray_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, this_type, ::tarray_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, this_type, ::tarray_expr)
 
     int operator[] (std::size_t n) const
-    { return boost::proto17::evaluate(boost::proto17::transform(*this, take_nth{n})); }
+    { return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n})); }
 };
 
-BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(plus, ::tarray_expr)
-BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(minus, ::tarray_expr)
-BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(multiplies, ::tarray_expr)
-BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(divides, ::tarray_expr)
+BOOST_YAP_USER_FREE_BINARY_OPERATOR(plus, ::tarray_expr)
+BOOST_YAP_USER_FREE_BINARY_OPERATOR(minus, ::tarray_expr)
+BOOST_YAP_USER_FREE_BINARY_OPERATOR(multiplies, ::tarray_expr)
+BOOST_YAP_USER_FREE_BINARY_OPERATOR(divides, ::tarray_expr)
 
 
-boost::proto17::terminal<int, tarray_expr>
-take_nth::operator() (boost::proto17::terminal<std::array<int, 3>, tarray_expr> const & expr)
+boost::yap::terminal<int, tarray_expr>
+take_nth::operator() (boost::yap::terminal<std::array<int, 3>, tarray_expr> const & expr)
 {
-    int x = boost::proto17::value(expr)[n];
-    return boost::proto17::make_terminal<tarray_expr>(std::move(x));
+    int x = boost::yap::value(expr)[n];
+    return boost::yap::make_terminal<tarray_expr>(std::move(x));
 }
 
 
-std::ostream & operator<< (std::ostream & os, boost::proto17::terminal<int, tarray_expr> expr)
-{ return os << '{' << boost::proto17::value(expr) << '}'; }
+std::ostream & operator<< (std::ostream & os, boost::yap::terminal<int, tarray_expr> expr)
+{ return os << '{' << boost::yap::value(expr) << '}'; }
 
-std::ostream & operator<< (std::ostream & os, boost::proto17::terminal<std::array<int, 3>, tarray_expr> expr)
+std::ostream & operator<< (std::ostream & os, boost::yap::terminal<std::array<int, 3>, tarray_expr> expr)
 {
-    std::array<int, 3> const & a = boost::proto17::value(expr);
+    std::array<int, 3> const & a = boost::yap::value(expr);
     return os << '{' << a[0] << ", " << a[1] << ", " << a[2] << '}';
 }
 
 template <typename Tuple>
-std::ostream & operator<< (std::ostream & os, tarray_expr<boost::proto17::expr_kind::expr_ref, Tuple> const & expr)
-{ return os << boost::proto17::value(expr); }
+std::ostream & operator<< (std::ostream & os, tarray_expr<boost::yap::expr_kind::expr_ref, Tuple> const & expr)
+{ return os << boost::yap::value(expr); }
 
-template <boost::proto17::expr_kind Kind, typename Tuple>
+template <boost::yap::expr_kind Kind, typename Tuple>
 std::ostream & operator<< (std::ostream & os, tarray_expr<Kind, Tuple> const & expr)
 {
-    if (Kind == boost::proto17::expr_kind::plus || Kind == boost::proto17::expr_kind::minus)
+    if (Kind == boost::yap::expr_kind::plus || Kind == boost::yap::expr_kind::minus)
         os << '(';
-    os << boost::proto17::left(expr) << " " << op_string(Kind) << " " << boost::proto17::right(expr);
-    if (Kind == boost::proto17::expr_kind::plus || Kind == boost::proto17::expr_kind::minus)
+    os << boost::yap::left(expr) << " " << op_string(Kind) << " " << boost::yap::right(expr);
+    if (Kind == boost::yap::expr_kind::plus || Kind == boost::yap::expr_kind::minus)
         os << ')';
     return os;
 }
 
 struct tarray :
     tarray_expr<
-        boost::proto17::expr_kind::terminal,
+        boost::yap::expr_kind::terminal,
         boost::hana::tuple<std::array<int, 3>>
     >
 {
@@ -101,14 +101,14 @@ struct tarray :
     }
 
     int & operator[] (std::ptrdiff_t i)
-    { return boost::proto17::value(*this)[i]; }
+    { return boost::yap::value(*this)[i]; }
 
     int const & operator[] (std::ptrdiff_t i) const
-    { return boost::proto17::value(*this)[i]; }
+    { return boost::yap::value(*this)[i]; }
 
     template <typename T>
     tarray & operator= (T const & t)
-    { return assign(boost::proto17::as_expr< ::tarray_expr>(t)); }
+    { return assign(boost::yap::as_expr< ::tarray_expr>(t)); }
 
     template <typename Expr>
     tarray & printAssign (Expr const & expr)

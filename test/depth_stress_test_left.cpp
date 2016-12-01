@@ -1,4 +1,4 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
+#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 #include <gtest/gtest.h>
@@ -7,9 +7,9 @@
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 
 
 TEST(left, depth_stress_test)

@@ -1,5 +1,5 @@
-#ifndef BOOST_PROTO17_DETAIL_DEFAULT_EVAL_HPP_INCLUDED
-#define BOOST_PROTO17_DETAIL_DEFAULT_EVAL_HPP_INCLUDED
+#ifndef BOOST_YAP_DETAIL_DEFAULT_EVAL_HPP_INCLUDED
+#define BOOST_YAP_DETAIL_DEFAULT_EVAL_HPP_INCLUDED
 
 #include "../expression_fwd.hpp"
 #include "../operators.hpp"
@@ -9,7 +9,7 @@
 #include <cassert>
 
 
-namespace boost::proto17 {
+namespace boost::yap {
 
     namespace detail {
 
@@ -52,14 +52,14 @@ namespace boost::proto17 {
             ) {
                 return transform_expression(expr, static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::expr_ref) {
-                return default_eval_expr(::boost::proto17::value(expr), static_cast<T &&>(args)...);
+                return default_eval_expr(::boost::yap::value(expr), static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::terminal) {
-                return ::boost::proto17::value(expr);
+                return ::boost::yap::value(expr);
             } else if constexpr (kind == expr_kind::placeholder) {
-                return eval_placeholder(::boost::proto17::value(expr), static_cast<T &&>(args)...);
+                return eval_placeholder(::boost::yap::value(expr), static_cast<T &&>(args)...);
             }
 
-#define BOOST_PROTO17_UNARY_OPERATOR_CASE(op_name)                      \
+#define BOOST_YAP_UNARY_OPERATOR_CASE(op_name)                      \
             else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
                     eval_ ## op_name(                                   \
@@ -67,20 +67,20 @@ namespace boost::proto17 {
                     );                                                  \
             }
 
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(unary_plus) // +
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(negate) // -
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(dereference) // *
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(complement) // ~
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(address_of) // &
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(logical_not) // !
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(pre_inc) // ++
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(pre_dec) // --
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(post_inc) // ++(int)
-            BOOST_PROTO17_UNARY_OPERATOR_CASE(post_dec) // --(int)
+            BOOST_YAP_UNARY_OPERATOR_CASE(unary_plus) // +
+            BOOST_YAP_UNARY_OPERATOR_CASE(negate) // -
+            BOOST_YAP_UNARY_OPERATOR_CASE(dereference) // *
+            BOOST_YAP_UNARY_OPERATOR_CASE(complement) // ~
+            BOOST_YAP_UNARY_OPERATOR_CASE(address_of) // &
+            BOOST_YAP_UNARY_OPERATOR_CASE(logical_not) // !
+            BOOST_YAP_UNARY_OPERATOR_CASE(pre_inc) // ++
+            BOOST_YAP_UNARY_OPERATOR_CASE(pre_dec) // --
+            BOOST_YAP_UNARY_OPERATOR_CASE(post_inc) // ++(int)
+            BOOST_YAP_UNARY_OPERATOR_CASE(post_dec) // --(int)
 
-#undef BOOST_PROTO17_UNARY_OPERATOR_CASE
+#undef BOOST_YAP_UNARY_OPERATOR_CASE
 
-#define BOOST_PROTO17_BINARY_OPERATOR_CASE(op_name)                     \
+#define BOOST_YAP_BINARY_OPERATOR_CASE(op_name)                     \
             else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
                     eval_ ## op_name(                                   \
@@ -89,24 +89,24 @@ namespace boost::proto17 {
                     );                                                  \
             }
 
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(shift_left) // <<
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(shift_right) // >>
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(multiplies) // *
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(divides) // /
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(modulus) // %
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(plus) // +
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(minus) // -
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(less) // <
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(greater) // >
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(less_equal) // <=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(greater_equal) // >=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(equal_to) // ==
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(not_equal_to) // !=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(logical_or) // ||
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(logical_and) // &&
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_and) // &
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_or) // |
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_xor) // ^
+            BOOST_YAP_BINARY_OPERATOR_CASE(shift_left) // <<
+            BOOST_YAP_BINARY_OPERATOR_CASE(shift_right) // >>
+            BOOST_YAP_BINARY_OPERATOR_CASE(multiplies) // *
+            BOOST_YAP_BINARY_OPERATOR_CASE(divides) // /
+            BOOST_YAP_BINARY_OPERATOR_CASE(modulus) // %
+            BOOST_YAP_BINARY_OPERATOR_CASE(plus) // +
+            BOOST_YAP_BINARY_OPERATOR_CASE(minus) // -
+            BOOST_YAP_BINARY_OPERATOR_CASE(less) // <
+            BOOST_YAP_BINARY_OPERATOR_CASE(greater) // >
+            BOOST_YAP_BINARY_OPERATOR_CASE(less_equal) // <=
+            BOOST_YAP_BINARY_OPERATOR_CASE(greater_equal) // >=
+            BOOST_YAP_BINARY_OPERATOR_CASE(equal_to) // ==
+            BOOST_YAP_BINARY_OPERATOR_CASE(not_equal_to) // !=
+            BOOST_YAP_BINARY_OPERATOR_CASE(logical_or) // ||
+            BOOST_YAP_BINARY_OPERATOR_CASE(logical_and) // &&
+            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_and) // &
+            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_or) // |
+            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_xor) // ^
 
             else if constexpr (kind == expr_kind::comma) {
                 return
@@ -116,19 +116,19 @@ namespace boost::proto17 {
                     );
             }
 
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(mem_ptr) // ->*
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(assign) // =
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(shift_left_assign) // <<=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(shift_right_assign) // >>=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(multiplies_assign) // *=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(divides_assign) // /=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(modulus_assign) // %=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(plus_assign) // +=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(minus_assign) // -=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_and_assign) // &=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_or_assign) // |=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_xor_assign) // ^=
-            BOOST_PROTO17_BINARY_OPERATOR_CASE(subscript) // []
+            BOOST_YAP_BINARY_OPERATOR_CASE(mem_ptr) // ->*
+            BOOST_YAP_BINARY_OPERATOR_CASE(assign) // =
+            BOOST_YAP_BINARY_OPERATOR_CASE(shift_left_assign) // <<=
+            BOOST_YAP_BINARY_OPERATOR_CASE(shift_right_assign) // >>=
+            BOOST_YAP_BINARY_OPERATOR_CASE(multiplies_assign) // *=
+            BOOST_YAP_BINARY_OPERATOR_CASE(divides_assign) // /=
+            BOOST_YAP_BINARY_OPERATOR_CASE(modulus_assign) // %=
+            BOOST_YAP_BINARY_OPERATOR_CASE(plus_assign) // +=
+            BOOST_YAP_BINARY_OPERATOR_CASE(minus_assign) // -=
+            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_and_assign) // &=
+            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_or_assign) // |=
+            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_xor_assign) // ^=
+            BOOST_YAP_BINARY_OPERATOR_CASE(subscript) // []
 
             else if constexpr (kind == expr_kind::if_else) {
                 return
@@ -139,7 +139,7 @@ namespace boost::proto17 {
                     );
             }
 
-#undef BOOST_PROTO17_BINARY_OPERATOR_CASE
+#undef BOOST_YAP_BINARY_OPERATOR_CASE
 
             else if constexpr (kind == expr_kind::call) {
                 auto expand_args = [&](auto && element) {
@@ -172,7 +172,7 @@ namespace boost::proto17 {
             {
                 constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
                 if constexpr (kind == expr_kind::expr_ref) {
-                    decltype(auto) ref = ::boost::proto17::value(expr);
+                    decltype(auto) ref = ::boost::yap::value(expr);
                     constexpr expr_kind kind = remove_cv_ref_t<decltype(ref)>::kind;
                     default_transform_expression<decltype(ref), Transform, detail::arity_of<kind>()> transformer;
                     return transformer(ref, static_cast<Transform &&>(transform));
@@ -216,7 +216,7 @@ namespace boost::proto17 {
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    deref(::boost::proto17::value(std::declval<Expr>()))
+                    deref(::boost::yap::value(std::declval<Expr>()))
                 )
             )>
         >
@@ -225,7 +225,7 @@ namespace boost::proto17 {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    deref(::boost::proto17::value(static_cast<Expr &&>(expr)))
+                    deref(::boost::yap::value(static_cast<Expr &&>(expr)))
                 );
             }
         };
@@ -238,8 +238,8 @@ namespace boost::proto17 {
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    deref(::boost::proto17::left(std::declval<Expr>())),
-                    deref(::boost::proto17::right(std::declval<Expr>()))
+                    deref(::boost::yap::left(std::declval<Expr>())),
+                    deref(::boost::yap::right(std::declval<Expr>()))
                 )
             )>
         >
@@ -248,8 +248,8 @@ namespace boost::proto17 {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    deref(::boost::proto17::left(static_cast<Expr &&>(expr))),
-                    deref(::boost::proto17::right(static_cast<Expr &&>(expr)))
+                    deref(::boost::yap::left(static_cast<Expr &&>(expr))),
+                    deref(::boost::yap::right(static_cast<Expr &&>(expr)))
                 );
             }
         };

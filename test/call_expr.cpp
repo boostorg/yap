@@ -1,4 +1,4 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
+#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 #include <gtest/gtest.h>
@@ -7,9 +7,9 @@
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
@@ -35,7 +35,7 @@ namespace user {
 
     struct eval_xform_tag
     {
-        decltype(auto) operator() (bp17::call_tag, tag_type, double a, double b)
+        decltype(auto) operator() (yap::call_tag, tag_type, double a, double b)
         { return tag_function(a, b); }
     };
 
@@ -44,10 +44,10 @@ namespace user {
     struct eval_xform_expr
     {
         decltype(auto) operator() (
-            bp17::expression<
-                bp17::expr_kind::call,
+            yap::expression<
+                yap::expr_kind::call,
                 bh::tuple<
-                    bp17::expression_ref<term<user::tag_type> >,
+                    yap::expression_ref<term<user::tag_type> >,
                     term<user::number>,
                     term<int>
                 >
@@ -55,32 +55,32 @@ namespace user {
         ) {
             using namespace boost::hana::literals;
             return tag_function(
-                (double)bp17::value(expr.elements[1_c]).value,
-                (double)bp17::value(expr.elements[2_c])
+                (double)yap::value(expr.elements[1_c]).value,
+                (double)yap::value(expr.elements[2_c])
             );
         }
 
         decltype(auto) operator() (
-            bp17::expression<
-                bp17::expr_kind::call,
+            yap::expression<
+                yap::expr_kind::call,
                 bh::tuple<
-                    bp17::expression_ref<term<user::tag_type> >,
-                    bp17::expression_ref<term<user::number>>,
+                    yap::expression_ref<term<user::tag_type> >,
+                    yap::expression_ref<term<user::number>>,
                     term<int>
                 >
             > const & expr
         ) {
             using namespace boost::hana::literals;
             return tag_function(
-                (double)bp17::deref(expr.elements[1_c]).value,
-                (double)bp17::value(expr.elements[2_c])
+                (double)yap::deref(expr.elements[1_c]).value,
+                (double)yap::value(expr.elements[2_c])
             );
         }
     };
 
     struct eval_xform_both
     {
-        decltype(auto) operator() (bp17::call_tag, tag_type, double a, double b)
+        decltype(auto) operator() (yap::call_tag, tag_type, double a, double b)
         {
             // TODO: Document that this differs from the behavior for
             // non-call_tag tagged overloads, which will always be preferred
@@ -91,10 +91,10 @@ namespace user {
         }
 
         decltype(auto) operator() (
-            bp17::expression<
-                bp17::expr_kind::call,
+            yap::expression<
+                yap::expr_kind::call,
                 bh::tuple<
-                    bp17::expression_ref<term<user::tag_type> >,
+                    yap::expression_ref<term<user::tag_type> >,
                     term<user::number>,
                     term<int>
                 >
@@ -102,25 +102,25 @@ namespace user {
         ) {
             using namespace boost::hana::literals;
             return tag_function(
-                (double)bp17::value(expr.elements[1_c]).value,
-                (double)bp17::value(expr.elements[2_c])
+                (double)yap::value(expr.elements[1_c]).value,
+                (double)yap::value(expr.elements[2_c])
             );
         }
 
         decltype(auto) operator() (
-            bp17::expression<
-                bp17::expr_kind::call,
+            yap::expression<
+                yap::expr_kind::call,
                 bh::tuple<
-                    bp17::expression_ref<term<user::tag_type> >,
-                    bp17::expression_ref<term<user::number>>,
+                    yap::expression_ref<term<user::tag_type> >,
+                    yap::expression_ref<term<user::number>>,
                     term<int>
                 >
             > const & expr
         ) {
             using namespace boost::hana::literals;
             return tag_function(
-                (double)bp17::deref(expr.elements[1_c]).value,
-                (double)bp17::value(expr.elements[2_c])
+                (double)yap::deref(expr.elements[1_c]).value,
+                (double)yap::value(expr.elements[2_c])
             );
         }
     };
@@ -141,15 +141,15 @@ namespace user {
 
 TEST(call_expr, test_call_expr)
 {
-    using namespace boost::proto17::literals;
+    using namespace boost::yap::literals;
 
     {
-        bp17::expression<
-            bp17::expr_kind::call,
+        yap::expression<
+            yap::expr_kind::call,
             bh::tuple<
-                bp17::placeholder<1>,
-                bp17::placeholder<2>,
-                bp17::placeholder<3>
+                yap::placeholder<1>,
+                yap::placeholder<2>,
+                yap::placeholder<3>
             >
         > expr = 1_p(2_p, 3_p);
 
@@ -174,7 +174,7 @@ TEST(call_expr, test_call_expr)
         auto min_lambda = [] (int a, int b) { return a < b ? a : b; };
 
         {
-            auto min = bp17::make_terminal(min_lambda);
+            auto min = yap::make_terminal(min_lambda);
             auto expr = min(1_p, 2_p);
 
             {
@@ -203,7 +203,7 @@ TEST(call_expr, test_call_expr)
         min_function_object_t min_function_object;
 
         {
-            term<min_function_object_t &> min = bp17::make_terminal(min_function_object);
+            term<min_function_object_t &> min = yap::make_terminal(min_function_object);
             auto expr = min(1_p, 2_p);
 
             {
@@ -224,7 +224,7 @@ TEST(call_expr, test_call_expr)
         }
 
         {
-            auto min = bp17::make_terminal(min_function_object_t{});
+            auto min = yap::make_terminal(min_function_object_t{});
             auto expr = min(1_p, 2_p);
 
             {
@@ -249,7 +249,7 @@ TEST(call_expr, test_call_expr)
         auto min_lambda = [] (int a, int b) { return a < b ? a : b; };
 
         {
-            auto min = bp17::make_terminal(min_lambda);
+            auto min = yap::make_terminal(min_lambda);
             auto expr = min(0, 1);
 
             {
@@ -260,10 +260,10 @@ TEST(call_expr, test_call_expr)
 
         {
             term<decltype(min_lambda)> min = {{min_lambda}};
-            bp17::expression<
-                bp17::expr_kind::call,
+            yap::expression<
+                yap::expr_kind::call,
                 bh::tuple<
-                    bp17::expression_ref<term<decltype(min_lambda)>& >,
+                    yap::expression_ref<term<decltype(min_lambda)>& >,
                     term<int>,
                     term<int>
                 >
@@ -278,7 +278,7 @@ TEST(call_expr, test_call_expr)
 
     {
         {
-            auto plus = bp17::make_terminal(user::tag_type{});
+            auto plus = yap::make_terminal(user::tag_type{});
             auto expr = plus(user::number{13}, 1);
 
             {
@@ -289,10 +289,10 @@ TEST(call_expr, test_call_expr)
 
         {
             term<user::tag_type> plus = {{user::tag_type{}}};
-            bp17::expression<
-                bp17::expr_kind::call,
+            yap::expression<
+                yap::expr_kind::call,
                 bh::tuple<
-                    bp17::expression_ref<term<user::tag_type>& >,
+                    yap::expression_ref<term<user::tag_type>& >,
                     term<int>,
                     term<int>
                 >
@@ -305,7 +305,7 @@ TEST(call_expr, test_call_expr)
         }
 
         {
-            auto plus = bp17::make_terminal(user::tag_type{});
+            auto plus = yap::make_terminal(user::tag_type{});
             auto expr = plus(user::number{13}, 1);
 
             {
@@ -331,8 +331,8 @@ TEST(call_expr, test_call_expr)
         }
 
         {
-            auto plus = bp17::make_terminal(user::tag_type{});
-            auto thirteen = bp17::make_terminal(user::number{13});
+            auto plus = yap::make_terminal(user::tag_type{});
+            auto thirteen = yap::make_terminal(user::number{13});
             auto expr = plus(thirteen, 1);
 
             {
@@ -356,7 +356,7 @@ TEST(call_expr, test_call_expr)
         term<user::number> a{{1.0}};
         term<user::number> x{{42.0}};
         term<user::number> y{{3.0}};
-        auto n = bp17::make_terminal(user::naxpy);
+        auto n = yap::make_terminal(user::naxpy);
 
         auto expr = n(a, x, y);
         {

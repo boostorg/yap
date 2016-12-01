@@ -6,34 +6,34 @@
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
 TEST(placeholder_eval, test_placeholder_eval)
 {
-    using namespace boost::proto17::literals;
+    using namespace boost::yap::literals;
 
-    bp17::placeholder<3> p3 = 3_p;
+    yap::placeholder<3> p3 = 3_p;
     int i_ = 42;
     term<int> i{std::move(i_)};
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<bp17::placeholder<3> &>,
+            yap::expression_ref<yap::placeholder<3> &>,
             term<int>
         >
     > expr = p3 + std::move(i);
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<bp17::placeholder<3> &>,
-            bp17::expression<
-                bp17::expr_kind::plus,
+            yap::expression_ref<yap::placeholder<3> &>,
+            yap::expression<
+                yap::expr_kind::plus,
                 bh::tuple<
-                    bp17::expression_ref<bp17::placeholder<3> &>,
+                    yap::expression_ref<yap::placeholder<3> &>,
                     term<int>
                 >
             >

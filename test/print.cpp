@@ -7,29 +7,29 @@
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
-template <boost::proto17::expr_kind Kind, typename Tuple>
+template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
     using this_type = user_expr<Kind, Tuple>;
 
-    static boost::proto17::expr_kind const kind = Kind;
+    static boost::yap::expr_kind const kind = Kind;
 
     Tuple elements;
 
-    BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::user_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::user_expr)
 };
 
 template <typename T>
-using user_term = boost::proto17::terminal<T, user_expr>;
+using user_term = boost::yap::terminal<T, user_expr>;
 
 template <typename T>
-using user_ref = boost::proto17::expression_ref<T, user_expr>;
+using user_ref = boost::yap::expression_ref<T, user_expr>;
 
 struct thing {};
 
@@ -38,21 +38,21 @@ TEST(expression, test_print)
     term<double> unity{1.0};
     int i_ = 42;
     term<int &&> i{std::move(i_)};
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<double> &>,
+            yap::expression_ref<term<double> &>,
             term<int &&>
         >
     > expr = unity + std::move(i);
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<double> &>,
-            bp17::expression<
-                bp17::expr_kind::plus,
+            yap::expression_ref<term<double> &>,
+            yap::expression<
+                yap::expr_kind::plus,
                 bh::tuple<
-                    bp17::expression_ref<term<double> &>,
+                    yap::expression_ref<term<double> &>,
                     term<int &&>
                 >
             >
@@ -61,14 +61,14 @@ TEST(expression, test_print)
 
     {
         std::ostringstream oss;
-        bp17::print(oss, unity);
+        yap::print(oss, unity);
         EXPECT_EQ(oss.str(), R"(term<double>[=1]
 )");
     }
 
     {
         std::ostringstream oss;
-        bp17::print(oss, expr);
+        yap::print(oss, expr);
         EXPECT_EQ(oss.str(), R"(expr<+>
     term<double>[=1] &
     term<int &&>[=42]
@@ -77,7 +77,7 @@ TEST(expression, test_print)
 
     {
         std::ostringstream oss;
-        bp17::print(oss, unevaluated_expr);
+        yap::print(oss, unevaluated_expr);
         EXPECT_EQ(oss.str(), R"(expr<+>
     term<double>[=1] &
     expr<+>
@@ -90,23 +90,23 @@ TEST(expression, test_print)
 
     {
         std::ostringstream oss;
-        bp17::print(oss, a_thing);
+        yap::print(oss, a_thing);
         EXPECT_EQ(oss.str(), R"(term<thing>[=<<unprintable-value>>]
 )");
     }
 
     term<double> const const_unity{1.0};
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<double> &>,
-            bp17::expression_ref<term<double> const &>
+            yap::expression_ref<term<double> &>,
+            yap::expression_ref<term<double> const &>
         >
     > nonconst_plus_const = unity + const_unity;
 
     {
         std::ostringstream oss;
-        bp17::print(oss, nonconst_plus_const);
+        yap::print(oss, nonconst_plus_const);
         EXPECT_EQ(oss.str(), R"(expr<+>
     term<double>[=1] &
     term<double>[=1] const &
@@ -120,18 +120,18 @@ TEST(user_expr, test_print)
     int i_ = 42;
     user_term<int &&> i{std::move(i_)};
     user_expr<
-        bp17::expr_kind::plus,
+        yap::expr_kind::plus,
         bh::tuple<
             user_ref<user_term<double> &>,
             user_term<int &&>
         >
     > expr = unity + std::move(i);
     user_expr<
-        bp17::expr_kind::plus,
+        yap::expr_kind::plus,
         bh::tuple<
             user_ref<user_term<double> &>,
             user_expr<
-                bp17::expr_kind::plus,
+                yap::expr_kind::plus,
                 bh::tuple<
                     user_ref<user_term<double> &>,
                     user_term<int &&>
@@ -142,14 +142,14 @@ TEST(user_expr, test_print)
 
     {
         std::ostringstream oss;
-        bp17::print(oss, unity);
+        yap::print(oss, unity);
         EXPECT_EQ(oss.str(), R"(term<double>[=1]
 )");
     }
 
     {
         std::ostringstream oss;
-        bp17::print(oss, expr);
+        yap::print(oss, expr);
         EXPECT_EQ(oss.str(), R"(expr<+>
     term<double>[=1] &
     term<int &&>[=42]
@@ -158,7 +158,7 @@ TEST(user_expr, test_print)
 
     {
         std::ostringstream oss;
-        bp17::print(oss, unevaluated_expr);
+        yap::print(oss, unevaluated_expr);
         EXPECT_EQ(oss.str(), R"(expr<+>
     term<double>[=1] &
     expr<+>
@@ -171,14 +171,14 @@ TEST(user_expr, test_print)
 
     {
         std::ostringstream oss;
-        bp17::print(oss, a_thing);
+        yap::print(oss, a_thing);
         EXPECT_EQ(oss.str(), R"(term<thing>[=<<unprintable-value>>]
 )");
     }
 
     user_term<double> const const_unity{1.0};
     user_expr<
-        bp17::expr_kind::plus,
+        yap::expr_kind::plus,
         bh::tuple<
             user_ref<user_term<double> &>,
             user_ref<user_term<double> const &>
@@ -187,7 +187,7 @@ TEST(user_expr, test_print)
 
     {
         std::ostringstream oss;
-        bp17::print(oss, nonconst_plus_const);
+        yap::print(oss, nonconst_plus_const);
         EXPECT_EQ(oss.str(), R"(expr<+>
     term<double>[=1] &
     term<double>[=1] const &

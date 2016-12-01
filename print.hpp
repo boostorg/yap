@@ -1,5 +1,5 @@
-#ifndef BOOST_PROTO17_PRINT_HPP_INCLUDED
-#define BOOST_PROTO17_PRINT_HPP_INCLUDED
+#ifndef BOOST_YAP_PRINT_HPP_INCLUDED
+#define BOOST_YAP_PRINT_HPP_INCLUDED
 
 #include "expression_fwd.hpp"
 
@@ -8,7 +8,7 @@
 #include <iostream>
 
 
-namespace boost::proto17 {
+namespace boost::yap {
 
     namespace detail {
 
@@ -53,7 +53,7 @@ namespace boost::proto17 {
             if constexpr (Expr::kind == expr_kind::expr_ref) {
                 print_impl(
                     os,
-                    ::boost::proto17::value(expr),
+                    ::boost::yap::value(expr),
                     indent,
                     indent_str,
                     true,
@@ -68,7 +68,7 @@ namespace boost::proto17 {
                     os << "term<";
                     print_type(os, expr.elements);
                     os << ">[=";
-                    print_value(os, ::boost::proto17::value(expr));
+                    print_value(os, ::boost::yap::value(expr));
                     os << "]";
                     if (is_const_ref)
                         os << " const &";
@@ -76,7 +76,7 @@ namespace boost::proto17 {
                         os << " &";
                     os << "\n";
                 } else if constexpr (Expr::kind == expr_kind::placeholder) {
-                    os << "placeholder<" << (long long)::boost::proto17::value(expr) << ">";
+                    os << "placeholder<" << (long long)::boost::yap::value(expr) << ">";
                     if (is_const_ref)
                         os << " const &";
                     else if (is_ref)

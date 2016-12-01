@@ -1,9 +1,9 @@
 #include "expression.hpp"
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
@@ -13,21 +13,21 @@ void compile_const_term ()
         term<double const> unity{1.0};
         int i_ = 42;
         term<int &&> i{std::move(i_)};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double const> &>,
+                yap::expression_ref<term<double const> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double const> &>,
-                bp17::expression<
-                    bp17::expr_kind::plus,
+                yap::expression_ref<term<double const> &>,
+                yap::expression<
+                    yap::expr_kind::plus,
                     bh::tuple<
-                        bp17::expression_ref<term<double const> &>,
+                        yap::expression_ref<term<double const> &>,
                         term<int &&>
                     >
                 >
@@ -40,21 +40,21 @@ void compile_const_term ()
         term<double> const unity{1.0};
         int i_ = 42;
         term<int &&> i{std::move(i_)};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> const &>,
+                yap::expression_ref<term<double> const &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> const &>,
-                bp17::expression<
-                    bp17::expr_kind::plus,
+                yap::expression_ref<term<double> const &>,
+                yap::expression<
+                    yap::expr_kind::plus,
                     bh::tuple<
-                        bp17::expression_ref<term<double> const &>,
+                        yap::expression_ref<term<double> const &>,
                         term<int &&>
                     >
                 >
@@ -67,21 +67,21 @@ void compile_const_term ()
         term<double> unity{1.0};
         int i_ = 42;
         term<int const &> i{i_};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<int const &>
             >
         > const expr = unity + std::move(i);
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression<
-                    bp17::expr_kind::plus,
+                yap::expression_ref<term<double> &>,
+                yap::expression<
+                    yap::expr_kind::plus,
                     bh::tuple<
-                        bp17::expression_ref<term<double> &>,
+                        yap::expression_ref<term<double> &>,
                         term<int const &>
                     >
                 >

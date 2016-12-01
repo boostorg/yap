@@ -4,9 +4,9 @@
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
@@ -17,10 +17,10 @@ void compile_term_plus_term ()
     // char const * string
     {
         term<double> unity{1.0};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<char const *>
             >
         > unevaluated_expr = unity + term<char const *>{"3"};
@@ -30,10 +30,10 @@ void compile_term_plus_term ()
     // std::string temporary
     {
         term<double> unity{1.0};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<std::string>
             >
         > unevaluated_expr = unity + term<std::string>{"3"s};
@@ -45,11 +45,11 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int ints_[] = {1, 2};
         term<int *> ints = {ints_};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int *> &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int *> &>
             >
         > unevaluated_expr = unity + ints;
         (void)unevaluated_expr;
@@ -59,11 +59,11 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int const ints_[] = {1, 2};
         term<int const *> ints = {ints_};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int const *> &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int const *> &>
             >
         > unevaluated_expr = unity + ints;
         (void)unevaluated_expr;
@@ -73,10 +73,10 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int ints_[] = {1, 2};
         term<int *> ints = {ints_};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<int *>
             >
         > unevaluated_expr = unity + std::move(ints);
@@ -88,11 +88,11 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int ints[] = {1, 2};
         term<int * const> int_ptr = {ints};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int * const> &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int * const> &>
             >
         > unevaluated_expr = unity + int_ptr;
         (void)unevaluated_expr;
@@ -102,11 +102,11 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int const ints[] = {1, 2};
         term<int const * const> int_ptr = {ints};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int const * const> &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int const * const> &>
             >
         > unevaluated_expr = unity + int_ptr;
         (void)unevaluated_expr;
@@ -116,10 +116,10 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int ints[] = {1, 2};
         term<int * const> int_ptr = {ints};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<int * const>
             >
         > unevaluated_expr = unity + std::move(int_ptr);
@@ -130,11 +130,11 @@ void compile_term_plus_term ()
     {
         term<double> unity{1.0};
         term<int> i = {1};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int> &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int> &>
             >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
@@ -143,11 +143,11 @@ void compile_term_plus_term ()
     {
         term<double> unity{1.0};
         term<int const> i = {1};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int const> &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int const> &>
             >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
@@ -156,10 +156,10 @@ void compile_term_plus_term ()
     {
         term<double> unity{1.0};
         term<int> i = {1};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<int>
             >
         > unevaluated_expr = unity + std::move(i);
@@ -170,11 +170,11 @@ void compile_term_plus_term ()
     {
         term<double> unity{1.0};
         term<int> const i = {1};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int> const &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int> const &>
             >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
@@ -183,11 +183,11 @@ void compile_term_plus_term ()
     {
         term<double> unity{1.0};
         term<int const> const i = {1};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int const> const &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int const> const &>
             >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
@@ -198,11 +198,11 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int i_ = 1;
         term<int &> i{i_};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int &> &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int &> &>
             >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
@@ -212,11 +212,11 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int i_ = 1;
         term<int const &> i{i_};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
-                bp17::expression_ref<term<int const &> &>
+                yap::expression_ref<term<double> &>,
+                yap::expression_ref<term<int const &> &>
             >
         > unevaluated_expr = unity + i;
         (void)unevaluated_expr;
@@ -226,10 +226,10 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int i_ = 1;
         term<int &> i{i_};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<int &>
             >
         > unevaluated_expr = unity + std::move(i);
@@ -241,10 +241,10 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int i_ = 1;
         term<int &&> i{std::move(i_)};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<int &&>
             >
         > unevaluated_expr = unity + std::move(i);
@@ -255,10 +255,10 @@ void compile_term_plus_term ()
         term<double> unity{1.0};
         int i_ = 1;
         term<int &&> i{std::move(i_)};
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression_ref<term<double> &>,
+                yap::expression_ref<term<double> &>,
                 term<int &&>
             >
         > unevaluated_expr = unity + std::move(i);

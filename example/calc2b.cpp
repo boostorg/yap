@@ -5,7 +5,7 @@
 
 int main ()
 {
-    using namespace boost::proto17::literals;
+    using namespace boost::yap::literals;
 
     // Displays "5"
     std::cout << make_expression_function(1_p + 2.0)(3.0) << std::endl;

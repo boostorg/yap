@@ -1,4 +1,4 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
+#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 #include <gtest/gtest.h>
@@ -7,9 +7,9 @@
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
@@ -31,11 +31,11 @@ namespace user {
 
 #if 0 // TODO: Document this verbose form.
     auto eval_expression_as (
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression<
-                    bp17::expr_kind::multiplies,
+                yap::expression<
+                    yap::expr_kind::multiplies,
                     bh::tuple<
                         term<number>,
                         term<number>
@@ -87,14 +87,14 @@ TEST(user_expression_transform, test_user_expression_transform)
     term<user::number> y{{3.0}};
 
     {
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression<
-                    bp17::expr_kind::multiplies,
+                yap::expression<
+                    yap::expr_kind::multiplies,
                     bh::tuple<
-                        bp17::expression<
-                            bp17::expr_kind::multiplies,
+                        yap::expression<
+                            yap::expr_kind::multiplies,
                             bh::tuple<
                                 term<user::number>,
                                 term<user::number>
@@ -112,11 +112,11 @@ TEST(user_expression_transform, test_user_expression_transform)
     }
 
     {
-        bp17::expression<
-            bp17::expr_kind::plus,
+        yap::expression<
+            yap::expr_kind::plus,
             bh::tuple<
-                bp17::expression<
-                    bp17::expr_kind::multiplies,
+                yap::expression<
+                    yap::expr_kind::multiplies,
                     bh::tuple<
                         term<user::number>,
                         term<user::number>
@@ -131,15 +131,15 @@ TEST(user_expression_transform, test_user_expression_transform)
     }
 
     {
-        bp17::expression<
-            bp17::expr_kind::multiplies,
+        yap::expression<
+            yap::expr_kind::multiplies,
             bh::tuple<
                 term<user::number>,
-                bp17::expression<
-                    bp17::expr_kind::plus,
+                yap::expression<
+                    yap::expr_kind::plus,
                     bh::tuple<
-                        bp17::expression<
-                            bp17::expr_kind::multiplies,
+                        yap::expression<
+                            yap::expr_kind::multiplies,
                             bh::tuple<
                                 term<user::number>,
                                 term<user::number>

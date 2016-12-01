@@ -1,13 +1,13 @@
-#define BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
+#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
 #include "expression.hpp"
 
 #include <gtest/gtest.h>
 
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
@@ -32,7 +32,7 @@ namespace user {
         T &&... args)
     {
         user::number const x =
-            bp17::detail::default_eval_expr(expr, static_cast<T &&>(args)...);
+            yap::detail::default_eval_expr(expr, static_cast<T &&>(args)...);
         return user::number{x.value + 5.0};
     }
 
@@ -43,21 +43,21 @@ TEST(user_eval_expression_as, test_user_eval_expression_as)
     term<user::number> unity{{1.0}};
     double d_ = 42.0;
     term<user::number> i{{d_}};
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<user::number>& >,
+            yap::expression_ref<term<user::number>& >,
             term<user::number>
         >
     > expr = unity + std::move(i);
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<user::number>& >,
-            bp17::expression<
-                bp17::expr_kind::plus,
+            yap::expression_ref<term<user::number>& >,
+            yap::expression<
+                yap::expr_kind::plus,
                 bh::tuple<
-                    bp17::expression_ref<term<user::number>& >,
+                    yap::expression_ref<term<user::number>& >,
                     term<user::number>
                 >
             >
@@ -95,17 +95,17 @@ TEST(user_eval_expression_as, test_user_eval_expression_as)
     }
 
     {
-        user::number result = bp17::evaluate_as<user::number>(unity, 5, 6, 7);
+        user::number result = yap::evaluate_as<user::number>(unity, 5, 6, 7);
         EXPECT_EQ(result.value, 6);
     }
 
     {
-        user::number result = bp17::evaluate_as<user::number>(expr);
+        user::number result = yap::evaluate_as<user::number>(expr);
         EXPECT_EQ(result.value, -36);
     }
 
     {
-        user::number result = bp17::evaluate_as<user::number>(unevaluated_expr, std::string("15"));
+        user::number result = yap::evaluate_as<user::number>(unevaluated_expr, std::string("15"));
         EXPECT_EQ(result.value, 47);
     }
 }

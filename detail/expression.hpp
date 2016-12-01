@@ -1,5 +1,5 @@
-#ifndef BOOST_PROTO17_DETAIL_EXPRESSION_HPP_INCLUDED
-#define BOOST_PROTO17_DETAIL_EXPRESSION_HPP_INCLUDED
+#ifndef BOOST_YAP_DETAIL_EXPRESSION_HPP_INCLUDED
+#define BOOST_YAP_DETAIL_EXPRESSION_HPP_INCLUDED
 
 #include "../expression_fwd.hpp"
 
@@ -9,7 +9,7 @@
 #include <type_traits>
 
 
-namespace boost::proto17 {
+namespace boost::yap {
 
     namespace detail {
 

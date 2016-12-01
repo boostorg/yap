@@ -3,9 +3,9 @@
 #include <memory>
 
 template <typename T>
-using term = boost::proto17::terminal<T>;
+using term = boost::yap::terminal<T>;
 
-namespace bp17 = boost::proto17;
+namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
@@ -16,22 +16,22 @@ void compile_move_only_types ()
 {
     term<double> unity{1.0};
     term<std::unique_ptr<int>> i{new int{7}};
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<double> &>,
+            yap::expression_ref<term<double> &>,
             term<std::unique_ptr<int>>
         >
     > expr_1 = unity + std::move(i);
 
-    bp17::expression<
-        bp17::expr_kind::plus,
+    yap::expression<
+        yap::expr_kind::plus,
         bh::tuple<
-            bp17::expression_ref<term<double> &>,
-            bp17::expression<
-                bp17::expr_kind::plus,
+            yap::expression_ref<term<double> &>,
+            yap::expression<
+                yap::expr_kind::plus,
                 bh::tuple<
-                    bp17::expression_ref<term<double> &>,
+                    yap::expression_ref<term<double> &>,
                     term<std::unique_ptr<int>>
                 >
             >

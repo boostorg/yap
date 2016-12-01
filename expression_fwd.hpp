@@ -1,11 +1,11 @@
-#ifndef BOOST_PROTO17_EXPRESSION_FWD_HPP_INCLUDED
-#define BOOST_PROTO17_EXPRESSION_FWD_HPP_INCLUDED
+#ifndef BOOST_YAP_EXPRESSION_FWD_HPP_INCLUDED
+#define BOOST_YAP_EXPRESSION_FWD_HPP_INCLUDED
 
 #include <boost/hana/integral_constant.hpp>
 #include <boost/hana/tuple.hpp>
 
 
-namespace boost::proto17 {
+namespace boost::yap {
 
     enum class expr_kind {
         expr_ref,

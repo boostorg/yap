@@ -1,5 +1,5 @@
-#ifndef BOOST_PROTO17_EXPRESSION_HPP_INCLUDED
-#define BOOST_PROTO17_EXPRESSION_HPP_INCLUDED
+#ifndef BOOST_YAP_EXPRESSION_HPP_INCLUDED
+#define BOOST_YAP_EXPRESSION_HPP_INCLUDED
 
 #include "expression_fwd.hpp"
 #include "user_macros.hpp"
@@ -9,7 +9,7 @@
 #include <boost/hana/comparing.hpp>
 
 
-namespace boost::proto17 {
+namespace boost::yap {
 
     namespace adl_detail {
 
@@ -104,97 +104,97 @@ namespace boost::proto17 {
 
         tuple_type elements;
 
-#ifdef BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
+#ifdef BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
         template <typename R>
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
 #endif
 
         decltype(auto) value () const &
-        { return ::boost::proto17::value(*this); }
+        { return ::boost::yap::value(*this); }
 
         decltype(auto) value () &
-        { return ::boost::proto17::value(*this); }
+        { return ::boost::yap::value(*this); }
 
         decltype(auto) value () &&
-        { return ::boost::proto17::value(std::move(*this)); }
+        { return ::boost::yap::value(std::move(*this)); }
 
         decltype(auto) left () const &
-        { return ::boost::proto17::left(*this); }
+        { return ::boost::yap::left(*this); }
 
         decltype(auto) left () &
-        { return ::boost::proto17::left(*this); }
+        { return ::boost::yap::left(*this); }
 
         decltype(auto) left () &&
-        { return ::boost::proto17::left(std::move(*this)); }
+        { return ::boost::yap::left(std::move(*this)); }
 
         decltype(auto) right () const &
-        { return ::boost::proto17::right(*this); }
+        { return ::boost::yap::right(*this); }
 
         decltype(auto) right () &
-        { return ::boost::proto17::right(*this); }
+        { return ::boost::yap::right(*this); }
 
         decltype(auto) right () &&
-        { return ::boost::proto17::right(std::move(*this)); }
+        { return ::boost::yap::right(std::move(*this)); }
 
-#define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op_name)                    \
-        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::proto17::expression)
+#define BOOST_YAP_UNARY_MEMBER_OPERATOR(op_name)                    \
+        BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
 
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(unary_plus) // +
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(negate) // -
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(dereference) // *
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(complement) // ~
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(address_of) // &
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(logical_not) // !
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(pre_inc) // ++
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(pre_dec) // --
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(post_inc) // ++(int)
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(post_dec) // --(int)
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(unary_plus) // +
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(negate) // -
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(dereference) // *
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(complement) // ~
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(address_of) // &
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(logical_not) // !
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(pre_inc) // ++
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(pre_dec) // --
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(post_inc) // ++(int)
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(post_dec) // --(int)
 
-#undef BOOST_PROTO17_UNARY_MEMBER_OPERATOR
+#undef BOOST_YAP_UNARY_MEMBER_OPERATOR
 
         // TODO: Add test coverage for all the operators (with all three qual
         // types), for expression and terminal.  Don't forget the free
         // operators.
-#define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op_name)                   \
-        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, ::boost::proto17::expression)
+#define BOOST_YAP_BINARY_MEMBER_OPERATOR(op_name)                   \
+        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
 
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_left) // <<
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_right) // >>
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(multiplies) // *
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(divides) // /
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(modulus) // %
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(plus) // +
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(minus) // -
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(less) // <
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(greater) // >
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(less_equal) // <=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(greater_equal) // >=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(equal_to) // ==
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(not_equal_to) // !=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(logical_or) // ||
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(logical_and) // &&
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_and) // &
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_or) // |
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_xor) // ^
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(comma) // ,
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(mem_ptr) // ->*
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(assign) // =
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_left_assign) // <<=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_right_assign) // >>=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(multiplies_assign) // *=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(divides_assign) // /=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(modulus_assign) // %=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(plus_assign) // +=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(minus_assign) // -=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_and_assign) // &=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_or_assign) // |=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_xor_assign) // ^=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(subscript) // []
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_left) // <<
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_right) // >>
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(multiplies) // *
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(divides) // /
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(modulus) // %
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(plus) // +
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(minus) // -
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(less) // <
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(greater) // >
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(less_equal) // <=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(greater_equal) // >=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(equal_to) // ==
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(not_equal_to) // !=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(logical_or) // ||
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(logical_and) // &&
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_and) // &
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_or) // |
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_xor) // ^
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(comma) // ,
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(mem_ptr) // ->*
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(assign) // =
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_left_assign) // <<=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_right_assign) // >>=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(multiplies_assign) // *=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(divides_assign) // /=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(modulus_assign) // %=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(plus_assign) // +=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(minus_assign) // -=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_and_assign) // &=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_or_assign) // |=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_xor_assign) // ^=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(subscript) // []
 
-#undef BOOST_PROTO17_BINARY_MEMBER_OPERATOR
+#undef BOOST_YAP_BINARY_MEMBER_OPERATOR
 
-        BOOST_PROTO17_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::proto17::expression)
+        BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::yap::expression)
     };
 
     template <typename T>
@@ -217,76 +217,76 @@ namespace boost::proto17 {
 
         tuple_type elements;
 
-#ifdef BOOST_PROTO17_CONVERSION_OPERATOR_TEMPLATE
+#ifdef BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
         template <typename R>
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
 #endif
 
         decltype(auto) value () const &
-        { return ::boost::proto17::value(*this); }
+        { return ::boost::yap::value(*this); }
 
         decltype(auto) value () &
-        { return ::boost::proto17::value(*this); }
+        { return ::boost::yap::value(*this); }
 
         decltype(auto) value () &&
-        { return ::boost::proto17::value(std::move(*this)); }
+        { return ::boost::yap::value(std::move(*this)); }
 
-#define BOOST_PROTO17_UNARY_MEMBER_OPERATOR(op_name)                    \
-        BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::proto17::expression)
+#define BOOST_YAP_UNARY_MEMBER_OPERATOR(op_name)                    \
+        BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
 
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(unary_plus) // +
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(negate) // -
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(dereference) // *
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(complement) // ~
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(address_of) // &
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(logical_not) // !
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(pre_inc) // ++
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(pre_dec) // --
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(post_inc) // ++(int)
-        BOOST_PROTO17_UNARY_MEMBER_OPERATOR(post_dec) // --(int)
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(unary_plus) // +
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(negate) // -
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(dereference) // *
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(complement) // ~
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(address_of) // &
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(logical_not) // !
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(pre_inc) // ++
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(pre_dec) // --
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(post_inc) // ++(int)
+        BOOST_YAP_UNARY_MEMBER_OPERATOR(post_dec) // --(int)
 
-#undef BOOST_PROTO17_UNARY_MEMBER_OPERATOR
+#undef BOOST_YAP_UNARY_MEMBER_OPERATOR
 
-#define BOOST_PROTO17_BINARY_MEMBER_OPERATOR(op_name)                   \
-        BOOST_PROTO17_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, ::boost::proto17::expression)
+#define BOOST_YAP_BINARY_MEMBER_OPERATOR(op_name)                   \
+        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
 
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_left) // <<
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_right) // >>
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(multiplies) // *
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(divides) // /
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(modulus) // %
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(plus) // +
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(minus) // -
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(less) // <
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(greater) // >
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(less_equal) // <=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(greater_equal) // >=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(equal_to) // ==
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(not_equal_to) // !=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(logical_or) // ||
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(logical_and) // &&
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_and) // &
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_or) // |
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_xor) // ^
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(comma) // ,
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(mem_ptr) // ->*
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(assign) // =
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_left_assign) // <<=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(shift_right_assign) // >>=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(multiplies_assign) // *=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(divides_assign) // /=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(modulus_assign) // %=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(plus_assign) // +=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(minus_assign) // -=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_and_assign) // &=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_or_assign) // |=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(bitwise_xor_assign) // ^=
-        BOOST_PROTO17_BINARY_MEMBER_OPERATOR(subscript) // []
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_left) // <<
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_right) // >>
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(multiplies) // *
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(divides) // /
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(modulus) // %
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(plus) // +
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(minus) // -
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(less) // <
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(greater) // >
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(less_equal) // <=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(greater_equal) // >=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(equal_to) // ==
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(not_equal_to) // !=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(logical_or) // ||
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(logical_and) // &&
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_and) // &
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_or) // |
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_xor) // ^
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(comma) // ,
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(mem_ptr) // ->*
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(assign) // =
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_left_assign) // <<=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_right_assign) // >>=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(multiplies_assign) // *=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(divides_assign) // /=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(modulus_assign) // %=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(plus_assign) // +=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(minus_assign) // -=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_and_assign) // &=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_or_assign) // |=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_xor_assign) // ^=
+        BOOST_YAP_BINARY_MEMBER_OPERATOR(subscript) // []
 
-#undef BOOST_PROTO17_BINARY_MEMBER_OPERATOR
+#undef BOOST_YAP_BINARY_MEMBER_OPERATOR
 
-        BOOST_PROTO17_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::proto17::expression)
+        BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::yap::expression)
     };
 
     template <long long I>
@@ -297,7 +297,7 @@ namespace boost::proto17 {
     {
         if constexpr (detail::is_expr<T>::value) {
             if constexpr (detail::remove_cv_ref_t<T>::kind == expr_kind::expr_ref) {
-                return ::boost::proto17::value(::boost::proto17::value(static_cast<T &&>(x)));
+                return ::boost::yap::value(::boost::yap::value(static_cast<T &&>(x)));
             } else {
                 return static_cast<T &&>(x);
             }
@@ -346,7 +346,7 @@ namespace boost::proto17 {
         using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         if constexpr (kind == expr_kind::expr_ref) {
-            return left(::boost::proto17::value(static_cast<Expr &&>(expr)));
+            return left(::boost::yap::value(static_cast<Expr &&>(expr)));
         } else {
             static_assert(
                 detail::arity_of<kind>() == detail::expr_arity::two,
@@ -371,7 +371,7 @@ namespace boost::proto17 {
         using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         if constexpr (kind == expr_kind::expr_ref) {
-            return right(::boost::proto17::value(static_cast<Expr &&>(expr)));
+            return right(::boost::yap::value(static_cast<Expr &&>(expr)));
         } else {
             static_assert(
                 detail::arity_of<kind>() == detail::expr_arity::two,
@@ -385,31 +385,31 @@ namespace boost::proto17 {
         }
     }
 
-#define BOOST_PROTO17_BINARY_FREE_OPERATOR(op_name)                     \
-    BOOST_PROTO17_USER_FREE_BINARY_OPERATOR(op_name, expression)
+#define BOOST_YAP_BINARY_FREE_OPERATOR(op_name)                     \
+    BOOST_YAP_USER_FREE_BINARY_OPERATOR(op_name, expression)
 
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(shift_left) // <<
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(shift_right) // >>
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(multiplies) // *
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(divides) // /
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(modulus) // %
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(plus) // +
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(minus) // -
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(less) // <
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(greater) // >
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(less_equal) // <=
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(greater_equal) // >=
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(equal_to) // ==
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(not_equal_to) // !=
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(logical_or) // ||
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(logical_and) // &&
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(bitwise_and) // &
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(bitwise_or) // |
-    BOOST_PROTO17_BINARY_FREE_OPERATOR(bitwise_xor) // ^
+    BOOST_YAP_BINARY_FREE_OPERATOR(shift_left) // <<
+    BOOST_YAP_BINARY_FREE_OPERATOR(shift_right) // >>
+    BOOST_YAP_BINARY_FREE_OPERATOR(multiplies) // *
+    BOOST_YAP_BINARY_FREE_OPERATOR(divides) // /
+    BOOST_YAP_BINARY_FREE_OPERATOR(modulus) // %
+    BOOST_YAP_BINARY_FREE_OPERATOR(plus) // +
+    BOOST_YAP_BINARY_FREE_OPERATOR(minus) // -
+    BOOST_YAP_BINARY_FREE_OPERATOR(less) // <
+    BOOST_YAP_BINARY_FREE_OPERATOR(greater) // >
+    BOOST_YAP_BINARY_FREE_OPERATOR(less_equal) // <=
+    BOOST_YAP_BINARY_FREE_OPERATOR(greater_equal) // >=
+    BOOST_YAP_BINARY_FREE_OPERATOR(equal_to) // ==
+    BOOST_YAP_BINARY_FREE_OPERATOR(not_equal_to) // !=
+    BOOST_YAP_BINARY_FREE_OPERATOR(logical_or) // ||
+    BOOST_YAP_BINARY_FREE_OPERATOR(logical_and) // &&
+    BOOST_YAP_BINARY_FREE_OPERATOR(bitwise_and) // &
+    BOOST_YAP_BINARY_FREE_OPERATOR(bitwise_or) // |
+    BOOST_YAP_BINARY_FREE_OPERATOR(bitwise_xor) // ^
 
-#undef BOOST_PROTO17_BINARY_FREE_OPERATOR
+#undef BOOST_YAP_BINARY_FREE_OPERATOR
 
-    BOOST_PROTO17_USER_EXPR_IF_ELSE(::boost::proto17::expression)
+    BOOST_YAP_USER_EXPR_IF_ELSE(::boost::yap::expression)
 
     template <expr_kind Kind, typename ...T>
     auto make_expression (T &&... t)
@@ -501,7 +501,7 @@ namespace boost::proto17 {
 
 #include "detail/default_eval.hpp"
 
-namespace boost::proto17 {
+namespace boost::yap {
 
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr const & expr, T && ...t)

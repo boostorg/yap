@@ -7,15 +7,15 @@
 struct take_nth
 {
     template <typename T>
-    auto operator() (boost::proto17::terminal_tag, std::vector<T> const & vec)
-    { return boost::proto17::make_terminal(std::move(vec[n])); }
+    auto operator() (boost::yap::terminal_tag, std::vector<T> const & vec)
+    { return boost::yap::make_terminal(std::move(vec[n])); }
 
     std::size_t n;
 };
 
 template <typename T>
-using vector_terminal = boost::proto17::expression<
-    boost::proto17::expr_kind::terminal,
+using vector_terminal = boost::yap::expression<
+    boost::yap::expr_kind::terminal,
     boost::hana::tuple<std::vector<T>>
 >;
 
@@ -24,7 +24,7 @@ struct equal_sizes_impl
     template <typename T>
     auto operator() (vector_terminal<T> const & expr)
     {
-        auto const expr_size = boost::proto17::value(expr).size();
+        auto const expr_size = boost::yap::value(expr).size();
         if (expr_size != size)
             value = false;
         return expr;
@@ -38,7 +38,7 @@ template <typename Expr>
 bool equal_sizes (std::size_t size, Expr const & expr)
 {
     equal_sizes_impl impl{size, true};
-    boost::proto17::transform(expr, impl);
+    boost::yap::transform(expr, impl);
     return impl.value;
 }
 
@@ -46,10 +46,10 @@ bool equal_sizes (std::size_t size, Expr const & expr)
 template <typename T, typename Expr>
 std::vector<T> & assign (std::vector<T> & vec, Expr const & e)
 {
-    decltype(auto) expr = boost::proto17::as_expr(e);
+    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
-        vec[i] = boost::proto17::evaluate(boost::proto17::transform(expr, take_nth{i}));
+        vec[i] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));
     }
     return vec;
 }
@@ -57,10 +57,10 @@ std::vector<T> & assign (std::vector<T> & vec, Expr const & e)
 template <typename T, typename Expr>
 std::vector<T> & operator+= (std::vector<T> & vec, Expr const & e)
 {
-    decltype(auto) expr = boost::proto17::as_expr(e);
+    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
-        vec[i] += boost::proto17::evaluate(boost::proto17::transform(expr, take_nth{i}));
+        vec[i] += boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));
     }
     return vec;
 }
@@ -71,23 +71,23 @@ struct is_vector : std::false_type {};
 template <typename T, typename A>
 struct is_vector<std::vector<T, A>> : std::true_type {};
 
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(negate, boost::proto17::expression, is_vector); // -
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(multiplies, boost::proto17::expression, is_vector); // *
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(divides, boost::proto17::expression, is_vector); // /
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(modulus, boost::proto17::expression, is_vector); // %
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(plus, boost::proto17::expression, is_vector); // +
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(minus, boost::proto17::expression, is_vector); // -
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(less, boost::proto17::expression, is_vector); // <
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(greater, boost::proto17::expression, is_vector); // >
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(less_equal, boost::proto17::expression, is_vector); // <=
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(greater_equal, boost::proto17::expression, is_vector); // >=
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(equal_to, boost::proto17::expression, is_vector); // ==
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(not_equal_to, boost::proto17::expression, is_vector); // !=
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(logical_or, boost::proto17::expression, is_vector); // ||
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(logical_and, boost::proto17::expression, is_vector); // &&
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(bitwise_and, boost::proto17::expression, is_vector); // &
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(bitwise_or, boost::proto17::expression, is_vector); // |
-BOOST_PROTO17_USER_UDT_ANY_BINARY_OPERATOR(bitwise_xor, boost::proto17::expression, is_vector); // ^
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(negate, boost::yap::expression, is_vector); // -
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(multiplies, boost::yap::expression, is_vector); // *
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(divides, boost::yap::expression, is_vector); // /
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(modulus, boost::yap::expression, is_vector); // %
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(plus, boost::yap::expression, is_vector); // +
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(minus, boost::yap::expression, is_vector); // -
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(less, boost::yap::expression, is_vector); // <
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(greater, boost::yap::expression, is_vector); // >
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(less_equal, boost::yap::expression, is_vector); // <=
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(greater_equal, boost::yap::expression, is_vector); // >=
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(equal_to, boost::yap::expression, is_vector); // ==
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(not_equal_to, boost::yap::expression, is_vector); // !=
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(logical_or, boost::yap::expression, is_vector); // ||
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(logical_and, boost::yap::expression, is_vector); // &&
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_and, boost::yap::expression, is_vector); // &
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_or, boost::yap::expression, is_vector); // |
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_xor, boost::yap::expression, is_vector); // ^
 
 int main()
 {
