@@ -15,12 +15,28 @@ namespace boost::yap {
         inline std::ostream & print_kind (std::ostream & os, expr_kind kind)
         { return os << op_string(kind); }
 
-        template <typename T>
-        auto print_value (std::ostream & os, T const & x) -> decltype(os << x)
-        { return os << x; }
+        template <typename T, typename = std::void_t<>>
+        struct printer
+        {
+            std::ostream & operator() (std::ostream & os, T const &)
+            { return os << "<<unprintable-value>>"; }
+        };
 
-        inline std::ostream & print_value (std::ostream & os, ...)
-        { return os << "<<unprintable-value>>"; }
+        template <typename T>
+        struct printer<
+            T,
+            std::void_t<decltype(
+                std::declval<std::ostream &>() << std::declval<T const &>()
+            )>
+        >
+        {
+            std::ostream & operator() (std::ostream & os, T const & x)
+            { return os << x; }
+        };
+
+        template <typename T>
+        inline std::ostream & print_value (std::ostream & os, T const & x)
+        { return printer<T>{}(os, x); }
 
         template <typename T>
         std::ostream & print_type (std::ostream & os, hana::tuple<T> const &)
@@ -37,9 +53,10 @@ namespace boost::yap {
             return os;
         }
 
-        bool is_const_expr_ref (...) { return false; }
+        inline bool is_const_expr_ref (...) { return false; }
         template <typename T, template <expr_kind, class> class expr_template>
-        bool is_const_expr_ref (expr_template<expr_kind::expr_ref, hana::tuple<T const *>> const &) { return true; }
+        bool is_const_expr_ref (expr_template<expr_kind::expr_ref, hana::tuple<T const *>> const &)
+        { return true; }
 
         template <typename Expr>
         std::ostream & print_impl (
