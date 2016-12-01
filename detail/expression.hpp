@@ -242,6 +242,43 @@ namespace boost::proto17 {
         >::type;
 
 
+        // udt_unary_op_result
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            template <class> class UdtTrait,
+            bool Valid = !is_expr<T>::value && UdtTrait<remove_cv_ref_t<T>>::value
+        >
+        struct udt_unary_op_result;
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            template <class> class UdtTrait
+        >
+        struct udt_unary_op_result<ExprTemplate, OpKind, T, UdtTrait, true>
+        {
+            using x_type = operand_type_t<ExprTemplate, T>;
+            using type = ExprTemplate<OpKind, hana::tuple<x_type>>;
+        };
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            expr_kind OpKind,
+            typename T,
+            template <class> class UdtTrait
+        >
+        using udt_unary_op_result_t = typename udt_unary_op_result<
+            ExprTemplate,
+            OpKind,
+            T,
+            UdtTrait
+        >::type;
+
+
         // TODO: Add affine operator test.
         // udt_udt_binary_op_result
 

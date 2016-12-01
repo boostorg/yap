@@ -5,16 +5,16 @@
 
 
 // unary
-#define BOOST_PROTO17_OPERATOR_unary_plus() +()
-#define BOOST_PROTO17_OPERATOR_negate() -()
-#define BOOST_PROTO17_OPERATOR_dereference() *()
-#define BOOST_PROTO17_OPERATOR_complement() ~()
-#define BOOST_PROTO17_OPERATOR_address_of() &()
-#define BOOST_PROTO17_OPERATOR_logical_not() !()
-#define BOOST_PROTO17_OPERATOR_pre_inc() ++()
-#define BOOST_PROTO17_OPERATOR_pre_dec() --()
-#define BOOST_PROTO17_OPERATOR_post_inc() ++(int)
-#define BOOST_PROTO17_OPERATOR_post_dec() --(int)
+#define BOOST_PROTO17_OPERATOR_unary_plus(param_list) + param_list
+#define BOOST_PROTO17_OPERATOR_negate(param_list) - param_list
+#define BOOST_PROTO17_OPERATOR_dereference(param_list) * param_list
+#define BOOST_PROTO17_OPERATOR_complement(param_list) ~ param_list
+#define BOOST_PROTO17_OPERATOR_address_of(param_list) & param_list
+#define BOOST_PROTO17_OPERATOR_logical_not(param_list) ! param_list
+#define BOOST_PROTO17_OPERATOR_pre_inc(param_list) ++ param_list
+#define BOOST_PROTO17_OPERATOR_pre_dec(param_list) -- param_list
+#define BOOST_PROTO17_OPERATOR_post_inc(param_list) ++ (int)
+#define BOOST_PROTO17_OPERATOR_post_dec(param_list) -- (int)
 
 // binary
 #define BOOST_PROTO17_OPERATOR_shift_left() <<
@@ -53,7 +53,7 @@
 #define BOOST_PROTO17_INDIRECT_CALL(macro) BOOST_PP_CAT(BOOST_PROTO17_OPERATOR_, macro)
 
 #define BOOST_PROTO17_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, expr_template) \
-    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() const &        \
+    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)(()) const &      \
     {                                                                   \
         using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type const &>; \
         using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
@@ -62,7 +62,7 @@
             tuple_type{lhs_type{lhs_tuple_type{this}}}                  \
         };                                                              \
     }                                                                   \
-    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() &              \
+    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)(()) &            \
     {                                                                   \
         using lhs_type = ::boost::proto17::detail::expr_ref_t<expr_template, this_type &>; \
         using lhs_tuple_type = ::boost::proto17::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
@@ -71,7 +71,7 @@
             tuple_type{lhs_type{lhs_tuple_type{this}}}                  \
         };                                                              \
     }                                                                   \
-    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() &&             \
+    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)(()) &&           \
     {                                                                   \
         using tuple_type = ::boost::hana::tuple<this_type>;             \
         return expr_template< ::boost::proto17::expr_kind::op_name, tuple_type>{ \
@@ -214,6 +214,28 @@
     }                                                                   \
 
 
+#define BOOST_PROTO17_USER_UDT_UNARY_OPERATOR(op_name, expr_template, udt_trait) \
+    template <typename T>                                               \
+    auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)((T && x))        \
+        -> ::boost::proto17::detail::udt_unary_op_result_t<             \
+            expr_template,                                              \
+            ::boost::proto17::expr_kind::op_name,                       \
+            T,                                                          \
+            udt_trait                                                   \
+        >                                                               \
+    {                                                                   \
+        using result_types = ::boost::proto17::detail::udt_unary_op_result< \
+            expr_template,                                              \
+            ::boost::proto17::expr_kind::op_name,                       \
+            T,                                                          \
+            udt_trait                                                   \
+        >;                                                              \
+        using x_type = typename result_types::x_type;                   \
+        using tuple_type = ::boost::hana::tuple<x_type>;                \
+        return {tuple_type{x_type{static_cast<T &&>(x)}}};              \
+    }                                                                   \
+
+
 #define BOOST_PROTO17_USER_UDT_UDT_BINARY_OPERATOR(op_name, expr_template, t_udt_trait, u_udt_trait) \
     template <typename T, typename U>                                   \
     auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)() (T && lhs, U && rhs) \
@@ -270,11 +292,9 @@
         return {                                                        \
             tuple_type{                                                 \
                 lhs_type{static_cast<T &&>(lhs)},                       \
-                rhs_type{static_cast<U &&>(rhs)},                       \
+                rhs_type{static_cast<U &&>(rhs)}                        \
             }                                                           \
         };                                                              \
     }                                                                   \
-
-// TODO: Unary UDT op macro.
 
 #endif
