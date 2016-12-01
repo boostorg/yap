@@ -70,7 +70,7 @@ boostbook standalone
         # How far down we go with TOC's
         <xsl:param>generate.section.toc.level=10
         # Set the path to the boost-root so we find our graphics:
-        <xsl:param>boost.root="../../../.."
+        #<xsl:param>boost.root="../../../.."
         # location of the main index file so our links work:
         #<xsl:param>boost.libraries=../../../../../libs/libraries.htm
 

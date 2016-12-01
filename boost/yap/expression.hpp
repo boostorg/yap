@@ -33,6 +33,8 @@ namespace boost::yap {
 
     }
 
+    /** Returns the <code>char const *</code> string for the spelling of the
+        C++ operator associated with \a kind. */
     inline char const * op_string (expr_kind kind)
     {
         switch (kind) {

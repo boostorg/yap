@@ -2,6 +2,8 @@
 #define BOOST_YAP_OPERATORS_HPP_INCLUDED
 
 
+#ifndef BOOST_YAP_DOXYGEN
+
 namespace boost::yap {
 
 #define BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(expr)                    \
@@ -260,5 +262,7 @@ namespace boost::yap {
     }
 
 }
+
+#endif // BOOST_YAP_DOXYGEN
 
 #endif
