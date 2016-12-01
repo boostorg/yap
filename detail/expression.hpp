@@ -13,6 +13,8 @@ namespace boost::proto17 {
 
     namespace detail {
 
+        // partial_decay
+
         template <typename T>
         struct partial_decay
         { using type = T; };
@@ -32,6 +34,9 @@ namespace boost::proto17 {
         template <typename R, typename ...A>
         struct partial_decay<R(A..., ...)> { using type = R(*)(A..., ...); };
 
+
+        // operand_value_type_phase_1
+        
         template <
             typename T,
             typename U = typename detail::partial_decay<T>::type,
@@ -47,12 +52,18 @@ namespace boost::proto17 {
         struct operand_value_type_phase_1<T, U, false>
         { using type = U; };
 
+
+        // remove_cv_ref
+
         template <typename T>
         struct remove_cv_ref : std::remove_cv<std::remove_reference_t<T>>
         {};
 
         template <typename T>
         using remove_cv_ref_t = typename remove_cv_ref<T>::type;
+
+
+        // is_hana_tuple
 
         template <typename T>
         struct is_hana_tuple
@@ -61,6 +72,9 @@ namespace boost::proto17 {
         template <typename ...T>
         struct is_hana_tuple<hana::tuple<T...>>
         { static bool const value = true; };
+
+
+        // is_expr
 
         template <typename Expr, typename = std::void_t<>, typename = std::void_t<>>
         struct is_expr
@@ -77,6 +91,9 @@ namespace boost::proto17 {
                 std::is_same<std::remove_cv_t<decltype(remove_cv_ref_t<Expr>::kind)>, expr_kind>{} &&
                 is_hana_tuple<remove_cv_ref_t<decltype(std::declval<Expr>().elements)>>::value;
         };
+
+
+        // expr_ref
 
         template <template <expr_kind, class> class ExprTemplate, typename T>
         struct expr_ref
@@ -102,6 +119,9 @@ namespace boost::proto17 {
 
         template <template <expr_kind, class> class ExprTemplate, typename T>
         using expr_ref_tuple_t = typename expr_ref_tuple<ExprTemplate, T>::type;
+
+
+        // operand_type
 
         template <
             template <expr_kind, class> class ExprTemplate,
@@ -136,6 +156,9 @@ namespace boost::proto17 {
         template <template <expr_kind, class> class ExprTemplate, typename T>
         using operand_type_t = typename operand_type<ExprTemplate, T>::type;
 
+
+        // make_operand
+
         template <typename T>
         struct make_operand
         {
@@ -154,6 +177,9 @@ namespace boost::proto17 {
             auto operator() (U && u)
             { return ExprTemplate<expr_kind::expr_ref, Tuple>{Tuple{std::addressof(u)}}; }
         };
+
+
+        // free_binary_op_result
 
         template <
             template <expr_kind, class> class ExprTemplate,
@@ -214,6 +240,9 @@ namespace boost::proto17 {
             T,
             U
         >::type;
+
+
+        // expr_arity
 
         enum class expr_arity {
             invalid,
@@ -287,6 +316,9 @@ namespace boost::proto17 {
                 return expr_arity::invalid;
             }
         }
+
+
+        // tag_for
 
         template <expr_kind Kind>
         constexpr auto tag_for ()
