@@ -181,11 +181,6 @@ namespace boost::proto17 {
 
         // free_binary_op_result
 
-        // TODO: Must is_expr<> below be an ExprTemplate instantiation?
-        // Without that, we potentially have one kind of expression template
-        // making another one when a non-expr value appears of the lhs of one
-        // of its binary ops.
-
         template <
             template <expr_kind, class> class ExprTemplate,
             expr_kind OpKind,
