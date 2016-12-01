@@ -60,7 +60,7 @@ namespace boost::proto17 {
         subscript, // []
 
         // ternary
-        // TODO: if_else, // (analogous to) ?:
+        if_else, // (analogous to) ?:
 
         // n-ary
         call // ()
@@ -160,6 +160,9 @@ namespace boost::proto17 {
     struct bitwise_or_assign_tag {}; // |=
     struct bitwise_xor_assign_tag {}; // ^=
     struct subscript_tag {}; // []
+
+    // ternary
+    struct if_else_tag {}; // (analogous to) ?:
 
     // n-ary
     struct call_tag {}; // ()

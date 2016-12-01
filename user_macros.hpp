@@ -214,6 +214,68 @@
     }                                                                   \
 
 
+#define BOOST_PROTO17_USER_EXPR_IF_ELSE(expr_template)                  \
+    template <typename Expr1, typename Expr2, typename Expr3>           \
+    auto if_else (Expr1 && expr1, Expr2 && expr2, Expr3 && expr3)       \
+        -> ::boost::proto17::detail::ternary_op_result_t<               \
+            expr_template,                                              \
+            Expr1,                                                      \
+            Expr2,                                                      \
+            Expr3                                                       \
+        >                                                               \
+    {                                                                   \
+        using result_types = ::boost::proto17::detail::ternary_op_result< \
+            expr_template,                                              \
+            Expr1,                                                      \
+            Expr2,                                                      \
+            Expr3                                                       \
+        >;                                                              \
+        using cond_type = typename result_types::cond_type;             \
+        using then_type = typename result_types::then_type;             \
+        using else_type = typename result_types::else_type;             \
+        using tuple_type = ::boost::hana::tuple<cond_type, then_type, else_type>; \
+        return {                                                        \
+            tuple_type{                                                 \
+                ::boost::proto17::detail::make_operand<cond_type>{}(static_cast<Expr1 &&>(expr1)), \
+                ::boost::proto17::detail::make_operand<then_type>{}(static_cast<Expr2 &&>(expr2)), \
+                ::boost::proto17::detail::make_operand<else_type>{}(static_cast<Expr3 &&>(expr3)) \
+            }                                                           \
+        };                                                              \
+    }
+
+
+#define BOOST_PROTO17_USER_UDT_ANY_IF_ELSE(expr_template, udt_trait)    \
+    template <typename Expr1, typename Expr2, typename Expr3>           \
+    auto if_else (Expr1 && expr1, Expr2 && expr2, Expr3 && expr3)       \
+        -> ::boost::proto17::detail::udt_any_ternary_op_result_t<       \
+            expr_template,                                              \
+            Expr1,                                                      \
+            Expr2,                                                      \
+            Expr3,                                                      \
+            udt_trait                                                   \
+        >                                                               \
+    {                                                                   \
+        using result_types = ::boost::proto17::detail::udt_any_ternary_op_result< \
+            expr_template,                                              \
+            Expr1,                                                      \
+            Expr2,                                                      \
+            Expr3,                                                      \
+            udt_trait                                                   \
+        >;                                                              \
+        using cond_type = typename result_types::cond_type;             \
+        using then_type = typename result_types::then_type;             \
+        using else_type = typename result_types::else_type;             \
+        using tuple_type = ::boost::hana::tuple<cond_type, then_type, else_type>; \
+        return {                                                        \
+            tuple_type{                                                 \
+                ::boost::proto17::detail::make_operand<cond_type>{}(static_cast<Expr1 &&>(expr1)), \
+                ::boost::proto17::detail::make_operand<then_type>{}(static_cast<Expr2 &&>(expr2)), \
+                ::boost::proto17::detail::make_operand<else_type>{}(static_cast<Expr3 &&>(expr3)) \
+            }                                                           \
+        };                                                              \
+    }
+
+
 #define BOOST_PROTO17_USER_UDT_UNARY_OPERATOR(op_name, expr_template, udt_trait) \
     template <typename T>                                               \
     auto operator BOOST_PROTO17_INDIRECT_CALL(op_name)((T && x))        \

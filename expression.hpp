@@ -80,6 +80,8 @@ namespace boost::proto17 {
         case expr_kind::bitwise_xor_assign: return "^=";
         case expr_kind::subscript: return "[]";
 
+        case expr_kind::if_else: return "?:";
+
         case expr_kind::call: return "()";
 
         default: return "** ERROR: UNKNOWN OPERATOR! **";
@@ -406,6 +408,8 @@ namespace boost::proto17 {
     BOOST_PROTO17_BINARY_FREE_OPERATOR(bitwise_xor) // ^
 
 #undef BOOST_PROTO17_BINARY_FREE_OPERATOR
+
+    BOOST_PROTO17_USER_EXPR_IF_ELSE(::boost::proto17::expression)
 
     template <expr_kind Kind, typename ...T>
     auto make_expression (T &&... t)

@@ -130,6 +130,15 @@ namespace boost::proto17 {
             BOOST_PROTO17_BINARY_OPERATOR_CASE(bitwise_xor_assign) // ^=
             BOOST_PROTO17_BINARY_OPERATOR_CASE(subscript) // []
 
+            else if constexpr (kind == expr_kind::if_else) {
+                return
+                    eval_if_else(
+                        default_eval_expr(expr.elements[0_c], static_cast<T &&>(args)...),
+                        default_eval_expr(expr.elements[1_c], static_cast<T &&>(args)...),
+                        default_eval_expr(expr.elements[2_c], static_cast<T &&>(args)...)
+                    );
+            }
+
 #undef BOOST_PROTO17_BINARY_OPERATOR_CASE
 
             else if constexpr (kind == expr_kind::call) {

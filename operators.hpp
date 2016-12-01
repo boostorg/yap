@@ -128,6 +128,18 @@ namespace boost::proto17 {
 
 #undef BOOST_PROTO17_BINARY_OPERATOR
 
+        template <typename T, typename U, typename V>
+        constexpr auto eval_if_else (T && t, U && u, V && v) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+            static_cast<T &&>(t) ? static_cast<U &&>(u) : static_cast<V &&>(v)
+        )
+        struct eval_if_else_fn
+        {
+            template <typename T, typename U, typename V>
+            constexpr auto operator() (T && t, U && u, V && v) const BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
+                eval_if_else(static_cast<T &&>(t), static_cast<U &&>(u), static_cast<V &&>(v))
+            )
+        };
+
         template <typename F, typename ...T>
         constexpr auto eval_call (F && f, T && ...t) BOOST_PROTO17_NOEXCEPT_DECLTYPE_RETURN(
             static_cast<F &&>(f)(static_cast<T &&>(t)...)
@@ -188,6 +200,7 @@ namespace boost::proto17 {
     BOOST_PROTO17_USING_OPERATOR_FN(bitwise_or_assign) // |=
     BOOST_PROTO17_USING_OPERATOR_FN(bitwise_xor_assign) // ^=
     BOOST_PROTO17_USING_OPERATOR_FN(subscript) // []
+    BOOST_PROTO17_USING_OPERATOR_FN(if_else) // (analogous to) ?:
     BOOST_PROTO17_USING_OPERATOR_FN(call) // ()
 
 #undef BOOST_PROTO17_USING_OPERATOR_FN
@@ -239,6 +252,7 @@ namespace boost::proto17 {
         BOOST_PROTO17_DECLARE_OPERATOR_FN(bitwise_or_assign) // |=
         BOOST_PROTO17_DECLARE_OPERATOR_FN(bitwise_xor_assign) // ^=
         BOOST_PROTO17_DECLARE_OPERATOR_FN(subscript) // []
+        BOOST_PROTO17_DECLARE_OPERATOR_FN(if_else) // (analogous to) ?:
         BOOST_PROTO17_DECLARE_OPERATOR_FN(call) // ()
 
 #undef BOOST_PROTO17_DECLARE_OPERATOR_FN

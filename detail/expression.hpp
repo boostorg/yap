@@ -242,6 +242,95 @@ namespace boost::proto17 {
         >::type;
 
 
+        // ternary_op_result
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            typename T,
+            typename U,
+            typename V,
+            bool Valid = is_expr<T>::value || is_expr<U>::value || is_expr<V>::value
+        >
+        struct ternary_op_result;
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            typename T,
+            typename U,
+            typename V
+        >
+        struct ternary_op_result<ExprTemplate, T, U, V, true>
+        {
+            using cond_type = operand_type_t<ExprTemplate, T>;
+            using then_type = operand_type_t<ExprTemplate, U>;
+            using else_type = operand_type_t<ExprTemplate, V>;
+            using type = ExprTemplate<
+                expr_kind::if_else,
+                hana::tuple<cond_type, then_type, else_type>
+            >;
+        };
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            typename T,
+            typename U,
+            typename V
+        >
+        using ternary_op_result_t = typename ternary_op_result<ExprTemplate, T, U, V>::type;
+
+
+        // udt_any_ternary_op_result
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            typename T,
+            typename U,
+            typename V,
+            template <class> class UdtTrait,
+            bool Valid =
+                !is_expr<T>::value && !is_expr<U>::value && !is_expr<V>::value &&
+                (
+                    UdtTrait<remove_cv_ref_t<T>>::value ||
+                    UdtTrait<remove_cv_ref_t<U>>::value ||
+                    UdtTrait<remove_cv_ref_t<V>>::value
+                )
+        >
+        struct udt_any_ternary_op_result;
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            typename T,
+            typename U,
+            typename V,
+            template <class> class UdtTrait
+        >
+        struct udt_any_ternary_op_result<ExprTemplate, T, U, V, UdtTrait, true>
+        {
+            using cond_type = operand_type_t<ExprTemplate, T>;
+            using then_type = operand_type_t<ExprTemplate, U>;
+            using else_type = operand_type_t<ExprTemplate, V>;
+            using type = ExprTemplate<
+                expr_kind::if_else,
+                hana::tuple<cond_type, then_type, else_type>
+            >;
+        };
+
+        template <
+            template <expr_kind, class> class ExprTemplate,
+            typename T,
+            typename U,
+            typename V,
+            template <class> class UdtTrait
+        >
+        using udt_any_ternary_op_result_t = typename udt_any_ternary_op_result<
+            ExprTemplate,
+            T,
+            U,
+            V,
+            UdtTrait
+        >::type;
+
+
         // udt_unary_op_result
 
         template <
@@ -339,8 +428,7 @@ namespace boost::proto17 {
             typename U,
             template <class> class UdtTrait,
             bool Valid =
-                !is_expr<T>::value &&
-                !is_expr<U>::value &&
+                !is_expr<T>::value && !is_expr<U>::value &&
                 (UdtTrait<remove_cv_ref_t<T>>::value || UdtTrait<remove_cv_ref_t<U>>::value)
         >
         struct udt_any_binary_op_result;
@@ -381,6 +469,7 @@ namespace boost::proto17 {
             invalid,
             one,
             two,
+            three,
             n
         };
 
@@ -440,6 +529,10 @@ namespace boost::proto17 {
             case expr_kind::bitwise_xor_assign: // ^=
             case expr_kind::subscript: // []
                 return expr_arity::two;
+
+            // ternary
+            case expr_kind::if_else: // (analogous to) ?:
+                return expr_arity::three;
 
             // n-ary
             case expr_kind::call: // ()
@@ -508,6 +601,9 @@ namespace boost::proto17 {
             CASE(bitwise_or_assign); // |=
             CASE(bitwise_xor_assign); // ^=
             CASE(subscript); // []
+
+            // ternary
+            CASE(if_else); // (analogous to) ?:
 
             // n-ary
             CASE(call); // ()
