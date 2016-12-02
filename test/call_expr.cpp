@@ -37,6 +37,12 @@ namespace user {
     {
         decltype(auto) operator() (yap::call_tag, tag_type, double a, double b)
         { return tag_function(a, b); }
+
+        int operator() (yap::terminal_tag, tag_type, double a, double b)
+        { return 42; }
+
+        char const * operator() ()
+        { return "42"; }
     };
 
     struct empty_xform {};
