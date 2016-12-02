@@ -52,7 +52,7 @@ namespace boost::yap {
             ) {
                 return transform_expression(expr, static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::expr_ref) {
-                return default_eval_expr(::boost::yap::value(expr), static_cast<T &&>(args)...);
+                return default_eval_expr(::boost::yap::deref(expr), static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::terminal) {
                 return ::boost::yap::value(expr);
             } else if constexpr (kind == expr_kind::placeholder) {
@@ -172,7 +172,7 @@ namespace boost::yap {
             {
                 constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
                 if constexpr (kind == expr_kind::expr_ref) {
-                    decltype(auto) ref = ::boost::yap::value(expr);
+                    decltype(auto) ref = ::boost::yap::deref(expr);
                     constexpr expr_kind kind = remove_cv_ref_t<decltype(ref)>::kind;
                     default_transform_expression<decltype(ref), Transform, detail::arity_of<kind>()> transformer;
                     return transformer(ref, static_cast<Transform &&>(transform));
@@ -216,7 +216,7 @@ namespace boost::yap {
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    deref(::boost::yap::value(std::declval<Expr>()))
+                    ::boost::yap::value(::boost::yap::value(std::declval<Expr>()))
                 )
             )>
         >
@@ -225,7 +225,7 @@ namespace boost::yap {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    deref(::boost::yap::value(static_cast<Expr &&>(expr)))
+                    ::boost::yap::value(::boost::yap::value(static_cast<Expr &&>(expr)))
                 );
             }
         };
@@ -238,8 +238,8 @@ namespace boost::yap {
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    deref(::boost::yap::left(std::declval<Expr>())),
-                    deref(::boost::yap::right(std::declval<Expr>()))
+                    ::boost::yap::value(::boost::yap::left(std::declval<Expr>())),
+                    ::boost::yap::value(::boost::yap::right(std::declval<Expr>()))
                 )
             )>
         >
@@ -248,34 +248,43 @@ namespace boost::yap {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    deref(::boost::yap::left(static_cast<Expr &&>(expr))),
-                    deref(::boost::yap::right(static_cast<Expr &&>(expr)))
+                    ::boost::yap::value(::boost::yap::left(static_cast<Expr &&>(expr))),
+                    ::boost::yap::value(::boost::yap::right(static_cast<Expr &&>(expr)))
                 );
             }
         };
 
-        template <typename Expr, typename Transform, expr_kind Kind>
+        template <typename Expr, typename Transform>
         struct transform_call_unpacker
         {
-            template <typename Tuple, typename TransformT, long long ...I>
-            auto operator() (Tuple && tuple, TransformT && transform, std::integer_sequence<long long, I...>)
-                -> decltype(
-                    static_cast<TransformT &&>(transform)(
-                        detail::tag_for<Kind>(),
-                        static_cast<Tuple &&>(tuple)[hana::llong_c<I>]...
-                    )
+            template <long long ...I>
+            auto operator() (
+                Expr && expr,
+                Transform && transform,
+                std::integer_sequence<long long, I...>
+            ) -> decltype(
+                static_cast<Transform &&>(transform)(
+                    call_tag{},
+                    ::boost::yap::value(::boost::yap::argument(
+                        static_cast<Expr &&>(expr),
+                        hana::llong_c<I>
+                    ))...
                 )
-            {
-                return static_cast<TransformT &&>(transform)(
-                    detail::tag_for<Kind>(),
-                    static_cast<Tuple &&>(tuple)[hana::llong_c<I>]...);
+            ) {
+                return static_cast<Transform &&>(transform)(
+                    call_tag{},
+                    ::boost::yap::value(::boost::yap::argument(
+                        static_cast<Expr &&>(expr),
+                        hana::llong_c<I>
+                    ))...
+                );
             }
         };
 
         template <typename Expr>
         constexpr auto indices_for (Expr const & expr)
         {
-            constexpr long long size = decltype(hana::size(expr))::value;
+            constexpr long long size = decltype(hana::size(expr.elements))::value;
             return std::make_integer_sequence<long long, size>();
         }
 
@@ -285,20 +294,20 @@ namespace boost::yap {
             Transform,
             expr_arity::n,
             std::void_t<decltype(
-                transform_call_unpacker<Expr, Transform, remove_cv_ref_t<Expr>::kind>{}(
-                    std::declval<Expr>().elements,
+                transform_call_unpacker<Expr, Transform>{}(
+                    std::declval<Expr>(),
                     std::declval<Transform>(),
-                    indices_for<Expr>()
+                    indices_for(std::declval<Expr>())
                 )
             )>
         >
         {
             decltype(auto) operator() (Expr && expr, Transform && transform)
             {
-                return transform_call_unpacker<Expr, Transform, remove_cv_ref_t<Expr>::kind>{}(
-                    static_cast<Expr &&>(expr).elements,
+                return transform_call_unpacker<Expr, Transform>{}(
+                    static_cast<Expr &&>(expr),
                     static_cast<Transform &&>(transform),
-                    indices_for<Expr>()
+                    indices_for(expr)
                 );
             }
         };

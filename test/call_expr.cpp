@@ -34,8 +34,8 @@ namespace user {
 
     struct eval_xform_tag
     {
-        decltype(auto) operator() (yap::call_tag, tag_type, double a, double b)
-        { return tag_function(a, b); }
+        decltype(auto) operator() (yap::call_tag, tag_type, number a, double b)
+        { return tag_function(a.value, b); }
 
         int operator() (yap::terminal_tag, tag_type, double a, double b)
         { return 42; }
@@ -77,7 +77,7 @@ namespace user {
         ) {
             using namespace boost::hana::literals;
             return tag_function(
-                (double)yap::deref(expr.elements[1_c]).value,
+                (double)yap::value(expr.elements[1_c]).value,
                 (double)yap::value(expr.elements[2_c])
             );
         }
@@ -124,7 +124,7 @@ namespace user {
         ) {
             using namespace boost::hana::literals;
             return tag_function(
-                (double)yap::deref(expr.elements[1_c]).value,
+                (double)yap::value(expr.elements[1_c]).value,
                 (double)yap::value(expr.elements[2_c])
             );
         }
@@ -142,16 +142,12 @@ TEST(call_expr, test_call_expr)
         auto expr = plus(user::number{13}, 1);
 
         {
-            auto transformed_expr = transform(expr, user::empty_xform{});
-            EXPECT_TRUE((std::is_same<decltype(expr), decltype(transformed_expr)>{}));
+            transform(expr, user::empty_xform{});
         }
 
         {
-            EXPECT_EQ("TODO: Broken test!", nullptr);
-#if 0
             user::number result = transform(expr, user::eval_xform_tag{});
             EXPECT_EQ(result.value, 14);
-#endif
         }
 
         {
@@ -171,11 +167,8 @@ TEST(call_expr, test_call_expr)
         auto expr = plus(thirteen, 1);
 
         {
-            EXPECT_EQ("TODO: Broken test!", nullptr);
-#if 0
             user::number result = transform(expr, user::eval_xform_tag{});
             EXPECT_EQ(result.value, 14);
-#endif
         }
 
         {
