@@ -1,4 +1,3 @@
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
 #include <boost/yap/expression.hpp>
 
 #include <gtest/gtest.h>
@@ -131,17 +130,6 @@ namespace user {
         }
     };
 
-    template <typename ...T>
-    inline auto eval_call (tag_type, T && ...t)
-    {
-        if constexpr (sizeof...(T) == 2u) {
-            return tag_function((double)t...);
-        } else {
-            assert(!"Unhandled case in eval_call()");
-            return;
-        }
-    }
-
 }
 
 
@@ -150,211 +138,54 @@ TEST(call_expr, test_call_expr)
     using namespace boost::yap::literals;
 
     {
-        yap::expression<
-            yap::expr_kind::call,
-            bh::tuple<
-                yap::placeholder<1>,
-                yap::placeholder<2>,
-                yap::placeholder<3>
-            >
-        > expr = 1_p(2_p, 3_p);
+        auto plus = yap::make_terminal(user::tag_type{});
+        auto expr = plus(user::number{13}, 1);
 
         {
-            auto min = [] (int a, int b) { return a < b ? a : b; };
-            int result = evaluate(expr, min, 3, 7);
-            EXPECT_EQ(result, 3);
+            auto transformed_expr = transform(expr, user::empty_xform{});
+            EXPECT_TRUE((std::is_same<decltype(expr), decltype(transformed_expr)>{}));
         }
 
         {
-            int result = evaluate(expr, &user::max, 3, 7);
-            EXPECT_EQ(result, 7);
+            EXPECT_EQ("TODO: Broken test!", nullptr);
+#if 0
+            user::number result = transform(expr, user::eval_xform_tag{});
+            EXPECT_EQ(result.value, 14);
+#endif
         }
 
         {
-            int result = evaluate(expr, user::max, 3, 7);
-            EXPECT_EQ(result, 7);
-        }
-    }
-
-    {
-        auto min_lambda = [] (int a, int b) { return a < b ? a : b; };
-
-        {
-            auto min = yap::make_terminal(min_lambda);
-            auto expr = min(1_p, 2_p);
-
-            {
-                int result = evaluate(expr, 3, 7);
-                EXPECT_EQ(result, 3);
-            }
+            user::number result = transform(expr, user::eval_xform_expr{});
+            EXPECT_EQ(result.value, 14);
         }
 
         {
-            term<decltype(min_lambda)> min = {{min_lambda}};
-            auto expr = min(1_p, 2_p);
-
-            {
-                int result = evaluate(expr, 3, 7);
-                EXPECT_EQ(result, 3);
-            }
+            user::number result = transform(expr, user::eval_xform_both{});
+            EXPECT_EQ(result.value, 14);
         }
     }
 
     {
-        struct min_function_object_t
-        {
-            auto operator() (int a, int b) const { return a < b ? a : b; }
-        };
-
-        min_function_object_t min_function_object;
+        auto plus = yap::make_terminal(user::tag_type{});
+        auto thirteen = yap::make_terminal(user::number{13});
+        auto expr = plus(thirteen, 1);
 
         {
-            term<min_function_object_t &> min = yap::make_terminal(min_function_object);
-            auto expr = min(1_p, 2_p);
-
-            {
-                using namespace boost::hana::literals;
-                int result = evaluate(expr, 3, 7);
-                EXPECT_EQ(result, 3);
-            }
+            EXPECT_EQ("TODO: Broken test!", nullptr);
+#if 0
+            user::number result = transform(expr, user::eval_xform_tag{});
+            EXPECT_EQ(result.value, 14);
+#endif
         }
 
         {
-            term<min_function_object_t> min = {{min_function_object}};
-            auto expr = min(1_p, 2_p);
-
-            {
-                int result = evaluate(expr, 3, 7);
-                EXPECT_EQ(result, 3);
-            }
+            user::number result = transform(expr, user::eval_xform_expr{});
+            EXPECT_EQ(result.value, 14);
         }
 
         {
-            auto min = yap::make_terminal(min_function_object_t{});
-            auto expr = min(1_p, 2_p);
-
-            {
-                int result = evaluate(expr, 3, 7);
-                EXPECT_EQ(result, 3);
-            }
-        }
-
-        {
-            term<min_function_object_t> min = {{min_function_object_t{}}};
-            auto expr = min(1_p, 2_p);
-
-            {
-                int result = evaluate(expr, 3, 7);
-                EXPECT_EQ(result, 3);
-            }
-        }
-
-    }
-
-    {
-        auto min_lambda = [] (int a, int b) { return a < b ? a : b; };
-
-        {
-            auto min = yap::make_terminal(min_lambda);
-            auto expr = min(0, 1);
-
-            {
-                int result = evaluate(expr);
-                EXPECT_EQ(result, 0);
-            }
-        }
-
-        {
-            term<decltype(min_lambda)> min = {{min_lambda}};
-            yap::expression<
-                yap::expr_kind::call,
-                bh::tuple<
-                    yap::expression_ref<term<decltype(min_lambda)>& >,
-                    term<int>,
-                    term<int>
-                >
-            > expr = min(0, 1);
-
-            {
-                int result = evaluate(expr);
-                EXPECT_EQ(result, 0);
-            }
-        }
-    }
-
-    {
-        {
-            auto plus = yap::make_terminal(user::tag_type{});
-            auto expr = plus(user::number{13}, 1);
-
-            {
-                user::number result = expr;
-                EXPECT_EQ(result.value, 14);
-            }
-        }
-
-        {
-            term<user::tag_type> plus = {{user::tag_type{}}};
-            yap::expression<
-                yap::expr_kind::call,
-                bh::tuple<
-                    yap::expression_ref<term<user::tag_type>& >,
-                    term<int>,
-                    term<int>
-                >
-            > expr = plus(0, 1);
-
-            {
-                user::number result = expr;
-                EXPECT_EQ(result.value, 1);
-            }
-        }
-
-        {
-            auto plus = yap::make_terminal(user::tag_type{});
-            auto expr = plus(user::number{13}, 1);
-
-            {
-                auto transformed_expr = transform(expr, user::empty_xform{});
-                user::number result = transformed_expr;
-                EXPECT_EQ(result.value, 14);
-            }
-
-            {
-                user::number result = transform(expr, user::eval_xform_tag{});
-                EXPECT_EQ(result.value, 14);
-            }
-
-            {
-                user::number result = transform(expr, user::eval_xform_expr{});
-                EXPECT_EQ(result.value, 14);
-            }
-
-            {
-                user::number result = transform(expr, user::eval_xform_both{});
-                EXPECT_EQ(result.value, 14);
-            }
-        }
-
-        {
-            auto plus = yap::make_terminal(user::tag_type{});
-            auto thirteen = yap::make_terminal(user::number{13});
-            auto expr = plus(thirteen, 1);
-
-            {
-                user::number result = transform(expr, user::eval_xform_tag{});
-                EXPECT_EQ(result.value, 14);
-            }
-
-            {
-                user::number result = transform(expr, user::eval_xform_expr{});
-                EXPECT_EQ(result.value, 14);
-            }
-
-            {
-                user::number result = transform(expr, user::eval_xform_both{});
-                EXPECT_EQ(result.value, 14);
-            }
+            user::number result = transform(expr, user::eval_xform_both{});
+            EXPECT_EQ(result.value, 14);
         }
     }
 
