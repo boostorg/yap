@@ -234,7 +234,7 @@ namespace boost::yap {
         struct default_transform_expression<
             Expr,
             Transform,
-            expr_arity::two,
+            expr_arity::two, // TODO: Add an overload for ::three!
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
