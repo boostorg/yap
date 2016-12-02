@@ -70,7 +70,7 @@ namespace boost::yap {
             if constexpr (Expr::kind == expr_kind::expr_ref) {
                 print_impl(
                     os,
-                    ::boost::yap::value(expr),
+                    ::boost::yap::deref(expr),
                     indent,
                     indent_str,
                     true,

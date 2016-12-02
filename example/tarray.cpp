@@ -67,7 +67,7 @@ std::ostream & operator<< (std::ostream & os, boost::yap::terminal<std::array<in
 
 template <typename Tuple>
 std::ostream & operator<< (std::ostream & os, tarray_expr<boost::yap::expr_kind::expr_ref, Tuple> const & expr)
-{ return os << boost::yap::value(expr); }
+{ return os << boost::yap::deref(expr); }
 
 template <boost::yap::expr_kind Kind, typename Tuple>
 std::ostream & operator<< (std::ostream & os, tarray_expr<Kind, Tuple> const & expr)

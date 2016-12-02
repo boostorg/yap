@@ -324,18 +324,16 @@ namespace boost::yap {
         if constexpr (detail::is_expr<T>::value) {
             using namespace hana::literals;
             constexpr expr_kind kind = detail::remove_cv_ref_t<T>::kind;
-            static_assert(
-                detail::arity_of<kind>() == detail::expr_arity::one,
-                "value() is only defined for unary expressions."
-            );
             if constexpr (kind == expr_kind::expr_ref) {
-                    return ::boost::yap::value(::boost::yap::deref(static_cast<T &&>(x)));
-            } else {
+                return ::boost::yap::value(::boost::yap::deref(static_cast<T &&>(x)));
+            } else if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
                 if constexpr (std::is_lvalue_reference<T>{}) {
                     return x.elements[0_c];
                 } else {
                     return std::move(x.elements[0_c]);
                 }
+            } else {
+                return static_cast<T &&>(x);
             }
         } else {
             return static_cast<T &&>(x);
