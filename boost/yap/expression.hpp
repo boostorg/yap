@@ -313,7 +313,7 @@ namespace boost::yap {
     {
         static_assert(
             detail::is_expr<Expr>::value,
-            "value() is only defined for expression templates."
+            "value() is only defined for expressions."
         );
 
         using namespace hana::literals;
@@ -342,7 +342,7 @@ namespace boost::yap {
     {
         static_assert(
             detail::is_expr<Expr>::value,
-            "left() is only defined for expression templates."
+            "left() is only defined for expressions."
         );
 
         using namespace hana::literals;
@@ -367,7 +367,7 @@ namespace boost::yap {
     {
         static_assert(
             detail::is_expr<Expr>::value,
-            "right() is only defined for expression templates."
+            "right() is only defined for expressions."
         );
 
         using namespace hana::literals;
@@ -473,7 +473,7 @@ namespace boost::yap {
     {
         static_assert(
             detail::is_expr<Expr>::value,
-            "make_expression_function() is only defined for expression templates."
+            "make_expression_function() is only defined for expressions."
         );
         return expression_function<Expr>{std::move(expr)};
     }
@@ -489,7 +489,7 @@ namespace boost::yap {
     {
         static_assert(
             detail::is_expr<Expr>::value,
-            "evaluate() is only defined for expression templates."
+            "evaluate() is only defined for expressions."
         );
         return detail::default_eval_expr(expr, static_cast<T &&>(t)...);
     }
@@ -499,7 +499,7 @@ namespace boost::yap {
     {
         static_assert(
             detail::is_expr<Expr>::value,
-            "evaluate_as() is only defined for expression templates."
+            "evaluate_as() is only defined for expressions."
         );
         return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...);
     }
@@ -509,7 +509,7 @@ namespace boost::yap {
     {
         static_assert(
             detail::is_expr<Expr>::value,
-            "transform() is only defined for expression templates."
+            "transform() is only defined for expressions."
         );
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         return detail::default_transform_expression<Expr, Transform, detail::arity_of<kind>()>{}(
