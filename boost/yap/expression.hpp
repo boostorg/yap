@@ -413,17 +413,6 @@ namespace boost::yap {
 
     BOOST_YAP_USER_EXPR_IF_ELSE(::boost::yap::expression)
 
-    template <expr_kind Kind, typename ...T>
-    auto make_expression (T &&... t)
-    {
-        using tuple_type = hana::tuple<detail::operand_type_t<expression, T>...>;
-        return expression<Kind, tuple_type>{
-            tuple_type{
-                detail::make_operand<detail::operand_type_t<expression, T>>{}(static_cast<T &&>(t))...
-            }
-        };
-    }
-
     template <template <expr_kind, class> class ExprTemplate, expr_kind Kind, typename ...T>
     auto make_expression (T &&... t)
     {
@@ -435,17 +424,9 @@ namespace boost::yap {
         };
     }
 
-    template <typename T>
-    auto make_terminal (T && t)
-    {
-        static_assert(
-            !detail::is_expr<T>::value,
-            "make_terminal() is only defined for non expressions."
-        );
-        using result_type = detail::operand_type_t<expression, T>;
-        using tuple_type = typename result_type::tuple_type;
-        return result_type{tuple_type{static_cast<T &&>(t)}};
-    }
+    template <expr_kind Kind, typename ...T>
+    auto make_expression (T &&... t)
+    { return make_expression<expression, Kind>(static_cast<T &&>(t)...); }
 
     template <template <expr_kind, class> class ExprTemplate, typename T>
     auto make_terminal (T && t)
@@ -460,14 +441,8 @@ namespace boost::yap {
     }
 
     template <typename T>
-    decltype(auto) as_expr (T && t)
-    {
-        if constexpr (detail::is_expr<T>::value) {
-            return static_cast<T &&>(t);
-        } else {
-            return make_terminal(static_cast<T &&>(t));
-        }
-    }
+    auto make_terminal (T && t)
+    { return make_terminal<expression>(static_cast<T &&>(t)); }
 
     template <template <expr_kind, class> class ExprTemplate, typename T>
     decltype(auto) as_expr (T && t)
@@ -478,6 +453,10 @@ namespace boost::yap {
             return make_terminal<ExprTemplate>(static_cast<T &&>(t));
         }
     }
+
+    template <typename T>
+    decltype(auto) as_expr (T && t)
+    { return as_expr<expression>(static_cast<T &&>(t)); }
 
     template <typename Expr>
     struct expression_function
