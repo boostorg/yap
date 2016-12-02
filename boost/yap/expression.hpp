@@ -294,8 +294,6 @@ namespace boost::yap {
     template <long long I>
     using placeholder = expression<expr_kind::placeholder, hana::tuple<hana::llong<I>>>;
 
-    // TODO: Make sure deref(), and *all other free functions accepting an
-    // arbitrary expression template* are fully qualified.
     template <typename Expr>
     decltype(auto) deref (Expr && expr)
     {
@@ -331,7 +329,7 @@ namespace boost::yap {
                 "value() is only defined for unary expressions."
             );
             if constexpr (kind == expr_kind::expr_ref) {
-                return value(deref(static_cast<T &&>(x)));
+                    return ::boost::yap::value(::boost::yap::deref(static_cast<T &&>(x)));
             } else {
                 if constexpr (std::is_lvalue_reference<T>{}) {
                     return x.elements[0_c];
@@ -355,7 +353,7 @@ namespace boost::yap {
         using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         if constexpr (kind == expr_kind::expr_ref) {
-            return left(deref(static_cast<Expr &&>(expr)));
+            return ::boost::yap::left(::boost::yap::deref(static_cast<Expr &&>(expr)));
         } else {
             static_assert(
                 detail::arity_of<kind>() == detail::expr_arity::two,
@@ -380,7 +378,7 @@ namespace boost::yap {
         using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         if constexpr (kind == expr_kind::expr_ref) {
-            return right(deref(static_cast<Expr &&>(expr)));
+            return ::boost::yap::right(::boost::yap::deref(static_cast<Expr &&>(expr)));
         } else {
             static_assert(
                 detail::arity_of<kind>() == detail::expr_arity::two,
@@ -405,7 +403,7 @@ namespace boost::yap {
         using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         if constexpr (kind == expr_kind::expr_ref) {
-            return argument(deref(static_cast<Expr &&>(expr)), i);
+            return ::boost::yap::argument(::boost::yap::deref(static_cast<Expr &&>(expr)), i);
         } else {
             static_assert(
                 detail::arity_of<kind>() == detail::expr_arity::n,
@@ -500,7 +498,7 @@ namespace boost::yap {
     {
         template <typename ...U>
         decltype(auto) operator() (U &&... u)
-        { return evaluate(expr, static_cast<U &&>(u)...); }
+        { return ::boost::yap::evaluate(expr, static_cast<U &&>(u)...); }
 
         Expr expr;
     };
