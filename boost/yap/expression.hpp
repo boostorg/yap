@@ -540,15 +540,15 @@ namespace boost::yap {
     template <typename Expr, typename Transform>
     decltype(auto) transform (Expr && expr, Transform && transform)
     {
-        static_assert(
-            detail::is_expr<Expr>::value,
-            "transform() is only defined for expressions."
-        );
-        constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        return detail::default_transform_expression<Expr, Transform, detail::arity_of<kind>()>{}(
-            static_cast<Expr &&>(expr),
-            static_cast<Transform &&>(transform)
-        );
+        if constexpr (detail::is_expr<Expr>::value) {
+            constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
+            return detail::default_transform_expression<Expr, Transform, detail::arity_of<kind>()>{}(
+                static_cast<Expr &&>(expr),
+                static_cast<Transform &&>(transform)
+            );
+        } else {
+            return static_cast<Expr &&>(expr);
+        }
     }
 
     namespace adl_detail {
