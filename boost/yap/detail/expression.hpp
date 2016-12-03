@@ -368,7 +368,6 @@ namespace boost::yap {
         >::type;
 
 
-        // TODO: Add affine operator test.
         // udt_udt_binary_op_result
 
         template <typename T, template <class> class UdtTrait>
