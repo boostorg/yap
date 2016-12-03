@@ -234,7 +234,7 @@ namespace boost::yap {
         struct default_transform_expression<
             Expr,
             Transform,
-            expr_arity::two, // TODO: Add an overload for ::three!
+            expr_arity::two,
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
@@ -250,6 +250,32 @@ namespace boost::yap {
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
                     ::boost::yap::value(::boost::yap::left(static_cast<Expr &&>(expr))),
                     ::boost::yap::value(::boost::yap::right(static_cast<Expr &&>(expr)))
+                );
+            }
+        };
+
+        template <typename Expr, typename Transform>
+        struct default_transform_expression<
+            Expr,
+            Transform,
+            expr_arity::three,
+            std::void_t<decltype(
+                std::declval<Transform>()(
+                    detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
+                    ::boost::yap::value(::boost::yap::cond(std::declval<Expr>())),
+                    ::boost::yap::value(::boost::yap::then(std::declval<Expr>())),
+                    ::boost::yap::value(::boost::yap::else_(std::declval<Expr>()))
+                )
+            )>
+        >
+        {
+            decltype(auto) operator() (Expr && expr, Transform && transform)
+            {
+                return static_cast<Transform &&>(transform)(
+                    detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
+                    ::boost::yap::value(::boost::yap::cond(static_cast<Expr &&>(expr))),
+                    ::boost::yap::value(::boost::yap::then(static_cast<Expr &&>(expr))),
+                    ::boost::yap::value(::boost::yap::else_(static_cast<Expr &&>(expr)))
                 );
             }
         };

@@ -24,6 +24,15 @@ namespace user {
 
         friend number operator* (number lhs, number rhs)
         { return number{lhs.value * rhs.value}; }
+
+        friend number operator- (number n)
+        { return number{-n.value}; }
+
+        friend bool operator< (number lhs, double rhs)
+        { return lhs.value < rhs; }
+
+        friend bool operator< (double lhs, number rhs)
+        { return lhs < rhs.value; }
     };
 
     number naxpy (number a, number x, number y)
@@ -164,6 +173,74 @@ namespace user {
                 transform(expr.left().right(), naxpy_xform{}),
                 transform(expr.right(), naxpy_xform{})
             );
+        }
+    };
+
+
+    // unary transforms
+
+    struct disable_negate_xform_tag
+    {
+        decltype(auto) operator() (yap::negate_tag, user::number const & value)
+        { return yap::make_terminal(value); }
+
+        template <typename Expr>
+        decltype(auto) operator() (yap::negate_tag, Expr const & expr)
+        { return expr; }
+    };
+
+    struct disable_negate_xform_expr
+    {
+        template <typename Expr>
+        decltype(auto) operator() (yap::expression<yap::expr_kind::negate, bh::tuple<Expr>> const & expr)
+        { return ::boost::yap::value(expr); }
+    };
+
+    struct disable_negate_xform_both
+    {
+        decltype(auto) operator() (yap::negate_tag, user::number const & value)
+        { return yap::make_terminal(value); }
+
+        template <typename Expr>
+        decltype(auto) operator() (yap::negate_tag, Expr const & expr)
+        { return expr; }
+
+        template <typename Expr>
+        decltype(auto) operator() (yap::expression<yap::expr_kind::negate, bh::tuple<Expr>> const & expr)
+        {
+            throw std::logic_error("Oops!  Picked the wrong overload!");
+            return ::boost::yap::value(expr);
+        }
+    };
+
+
+    // ternary transforms
+
+    struct ternary_to_else_xform_tag
+    {
+        template <typename Expr>
+        decltype(auto) operator() (yap::if_else_tag, Expr const & cond, user::number const & then, user::number const & else_)
+        { return yap::make_terminal(else_); }
+    };
+
+    struct ternary_to_else_xform_expr
+    {
+        template <typename Cond, typename Then, typename Else>
+        decltype(auto) operator() (yap::expression<yap::expr_kind::if_else, bh::tuple<Cond, Then, Else>> const & expr)
+        { return ::boost::yap::else_(expr); }
+    };
+
+    struct ternary_to_else_xform_both
+    {
+        template <typename Expr>
+        decltype(auto) operator() (yap::if_else_tag, Expr const & cond, user::number const & then, user::number const & else_)
+        { return yap::make_terminal(else_); }
+
+        template <typename Cond, typename Then, typename Else>
+        decltype(auto) operator() (yap::expression<yap::expr_kind::if_else, bh::tuple<Cond, Then, Else>> const & expr)
+        {
+            throw std::logic_error("Oops!  Picked the wrong overload!");
+            return ::boost::yap::else_(expr);
         }
     };
 
@@ -340,4 +417,148 @@ TEST(move_only, test_user_expression_transform_3)
     auto transformed_expr = transform(std::move(expr_2), double_to_float);
 
     transform(std::move(transformed_expr), check_unique_ptrs_equal_7);
+}
+
+TEST(unary_transforms, test_user_expression_transform_3)
+{
+    term<user::number> a{{1.0}};
+    term<user::number> x{{42.0}};
+    term<user::number> y{{3.0}};
+
+    {
+        auto expr = -x;
+        {
+            user::number result = evaluate(expr);
+            EXPECT_EQ(result.value, -42);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_tag{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 42);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_expr{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 42);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_both{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 42);
+        }
+    }
+
+    {
+        auto expr = a * -x + y;
+        {
+            user::number result = evaluate(expr);
+            EXPECT_EQ(result.value, -39);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_tag{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 45);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_expr{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 45);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_both{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 45);
+        }
+    }
+
+    {
+        auto expr = -(x + y);
+        {
+            user::number result = evaluate(expr);
+            EXPECT_EQ(result.value, -45);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_tag{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 45);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_expr{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 45);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::disable_negate_xform_both{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 45);
+        }
+    }
+}
+
+TEST(ternary_transforms, test_user_expression_transform_3)
+{
+    term<user::number> a{{1.0}};
+    term<user::number> x{{42.0}};
+    term<user::number> y{{3.0}};
+
+    {
+        auto expr = if_else(0 < a, x, y);
+        {
+            user::number result = evaluate(expr);
+            EXPECT_EQ(result.value, 42);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::ternary_to_else_xform_tag{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 3);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::ternary_to_else_xform_expr{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 3);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::ternary_to_else_xform_both{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 3);
+        }
+    }
+
+    {
+        auto expr = y * if_else(0 < a, x, y) + user::number{0.0};
+        {
+            user::number result = evaluate(expr);
+            EXPECT_EQ(result.value, 126);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::ternary_to_else_xform_tag{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 9);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::ternary_to_else_xform_expr{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 9);
+        }
+
+        {
+            auto transformed_expr = transform(expr, user::ternary_to_else_xform_both{});
+            user::number result = evaluate(transformed_expr);
+            EXPECT_EQ(result.value, 9);
+        }
+    }
 }
