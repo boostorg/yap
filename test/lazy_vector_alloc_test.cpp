@@ -6,6 +6,20 @@
 #include <iostream>
 #include <vector>
 
+#include <gtest/gtest.h>
+
+
+int allocations = 0;
+
+void * operator new (std::size_t size)
+{
+    ++allocations;
+    return malloc(size);
+}
+
+void operator delete (void * ptr) noexcept
+{ free(ptr); }
+
 
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct lazy_vector_expr;
@@ -60,8 +74,14 @@ struct lazy_vector :
     }
 };
 
-int main ()
+
+TEST(allocations, lazy_vector_alloc_text)
 {
+    // GTest apparently allocates a ton of strings.  We need to hit "reset"
+    // here to measure the allocations in the part of the code we really care
+    // about.
+    allocations = 0;
+
     lazy_vector v1{{std::vector<double>(4, 1.0)}};
     lazy_vector v2{{std::vector<double>(4, 2.0)}};
     lazy_vector v3{{std::vector<double>(4, 3.0)}};
@@ -73,9 +93,5 @@ int main ()
     std::cout << '{' << v1[0] << ',' << v1[1]
               << ',' << v1[2] << ',' << v1[3] << '}' << "\n";
 
-    // This expression is disallowed because it does not conform
-    // to the implicit grammar.
-    // (v2 + v3) += v1;
-
-    return 0;
+    EXPECT_EQ(allocations, 3);
 }

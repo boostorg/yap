@@ -34,6 +34,7 @@ add_test_executable(call_expr_implicit)
 add_test_executable(reference_returns)
 add_test_executable(depth_stress_test_left)
 add_test_executable(depth_stress_test_right)
+add_test_executable(lazy_vector_alloc_test)
 
 add_executable(
     compile_tests
