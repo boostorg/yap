@@ -6,12 +6,12 @@
 
 namespace boost::yap {
 
-#define BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(expr)                    \
+#define BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(expr)                        \
     noexcept(noexcept(expr)) -> decltype(expr) { return expr; }
 
     namespace adl_detail {
 
-#define BOOST_YAP_UNARY_OPERATOR(op, op_name)                       \
+#define BOOST_YAP_UNARY_OPERATOR(op, op_name)                           \
         template <typename T>                                           \
         constexpr auto eval_ ## op_name (T && t) BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN( \
             op static_cast<T &&>(t)                                     \
@@ -59,7 +59,7 @@ namespace boost::yap {
 
 #undef BOOST_YAP_UNARY_OPERATOR
 
-#define BOOST_YAP_BINARY_OPERATOR(op, op_name)                      \
+#define BOOST_YAP_BINARY_OPERATOR(op, op_name)                          \
         template <typename T, typename U>                               \
         constexpr auto eval_ ## op_name (T && t, U && u) BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN( \
             static_cast<T &&>(t) op static_cast<U &&>(u)                \

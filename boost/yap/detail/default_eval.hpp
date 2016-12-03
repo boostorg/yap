@@ -59,7 +59,7 @@ namespace boost::yap {
                 return eval_placeholder(::boost::yap::value(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...);
             }
 
-#define BOOST_YAP_UNARY_OPERATOR_CASE(op_name)                      \
+#define BOOST_YAP_UNARY_OPERATOR_CASE(op_name)                          \
             else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
                     eval_ ## op_name(                                   \
@@ -80,7 +80,7 @@ namespace boost::yap {
 
 #undef BOOST_YAP_UNARY_OPERATOR_CASE
 
-#define BOOST_YAP_BINARY_OPERATOR_CASE(op_name)                     \
+#define BOOST_YAP_BINARY_OPERATOR_CASE(op_name)                         \
             else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
                     eval_ ## op_name(                                   \
