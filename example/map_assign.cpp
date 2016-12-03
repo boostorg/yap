@@ -47,6 +47,8 @@ struct map_list_of_tag {};
 auto map_list_of = boost::yap::make_terminal<map_list_of_expr>(map_list_of_tag{});
 
 
+// TODO: Add this to perf dir, and look at the generated code for this and the
+// equivalent Boost.Assign.
 int main()
 {
     // Initialize a map:
