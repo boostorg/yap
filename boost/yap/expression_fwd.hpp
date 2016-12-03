@@ -7,63 +7,66 @@
 
 namespace boost::yap {
 
+    /** The enumeration representing all the kinds of expressions supported in
+        YAP.
+    */
     enum class expr_kind {
-        expr_ref,
+        expr_ref, ///< An (possibly \c const) reference to another expression.
 
-        terminal,
-        placeholder,
+        terminal, ///< A terminal expression.
+        placeholder, ///< A placeholder expression.
 
         // unary
-        unary_plus, // +
-        negate, // -
-        dereference, // *
-        complement, // ~
-        address_of, // &
-        logical_not, // !
-        pre_inc, // ++
-        pre_dec, // --
-        post_inc, // ++(int)
-        post_dec, // --(int)
+        unary_plus, ///< \c +
+        negate, ///< \c -
+        dereference, ///< \c *
+        complement, ///< \c ~
+        address_of, ///< \c &
+        logical_not, ///< \c !
+        pre_inc, ///< \c ++
+        pre_dec, ///< \c --
+        post_inc, ///< \c ++(int)
+        post_dec, ///< \c --(int)
 
         // binary
-        shift_left, // <<
-        shift_right, // >>
-        multiplies, // *
-        divides, // /
-        modulus, // %
-        plus, // +
-        minus, // -
-        less, // <
-        greater, // >
-        less_equal, // <=
-        greater_equal, // >=
-        equal_to, // ==
-        not_equal_to, // !=
-        logical_or, // ||
-        logical_and, // &&
-        bitwise_and, // &
-        bitwise_or, // |
-        bitwise_xor, // ^
-        comma, // ,
-        mem_ptr, // ->*
-        assign, // =
-        shift_left_assign, // <<=
-        shift_right_assign, // >>=
-        multiplies_assign, // *=
-        divides_assign, // /=
-        modulus_assign, // %=
-        plus_assign, // +=
-        minus_assign, // -=
-        bitwise_and_assign, // &=
-        bitwise_or_assign, // |=
-        bitwise_xor_assign, // ^=
-        subscript, // []
+        shift_left, ///< \c <<
+        shift_right, ///< \c >>
+        multiplies, ///< \c *
+        divides, ///< \c /
+        modulus, ///< \c %
+        plus, ///< \c +
+        minus, ///< \c -
+        less, ///< \c <
+        greater, ///< \c >
+        less_equal, ///< \c <=
+        greater_equal, ///< \c >=
+        equal_to, ///< \c ==
+        not_equal_to, ///< \c !=
+        logical_or, ///< \c ||
+        logical_and, ///< \c &&
+        bitwise_and, ///< \c &
+        bitwise_or, ///< \c |
+        bitwise_xor, ///< \c ^
+        comma, ///< \c ,
+        mem_ptr, ///< \c ->*
+        assign, ///< \c =
+        shift_left_assign, ///< \c <<=
+        shift_right_assign, ///< \c >>=
+        multiplies_assign, ///< \c *=
+        divides_assign, ///< \c /=
+        modulus_assign, ///< \c %=
+        plus_assign, ///< \c +=
+        minus_assign, ///< \c -=
+        bitwise_and_assign, ///< \c &=
+        bitwise_or_assign, ///< \c |=
+        bitwise_xor_assign, ///< \c ^=
+        subscript, ///< \c []
 
         // ternary
-        if_else, // (analogous to) ?:
+        if_else, ///< Analogous to \c ?: .
 
         // n-ary
-        call // ()
+        call ///< \c ()
     };
 
     template <expr_kind Kind, typename Tuple>
@@ -162,7 +165,7 @@ namespace boost::yap {
     struct subscript_tag {}; // []
 
     // ternary
-    struct if_else_tag {}; // (analogous to) ?:
+    struct if_else_tag {}; // Analogous to ?:
 
     // n-ary
     struct call_tag {}; // ()
