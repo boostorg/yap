@@ -557,23 +557,23 @@ namespace boost::yap {
 namespace boost::yap {
 
     template <typename Expr, typename ...T>
-    decltype(auto) evaluate (Expr const & expr, T && ...t)
+    decltype(auto) evaluate (Expr && expr, T && ...t)
     {
         static_assert(
             detail::is_expr<Expr>::value,
             "evaluate() is only defined for expressions."
         );
-        return detail::default_eval_expr(expr, static_cast<T &&>(t)...);
+        return detail::default_eval_expr(static_cast<Expr &&>(expr), static_cast<T &&>(t)...);
     }
 
     template <typename R, typename Expr, typename ...T>
-    decltype(auto) evaluate_as (Expr const & expr, T && ...t)
+    decltype(auto) evaluate_as (Expr && expr, T && ...t)
     {
         static_assert(
             detail::is_expr<Expr>::value,
             "evaluate_as() is only defined for expressions."
         );
-        return eval_expression_as(expr, hana::basic_type<R>{}, static_cast<T &&>(t)...);
+        return eval_expression_as(static_cast<Expr &&>(expr), hana::basic_type<R>{}, static_cast<T &&>(t)...);
     }
 
     template <typename Expr, typename Transform>

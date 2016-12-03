@@ -38,32 +38,32 @@ namespace boost::yap {
         }
 
         template <typename Expr, typename ...T>
-        decltype(auto) default_eval_expr (Expr const & expr, T &&... args)
+        decltype(auto) default_eval_expr (Expr && expr, T &&... args)
         {
-            constexpr expr_kind kind = Expr::kind;
+            constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
 
             using namespace hana::literals;
 
             if constexpr (
                 !std::is_same_v<
-                    decltype(transform_expression(expr, static_cast<T &&>(args)...)),
+                    decltype(transform_expression(static_cast<Expr &&>(expr), static_cast<T &&>(args)...)),
                     nonexistent_transform
                 >
             ) {
-                return transform_expression(expr, static_cast<T &&>(args)...);
+                return transform_expression(static_cast<Expr &&>(expr), static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::expr_ref) {
-                return default_eval_expr(::boost::yap::deref(expr), static_cast<T &&>(args)...);
+                return default_eval_expr(::boost::yap::deref(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::terminal) {
-                return ::boost::yap::value(expr);
+                return ::boost::yap::value(static_cast<Expr &&>(expr));
             } else if constexpr (kind == expr_kind::placeholder) {
-                return eval_placeholder(::boost::yap::value(expr), static_cast<T &&>(args)...);
+                return eval_placeholder(::boost::yap::value(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...);
             }
 
 #define BOOST_YAP_UNARY_OPERATOR_CASE(op_name)                      \
             else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
                     eval_ ## op_name(                                   \
-                        default_eval_expr(expr.elements[0_c], static_cast<T &&>(args)...) \
+                        default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) \
                     );                                                  \
             }
 
@@ -84,8 +84,8 @@ namespace boost::yap {
             else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
                     eval_ ## op_name(                                   \
-                        default_eval_expr(expr.elements[0_c], static_cast<T &&>(args)...), \
-                        default_eval_expr(expr.elements[1_c], static_cast<T &&>(args)...) \
+                        default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...), \
+                        default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...) \
                     );                                                  \
             }
 
@@ -111,8 +111,8 @@ namespace boost::yap {
             else if constexpr (kind == expr_kind::comma) {
                 return
                     eval_comma(
-                        default_eval_expr(expr.elements[0_c], static_cast<T &&>(args)...),
-                        default_eval_expr(expr.elements[1_c], static_cast<T &&>(args)...)
+                        default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...),
+                        default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...)
                     );
             }
 
@@ -133,9 +133,9 @@ namespace boost::yap {
             else if constexpr (kind == expr_kind::if_else) {
                 return
                     eval_if_else(
-                        default_eval_expr(expr.elements[0_c], static_cast<T &&>(args)...),
-                        default_eval_expr(expr.elements[1_c], static_cast<T &&>(args)...),
-                        default_eval_expr(expr.elements[2_c], static_cast<T &&>(args)...)
+                        default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...),
+                        default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...),
+                        default_eval_expr(static_cast<Expr &&>(expr).elements[2_c], static_cast<T &&>(args)...)
                     );
             }
 
@@ -150,7 +150,7 @@ namespace boost::yap {
                 };
 
                 return hana::unpack(
-                    expr.elements,
+                    static_cast<Expr &&>(expr).elements,
                     [expand_args](auto && ... elements) {
                         return eval_call(
                             expand_args(static_cast<decltype(elements) &&>(elements))...

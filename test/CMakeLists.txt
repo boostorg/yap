@@ -36,6 +36,8 @@ add_test_executable(depth_stress_test_left)
 add_test_executable(depth_stress_test_right)
 add_test_executable(lazy_vector_alloc_test)
 
+add_test_executable(operators_unary)
+
 add_executable(
     compile_tests
     compile_tests_main.cpp

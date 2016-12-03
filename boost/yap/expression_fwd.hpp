@@ -76,10 +76,10 @@ namespace boost::yap {
     using expression_ref = expr_template<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
 
     template <typename Expr, typename ...T>
-    decltype(auto) evaluate (Expr const & expr, T && ...t);
+    decltype(auto) evaluate (Expr && expr, T && ...t);
 
     template <typename R, typename Expr, typename ...T>
-    decltype(auto) evaluate_as (Expr const & expr, T && ...t);
+    decltype(auto) evaluate_as (Expr && expr, T && ...t);
 
     template <typename Expr, typename Transform>
     decltype(auto) transform (Expr && expr, Transform && transform);
