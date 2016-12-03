@@ -65,15 +65,17 @@
     For the rvalue reference overload, <code>*this</code> is moved into the
     resulting expression.
 
-    \param op_name The operator to be overloaded; this must be one of the
-    enumerators in <code>expr_kind</code>, without the
+    \param op_name The operator to be overloaded; this must be one of the \b
+    unary enumerators in <code>expr_kind</code>, without the
     <code>expr_kind::</code> qualification.
 
     \param this_type The type in which the operator overloads are being
     defined.
 
     \param expr_template The expression template to use to instantiate the
-    result expression.  \a expr_template must be an \ref ExpressionTemplate. */
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+*/
 #define BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, expr_template) \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) const &          \
     {                                                                   \
@@ -111,17 +113,20 @@
     moved into the resulting expression.
 
     The \a rhs parameter to each of the defined overloads may be any type,
-    including an expression.
+    including an expression.  If \a rhs is a non-expression, it is wrapped in
+    a terminal expression.
 
-    \param op_name The operator to be overloaded; this must be one of the
-    enumerators in <code>expr_kind</code>, without the
+    \param op_name The operator to be overloaded; this must be one of the \b
+    binary enumerators in <code>expr_kind</code>, without the
     <code>expr_kind::</code> qualification.
 
     \param this_type The type in which the operator overloads are being
     defined.
 
     \param expr_template The expression template to use to instantiate the
-    result expression.  \a expr_template must be an \ref ExpressionTemplate. */
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+*/
 #define BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, expr_template) \
     template <typename Expr>                                            \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (Expr && rhs) const & \
@@ -165,6 +170,25 @@
     }
 
 
+/** Defines operator overloads for the call operator ("operator()") that each
+    produce an expression instantiated from the \a expr_template expression
+    template.  One overload is defined for each of the qualifiers <code>const
+    &</code>, <code>&</code>, and <code>&&</code>.  For the lvalue reference
+    overloads, <code>*this</code> is captured by reference into the resulting
+    expression.  For the rvalue reference overload, <code>*this</code> is
+    moved into the resulting expression.
+
+    The \a u parameters to each of the defined overloads may be any type,
+    including an expression.  Each non-expression is wrapped in a terminal
+    expression.
+
+    \param this_type The type in which the operator overloads are being
+    defined.
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+*/
 #define BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, expr_template)   \
     template <typename ...U>                                            \
     auto operator() (U && ...u) const &                                 \
@@ -220,6 +244,24 @@
     }
 
 
+/** Defines a free/non-member operator overload for binary operator \a op_name
+    that produces an expression instantiated from the \a expr_template
+    expression template.
+
+    The \a lhs parameter to each of the defined overloads must \b not be an
+    expression; \a lhs is wrapped in a terminal expression.
+
+    The \a rhs parameter to each of the defined overloads must be an
+    expression.
+
+    \param op_name The operator to be overloaded; this must be one of the
+    \binary enumerators in <code>expr_kind</code>, without the
+    <code>expr_kind::</code> qualification.
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+*/
 #define BOOST_YAP_USER_FREE_BINARY_OPERATOR(op_name, expr_template)     \
     template <typename T, typename Expr>                                \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (T && lhs, Expr && rhs) \
@@ -258,6 +300,21 @@
     }
 
 
+/** Defines a function <code>if_else()</code> that acts as an analogue to the
+    ternary operator (<code>?:</code>), since the ternary operator is not
+    user-overloadable.  The return type of <code>if_else()</code> is an
+    expression instantiated from the \a expr_template expression template.
+
+    Each parameter to <code>if_else()</code> must be an expression.
+
+    For each parameter E passed to <code>if_else()</code>, if E is an rvalue,
+    E is moved into the result, and otherwise E is captured by reference into
+    the result.
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+*/
 #define BOOST_YAP_USER_EXPR_IF_ELSE(expr_template)                      \
     template <typename Expr1, typename Expr2, typename Expr3>           \
     auto if_else (Expr1 && expr1, Expr2 && expr2, Expr3 && expr3)       \
@@ -288,6 +345,23 @@
     }
 
 
+/** Defines a function <code>if_else()</code> that acts as an analogue to the
+    ternary operator (<code>?:</code>), since the ternary operator is not
+    user-overloadable.  The return type of <code>if_else()</code> is an
+    expression instantiated from the \a expr_template expression template.
+
+    Each parameter to <code>if_else()</code> may be any type that is \b not an
+    expression.  At least on parameter must be a type <code>T</code> for which
+    \code udt_trait<std::remove_cv_t<std::remove_reference_t<T>>>::value
+    \endcode is true.  Each parameter is wrapped in a terminal expression.
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+
+    \param udt_trait A trait template to use to constrain which types are
+    accepted as template parameters to <code>if_else()</code>.
+*/
 #define BOOST_YAP_USER_UDT_ANY_IF_ELSE(expr_template, udt_trait)        \
     template <typename Expr1, typename Expr2, typename Expr3>           \
     auto if_else (Expr1 && expr1, Expr2 && expr2, Expr3 && expr3)       \
@@ -320,6 +394,26 @@
     }
 
 
+/** Defines a free/non-member operator overload for unary operator \a op_name
+    that produces an expression instantiated from the \a expr_template
+    expression template.
+
+    The \a x parameter to the defined operator overload may be any type that
+    is \b not an expression and for which \code
+    udt_trait<std::remove_cv_t<std::remove_reference_t<T>>>::value \endcode is
+    true.  The parameter is wrapped in a terminal expression.
+
+    \param op_name The operator to be overloaded; this must be one of the \b
+    unary enumerators in <code>expr_kind</code>, without the
+    <code>expr_kind::</code> qualification.
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+
+    \param udt_trait A trait template to use to constrain which types are
+    accepted as template parameters to the defined operator overload.
+*/
 #define BOOST_YAP_USER_UDT_UNARY_OPERATOR(op_name, expr_template, udt_trait) \
     template <typename T>                                               \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)((T && x))            \
@@ -342,6 +436,35 @@
     }
 
 
+// TODO: Add an example for each of the macros in this file.
+/** Defines a free/non-member operator overload for binary operator \a op_name
+    that produces an expression instantiated from the \a expr_template
+    expression template.
+
+    The \a lhs parameter to the defined operator overload may be any type that
+    is \b not an expression and for which \code
+    t_udt_trait<std::remove_cv_t<std::remove_reference_t<T>>>::value \endcode is
+    true.  The parameter is wrapped in a terminal expression.
+
+    The \a rhs parameter to the defined operator overload may be any type that
+    is \b not an expression and for which \code
+    u_udt_trait<std::remove_cv_t<std::remove_reference_t<U>>>::value \endcode is
+    true.  The parameter is wrapped in a terminal expression.
+
+    \param op_name The operator to be overloaded; this must be one of the \b
+    binary enumerators in <code>expr_kind</code>, without the
+    <code>expr_kind::</code> qualification.
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+
+    \param t_udt_trait A trait template to use to constrain which types are
+    accepted as \a T template parameters to the defined operator overload.
+
+    \param u_udt_trait A trait template to use to constrain which types are
+    accepted as \a U template parameters to the defined operator overload.
+*/
 #define BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR(op_name, expr_template, t_udt_trait, u_udt_trait) \
     template <typename T, typename U>                                   \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (T && lhs, U && rhs) \
@@ -374,6 +497,29 @@
     }
 
 
+/** Defines a free/non-member operator overload for binary operator \a op_name
+    that produces an expression instantiated from the \a expr_template
+    expression template.
+
+    The \a lhs and \a rhs parameters to the defined operator overload may be any types that
+    is \b not expressions.  Each parameter is wrapped in a terminal expression.
+
+    At least one of the parameters to the defined operator overload must be a
+    type \c T for which \code
+    udt_trait<std::remove_cv_t<std::remove_reference_t<T>>>::value \endcode is
+    true.
+
+    \param op_name The operator to be overloaded; this must be one of the \b
+    binary enumerators in <code>expr_kind</code>, without the
+    <code>expr_kind::</code> qualification.
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+
+    \param udt_trait A trait template to use to constrain which types are
+    accepted as template parameters to the defined operator overload.  
+*/
 #define BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(op_name, expr_template, udt_trait) \
     template <typename T, typename U>                                   \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (T && lhs, U && rhs) \
