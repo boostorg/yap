@@ -8,7 +8,7 @@
 #include <iostream>
 
 
-namespace boost::yap {
+namespace boost { namespace yap {
 
     namespace detail {
 
@@ -123,6 +123,6 @@ namespace boost::yap {
     std::ostream & print (std::ostream & os, Expr const & expr)
     { return detail::print_impl(os, expr, 0, "    "); }
 
-}
+} }
 
 #endif

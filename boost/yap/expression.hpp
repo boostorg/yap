@@ -9,7 +9,7 @@
 #include <boost/hana/comparing.hpp>
 
 
-namespace boost::yap {
+namespace boost { namespace yap {
 
     namespace adl_detail {
 
@@ -550,11 +550,11 @@ namespace boost::yap {
         return expression_function<Expr>{std::move(expr)};
     }
 
-}
+} }
 
 #include <boost/yap/detail/default_eval.hpp>
 
-namespace boost::yap {
+namespace boost { namespace yap {
 
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr && expr, T && ...t)
@@ -598,6 +598,6 @@ namespace boost::yap {
 
     }
 
-}
+} }
 
 #endif

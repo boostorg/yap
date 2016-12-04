@@ -9,7 +9,7 @@
 #include <type_traits>
 
 
-namespace boost::yap {
+namespace boost { namespace yap {
 
     namespace detail {
 
@@ -613,6 +613,6 @@ namespace boost::yap {
 
     }
 
-}
+} }
 
 #endif

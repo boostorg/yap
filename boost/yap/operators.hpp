@@ -4,7 +4,7 @@
 
 #ifndef BOOST_YAP_DOXYGEN
 
-namespace boost::yap {
+namespace boost { namespace yap {
 
 #define BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(expr)                        \
     noexcept(noexcept(expr)) -> decltype(expr) { return expr; }
@@ -261,7 +261,7 @@ namespace boost::yap {
 
     }
 
-}
+} }
 
 #endif // BOOST_YAP_DOXYGEN
 

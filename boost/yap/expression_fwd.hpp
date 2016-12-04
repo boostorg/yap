@@ -5,7 +5,7 @@
 #include <boost/hana/tuple.hpp>
 
 
-namespace boost::yap {
+namespace boost { namespace yap {
 
     /** The enumeration representing all the kinds of expressions supported in
         YAP.
@@ -170,6 +170,6 @@ namespace boost::yap {
     // n-ary
     struct call_tag {}; // ()
 
-}
+} }
 
 #endif
