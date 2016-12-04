@@ -257,6 +257,12 @@ namespace boost { namespace yap {
     namespace function_objects {
 
         template <typename T>
+        constexpr auto transform_expression (T && t);
+
+        template <typename T>
+        constexpr auto eval_placeholder (T && t);
+
+        template <typename T>
         constexpr auto eval_unary_plus (T && t);
         template <typename T>
         constexpr auto eval_negate (T && t);
