@@ -914,7 +914,13 @@ namespace boost { namespace yap {
     template <template <expr_kind, class> class ExprTemplate, expr_kind Kind, typename ...T>
     auto make_expression (T && ... t)
     {
-        // TODO: Check arity!
+        constexpr detail::expr_arity arity = detail::arity_of<Kind>();
+        static_assert(
+            (arity == detail::expr_arity::one && sizeof...(T) == 1) ||
+            (arity == detail::expr_arity::two && sizeof...(T) == 2) ||
+            (arity == detail::expr_arity::three && sizeof...(T) == 3) ||
+            arity == detail::expr_arity::n
+        );
         using tuple_type = hana::tuple<detail::operand_type_t<ExprTemplate, T>...>;
         return ExprTemplate<Kind, tuple_type>{
             tuple_type{
