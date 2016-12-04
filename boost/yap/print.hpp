@@ -119,6 +119,7 @@ namespace boost { namespace yap {
 
     }
 
+    /** Prints expression \a expr to stream \a os.  Returns \a os. */
     template <typename Expr>
     std::ostream & print (std::ostream & os, Expr const & expr)
     { return detail::print_impl(os, expr, 0, "    "); }

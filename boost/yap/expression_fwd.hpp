@@ -69,14 +69,24 @@ namespace boost { namespace yap {
         call ///< \c ()
     };
 
+#ifndef BOOST_YAP_DOXYGEN
+
     template <expr_kind Kind, typename Tuple>
     struct expression;
 
+#ifndef BOOST_YAP_DOXYGEN
+
+    /** A convenience alias for a terminal expression holding a \a T,
+        instantiated from expression template \a expr_template. */
     template <typename T, template <expr_kind, class> class expr_template = expression>
     using terminal = expr_template<expr_kind::terminal, hana::tuple<T>>;
 
+    /** A convenience alias for a reference expression holding an expression
+        \a T, instantiated from expression template \a expr_template. */
     template <typename T, template <expr_kind, class> class expr_template = expression>
     using expression_ref = expr_template<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
+
+#endif // BOOST_YAP_DOXYGEN
 
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr && expr, T && ...t);
@@ -99,8 +109,11 @@ namespace boost { namespace yap {
     template <typename Expr>
     decltype(auto) right (Expr && expr);
 
+#endif // BOOST_YAP_DOXYGEN
+
     namespace literals {
 
+        /** Creates literal placeholders.  Placeholder indices are 1-based. */
         template <char ...c>
         constexpr auto operator"" _p ()
         {
@@ -110,6 +123,8 @@ namespace boost { namespace yap {
         }
 
     }
+
+#ifndef BOOST_YAP_DOXYGEN
 
     // Tag types -- one per expr_kind:
 
@@ -169,6 +184,8 @@ namespace boost { namespace yap {
 
     // n-ary
     struct call_tag {}; // ()
+
+#endif // BOOST_YAP_DOXYGEN
 
 } }
 
