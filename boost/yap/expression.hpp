@@ -94,7 +94,20 @@ namespace boost { namespace yap {
         }
     }
 
-    /** Reference expression template that provides all operator overloads. */
+    /** Reference expression template that provides all operator overloads.
+
+        \note Due to a limitation of Doxygen, each of the
+        <code>value()</code>, <code>left()</code>, <code>right()</code>, and
+        operator overloads listed here is a stand-in for three member
+        functions.  For each function <code>f</code>, the listing here is:
+        \code return_type f (); \endcode  However, there are actually three
+        functions:
+        \code
+        return_type f () const &;
+        return_type f () &;
+        return_type f () &&;
+        \endcode
+    */
     template <expr_kind Kind, typename Tuple>
     struct expression
     {
@@ -127,52 +140,139 @@ namespace boost { namespace yap {
 
         /** A convenience member function that dispatches to the free function
             <code>value()</code>. */
-        decltype(auto) value () const &
-        { return ::boost::yap::value(*this); }
-
-        /** A convenience member function that dispatches to the free function
-            <code>value()</code>. */
         decltype(auto) value () &
         { return ::boost::yap::value(*this); }
 
-        /** A convenience member function that dispatches to the free function
-            <code>value()</code>. */
+#ifndef BOOST_YAP_DOXYGEN
+
+        decltype(auto) value () const &
+        { return ::boost::yap::value(*this); }
+
         decltype(auto) value () &&
         { return ::boost::yap::value(std::move(*this)); }
 
-        /** A convenience member function that dispatches to the free function
-            <code>left()</code>. */
-        decltype(auto) left () const &
-        { return ::boost::yap::left(*this); }
+#endif
 
         /** A convenience member function that dispatches to the free function
             <code>left()</code>. */
         decltype(auto) left () &
         { return ::boost::yap::left(*this); }
 
-        /** A convenience member function that dispatches to the free function
-            <code>left()</code>. */
+#ifndef BOOST_YAP_DOXYGEN
+
+        decltype(auto) left () const &
+        { return ::boost::yap::left(*this); }
+
         decltype(auto) left () &&
         { return ::boost::yap::left(std::move(*this)); }
 
-        /** A convenience member function that dispatches to the free function
-            <code>right()</code>. */
-        decltype(auto) right () const &
-        { return ::boost::yap::right(*this); }
+#endif
 
         /** A convenience member function that dispatches to the free function
             <code>right()</code>. */
         decltype(auto) right () &
         { return ::boost::yap::right(*this); }
 
-        /** A convenience member function that dispatches to the free function
-            <code>right()</code>. */
+#ifndef BOOST_YAP_DOXYGEN
+
+        decltype(auto) right () const &
+        { return ::boost::yap::right(*this); }
+
         decltype(auto) right () &&
         { return ::boost::yap::right(std::move(*this)); }
 
+#endif
+
 #ifdef BOOST_YAP_DOXYGEN
 
-        // TODO
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator+ ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator- ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator* ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator~ ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator& ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator! ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator++ ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator-- ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator++ (int);
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator-- (int);
+
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator<< (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator>> (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator* (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator/ (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator% (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator+ (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator- (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator< (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator> (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator<= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator>= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator== (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator!= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator|| (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator&& (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator& (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator| (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator^ (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator, (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator->* (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator<<= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator>>= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator*= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator/= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator%= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator+= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator-= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator&= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator|= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator^= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator[] (T && t);
+
+        /** \see BOOST_YAP_USER_MEMBER_CALL_OPERATOR for full semantics. */
+        template <typename ...T> auto operator() (T && ... t);
 
 #else
 
@@ -239,7 +339,19 @@ namespace boost { namespace yap {
     };
 
     /** Terminal expression specialization of the reference expression
-        template. */
+        template.
+
+        \note Due to a limitation of Doxygen, the <code>value()</code> member
+        and each of the operator overloads listed here is a stand-in for three
+        member functions.  For each function <code>f</code>, the listing here
+        is: \code return_type f (); \endcode However, there are actually three
+        functions:
+        \code
+        return_type f () const &;
+        return_type f () &;
+        return_type f () &&;
+        \endcode
+    */
     template <typename T>
     struct expression<expr_kind::terminal, hana::tuple<T>>
     {
@@ -276,22 +388,109 @@ namespace boost { namespace yap {
 
         /** A convenience member function that dispatches to the free function
             <code>value()</code>. */
-        decltype(auto) value () const &
-        { return ::boost::yap::value(*this); }
-
-        /** A convenience member function that dispatches to the free function
-            <code>value()</code>. */
         decltype(auto) value () &
         { return ::boost::yap::value(*this); }
 
-        /** A convenience member function that dispatches to the free function
-            <code>value()</code>. */
+#ifndef BOOST_YAP_DOXYGEN
+
+        decltype(auto) value () const &
+        { return ::boost::yap::value(*this); }
+
         decltype(auto) value () &&
         { return ::boost::yap::value(std::move(*this)); }
 
+#endif
+
 #ifdef BOOST_YAP_DOXYGEN
 
-        // TODO
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator+ ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator- ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator* ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator~ ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator& ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator! ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator++ ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator-- ();
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator++ (int);
+        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
+        auto operator-- (int);
+
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator<< (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator>> (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator* (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator/ (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator% (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator+ (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator- (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator< (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator> (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator<= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator>= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator== (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator!= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator|| (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator&& (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator& (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator| (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator^ (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator, (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator->* (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator<<= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator>>= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator*= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator/= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator%= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator+= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator-= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator&= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator|= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator^= (T && t);
+        /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
+        template <typename T> auto operator[] (T && t);
+
+        /** \see BOOST_YAP_USER_MEMBER_CALL_OPERATOR for full semantics. */
+        template <typename ...T> auto operator() (T && ... t);
 
 #else
 
@@ -581,7 +780,42 @@ namespace boost { namespace yap {
 
 #ifdef BOOST_YAP_DOXYGEN
 
-    // TODO
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator<< (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator>> (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator* (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator/ (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator% (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator+ (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator- (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator< (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator> (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator<= (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator>= (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator== (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator!= (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator|| (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator&& (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator& (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator| (T && lhs, Expr && rhs);
+    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    template <typename T, typename Expr> auto operator^ (T && lhs, Expr && rhs);
 
 #else
 
