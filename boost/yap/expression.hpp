@@ -139,6 +139,12 @@ namespace boost { namespace yap {
         decltype(auto) right () &&
         { return ::boost::yap::right(std::move(*this)); }
 
+#ifdef BOOST_YAP_DOXYGEN
+
+        // TODO
+
+#else
+
 #define BOOST_YAP_UNARY_MEMBER_OPERATOR(op_name)                    \
         BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
 
@@ -197,6 +203,8 @@ namespace boost { namespace yap {
 #undef BOOST_YAP_BINARY_MEMBER_OPERATOR
 
         BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::yap::expression)
+
+#endif
     };
 
     template <typename T>
@@ -233,6 +241,12 @@ namespace boost { namespace yap {
 
         decltype(auto) value () &&
         { return ::boost::yap::value(std::move(*this)); }
+
+#ifdef BOOST_YAP_DOXYGEN
+
+        // TODO
+
+#else
 
 #define BOOST_YAP_UNARY_MEMBER_OPERATOR(op_name)                    \
         BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
@@ -289,6 +303,8 @@ namespace boost { namespace yap {
 #undef BOOST_YAP_BINARY_MEMBER_OPERATOR
 
         BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::yap::expression)
+
+#endif
     };
 
     template <long long I>
@@ -459,6 +475,12 @@ namespace boost { namespace yap {
         }
     }
 
+#ifdef BOOST_YAP_DOXYGEN
+
+    // TODO
+
+#else
+
 #define BOOST_YAP_BINARY_FREE_OPERATOR(op_name)                     \
     BOOST_YAP_USER_FREE_BINARY_OPERATOR(op_name, expression)
 
@@ -484,6 +506,8 @@ namespace boost { namespace yap {
 #undef BOOST_YAP_BINARY_FREE_OPERATOR
 
     BOOST_YAP_USER_EXPR_IF_ELSE(::boost::yap::expression)
+
+#endif
 
     template <template <expr_kind, class> class ExprTemplate, expr_kind Kind, typename ...T>
     auto make_expression (T &&... t)
