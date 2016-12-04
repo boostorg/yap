@@ -377,8 +377,9 @@ namespace boost { namespace yap {
 
 #if defined(BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE) || defined(BOOST_YAP_DOXYGEN)
         /** Conversion operator.  Attempts to convert \c *this to any type \a
-            R with a call to the <code>eval_expression_as()</code> point.
-            This function is only defined if the configuration macro
+            R with a call to the <code>eval_expression_as()</code>
+            cutomization point.  This function is only defined if the
+            configuration macro
             <code>BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</code> has been
             defined by the user. */ // TODO
         template <typename R>
@@ -780,42 +781,84 @@ namespace boost { namespace yap {
 
 #ifdef BOOST_YAP_DOXYGEN
 
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator<< (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator>> (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator* (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator/ (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator% (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator+ (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator- (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator< (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator> (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator<= (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator>= (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator== (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator!= (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator|| (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator&& (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator& (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator| (T && lhs, Expr && rhs);
-    /** \see BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION is not.  \see
+        BOOST_YAP_USER_FREE_BINARY_OPERATOR for full semantics. */
     template <typename T, typename Expr> auto operator^ (T && lhs, Expr && rhs);
+
+    /** Only defined when the configuration macro
+        BOOST_YAP_NO_EXPR_IF_ELSE_FOR_EXPRESSION is not. \see
+        BOOST_YAP_USER_EXPR_IF_ELSE for full semantics. */
+    template <typename Expr1, typename Expr2, typename Expr3>
+    auto if_else (Expr1 && expr1, Expr2 && expr2, Expr3 && expr3);
 
 #else
 
@@ -968,8 +1011,13 @@ namespace boost { namespace yap {
     /** Evaluates \a expr, substituting the subsequent parameters (if any)
         into \a expr's placeholders.
 
+        All customization points for the evaluation of expressions \b except
+        <code>eval_expression_as()</code> are used to evaluate the \a expr.
+        If you've overridden any, that will be reflected in the result.
+
         \note <code>evaluate()</code> is only valid if \a Expr is an
-        expression.
+        expression, and <code>max_p <= sizeof...(T)</code>, where
+        <code>max_p</code> is the maximum placeholder index in \a expr.
     */
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr && expr, T && ... t)
@@ -988,8 +1036,13 @@ namespace boost { namespace yap {
         Prefer this function to <code>evaluate()</code> when you want
         evaluation to differ based on the result type.
 
+        All customization points for the evaluation of expressions \b except
+        <code>eval_expression_as()</code> are used to evaluate the \a expr.
+        If you've overridden any, that will be reflected in the result.
+
         \note <code>evaluate()</code> is only valid if \a Expr is an
-        expression.
+        expression, and <code>max_p <= sizeof...(T)</code>, where
+        <code>max_p</code> is the maximum placeholder index in \a expr.
     */
     template <typename R, typename Expr, typename ...T>
     decltype(auto) evaluate_as (Expr && expr, T && ... t)
@@ -1001,7 +1054,14 @@ namespace boost { namespace yap {
         return eval_expression_as(static_cast<Expr &&>(expr), hana::basic_type<R>{}, static_cast<T &&>(t)...);
     }
 
-    /** TODO */
+    /** Returns the result of transforming (all or part of) \a expr using
+        whatever overloads of <code>Transform::operator()</code> that match \a
+        expr.
+
+        \note Transformations can do anything: they may have side effects;
+        they may mutate values; they may mutate types; and they may do any
+        combination of these.
+    */
     template <typename Expr, typename Transform>
     decltype(auto) transform (Expr && expr, Transform && transform)
     {
