@@ -11,15 +11,17 @@
 
 namespace boost { namespace yap {
 
+#ifndef BOOST_YAP_DOXYGEN
+
     namespace adl_detail {
 
         template <typename R, typename E, typename ...T>
-        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T &&... args);
+        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T && ... args);
 
         struct eval_expression_as_fn
         {
             template <typename R, typename E, typename ...T>
-            constexpr decltype(auto) operator() (E const & expr, hana::basic_type<R> rtype, T &&... args) const
+            constexpr decltype(auto) operator() (E const & expr, hana::basic_type<R> rtype, T && ... args) const
             { return eval_expression_as(expr, rtype, static_cast<T &&>(args)...); }
         };
 
@@ -32,6 +34,8 @@ namespace boost { namespace yap {
         inline constexpr eval_expression_as_fn eval_expression_as{};
 
     }
+
+#endif
 
     /** Returns the <code>char const *</code> string for the spelling of the
         C++ operator associated with \a kind. */
@@ -631,7 +635,7 @@ namespace boost { namespace yap {
         parameters passed is appropriate for \a Kind.
     */
     template <template <expr_kind, class> class ExprTemplate, expr_kind Kind, typename ...T>
-    auto make_expression (T &&... t)
+    auto make_expression (T && ... t)
     {
         // TODO: Check arity!
         using tuple_type = hana::tuple<detail::operand_type_t<ExprTemplate, T>...>;
@@ -644,7 +648,7 @@ namespace boost { namespace yap {
 
     /** Returns <code>make_expression<boost::yap::expression, Kind>(...)</code>. */
     template <expr_kind Kind, typename ...T>
-    auto make_expression (T &&... t)
+    auto make_expression (T && ... t)
     { return make_expression<expression, Kind>(static_cast<T &&>(t)...); }
 
     /** Makes a new terminal expression instantiated from the expression
@@ -699,7 +703,7 @@ namespace boost { namespace yap {
     struct expression_function
     {
         template <typename ...U>
-        decltype(auto) operator() (U &&... u)
+        decltype(auto) operator() (U && ... u)
         { return ::boost::yap::evaluate(expr, static_cast<U &&>(u)...); }
 
         Expr expr;
@@ -734,7 +738,7 @@ namespace boost { namespace yap {
         expression.
     */
     template <typename Expr, typename ...T>
-    decltype(auto) evaluate (Expr && expr, T && ...t)
+    decltype(auto) evaluate (Expr && expr, T && ... t)
     {
         static_assert(
             detail::is_expr<Expr>::value,
@@ -754,7 +758,7 @@ namespace boost { namespace yap {
         expression.
     */
     template <typename R, typename Expr, typename ...T>
-    decltype(auto) evaluate_as (Expr && expr, T && ...t)
+    decltype(auto) evaluate_as (Expr && expr, T && ... t)
     {
         static_assert(
             detail::is_expr<Expr>::value,
@@ -781,7 +785,7 @@ namespace boost { namespace yap {
     namespace adl_detail {
 
         template <typename R, typename E, typename ...T>
-        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T &&... args)
+        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T && ... args)
         { return static_cast<R>(detail::default_eval_expr(expr, static_cast<T &&>(args)...)); }
 
     }

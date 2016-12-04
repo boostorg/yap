@@ -200,7 +200,7 @@
 */
 #define BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, expr_template)   \
     template <typename ...U>                                            \
-    auto operator() (U && ...u) const &                                 \
+    auto operator() (U && ... u) const &                                \
     {                                                                   \
         using lhs_type = ::boost::yap::detail::expr_ref_t<expr_template, this_type const &>; \
         using lhs_tuple_type = ::boost::yap::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
@@ -218,7 +218,7 @@
         };                                                              \
     }                                                                   \
     template <typename ...U>                                            \
-    auto operator() (U && ...u) &                                       \
+    auto operator() (U && ... u) &                                      \
     {                                                                   \
         using lhs_type = ::boost::yap::detail::expr_ref_t<expr_template, this_type &>; \
         using lhs_tuple_type = ::boost::yap::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
@@ -236,7 +236,7 @@
         };                                                              \
     }                                                                   \
     template <typename ...U>                                            \
-    auto operator() (U && ...u) &&                                      \
+    auto operator() (U && ... u) &&                                     \
     {                                                                   \
         using tuple_type = ::boost::hana::tuple<                        \
             this_type,                                                  \

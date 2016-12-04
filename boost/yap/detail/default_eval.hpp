@@ -28,7 +28,7 @@ namespace boost { namespace yap {
         }
 
         template <typename I, typename T, typename ...Ts>
-        auto eval_placeholder (I, T && arg, Ts &&... args)
+        auto eval_placeholder (I, T && arg, Ts && ... args)
         {
             if constexpr (I::value == 1) {
                 return arg;
@@ -38,7 +38,7 @@ namespace boost { namespace yap {
         }
 
         template <typename Expr, typename ...T>
-        decltype(auto) default_eval_expr (Expr && expr, T &&... args)
+        decltype(auto) default_eval_expr (Expr && expr, T && ... args)
         {
             constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
 
