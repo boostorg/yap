@@ -30,6 +30,7 @@ doxygen $(target)
         <doxygen:param>MACRO_EXPANSION=YES
         $(expand)
         <doxygen:param>SEARCH_INCLUDES=NO
+        <doxygen:param>EXAMPLE_PATH=.
         <reftitle>$(name)
   ;
 

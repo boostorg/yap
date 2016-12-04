@@ -65,6 +65,9 @@
     For the rvalue reference overload, <code>*this</code> is moved into the
     resulting expression.
 
+    Example:
+    \snippet user_macros_snippets.cpp USER_UNARY_OPERATOR_MEMBER
+
     \param op_name The operator to be overloaded; this must be one of the \b
     unary enumerators in <code>expr_kind</code>, without the
     <code>expr_kind::</code> qualification.
@@ -115,6 +118,9 @@
     The \a rhs parameter to each of the defined overloads may be any type,
     including an expression.  If \a rhs is a non-expression, it is wrapped in
     a terminal expression.
+
+    Example:
+    \snippet user_macros_snippets.cpp USER_BINARY_OPERATOR_MEMBER
 
     \param op_name The operator to be overloaded; this must be one of the \b
     binary enumerators in <code>expr_kind</code>, without the
@@ -181,6 +187,9 @@
     The \a u parameters to each of the defined overloads may be any type,
     including an expression.  Each non-expression is wrapped in a terminal
     expression.
+
+    Example:
+    \snippet user_macros_snippets.cpp USER_MEMBER_CALL_OPERATOR
 
     \param this_type The type in which the operator overloads are being
     defined.
@@ -254,6 +263,9 @@
     The \a rhs parameter to each of the defined overloads must be an
     expression.
 
+    Example:
+    \snippet user_macros_snippets.cpp USER_FREE_BINARY_OPERATOR
+
     \param op_name The operator to be overloaded; this must be one of the
     \binary enumerators in <code>expr_kind</code>, without the
     <code>expr_kind::</code> qualification.
@@ -311,6 +323,9 @@
     E is moved into the result, and otherwise E is captured by reference into
     the result.
 
+    Example:
+    \snippet user_macros_snippets.cpp USER_EXPR_IF_ELSE
+
     \param expr_template The expression template to use to instantiate the
     result expression.  \a expr_template must be an \ref
     ExpressionTemplate.
@@ -354,6 +369,9 @@
     expression.  At least on parameter must be a type <code>T</code> for which
     \code udt_trait<std::remove_cv_t<std::remove_reference_t<T>>>::value
     \endcode is true.  Each parameter is wrapped in a terminal expression.
+
+    Example:
+    \snippet user_macros_snippets.cpp USER_UDT_ANY_IF_ELSE
 
     \param expr_template The expression template to use to instantiate the
     result expression.  \a expr_template must be an \ref
@@ -403,6 +421,9 @@
     udt_trait<std::remove_cv_t<std::remove_reference_t<T>>>::value \endcode is
     true.  The parameter is wrapped in a terminal expression.
 
+    Example:
+    \snippet user_macros_snippets.cpp USER_UDT_UNARY_OPERATOR
+
     \param op_name The operator to be overloaded; this must be one of the \b
     unary enumerators in <code>expr_kind</code>, without the
     <code>expr_kind::</code> qualification.
@@ -436,7 +457,6 @@
     }
 
 
-// TODO: Add an example for each of the macros in this file.
 /** Defines a free/non-member operator overload for binary operator \a op_name
     that produces an expression instantiated from the \a expr_template
     expression template.
@@ -450,6 +470,9 @@
     is \b not an expression and for which \code
     u_udt_trait<std::remove_cv_t<std::remove_reference_t<U>>>::value \endcode is
     true.  The parameter is wrapped in a terminal expression.
+
+    Example:
+    \snippet user_macros_snippets.cpp USER_UDT_UDT_BINARY_OPERATOR
 
     \param op_name The operator to be overloaded; this must be one of the \b
     binary enumerators in <code>expr_kind</code>, without the
@@ -508,6 +531,9 @@
     type \c T for which \code
     udt_trait<std::remove_cv_t<std::remove_reference_t<T>>>::value \endcode is
     true.
+
+    Example:
+    \snippet user_macros_snippets.cpp USER_UDT_ANY_BINARY_OPERATOR
 
     \param op_name The operator to be overloaded; this must be one of the \b
     binary enumerators in <code>expr_kind</code>, without the
