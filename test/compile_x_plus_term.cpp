@@ -1,4 +1,5 @@
 #include <boost/yap/expression.hpp>
+#include <boost/yap/expression_free_operators.hpp>
 
 #include <string>
 

@@ -1,6 +1,8 @@
 #ifndef BOOST_YAP_EXPRESSION_FWD_HPP_INCLUDED
 #define BOOST_YAP_EXPRESSION_FWD_HPP_INCLUDED
 
+#include <boost/yap/config.hpp>
+
 #include <boost/hana/integral_constant.hpp>
 #include <boost/hana/tuple.hpp>
 

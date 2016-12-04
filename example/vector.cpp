@@ -1,4 +1,4 @@
-#include <boost/yap/expression.hpp>
+#include <boost/yap/yap.hpp>
 
 #include <vector>
 #include <iostream>
