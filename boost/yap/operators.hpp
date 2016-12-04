@@ -4,11 +4,7 @@
 
 namespace boost { namespace yap {
 
-#ifdef BOOST_YAP_DOXYGEN
-
-// TODO
-
-#else
+#ifndef BOOST_YAP_DOXYGEN
 
 #define BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(expr)                        \
     noexcept(noexcept(expr)) -> decltype(expr) { return expr; }
@@ -147,13 +143,13 @@ namespace boost { namespace yap {
         };
 
         template <typename F, typename ...T>
-        constexpr auto eval_call (F && f, T && ...t) BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(
+        constexpr auto eval_call (F && f, T && ... t) BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(
             static_cast<F &&>(f)(static_cast<T &&>(t)...)
         )
         struct eval_call_fn
         {
             template <typename F, typename ...T>
-            constexpr auto operator() (F && f, T && ...t) const BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(
+            constexpr auto operator() (F && f, T && ... t) const BOOST_YAP_NOEXCEPT_DECLTYPE_RETURN(
                 eval_call(static_cast<F &&>(f), static_cast<T &&>(t)...)
             )
         };
@@ -253,6 +249,104 @@ namespace boost { namespace yap {
         inline constexpr eval_subscript_fn eval_subscript{}; // []
         inline constexpr eval_if_else_fn eval_if_else{}; // (analogous to) ?:
         inline constexpr eval_call_fn eval_call{}; // ()
+
+    }
+
+#else // BOOST_YAP_DOXYGEN
+
+    namespace function_objects {
+
+        template <typename T>
+        constexpr auto eval_unary_plus (T && t);
+        template <typename T>
+        constexpr auto eval_negate (T && t);
+        template <typename T>
+        constexpr auto eval_dereference (T && t);
+        template <typename T>
+        constexpr auto eval_complement (T && t);
+        template <typename T>
+        constexpr auto eval_address_of (T && t);
+        template <typename T>
+        constexpr auto eval_logical_not (T && t);
+        template <typename T>
+        constexpr auto eval_pre_inc (T && t);
+        template <typename T>
+        constexpr auto eval_pre_dec (T && t);
+        template <typename T>
+        constexpr auto eval_post_inc (T && t);
+        template <typename T>
+        constexpr auto eval_post_dec (T && t);
+        template <typename T, typename U>
+        constexpr auto eval_shift_left (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_shift_right (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_multiplies (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_divides (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_modulus (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_plus (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_minus (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_less (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_greater (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_less_equal (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_greater_equal (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_equal_to (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_not_equal_to (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_logical_or (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_logical_and (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_bitwise_and (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_bitwise_or (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_bitwise_xor (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_comma (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_mem_ptr (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_shift_left_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_shift_right_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_multiplies_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_divides_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_modulus_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_plus_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_minus_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_bitwise_and_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_bitwise_or_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_bitwise_xor_assign (T && t, U && u);
+        template <typename T, typename U>
+        constexpr auto eval_subscript (T && t, U && u);
+        template <typename T, typename U, typename V>
+        constexpr auto eval_if_else (T && t, U && u, V && v);
+        template <typename F, typename ...T>
+        constexpr auto eval_call (F && f, T && ... t);
+
+        template <typename R, typename E, typename ...T>
+        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T && ... args);
 
     }
 
