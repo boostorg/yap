@@ -90,6 +90,7 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Reference expression template that provides all operator overloads. */
     template <expr_kind Kind, typename Tuple>
     struct expression
     {
@@ -98,44 +99,70 @@ namespace boost { namespace yap {
 
         static const expr_kind kind = Kind;
 
+        /** Default constructor.  Does nothing. */
         expression () {}
 
+        /** Moves \a rhs into the only data mamber, \c elements. */
         expression (tuple_type && rhs) :
             elements (std::move(rhs))
         {}
 
         tuple_type elements;
 
-#ifdef BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
+#if defined(BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE) || defined(BOOST_YAP_DOXYGEN)
+        /** Conversion operator.  Attempts to convert \c *this to any type \a
+            R with a call to the <code>eval_expression_as()</code>
+            customization point.  This function is only defined if the
+            configuration macro
+            <code>BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</code> has been
+            defined by the user. */ // TODO: customization points need documentation.
         template <typename R>
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
 #endif
 
+        /** A convenience member function that dispatches to the free function
+            <code>value()</code>. */
         decltype(auto) value () const &
         { return ::boost::yap::value(*this); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>value()</code>. */
         decltype(auto) value () &
         { return ::boost::yap::value(*this); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>value()</code>. */
         decltype(auto) value () &&
         { return ::boost::yap::value(std::move(*this)); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>left()</code>. */
         decltype(auto) left () const &
         { return ::boost::yap::left(*this); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>left()</code>. */
         decltype(auto) left () &
         { return ::boost::yap::left(*this); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>left()</code>. */
         decltype(auto) left () &&
         { return ::boost::yap::left(std::move(*this)); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>right()</code>. */
         decltype(auto) right () const &
         { return ::boost::yap::right(*this); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>right()</code>. */
         decltype(auto) right () &
         { return ::boost::yap::right(*this); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>right()</code>. */
         decltype(auto) right () &&
         { return ::boost::yap::right(std::move(*this)); }
 
@@ -204,9 +231,11 @@ namespace boost { namespace yap {
 
         BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::yap::expression)
 
-#endif
+#endif // BOOST_YAP_DOXYGEN
     };
 
+    /** Terminal expression specialization of the reference expression
+        template. */
     template <typename T>
     struct expression<expr_kind::terminal, hana::tuple<T>>
     {
@@ -215,30 +244,44 @@ namespace boost { namespace yap {
 
         static const expr_kind kind = expr_kind::terminal;
 
+        /** Default constructor.  Does nothing. */
         expression () {}
 
+        /** Forwards \a t into \c elements. */
         expression (T && t) :
             elements (static_cast<T &&>(t))
         {}
 
+        /** Moves \a rhs into the only data mamber, \c elements. */
         expression (hana::tuple<T> && rhs) :
             elements (std::move(rhs))
         {}
 
         tuple_type elements;
 
-#ifdef BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE
+#if defined(BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE) || defined(BOOST_YAP_DOXYGEN)
+        /** Conversion operator.  Attempts to convert \c *this to any type \a
+            R with a call to the <code>eval_expression_as()</code> point.
+            This function is only defined if the configuration macro
+            <code>BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</code> has been
+            defined by the user. */ // TODO
         template <typename R>
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
 #endif
 
+        /** A convenience member function that dispatches to the free function
+            <code>value()</code>. */
         decltype(auto) value () const &
         { return ::boost::yap::value(*this); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>value()</code>. */
         decltype(auto) value () &
         { return ::boost::yap::value(*this); }
 
+        /** A convenience member function that dispatches to the free function
+            <code>value()</code>. */
         decltype(auto) value () &&
         { return ::boost::yap::value(std::move(*this)); }
 
@@ -304,12 +347,16 @@ namespace boost { namespace yap {
 
         BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::yap::expression)
 
-#endif
+#endif // BOOST_YAP_DOXYGEN
     };
 
+    /** A convenience alias for a placeholder expression for placeholder \a
+        I.  Placeholders are 1-based. */
     template <long long I>
     using placeholder = expression<expr_kind::placeholder, hana::tuple<hana::llong<I>>>;
 
+    /** "Dereferences" a reference-expression, forwarding its referent to the
+        caller. */
     template <typename Expr>
     decltype(auto) deref (Expr && expr)
     {
@@ -334,6 +381,22 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Forwards the sole element of \a x to the caller, possibly calling
+        <code>deref()</code> first if \a x is a reference expression, or
+        forwards \a x to the caller unchanged.
+
+        More formally:
+
+        - If \a x is not an expression, \a x is forwarded to the caller.
+
+        - Otherwise, if \a x is a reference expression, the result is
+        <code>value(deref(x))</code>.
+
+        - Otherwise, if \a x is an expression with only one value (a unary
+        expression, a terminal expression, or a placeholder expression), the
+        result is the forwarded first element of \a x.
+
+        - Otherwise, \a x is forwarded to the caller. */
     template <typename T>
     decltype(auto) value (T && x)
     {
@@ -357,6 +420,12 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Forwards the <i>i</i>-th element of \a expr to the caller.  If \a expr
+        is a reference expression, the result is <code>get(deref(expr),
+        i)</code>.
+
+        \note <code>get()</code> is only valid if \a Expr is an expression.
+    */
     template <long long I, typename Expr>
     decltype(auto) get (Expr && expr, hana::llong<I> i)
     {
@@ -383,10 +452,16 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Returns <code>get(expr, boost::hana::llong_c<I>)</code>. */
     template <long long I, typename Expr>
     decltype(auto) get_c (Expr && expr)
     { return ::boost::yap::get(static_cast<Expr &&>(expr), hana::llong_c<I>); }
 
+    /** Returns <code>get(expr, 0_c)</code>.
+
+        \note <code>left()</code> is only valid if \a Expr is a binary
+        operator expression.
+    */
     template <typename Expr>
     decltype(auto) left (Expr && expr)
     {
@@ -401,6 +476,11 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Returns <code>get(expr, 1_c)</code>.
+
+        \note <code>right()</code> is only valid if \a Expr is a binary
+        operator expression.
+    */
     template <typename Expr>
     decltype(auto) right (Expr && expr)
     {
@@ -415,6 +495,11 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Returns <code>get(expr, 0_c)</code>.
+
+        \note <code>cond()</code> is only valid if \a Expr is an
+        <code>expr_kind::if_else</code> expression.
+    */
     template <typename Expr>
     decltype(auto) cond (Expr && expr)
     {
@@ -429,6 +514,11 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Returns <code>get(expr, 1_c)</code>.
+
+        \note <code>then()</code> is only valid if \a Expr is an
+        <code>expr_kind::if_else</code> expression.
+    */
     template <typename Expr>
     decltype(auto) then (Expr && expr)
     {
@@ -443,6 +533,11 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Returns <code>get(expr, 2_c)</code>.
+
+        \note <code>else_()</code> is only valid if \a Expr is an
+        <code>expr_kind::if_else</code> expression.
+    */
     template <typename Expr>
     decltype(auto) else_ (Expr && expr)
     {
@@ -457,6 +552,11 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Returns <code>get(expr, i)</code>.
+
+        \note <code>argument()</code> is only valid if \a Expr is an
+        <code>expr_kind::call</code> expression.
+    */
     template <long long I, typename Expr>
     decltype(auto) argument (Expr && expr, hana::llong<I> i)
     {
@@ -480,6 +580,8 @@ namespace boost { namespace yap {
     // TODO
 
 #else
+
+#ifndef BOOST_YAP_NO_FREE_OPERATORS_FOR_EXPRESSION
 
 #define BOOST_YAP_BINARY_FREE_OPERATOR(op_name)                     \
     BOOST_YAP_USER_FREE_BINARY_OPERATOR(op_name, expression)
@@ -505,13 +607,33 @@ namespace boost { namespace yap {
 
 #undef BOOST_YAP_BINARY_FREE_OPERATOR
 
+#endif
+
+#ifndef BOOST_YAP_NO_EXPR_IF_ELSE_FOR_EXPRESSION
+
     BOOST_YAP_USER_EXPR_IF_ELSE(::boost::yap::expression)
 
 #endif
 
+#endif // BOOST_YAP_DOXYGEN
+
+    /** Makes a new expression instantiated from the expression template \a
+        ExprTemplate, of kind \a Kind, with the given values as its elements.
+
+        For each parameter P:
+
+        - If P is an expression, P is moved into the result if P is an rvalue
+        and captured by reference into the result otherwise.
+
+        - Otherwise, P is wrapped in a terminal expression.
+
+        \note <code>make_expression()</code> is only valid if the number of
+        parameters passed is appropriate for \a Kind.
+    */
     template <template <expr_kind, class> class ExprTemplate, expr_kind Kind, typename ...T>
     auto make_expression (T &&... t)
     {
+        // TODO: Check arity!
         using tuple_type = hana::tuple<detail::operand_type_t<ExprTemplate, T>...>;
         return ExprTemplate<Kind, tuple_type>{
             tuple_type{
@@ -520,10 +642,17 @@ namespace boost { namespace yap {
         };
     }
 
+    /** Returns <code>make_expression<boost::yap::expression, Kind>(...)</code>. */
     template <expr_kind Kind, typename ...T>
     auto make_expression (T &&... t)
     { return make_expression<expression, Kind>(static_cast<T &&>(t)...); }
 
+    /** Makes a new terminal expression instantiated from the expression
+        template \a ExprTemplate, with the given value as its sole element.
+
+        \note <code>make_terminal()</code> is only valid if \a T is \b not an
+        expression.
+    */
     template <template <expr_kind, class> class ExprTemplate, typename T>
     auto make_terminal (T && t)
     {
@@ -536,10 +665,17 @@ namespace boost { namespace yap {
         return result_type{tuple_type{static_cast<T &&>(t)}};
     }
 
+    /** Returns <code>make_terminal<boost::yap::expression>(t)</code>. */
     template <typename T>
     auto make_terminal (T && t)
     { return make_terminal<expression>(static_cast<T &&>(t)); }
 
+    /** Returns an expression formed from \a t as follows:
+
+        - If \a t is an expression, \a t is forwarded to the caller.
+
+        - Otherwise, \a t is wrapped in a terminal expression.
+    */
     template <template <expr_kind, class> class ExprTemplate, typename T>
     decltype(auto) as_expr (T && t)
     {
@@ -550,10 +686,15 @@ namespace boost { namespace yap {
         }
     }
 
+    /** Returns <code>as_expr<boost::yap::expression>(t)</code>. */
     template <typename T>
     decltype(auto) as_expr (T && t)
     { return as_expr<expression>(static_cast<T &&>(t)); }
 
+    /** A callable type that evaluates its contained expression when called.
+
+        \see <code>make_expression_function()</code>
+    */
     template <typename Expr>
     struct expression_function
     {
@@ -564,6 +705,12 @@ namespace boost { namespace yap {
         Expr expr;
     };
 
+    /** Returns a callable object that \a expr has been moved into.  This is
+        useful for using expressions as function objects.
+
+        \note <code>make_expression_function()</code> is only valid if \a
+        Expr is an expression.
+    */
     template <typename Expr>
     auto make_expression_function (Expr && expr)
     {
@@ -580,6 +727,12 @@ namespace boost { namespace yap {
 
 namespace boost { namespace yap {
 
+    /** Evaluates \a expr, substituting the subsequent parameters (if any)
+        into \a expr's placeholders.
+
+        \note <code>evaluate()</code> is only valid if \a Expr is an
+        expression.
+    */
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr && expr, T && ...t)
     {
@@ -590,6 +743,16 @@ namespace boost { namespace yap {
         return detail::default_eval_expr(static_cast<Expr &&>(expr), static_cast<T &&>(t)...);
     }
 
+    /** Evaluates \a expr, substituting the subsequent parameters (if any)
+        into \a expr's placeholders.  Evaluation is performed via the
+        <code>eval_expression_as()</code> customization point.
+
+        Prefer this function to <code>evaluate()</code> when you want
+        evaluation to differ based on the result type.
+
+        \note <code>evaluate()</code> is only valid if \a Expr is an
+        expression.
+    */
     template <typename R, typename Expr, typename ...T>
     decltype(auto) evaluate_as (Expr && expr, T && ...t)
     {
@@ -600,6 +763,7 @@ namespace boost { namespace yap {
         return eval_expression_as(static_cast<Expr &&>(expr), hana::basic_type<R>{}, static_cast<T &&>(t)...);
     }
 
+    /** TODO */
     template <typename Expr, typename Transform>
     decltype(auto) transform (Expr && expr, Transform && transform)
     {
