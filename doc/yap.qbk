@@ -34,8 +34,8 @@
 
 [def _expression_                       [classref boost::yap::expression `expression<>`]]
 
-[/ include intro.qbk]
-
-TODO: Write docs!
+[include intro.qbk]
+[include manual.qbk]
+[include concepts.qbk]
 
 [xinclude yap_reference.xml]
