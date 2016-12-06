@@ -6,13 +6,13 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
 
 template <typename T>
-using term_ref = boost::yap::expression_ref<boost::yap::terminal<T> &>;
+using term_ref = boost::yap::expression_ref<boost::yap::expression, term<T> &>;
 
 template <typename T>
-using term_cref = boost::yap::expression_ref<boost::yap::terminal<T> const &>;
+using term_cref = boost::yap::expression_ref<boost::yap::expression, term<T> const &>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;

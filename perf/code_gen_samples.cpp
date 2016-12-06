@@ -3,7 +3,7 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;

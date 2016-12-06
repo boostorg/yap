@@ -5,7 +5,10 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -22,7 +25,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<char const *>,
-                yap::expression_ref <term<double>&>
+                ref <term<double>&>
             >
         > unevaluated_expr = "3" + unity;
         (void)unevaluated_expr;
@@ -35,7 +38,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<std::string>,
-                yap::expression_ref<term<double> const &>
+                ref<term<double> const &>
             >
         > unevaluated_expr = "3"s + unity;
         (void)unevaluated_expr;
@@ -49,7 +52,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int *>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = ints + unity;
         (void)unevaluated_expr;
@@ -62,7 +65,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int const *>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = ints + unity;
         (void)unevaluated_expr;
@@ -75,7 +78,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int *>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = std::move(ints) + unity;
         (void)unevaluated_expr;
@@ -90,7 +93,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int * &>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = int_ptr + unity;
         (void)unevaluated_expr;
@@ -104,7 +107,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int const * &>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = int_ptr + unity;
         (void)unevaluated_expr;
@@ -118,7 +121,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int *>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = std::move(int_ptr) + unity;
         (void)unevaluated_expr;
@@ -133,7 +136,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int * const &>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = int_ptr + unity;
         (void)unevaluated_expr;
@@ -147,7 +150,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int const * const &>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = int_ptr + unity;
         (void)unevaluated_expr;
@@ -161,7 +164,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int * const>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = std::move(int_ptr) + unity;
         (void)unevaluated_expr;
@@ -175,7 +178,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int &>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = i + unity;
         (void)unevaluated_expr;
@@ -188,7 +191,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int const &>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = i + unity;
         (void)unevaluated_expr;
@@ -201,7 +204,7 @@ void compile_x_plus_term ()
             yap::expr_kind::plus,
             bh::tuple<
                 term<int>,
-                yap::expression_ref<term<double> &>
+                ref<term<double> &>
             >
         > unevaluated_expr = std::move(i) + unity;
         (void)unevaluated_expr;

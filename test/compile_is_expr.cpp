@@ -1,5 +1,6 @@
 #include <boost/yap/expression.hpp>
 
+
 namespace yap = boost::yap;
 
 struct alternate_expr_1
@@ -58,21 +59,21 @@ void compile_is_expr ()
     static_assert(
         yap::detail::is_hana_tuple<
             yap::detail::remove_cv_ref_t<
-                decltype(std::declval<yap::terminal<double>>().elements)
+                decltype(std::declval<yap::terminal<yap::expression, double>>().elements)
             >
         >::value
     );
 
-    static_assert(yap::detail::is_expr<yap::terminal<double>>::value);
+    static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double>>::value);
 
-    static_assert(yap::detail::is_expr<yap::terminal<double> const>::value);
-    static_assert(yap::detail::is_expr<yap::terminal<double> const &>::value);
-    static_assert(yap::detail::is_expr<yap::terminal<double> &>::value);
-    static_assert(yap::detail::is_expr<yap::terminal<double> &&>::value);
+    static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double> const>::value);
+    static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double> const &>::value);
+    static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double> &>::value);
+    static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double> &&>::value);
 
     static_assert(yap::detail::is_expr<yap::placeholder<1>>::value);
-    static_assert(yap::detail::is_expr<yap::expression<yap::expr_kind::unary_plus, boost::hana::tuple<yap::terminal<double>>>>::value);
-    static_assert(yap::detail::is_expr<yap::expression<yap::expr_kind::plus, boost::hana::tuple<yap::terminal<double>, yap::terminal<double>>>>::value);
+    static_assert(yap::detail::is_expr<yap::expression<yap::expr_kind::unary_plus, boost::hana::tuple<yap::terminal<yap::expression, double>>>>::value);
+    static_assert(yap::detail::is_expr<yap::expression<yap::expr_kind::plus, boost::hana::tuple<yap::terminal<yap::expression, double>, yap::terminal<yap::expression, double>>>>::value);
 
     static_assert(yap::detail::is_expr<alternate_expr_1>::value);
     static_assert(yap::detail::is_expr<alternate_expr_2>::value);

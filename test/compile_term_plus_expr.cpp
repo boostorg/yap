@@ -1,7 +1,11 @@
 #include <boost/yap/expression.hpp>
 
+
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -16,19 +20,19 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<term<int> &>
+                ref<term<double> &>,
+                ref<term<int> &>
             >
         > expr = unity + i;
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<yap::expression<
+                ref<term<double> &>,
+                ref<yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
-                        yap::expression_ref<term<int> &>
+                        ref<term<double> &>,
+                        ref<term<int> &>
                     >
                 > &>
             >
@@ -42,19 +46,19 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<term<int const> &>
+                ref<term<double> &>,
+                ref<term<int const> &>
             >
         > expr = unity + i;
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<yap::expression<
+                ref<term<double> &>,
+                ref<yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
-                        yap::expression_ref<term<int const> &>
+                        ref<term<double> &>,
+                        ref<term<int const> &>
                     >
                 > &>
             >
@@ -68,18 +72,18 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 term<int>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<yap::expression<
+                ref<term<double> &>,
+                ref<yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
+                        ref<term<double> &>,
                         term<int>
                     >
                 > &>
@@ -95,19 +99,19 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<term<int> const &>
+                ref<term<double> &>,
+                ref<term<int> const &>
             >
         > const expr = unity + i;
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<yap::expression<
+                ref<term<double> &>,
+                ref<yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
-                        yap::expression_ref<term<int> const &>
+                        ref<term<double> &>,
+                        ref<term<int> const &>
                     >
                 > const &>
             >
@@ -121,19 +125,19 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<term<int> &>
+                ref<term<double> &>,
+                ref<term<int> &>
             >
         > const expr = unity + i;
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<yap::expression<
+                ref<term<double> &>,
+                ref<yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
-                        yap::expression_ref<term<int> &>
+                        ref<term<double> &>,
+                        ref<term<int> &>
                     >
                 > const &>
             >
@@ -149,19 +153,19 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<term<int &> &>
+                ref<term<double> &>,
+                ref<term<int &> &>
             >
         > expr = unity + i;
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<yap::expression<
+                ref<term<double> &>,
+                ref<yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
-                        yap::expression_ref<term<int &> &>
+                        ref<term<double> &>,
+                        ref<term<int &> &>
                     >
                 > &>
             >
@@ -176,19 +180,19 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<term<int const &> &>
+                ref<term<double> &>,
+                ref<term<int const &> &>
             >
         > expr = unity + i;
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<yap::expression<
+                ref<term<double> &>,
+                ref<yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
-                        yap::expression_ref<term<int const &> &>
+                        ref<term<double> &>,
+                        ref<term<int const &> &>
                     >
                 > &>
             >
@@ -203,18 +207,18 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 term<int &>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<yap::expression<
+                ref<term<double> &>,
+                ref<yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
+                        ref<term<double> &>,
                         term<int &>
                     >
                 > &>
@@ -230,19 +234,19 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<term<int &> &>
+                ref<term<double> &>,
+                ref<term<int &> &>
             >
         > expr = unity + i;
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
-                        yap::expression_ref<term<int &> &>
+                        ref<term<double> &>,
+                        ref<term<int &> &>
                     >
                 >
             >
@@ -257,19 +261,19 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
-                yap::expression_ref<term<int const &> &>
+                ref<term<double> &>,
+                ref<term<int const &> &>
             >
         > expr = unity + i;
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
-                        yap::expression_ref<term<int const &> &>
+                        ref<term<double> &>,
+                        ref<term<int const &> &>
                     >
                 >
             >
@@ -284,18 +288,18 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 term<int &>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
+                        ref<term<double> &>,
                         term<int &>
                     >
                 >
@@ -312,18 +316,18 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
+                        ref<term<double> &>,
                         term<int &&>
                     >
                 >
@@ -339,18 +343,18 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
+                        ref<term<double> &>,
                         term<int &&>
                     >
                 >
@@ -366,18 +370,18 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
+                        ref<term<double> &>,
                         term<int &&>
                     >
                 >
@@ -393,18 +397,18 @@ void compile_term_plus_expr ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
+                        ref<term<double> &>,
                         term<int &&>
                     >
                 >

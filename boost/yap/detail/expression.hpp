@@ -97,7 +97,7 @@ namespace boost { namespace yap {
 
         template <template <expr_kind, class> class ExprTemplate, typename T>
         struct expr_ref
-        { using type = expression_ref<T, ExprTemplate>; };
+        { using type = expression_ref<ExprTemplate, T>; };
 
         template <template <expr_kind, class> class ExprTemplate, typename Tuple>
         struct expr_ref<ExprTemplate, ExprTemplate<expr_kind::expr_ref, Tuple> &>
@@ -147,11 +147,11 @@ namespace boost { namespace yap {
 
         template <template <expr_kind, class> class ExprTemplate, typename T, typename U, bool IsLRef>
         struct operand_type<ExprTemplate, T, U, true, false, IsLRef>
-        { using type = terminal<std::remove_reference_t<U>, ExprTemplate>; };
+        { using type = terminal<ExprTemplate, std::remove_reference_t<U>>; };
 
         template <template <expr_kind, class> class ExprTemplate, typename T, typename U, bool IsLRef>
         struct operand_type<ExprTemplate, T, U, false, false, IsLRef>
-        { using type = terminal<U, ExprTemplate>; };
+        { using type = terminal<ExprTemplate, U>; };
 
         template <template <expr_kind, class> class ExprTemplate, typename T>
         using operand_type_t = typename operand_type<ExprTemplate, T>::type;

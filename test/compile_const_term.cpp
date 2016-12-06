@@ -1,7 +1,11 @@
 #include <boost/yap/expression.hpp>
 
+
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -16,18 +20,18 @@ void compile_const_term ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double const> &>,
+                ref<term<double const> &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double const> &>,
+                ref<term<double const> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double const> &>,
+                        ref<term<double const> &>,
                         term<int &&>
                     >
                 >
@@ -43,18 +47,18 @@ void compile_const_term ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> const &>,
+                ref<term<double> const &>,
                 term<int &&>
             >
         > expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> const &>,
+                ref<term<double> const &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> const &>,
+                        ref<term<double> const &>,
                         term<int &&>
                     >
                 >
@@ -70,18 +74,18 @@ void compile_const_term ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 term<int const &>
             >
         > const expr = unity + std::move(i);
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> &>,
+                ref<term<double> &>,
                 yap::expression<
                     yap::expr_kind::plus,
                     bh::tuple<
-                        yap::expression_ref<term<double> &>,
+                        ref<term<double> &>,
                         term<int const &>
                     >
                 >

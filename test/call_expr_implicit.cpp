@@ -7,7 +7,10 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -171,7 +174,7 @@ TEST(call_expr, test_call_expr)
             yap::expression<
                 yap::expr_kind::call,
                 bh::tuple<
-                    yap::expression_ref<term<decltype(min_lambda)>& >,
+                    ref<term<decltype(min_lambda)>& >,
                     term<int>,
                     term<int>
                 >
@@ -200,7 +203,7 @@ TEST(call_expr, test_call_expr)
             yap::expression<
                 yap::expr_kind::call,
                 bh::tuple<
-                    yap::expression_ref<term<user::tag_type>& >,
+                    ref<term<user::tag_type>& >,
                     term<int>,
                     term<int>
                 >

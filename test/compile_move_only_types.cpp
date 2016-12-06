@@ -2,8 +2,12 @@
 
 #include <memory>
 
+
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -19,7 +23,7 @@ void compile_move_only_types ()
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<double> &>,
+            ref<term<double> &>,
             term<std::unique_ptr<int>>
         >
     > expr_1 = unity + std::move(i);
@@ -27,11 +31,11 @@ void compile_move_only_types ()
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<double> &>,
+            ref<term<double> &>,
             yap::expression<
                 yap::expr_kind::plus,
                 bh::tuple<
-                    yap::expression_ref<term<double> &>,
+                    ref<term<double> &>,
                     term<std::unique_ptr<int>>
                 >
             >

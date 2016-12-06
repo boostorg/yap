@@ -80,12 +80,12 @@ namespace boost { namespace yap {
 
     /** A convenience alias for a terminal expression holding a \a T,
         instantiated from expression template \a expr_template. */
-    template <typename T, template <expr_kind, class> class expr_template = expression>
+    template <template <expr_kind, class> class expr_template, typename T>
     using terminal = expr_template<expr_kind::terminal, hana::tuple<T>>;
 
     /** A convenience alias for a reference expression holding an expression
         \a T, instantiated from expression template \a expr_template. */
-    template <typename T, template <expr_kind, class> class expr_template = expression>
+    template <template <expr_kind, class> class expr_template, typename T>
     using expression_ref = expr_template<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
 
 #endif // BOOST_YAP_DOXYGEN

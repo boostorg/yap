@@ -6,7 +6,10 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -22,18 +25,18 @@ TEST(placeholder_eval, test_placeholder_eval)
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<yap::placeholder<3> &>,
+            ref<yap::placeholder<3> &>,
             term<int>
         >
     > expr = p3 + std::move(i);
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<yap::placeholder<3> &>,
+            ref<yap::placeholder<3> &>,
             yap::expression<
                 yap::expr_kind::plus,
                 bh::tuple<
-                    yap::expression_ref<yap::placeholder<3> &>,
+                    ref<yap::placeholder<3> &>,
                     term<int>
                 >
             >

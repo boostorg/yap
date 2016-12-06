@@ -1,7 +1,11 @@
 #include <boost/yap/expression.hpp>
 
+
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -22,8 +26,8 @@ void compile_placeholders ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<yap::placeholder<1> &>,
-                yap::expression_ref<term<double> &>
+                ref<yap::placeholder<1> &>,
+                ref<term<double> &>
             >
         > expr = p1 + unity;
         (void)expr;
@@ -34,7 +38,7 @@ void compile_placeholders ()
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<yap::placeholder<1> &>,
+                ref<yap::placeholder<1> &>,
                 yap::placeholder<2>
             >
         > expr = p1 + 2_p;

@@ -6,7 +6,10 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -52,7 +55,7 @@ namespace user {
             yap::expression<
                 yap::expr_kind::call,
                 bh::tuple<
-                    yap::expression_ref<term<user::tag_type> >,
+                    ref<term<user::tag_type> >,
                     term<user::number>,
                     term<int>
                 >
@@ -69,8 +72,8 @@ namespace user {
             yap::expression<
                 yap::expr_kind::call,
                 bh::tuple<
-                    yap::expression_ref<term<user::tag_type> >,
-                    yap::expression_ref<term<user::number>>,
+                    ref<term<user::tag_type> >,
+                    ref<term<user::number>>,
                     term<int>
                 >
             > const & expr
@@ -99,7 +102,7 @@ namespace user {
             yap::expression<
                 yap::expr_kind::call,
                 bh::tuple<
-                    yap::expression_ref<term<user::tag_type> >,
+                    ref<term<user::tag_type> >,
                     term<user::number>,
                     term<int>
                 >
@@ -116,8 +119,8 @@ namespace user {
             yap::expression<
                 yap::expr_kind::call,
                 bh::tuple<
-                    yap::expression_ref<term<user::tag_type> >,
-                    yap::expression_ref<term<user::number>>,
+                    ref<term<user::tag_type> >,
+                    ref<term<user::number>>,
                     term<int>
                 >
             > const & expr

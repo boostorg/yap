@@ -13,8 +13,8 @@ struct lazy_vector_expr;
 
 struct take_nth
 {
-    boost::yap::terminal<double, lazy_vector_expr>
-    operator() (boost::yap::terminal<std::vector<double>, lazy_vector_expr> const & expr);
+    boost::yap::terminal<lazy_vector_expr, double>
+    operator() (boost::yap::terminal<lazy_vector_expr, std::vector<double>> const & expr);
 
     std::size_t n;
 };
@@ -36,8 +36,8 @@ struct lazy_vector_expr
 
 };
 
-boost::yap::terminal<double, lazy_vector_expr>
-take_nth::operator() (boost::yap::terminal<std::vector<double>, lazy_vector_expr> const & expr)
+boost::yap::terminal<lazy_vector_expr, double>
+take_nth::operator() (boost::yap::terminal<lazy_vector_expr, std::vector<double>> const & expr)
 {
     double x = boost::yap::value(expr)[n];
     return boost::yap::make_terminal<lazy_vector_expr, double>(std::move(x));

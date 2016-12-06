@@ -6,7 +6,10 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -117,11 +120,11 @@ namespace user {
                 yap::expression<
                     yap::expr_kind::multiplies,
                     bh::tuple<
-                        yap::expression_ref<term<user::number> &>,
-                        yap::expression_ref<term<user::number> &>
+                        ref<term<user::number> &>,
+                        ref<term<user::number> &>
                     >
                 >,
-                yap::expression_ref<term<user::number> &>
+                ref<term<user::number> &>
             >
         > const & expr
     ) {
@@ -138,11 +141,11 @@ namespace user {
                 yap::expression<
                     yap::expr_kind::multiplies,
                     bh::tuple<
-                        yap::expression_ref<term<user::number> &>,
-                        yap::expression_ref<term<user::number> &>
+                        ref<term<user::number> &>,
+                        ref<term<user::number> &>
                     >
                 >,
-                yap::expression_ref<term<user::number> &>
+                ref<term<user::number> &>
             >
         > const & expr
     ) {
@@ -397,7 +400,7 @@ TEST(move_only, test_user_expression_transform_3)
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<double> &>,
+            ref<term<double> &>,
             term<std::unique_ptr<int>>
         >
     > expr_1 = unity + std::move(i);
@@ -405,11 +408,11 @@ TEST(move_only, test_user_expression_transform_3)
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<double> &>,
+            ref<term<double> &>,
             yap::expression<
                 yap::expr_kind::plus,
                 bh::tuple<
-                    yap::expression_ref<term<double> &>,
+                    ref<term<double> &>,
                     term<std::unique_ptr<int>>
                 >
             >

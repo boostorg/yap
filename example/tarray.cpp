@@ -10,8 +10,8 @@ struct tarray_expr;
 
 struct take_nth
 {
-    boost::yap::terminal<int, tarray_expr>
-    operator() (boost::yap::terminal<std::array<int, 3>, tarray_expr> const & expr);
+    boost::yap::terminal<tarray_expr, int>
+    operator() (boost::yap::terminal<tarray_expr, std::array<int, 3>> const & expr);
 
     std::size_t n;
 };
@@ -48,18 +48,18 @@ BOOST_YAP_USER_FREE_BINARY_OPERATOR(multiplies, ::tarray_expr)
 BOOST_YAP_USER_FREE_BINARY_OPERATOR(divides, ::tarray_expr)
 
 
-boost::yap::terminal<int, tarray_expr>
-take_nth::operator() (boost::yap::terminal<std::array<int, 3>, tarray_expr> const & expr)
+boost::yap::terminal<tarray_expr, int>
+take_nth::operator() (boost::yap::terminal<tarray_expr, std::array<int, 3>> const & expr)
 {
     int x = boost::yap::value(expr)[n];
     return boost::yap::make_terminal<tarray_expr>(std::move(x));
 }
 
 
-std::ostream & operator<< (std::ostream & os, boost::yap::terminal<int, tarray_expr> expr)
+std::ostream & operator<< (std::ostream & os, boost::yap::terminal<tarray_expr, int> expr)
 { return os << '{' << boost::yap::value(expr) << '}'; }
 
-std::ostream & operator<< (std::ostream & os, boost::yap::terminal<std::array<int, 3>, tarray_expr> expr)
+std::ostream & operator<< (std::ostream & os, boost::yap::terminal<tarray_expr, std::array<int, 3>> expr)
 {
     std::array<int, 3> const & a = boost::yap::value(expr);
     return os << '{' << a[0] << ", " << a[1] << ", " << a[2] << '}';

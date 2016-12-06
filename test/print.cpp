@@ -7,7 +7,10 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -26,10 +29,10 @@ struct user_expr
 };
 
 template <typename T>
-using user_term = boost::yap::terminal<T, user_expr>;
+using user_term = boost::yap::terminal<user_expr, T>;
 
 template <typename T>
-using user_ref = boost::yap::expression_ref<T, user_expr>;
+using user_ref = boost::yap::expression_ref<user_expr, T>;
 
 struct thing {};
 
@@ -41,18 +44,18 @@ TEST(expression, test_print)
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<double> &>,
+            ref<term<double> &>,
             term<int &&>
         >
     > expr = unity + std::move(i);
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<double> &>,
+            ref<term<double> &>,
             yap::expression<
                 yap::expr_kind::plus,
                 bh::tuple<
-                    yap::expression_ref<term<double> &>,
+                    ref<term<double> &>,
                     term<int &&>
                 >
             >
@@ -99,8 +102,8 @@ TEST(expression, test_print)
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<double> &>,
-            yap::expression_ref<term<double> const &>
+            ref<term<double> &>,
+            ref<term<double> const &>
         >
     > nonconst_plus_const = unity + const_unity;
 

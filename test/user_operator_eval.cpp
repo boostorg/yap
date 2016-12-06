@@ -5,7 +5,10 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -35,18 +38,18 @@ TEST(user_operator_eval, test_user_operator_eval)
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<user::number>& >,
+            ref<term<user::number>& >,
             term<user::number>
         >
     > expr = unity + std::move(i);
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<user::number>& >,
+            ref<term<user::number>& >,
             yap::expression<
                 yap::expr_kind::plus,
                 bh::tuple<
-                    yap::expression_ref<term<user::number>& >,
+                    ref<term<user::number>& >,
                     term<user::number>
                 >
             >

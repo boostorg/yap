@@ -4,7 +4,10 @@
 
 
 template <typename T>
-using term = boost::yap::terminal<T>;
+using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template <typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -23,10 +26,10 @@ struct user_expr
 };
 
 template <typename T>
-using user_term = boost::yap::terminal<T, user_expr>;
+using user_term = boost::yap::terminal<user_expr, T>;
 
 template <typename T>
-using user_ref = boost::yap::expression_ref<T, user_expr>;
+using user_ref = boost::yap::expression_ref<user_expr, T>;
 
 
 TEST(builtin, test_value)
@@ -73,24 +76,24 @@ TEST(expression, test_value)
     using plus_expr_type = yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            yap::expression_ref<term<double> &>,
+            ref<term<double> &>,
             term<int>
         >
     >;
     plus_expr_type plus_expr = unity + term<int>{{1}};
 
     {
-        yap::expression_ref<term<double> &> ref = bh::front(plus_expr.elements);
+        ref<term<double> &> ref = bh::front(plus_expr.elements);
         EXPECT_TRUE((std::is_same<decltype(yap::value(std::move(ref))), double &>::value));
     }
 
     {
-        yap::expression_ref<term<double> &> ref = bh::front(plus_expr.elements);
+        ref<term<double> &> ref = bh::front(plus_expr.elements);
         EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double &>::value));
     }
 
     {
-        yap::expression_ref<term<double> &> const ref = bh::front(plus_expr.elements);
+        ref<term<double> &> const ref = bh::front(plus_expr.elements);
         EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double &>::value));
     }
 
@@ -99,23 +102,23 @@ TEST(expression, test_value)
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<
-                yap::expression_ref<term<double> const &>,
+                ref<term<double> const &>,
                 term<int>
             >
         > plus_expr = unity + term<int>{{1}};
 
         {
-            yap::expression_ref<term<double> const &> ref = bh::front(plus_expr.elements);
+            ref<term<double> const &> ref = bh::front(plus_expr.elements);
             EXPECT_TRUE((std::is_same<decltype(yap::value(std::move(ref))), double const &>::value));
         }
 
         {
-            yap::expression_ref<term<double> const &> ref = bh::front(plus_expr.elements);
+            ref<term<double> const &> ref = bh::front(plus_expr.elements);
             EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double const &>::value));
         }
 
         {
-            yap::expression_ref<term<double> const &> const ref = bh::front(plus_expr.elements);
+            ref<term<double> const &> const ref = bh::front(plus_expr.elements);
             EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double const &>::value));
         }
     }
