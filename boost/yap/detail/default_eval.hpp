@@ -142,7 +142,7 @@ namespace boost { namespace yap {
 #undef BOOST_YAP_BINARY_OPERATOR_CASE
 
             else if constexpr (kind == expr_kind::call) {
-                auto expand_args = [&](auto && element) {
+                decltype(auto) expand_args = [&](auto && element) {
                     return default_eval_expr(
                         static_cast<decltype(element) &&>(element),
                         static_cast<T &&>(args)...
@@ -163,12 +163,12 @@ namespace boost { namespace yap {
         }
 
         template <typename Expr, typename Tuple, typename Transform>
-        auto transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform);
+        decltype(auto) transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform);
 
         template <typename Expr, typename Transform, expr_arity Arity, typename = std::void_t<>>
         struct default_transform_expression
         {
-            auto operator() (Expr && expr, Transform && transform)
+            decltype(auto) operator() (Expr && expr, Transform && transform)
             {
                 constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
                 if constexpr (kind == expr_kind::expr_ref) {
@@ -348,7 +348,7 @@ namespace boost { namespace yap {
         { return ExprTemplate<Kind, NewTuple>{std::move(tuple)}; }
 
         template <typename Expr, typename Tuple, typename Transform>
-        auto transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform)
+        decltype(auto) transform_nonterminal (Expr const & expr, Tuple && tuple, Transform && transform)
         {
             auto transformed_tuple = hana::transform(
                 static_cast<Tuple &&>(tuple),
