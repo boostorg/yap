@@ -923,9 +923,9 @@ namespace boost { namespace yap {
         Prefer this function to <code>evaluate()</code> when you want
         evaluation to differ based on the result type.
 
-        All customization points for the evaluation of expressions \b except
-        <code>eval_expression_as()</code> are used to evaluate the \a expr.
-        If you've overridden any, that will be reflected in the result.
+        All customization points for the evaluation of expressions are used to
+        evaluate the \a expr.  If you've overridden any, that will be
+        reflected in the result.
 
         \note <code>evaluate()</code> is only valid if \a Expr is an
         expression, and <code>max_p <= sizeof...(T)</code>, where
