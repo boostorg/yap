@@ -33,6 +33,17 @@
 [/ Links ]
 
 [def _expression_                       [classref boost::yap::expression `expression<>`]]
+[def _kind_                             [enumref boost::yap::expr_kind `expr_kind`]]
+[def _xform_                            [funcref boost::yap::transform `transform()`]]
+[def _tuple_                            `boost::hana::tuple<>`]
+
+[def _Expr_                             [link yap.concepts Expression]]
+[def _ExprTmpl_                         [link yap.concepts ExpressionTemplate]]
+[def _XForm_                            [link yap.concepts Transform]]
+[def _ExprXForm_                        [link yap.concepts ExpressionTransform]]
+[def _TagXForm_                         [link yap.concepts TagTransform]]
+
+[def _yap_                              Boost.YAP]
 
 [include intro.qbk]
 [include manual.qbk]
