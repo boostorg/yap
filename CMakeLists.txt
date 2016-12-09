@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.5)
 
 find_package(Boost 1.62.0)
 if (Boost_INCLUDE_DIRS)
