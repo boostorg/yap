@@ -13,7 +13,9 @@ macro(add_test_executable name)
     add_executable(${name} ${name}.cpp)
     target_link_libraries(${name} gtest gtest_main)
     add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name} --gtest_catch_exceptions=1)
-    target_link_libraries(${name} c++)
+    if (clang_on_linux)
+        target_link_libraries(${name} c++)
+    endif ()
 endmacro()
 
 add_test_executable(deref)
@@ -53,4 +55,6 @@ add_executable(
     compile_move_only_types.cpp
     compile_copy_only_types.cpp
 )
-target_link_libraries(compile_tests c++)
+if (clang_on_linux)
+    target_link_libraries(compile_tests c++)
+endif ()

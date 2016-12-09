@@ -5,7 +5,9 @@ include_directories(${CMAKE_HOME_DIRECTORY})
 
 macro(add_code_gen_executable name)
     add_executable(${name} ${name}.cpp)
-    target_link_libraries(${name} c++)
+    if (clang_on_linux)
+        target_link_libraries(${name} c++)
+    endif ()
 endmacro()
 
 add_code_gen_executable(code_gen_samples)
