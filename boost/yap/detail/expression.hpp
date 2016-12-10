@@ -6,6 +6,7 @@
 #include <boost/hana/tuple.hpp>
 #include <boost/hana/size.hpp>
 
+#include <memory>
 #include <type_traits>
 
 
