@@ -24,11 +24,11 @@
 
 [/ Images ]
 
-[def __note__                       [$images/note.png]]
-[def __tip__                        [$images/tip.png]]
-[def __important__                  [$images/important.png]]
-[def __caution__                    [$images/caution.png]]
-[def __warning__                    [$images/warning.png]]
+[def __note__                           [$images/note.png]]
+[def __tip__                            [$images/tip.png]]
+[def __important__                      [$images/important.png]]
+[def __caution__                        [$images/caution.png]]
+[def __warning__                        [$images/warning.png]]
 
 [/ Links ]
 
@@ -39,11 +39,20 @@
 
 [def _Expr_                             [link yap.concepts Expression]]
 [def _ExprTmpl_                         [link yap.concepts ExpressionTemplate]]
+[def _ExprTmpls_                        [link yap.concepts ExpressionTemplate]s]
 [def _XForm_                            [link yap.concepts Transform]]
 [def _ExprXForm_                        [link yap.concepts ExpressionTransform]]
 [def _TagXForm_                         [link yap.concepts TagTransform]]
 
 [def _yap_                              Boost.YAP]
+
+[def _spirit_                           [@http://boost-spirit.com Boost.Spirit]]
+[def _eigen_                            [@http://eigen.tuxfamily.org Eigen]]
+[def _nt2_                              [@https://www.lri.fr/~falcou/nt2 NT2]]
+
+[def _Ets_                              Expression templates]
+[def _et_                               expression template]
+[def _ets_                              expression templates]
 
 [include intro.qbk]
 [include manual.qbk]

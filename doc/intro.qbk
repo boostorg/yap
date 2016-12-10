@@ -1,7 +1,48 @@
 [section Introduction]
 
+"I like to start documentation with a quote.  A nice, pithy one."
+
+['[*-- Eric Niebler (paraphrased)]]
+
 [heading Motivation]
 
-TODO
+_Ets_ are rad.  They are used in lots of libraries; here are just three of the
+most impressive:
+
+- _spirit_ allows you to write an EBNF-style grammar that gets transformed
+  into a PEG parser.
+
+- _eigen_ allows you to do linear algebra using a very natural and
+  mathematical expression syntax that, when executed, heavily optimizes your
+  expressions.
+
+- _nt2_ takes slightly modified MatLab code and allows it to be parsed and run
+  as highly optimized C++ code.
+
+However, this can come at a high cost.  _Ets_ are costly to implement and
+maintain.  Each of _eigen_ and Boost.Ublas has a large volume of complex _et_
+code.
+
+To date, the best solution to this problem of high implementation cost has
+been to use Boost.Proto.  Due to the limitations of C++98, the standard
+against which Proto was written, Proto remains quite complicated and difficult
+to use.  It also imposes prohibitively long compile times for many uses.
+
+With the language facilities available in the C++14 and C++17 standards, an
+_et_ library is now much easier to write and use, and has very reasonable
+compile times.
+
+[heading Features]
+
+- Functions that operate on expression trees that model the _Expr_ concept.
+
+- A reference template that models _ExprTmpl_.
+
+- Facilities for easily creating custom _ExprTmpls_.
+
+- Customization points that can be user-overridden to create implicit
+  transformations.
+
+- Easy-to-use custom explicit transformations via _xform_.
 
 [endsect]
