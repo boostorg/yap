@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-find_package(Boost 1.62.0)
+find_package(Boost 1.62.0 EXACT)
 if (Boost_INCLUDE_DIRS)
     include_directories(${Boost_INCLUDE_DIRS})
 else ()
