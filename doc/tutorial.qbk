@@ -1,0 +1,49 @@
+[section Tutorial]
+
+[import ../example/minimal.cpp]
+[import ../example/lazy_vector.cpp]
+
+[heading Expressions]
+
+_yap_ consists of expressions and functions that operate on them.  Any type
+that models the _Expr_ concept will work with any of the functions in _yap_
+that takes an expression.
+
+For a type `T` to model the _Expr_ concept, `T` must contain at least an
+_kind_ (terminal, plus-operation, etc.) and a _tuple_ of values.  That's it.
+This means that user-defined templates modelling _ExprTmpl_ are very
+straightforward to make.
+
+[note The _tuple_ of values is also constrained, based on the kind of the
+expression; see the full _Expr_ documentation for details.]
+
+Here's an example:
+
+[minimal_template]
+
+That's a template that models _ExprTmpl_.  Instantiated with the proper
+template parameters, it produces _Exprs_.
+
+Ok, so it's not that interesting by itself -- it has no operators.  But we can
+still use it with the _yap_ functions that take an _Expr_.  Let's make a
+plus-expression manually:
+
+[minimal_template_manual_construction]
+
+And if we evaluate it using _eval_, it does what you would expect:
+
+[minimal_template_evaluation]
+
+[heading Operators]
+
+Now, let's see an expression template type with some operators:
+
+[lazy_vector_decl]
+
+Those macros are used to define operator overloads that return _Exprs_.  As
+shown here, that sort of operator can be mixed with normal, non-lazy ones.
+
+Use of the macros is not necessary (you can write your own operators that
+return _Exprs_ if you like), but it is suitable 99% of the time
+
+[endsect]

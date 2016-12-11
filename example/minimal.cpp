@@ -4,6 +4,7 @@
 #include <iostream>
 
 
+//[ minimal_template
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct minimal_expr
 {
@@ -11,10 +12,12 @@ struct minimal_expr
 
     Tuple elements;
 };
+//]
 
 
 int main()
 {
+//[ minimal_template_manual_construction
     auto left = boost::yap::make_terminal<minimal_expr>(1);
     auto right = boost::yap::make_terminal<minimal_expr>(41);
 
@@ -22,10 +25,13 @@ int main()
         minimal_expr,
         boost::yap::expr_kind::plus
     >(left, right);
+//]
 
+//[ minimal_template_evaluation
     auto result = boost::yap::evaluate(expr);
 
-    std::cout << result << "\n";
+    std::cout << result << "\n"; // prints "42"
+//]
 
     return 0;
 }

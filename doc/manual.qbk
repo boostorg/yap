@@ -4,8 +4,8 @@
 
 TODO
 
-[\ include quick_start.qbk]
-[\ include tutorial.qbk]
-[\ include configuration.qbk]
+[include tutorial.qbk]
+[include examples.qbk]
+[include configuration.qbk]
 
 [endsect]

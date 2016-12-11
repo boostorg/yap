@@ -19,6 +19,7 @@ struct take_nth
     std::size_t n;
 };
 
+//[ lazy_vector_decl
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct lazy_vector_expr
 {
@@ -31,10 +32,14 @@ struct lazy_vector_expr
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::lazy_vector_expr)
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::lazy_vector_expr)
 
-    auto operator[] (std::size_t n) const
-    { return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n})); }
-
+    // Note that this does not return an expression; it is greedily evaluated.
+    auto operator[] (std::size_t n) const;
 };
+//]
+
+template <boost::yap::expr_kind Kind, typename Tuple>
+auto lazy_vector_expr<Kind, Tuple>::operator[] (std::size_t n) const
+{ return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n})); }
 
 boost::yap::terminal<lazy_vector_expr, double>
 take_nth::operator() (boost::yap::terminal<lazy_vector_expr, std::vector<double>> const & expr)

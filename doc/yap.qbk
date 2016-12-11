@@ -35,9 +35,12 @@
 [def _expression_                       [classref boost::yap::expression `expression<>`]]
 [def _kind_                             [enumref boost::yap::expr_kind `expr_kind`]]
 [def _xform_                            [funcref boost::yap::transform `transform()`]]
+[def _eval_                             [funcref boost::yap::transform `evaluate()`]]
+[def _eval_as_                          [funcref boost::yap::transform `evaluate_as()`]]
 [def _tuple_                            `boost::hana::tuple<>`]
 
 [def _Expr_                             [link yap.concepts Expression]]
+[def _Exprs_                            [link yap.concepts Expression]s]
 [def _ExprTmpl_                         [link yap.concepts ExpressionTemplate]]
 [def _ExprTmpls_                        [link yap.concepts ExpressionTemplate]s]
 [def _XForm_                            [link yap.concepts Transform]]
