@@ -7,6 +7,7 @@ macro(add_sample name)
     endif ()
 endmacro()
 
+add_sample(minimal)
 add_sample(hello_world)
 add_sample(calc1)
 add_sample(calc2a)
