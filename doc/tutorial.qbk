@@ -34,9 +34,32 @@ And if we evaluate it using _eval_, it does what you would expect:
 
 [minimal_template_evaluation]
 
+There is a reference model of the _ExprTmpl_ concept that comes with _yap_:
+_expr_.  It has all the member operators defined, and the nonmember operators
+and the `if_else` pseudo-operator are defined in their repsective headers.
+
+_expr_ is great for prototyping, and for quick-and-dirty uses of _et_, but its
+use of every single operator makes it a suboptimal choice for most use cass.
+
+[heading Kinds of Expressions]
+
+There are four special kinds of expression.
+
+[variablelist Special Expression Kinds
+    [[_terminal_] [A terminal contains a non-Expression value, and represents the leaf-node in an
+expression tree.]]
+    [[_placeholder_] [A placeholder is a stand-in for some value to be provided later.]]
+    [[_if_else_] [An `if_else` expression is analogous to the C++ ternary operator (`?:`), but
+without the common-type conversion logic.]]
+    [[_expr_ref_] [An `exp_ref` expression is one that acts as a (possibly `const`) lvalue reference to another expression.  It exists to prevent unnecessary copies of expressions.]]
+]
+
+The other expression kinds are all the overloadable operators, See _kind_ for
+the full list.
+
 [heading Operators]
 
-Now, let's see an expression template type with some operators:
+Let's see an expression template type with some operators:
 
 [lazy_vector_decl]
 
@@ -44,6 +67,42 @@ Those macros are used to define operator overloads that return _Exprs_.  As
 shown here, that sort of operator can be mixed with normal, non-lazy ones.
 
 Use of the macros is not necessary (you can write your own operators that
-return _Exprs_ if you like), but it is suitable 99% of the time
+return _Exprs_ if you like), but it is suitable 99% of the time.
+
+Making the operators easy to define like this allows you to define custom
+expression templates that have only the operators defined that are appropriate
+for your use case.
+
+[heading Operator Macros]
+
+There are macros that define binary operators as members and as nonmembers.
+For a given operator the member-defining macro will define an operator that
+accepts anything on the right (making a terminal out of a non-_Expr_ operand);
+the nonmember-defining macro will define an operator that will only accept a
+non-_Expr_ on the left and an _Expr_ on the right.  This is to avoid creating
+ambiguous overload sets.  Here are the macros and their uses:
+
+[table Unary and Binary Operator-Defining Macros
+    [[Macro] [First/Left Operand] [Right Operand]]
+
+    [[_unary_member_m_] [Any type.] []]
+    [[_binary_member_m_] [Any type.] [Any type.]]
+    [[_binary_free_m_] [Any non-_Expr_.] [_Expr_]]
+    [[_udt_unary_m_] [Any non-_Expr_ that satisfies the given type trait.] []]
+    [[_udt_udt_unary_m_] [Any non-_Expr_ that satisfies the given (left-hand) type trait.] [Any non-_Expr_ that satisfies the given (right-hand) type trait.]]
+    [[_udt_any_unary_m_] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
+]
+
+[table The Other Operator-Defining Macros
+    [[Macro] [Operands] [Notes]]
+
+    [[_member_call_m_] [Any type.] []]
+    [[_expr_if_else_m_] [Any type.] [At least one parameter must be an _Expr_.]]
+    [[_udt_any_if_else_m_] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
+]
+
+[heading How Expression Operands Are Treated]
+
+TODO
 
 [endsect]
