@@ -317,7 +317,7 @@
     user-overloadable.  The return type of <code>if_else()</code> is an
     expression instantiated from the \a expr_template expression template.
 
-    Each parameter to <code>if_else()</code> must be an expression.
+    At least one parameter to <code>if_else()</code> must be an expression.
 
     For each parameter E passed to <code>if_else()</code>, if E is an rvalue,
     E is moved into the result, and otherwise E is captured by reference into
