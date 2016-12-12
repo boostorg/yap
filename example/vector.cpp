@@ -13,21 +13,15 @@ struct take_nth
     std::size_t n;
 };
 
-template <typename T>
-using vector_terminal = boost::yap::expression<
-    boost::yap::expr_kind::terminal,
-    boost::hana::tuple<std::vector<T>>
->;
-
 struct equal_sizes_impl
 {
     template <typename T>
-    auto operator() (vector_terminal<T> const & expr)
+    auto operator() (boost::yap::terminal_tag, std::vector<T> const & vec)
     {
-        auto const expr_size = boost::yap::value(expr).size();
+        auto const expr_size = vec.size();
         if (expr_size != size)
             value = false;
-        return expr;
+        return 0;
     }
 
     std::size_t const size;
