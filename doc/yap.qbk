@@ -22,6 +22,18 @@
 
 [/ QuickBook Document version 1.3 ]
 
+[/ Imports ]
+
+[import ../example/hello_world.cpp]
+[import ../example/hello_world_redux.cpp]
+[import ../example/minimal.cpp]
+[import ../example/calc1.cpp]
+[import ../example/calc2a.cpp]
+[import ../example/calc2b.cpp]
+[import ../example/calc3.cpp]
+[import ../example/lazy_vector.cpp]
+
+
 [/ Images ]
 
 [def __note__              [$images/note.png]]
@@ -39,6 +51,7 @@
 [def _ExprTmpl_            [link boost_yap__proposed_.concepts.expressiontemplate ExpressionTemplate]]
 [def _ExprTmpls_           [link boost_yap__proposed_.concepts.expressiontemplate ExpressionTemplates]]
 [def _XForm_               [link boost_yap__proposed_.concepts.transform Transform]]
+[def _XForms_              [link boost_yap__proposed_.concepts.transform Transforms]]
 [def _ExprXForm_           [link boost_yap__proposed_.concepts.expressiontransform ExpressionTransform]]
 [def _TagXForm_            [link boost_yap__proposed_.concepts.tagtransform TagTransform]]
 
@@ -52,6 +65,10 @@
 [def _eval_                [funcref boost::yap::transform `evaluate()`]]
 [def _eval_as_             [funcref boost::yap::transform `evaluate_as()`]]
 [def _tuple_               `boost::hana::tuple<>`]
+
+[def _make_term_           [funcref boost::yap::make_terminal `make_terminal()`]]
+[def _make_expr_           [funcref boost::yap::make_expression `make_expression()`]]
+[def _make_expr_fn_        [funcref boost::yap::make_expression_function `make_expression_function()`]]
 
 [def _unary_member_m_      [macroref BOOST_YAP_USER_UNARY_OPERATOR_MEMBER]]
 [def _binary_member_m_     [macroref BOOST_YAP_USER_BINARY_OPERATOR_MEMBER]]

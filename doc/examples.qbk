@@ -1,7 +1,103 @@
 [section Examples]
 
-[heading TODO]
+Most of these examples are patterned after the examples from Boost.Proto.  In
+part, this was done to underscore where _yap_ can do what Proto can, and where
+it cannot.
 
-TODO
+Where possible, a Proto-derived example uses identical syntax in `main()` to
+that in the original Proto example.
+
+
+[section Hello World:
+    Building an Expression Template and Evaluating It]
+
+Welp.  Remember how I mentioned earlier that _yap_ does things in a completely
+lazy way?  There's no easy way to get the same line of code that you saw in
+`main()` in the Proto version of this example, because _yap_ doesn't know that
+it should evaluate your expression eagerly in this case.  It can be done, but
+it's a bit of code.  This is one case in which Proto's eager evaluation can
+prove easier to use than _yap_'s lazy evaluation.
+
+[hello_world]
+
+[endsect]
+
+
+[section Hello World Redux]
+
+That's better!  Sort of.... We created a custom expression template with an
+eager stream operator.  This gives us eager evaluation, but gives away all the
+lazy AST building-then-evaluating that we're using _ets_ for in the first
+place.  In this simple example, we don't really need it.
+
+[hello_world_redux]
+
+[endsect]
+
+
+[section Minimal:
+    A Minimal Expression Template]
+
+`minimal_expr` below models _ExprTmpl_; since it has no operators, an
+expression is built manually.
+
+First, the template itself:
+
+[minimal_template]
+
+This can be used to make a `minimal_expr` plus expression:
+
+[minimal_template_manual_construction]
+
+You can evaluate, transform, or otherwise operate on `minimal_expr`
+expressions using the functions in _yap_ that accept an _Expr_:
+
+[minimal_template_evaluation]
+
+[endsect]
+
+
+[section Calc1]
+
+This is the first of several calculator-building examples derived from Proto.
+This first one just builds lazy expressions with placeholders, and evaluates
+them.  Here we can first see how much C++14-and-later language features help
+the end user -- the Proto version is much, much longer.
+
+[calc1]
+
+[endsect]
+
+
+[section Calc2]
+
+The Proto Calc2 example turns the expressions from Calc1 into callable
+objects.  Using _yap_ you can do this in two ways.
+
+You can just use lambdas to wrap the expressions:
+
+[calc2a]
+
+Or you can use _make_expr_fn_ to make a callable expression:
+
+[calc2b]
+
+[endsect]
+
+
+[section Calc3]
+
+Here, we introduce a _XForm_ used to calculate expression arity, and
+`static_assert()` that the number of parameters passed by the caller matches
+the arity.
+
+[note The `get_arity` _XForm_ doesn't produce an _Expr_, and it does not have
+to.  _XForms_ may produce _Exprs_ or arbitrary values.  They may also have
+arbitrary side effects, and may be stateful.]
+
+[calc3]
+
+[endsect]
+
 
 [endsect]

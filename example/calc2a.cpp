@@ -1,3 +1,4 @@
+//[ calc2a
 #include <boost/yap/expression.hpp>
 
 #include <iostream>
@@ -36,3 +37,4 @@ int main ()
 
     return 0;
 }
+//]

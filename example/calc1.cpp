@@ -1,3 +1,4 @@
+//[ calc1
 #include <boost/yap/expression.hpp>
 
 #include <iostream>
@@ -18,3 +19,4 @@ int main ()
 
     return 0;
 }
+//]

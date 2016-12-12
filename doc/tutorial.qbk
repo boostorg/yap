@@ -1,8 +1,5 @@
 [section Tutorial]
 
-[import ../example/minimal.cpp]
-[import ../example/lazy_vector.cpp]
-
 [heading Expressions]
 
 _yap_ consists of expressions and functions that operate on them.  Any type

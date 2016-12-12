@@ -1,3 +1,5 @@
+//[hello_world
+
 #include <boost/yap/expression.hpp>
 
 #include <iostream>
@@ -9,3 +11,4 @@ int main ()
 
     return 0;
 }
+//]
