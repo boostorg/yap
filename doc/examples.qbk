@@ -54,6 +54,10 @@ expressions using the functions in _yap_ that accept an _Expr_:
 
 [minimal_template_evaluation]
 
+[note Don't use _yap_ this way.  Use the operator macros instead.  This is an
+example contrived only to show you the minimum requirements on a
+_yap_-compatible template.]
+
 [endsect]
 
 
@@ -148,6 +152,47 @@ want to operate on, without non-intrusively?  Here's how you might do it with
 `std::vector<>`s:
 
 [vector]
+
+[note Though this example only provides overloads for the operations we want
+to define over `std::vector<>`s, the result of each of those operations is an
+_expr_, which uses *all* the operator overloads.  If we wanted to restrict the
+operations on the results too, we could have defined a custom expression
+template with the desired operations, and used that instead of _expr_ in the
+operator macros.]
+
+[endsect]
+
+
+[section Mixed]
+
+This is a lot like the previous Vector example, except that it operates on
+`std::vector<>`s and `std::list<>`s in the same expression.  It also shows how
+to override one of the operator-evaluation customization points.
+
+[mixed]
+
+[endsect]
+
+
+[section Map Assign]
+
+An implementation of `map_list_of()` from Boost.Assign using _yap_.
+
+[map_assign]
+
+[note `map_list_of_expr` defines a generic call operator that matches any
+call, including on with the wrong number of arguments.  This could be fixed by
+adding a `static_assert()` to the `map_list_of_expr` template, or by
+hand-writing the call operator with SFNIAE or concept constraints.]
+
+[endsect]
+
+
+[section Future Group]
+
+An implementation of Howard Hinnant's design for /future groups/.
+
+[future_group]
 
 [endsect]
 

@@ -1,20 +1,31 @@
+//[ map_assign
 #include <boost/yap/expression.hpp>
 
 #include <map>
 #include <iostream>
 
 
+// This transform applies all the a call-subexpressions in a map_list_of
+// expression (a nested chain of call operations) as a side effect; the
+// expression returned by the transform is ignored.
 template <typename Key, typename Value, typename Allocator>
 struct map_list_of_transform
 {
     template <typename Fn, typename Key2, typename Value2>
     auto operator() (boost::yap::call_tag, Fn const & fn, Key2 && key, Value2 && value)
     {
+        // Recurse into the function subexpression.  Remember, transform()
+        // walks the nodes in an expression tree looking for matches.  Once it
+        // finds a match, it is finished with that matching subtree.  So
+        // without this recursive call, only the top-level call expression is
+        // matched by transform().
         boost::yap::transform(fn, *this);
         map.try_emplace(
             Key{std::forward<Key2 &&>(key)},
             Value{std::forward<Value2 &&>(value)}
         );
+        // All we care about are the side effects of this transform, so we can
+        // return any old thing here.
         return 0;
     }
 
@@ -22,6 +33,9 @@ struct map_list_of_transform
 };
 
 
+// A custom expression template type for map_list_of expressions.  We only
+// need support for the call operator and an implicit conversion to a
+// std::map.
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct map_list_of_expr
 {
@@ -42,6 +56,7 @@ struct map_list_of_expr
     BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::map_list_of_expr)
 };
 
+// A tag type for creating the map_list_of function terminal.
 struct map_list_of_tag {};
 
 auto map_list_of = boost::yap::make_terminal<map_list_of_expr>(map_list_of_tag{});
@@ -69,3 +84,4 @@ int main()
 
     return 0;
 }
+//]

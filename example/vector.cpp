@@ -14,6 +14,8 @@ struct take_nth
     std::size_t n;
 };
 
+// A stateful transform that records whether all the std::vector<> terminals
+// it has seen are equal to the given size.
 struct equal_sizes_impl
 {
     template <typename T>
@@ -38,6 +40,8 @@ bool equal_sizes (std::size_t size, Expr const & expr)
 }
 
 
+// Assigns some expression e to the given vector by evaluating e elementwise,
+// to avoid temporaries and allocations.
 template <typename T, typename Expr>
 std::vector<T> & assign (std::vector<T> & vec, Expr const & e)
 {
@@ -49,6 +53,7 @@ std::vector<T> & assign (std::vector<T> & vec, Expr const & e)
     return vec;
 }
 
+// As assign() above, just using +=.
 template <typename T, typename Expr>
 std::vector<T> & operator+= (std::vector<T> & vec, Expr const & e)
 {
@@ -60,12 +65,16 @@ std::vector<T> & operator+= (std::vector<T> & vec, Expr const & e)
     return vec;
 }
 
+// Define a type trait that identifies std::vectors.
 template <typename T>
 struct is_vector : std::false_type {};
 
 template <typename T, typename A>
 struct is_vector<std::vector<T, A>> : std::true_type {};
 
+// Define all the expression-returning numeric operators we need.  Each will
+// accept any std::vector<> as any of its arguments, and then any value in the
+// remaining argument, if any -- some of the operators below are unary.
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(negate, boost::yap::expression, is_vector); // -
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(multiplies, boost::yap::expression, is_vector); // *
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(divides, boost::yap::expression, is_vector); // /
@@ -99,10 +108,11 @@ int main()
         d.push_back(i);
     }
 
+    // After this point, no allcations occur.
+
     assign(b, 2);
     assign(d, a + b * c);
 
-    if_else(d < 30, b, c);
     a += if_else(d < 30, b, c);
 
     assign(e, c);
