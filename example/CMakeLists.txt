@@ -9,6 +9,7 @@ endmacro()
 
 add_sample(minimal)
 add_sample(hello_world)
+add_sample(hello_world_redux)
 add_sample(calc1)
 add_sample(calc2a)
 add_sample(calc2b)
