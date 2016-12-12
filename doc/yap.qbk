@@ -32,6 +32,12 @@
 [import ../example/calc2b.cpp]
 [import ../example/calc3.cpp]
 [import ../example/lazy_vector.cpp]
+[import ../example/tarray.cpp]
+[import ../example/vec3.cpp]
+[import ../example/vector.cpp]
+[import ../example/mixed.cpp]
+[import ../example/map_assign.cpp]
+[import ../example/future_group.cpp]
 
 
 [/ Images ]
@@ -88,6 +94,8 @@
 [def _Ets_                 Expression templates]
 [def _et_                  expression template]
 [def _ets_                 expression templates]
+
+[def _how_treated_         [link boost_yap__proposed_.manual.tutorial.how_expression_operands_are_treated How Expression Operands Are Treated]]
 
 [include intro.qbk]
 [include manual.qbk]

@@ -100,6 +100,7 @@ ambiguous overload sets.  Here are the macros and their uses:
 
 [heading How Expression Operands Are Treated]
 
-TODO
+TODO: Talk about terminal and expression capture by reference/value depending
+on the l/rvalueness of the operand.
 
 [endsect]

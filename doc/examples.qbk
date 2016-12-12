@@ -100,4 +100,56 @@ arbitrary side effects, and may be stateful.]
 [endsect]
 
 
+[section Lazy Vector]
+
+Finally, it starts to get interesting!  This example shows how you can add
+plus and other operations to sequences of data without creating temporaries
+(and allocating memory).
+
+[note In this example, we see a terminal type that owns the storage of its
+value, a `std::vector<double>`.  See the Vector example later on to see one
+that does not.]
+
+[lazy_vector]
+
+[endsect]
+
+
+[section TArray]
+
+Proto refers to this as the "mini-library for linear algebra" example.  It
+shows how quite complicated expressions involving sequences can be evaliated
+elementwise, requiring no temporaries.
+
+[note The original Proto example used a terminal that contained an array of
+three `int`s; _yap_ cannot represent this, and so this example uses a
+`std::array<T, 3>` instead.  _yap_ decays `int[3]` to `int *`, since that is
+what is done in a C++ expression.  See _how_treated_ for details.]
+
+[tarray]
+
+[endsect]
+
+
+[section Vec3]
+
+An example using 3-space vectors a bit like the tarray example.
+
+[vec3]
+
+[endsect]
+
+
+[section Vector]
+
+So far we've only seen examples with custom terminals that own the values in
+the expressions we operate on.  What happens when you've got types that you
+want to operate on, without non-intrusively?  Here's how you might do it with
+`std::vector<>`s:
+
+[vector]
+
+[endsect]
+
+
 [endsect]

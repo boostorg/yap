@@ -1,3 +1,4 @@
+//[ vector
 #include <boost/yap/yap.hpp>
 
 #include <vector>
@@ -120,3 +121,4 @@ int main()
 
     return 0;
 }
+//]

@@ -1,3 +1,4 @@
+//[ tarray
 #include <boost/yap/expression.hpp>
 
 #include <array>
@@ -16,9 +17,15 @@ struct take_nth
     std::size_t n;
 };
 
+// Another custom expression template.  In this case, we static_assert() that
+// it only gets instantiated with terminals with pre-approved value types.
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct tarray_expr
 {
+    // Make sure that, if this expression is a terminal, that its value is one
+    // we want to support.  Note that the presence of expr_kind::expr_ref
+    // makes life slightly more difficult; we have to account for int const &
+    // and int & as well as int.
     static_assert(
         Kind != boost::yap::expr_kind::terminal ||
         std::is_same<Tuple, boost::hana::tuple<int const &>>{} ||
@@ -33,6 +40,8 @@ struct tarray_expr
 
     Tuple elements;
 
+    // Define operators +, -, *, and / for an expression on the left, and
+    // anythng on the right.
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::tarray_expr)
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::tarray_expr)
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, this_type, ::tarray_expr)
@@ -42,6 +51,8 @@ struct tarray_expr
     { return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n})); }
 };
 
+// Define operators +, -, *, and / for any non-expression on the left, and an
+// expression on the right.
 BOOST_YAP_USER_FREE_BINARY_OPERATOR(plus, ::tarray_expr)
 BOOST_YAP_USER_FREE_BINARY_OPERATOR(minus, ::tarray_expr)
 BOOST_YAP_USER_FREE_BINARY_OPERATOR(multiplies, ::tarray_expr)
@@ -52,9 +63,13 @@ boost::yap::terminal<tarray_expr, int>
 take_nth::operator() (boost::yap::terminal<tarray_expr, std::array<int, 3>> const & expr)
 {
     int x = boost::yap::value(expr)[n];
+    // Again, the move hack to get x into the resulting terminal as a value
+    // instead of a reference.
     return boost::yap::make_terminal<tarray_expr>(std::move(x));
 }
 
+
+// Stream-out operators for the two kinds of terminals we support.
 
 std::ostream & operator<< (std::ostream & os, boost::yap::terminal<tarray_expr, int> expr)
 { return os << '{' << boost::yap::value(expr) << '}'; }
@@ -64,6 +79,10 @@ std::ostream & operator<< (std::ostream & os, boost::yap::terminal<tarray_expr, 
     std::array<int, 3> const & a = boost::yap::value(expr);
     return os << '{' << a[0] << ", " << a[1] << ", " << a[2] << '}';
 }
+
+// Stream-out operators for general expressions.  Note that we have to treat
+// the reference case separately; this also could have been done using
+// constexpr if in a single function template.
 
 template <typename Tuple>
 std::ostream & operator<< (std::ostream & os, tarray_expr<boost::yap::expr_kind::expr_ref, Tuple> const & expr)
@@ -80,6 +99,9 @@ std::ostream & operator<< (std::ostream & os, tarray_expr<Kind, Tuple> const & e
     return os;
 }
 
+
+// Since we want different behavior on terminals than on other kinds of
+// expressions, we create a custom type that does so.
 struct tarray :
     tarray_expr<
         boost::yap::expr_kind::terminal,
@@ -108,7 +130,12 @@ struct tarray :
 
     template <typename T>
     tarray & operator= (T const & t)
-    { return assign(boost::yap::as_expr< ::tarray_expr>(t)); }
+    {
+        // We use as_expr() here to make sure that the value passed to
+        // assign() is an expression.  as_expr() simply forwards expressions
+        // through, and wraps non-expressions as terminals.
+        return assign(boost::yap::as_expr< ::tarray_expr>(t));
+    }
 
     template <typename Expr>
     tarray & printAssign (Expr const & expr)
@@ -159,3 +186,4 @@ int main()
 
     return 0;
 }
+//]

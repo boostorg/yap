@@ -1,3 +1,6 @@
+//[ lazy_vector
+// Defining this allows the assignment below of an expression to a double
+// without writing any specific code to do so.
 #define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
@@ -11,6 +14,9 @@ template <boost::yap::expr_kind Kind, typename Tuple>
 struct lazy_vector_expr;
 
 
+// This transform turns a terminal of std::vector<double> into a terminal
+// containing the nth double in that vector.  Think of it as turning our
+// expression of vectors into an expression of scalars.
 struct take_nth
 {
     boost::yap::terminal<lazy_vector_expr, double>
@@ -19,6 +25,9 @@ struct take_nth
     std::size_t n;
 };
 
+// A custom expression template that defines lazy + and - operators that
+// produce expressions, and an eager [] operator that returns the nth element
+// of the expression.
 //[ lazy_vector_decl
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct lazy_vector_expr
@@ -45,9 +54,18 @@ boost::yap::terminal<lazy_vector_expr, double>
 take_nth::operator() (boost::yap::terminal<lazy_vector_expr, std::vector<double>> const & expr)
 {
     double x = boost::yap::value(expr)[n];
+    // This move is something of a hack.  The move indicates that the terminal
+    // should keep the value of x (since, being an rvalue, it may be a
+    // temporary), rather than a reference to x.  See the "How Expression
+    // Operands Are Treated" section of the tutorial for details.
     return boost::yap::make_terminal<lazy_vector_expr, double>(std::move(x));
 }
 
+// In order to define the += operator with the semantice we want, its
+// convenient to derive a terminal type from a terminal instantiation of
+// lazy_vector_expr.  note that we could have written a template
+// specialization here instead -- either one would work.  That would of course
+// have required more typing.
 struct lazy_vector :
     lazy_vector_expr<
         boost::yap::expr_kind::terminal,
@@ -78,9 +96,11 @@ int main ()
     std::cout << '{' << v1[0] << ',' << v1[1]
               << ',' << v1[2] << ',' << v1[3] << '}' << "\n";
 
-    // This expression is disallowed because it does not conform
-    // to the implicit grammar.
+    // This expression is disallowed because it does not conform to the
+    // implicit grammar.  operator+= is only defined on terminals, not
+    // arbitrary expressions.
     // (v2 + v3) += v1;
 
     return 0;
 }
+//]
