@@ -8,4 +8,6 @@ TODO expr_ref -- what it is like without them to do
     // How can allocations here be avoided without stealing from v2 and v3?
     double d1 = (v2 + v3)[2];
 
+TODO: Decays, etc.
+
 [endsect]

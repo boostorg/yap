@@ -4,7 +4,7 @@
 #include <boost/hana/concat.hpp>
 
 
-// A custom expression template for future groups.  They support operators ||
+// A custom expression template for future groups.  It supports operators ||
 // and &&.
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct future_expr
@@ -26,8 +26,8 @@ struct future_expr
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, this_type, ::future_expr)
 };
 
-// A special-cased future terminal the matches the semantics from the original
-// Proto example.
+// A special-cased future terminal that matches the semantics from the
+// original Proto example.
 template <typename T>
 struct future :
     future_expr<boost::yap::expr_kind::terminal, boost::hana::tuple<T>>
@@ -65,9 +65,9 @@ struct future_transform
             boost::hana::tuple<T, U>
         > const & or_expr
     ) {
-        // Assertion that left and right are comparable types.  We use value()
+        // Assertion that left and right are compatible types.  We use value()
         // here on the results of left() and right() because that makes the
-        // resulting expression the same, even if one is an expr_ref and the
+        // resulting expressions comparable if one is an expr_ref and the
         // other is not.
         static_assert(
             std::is_same<

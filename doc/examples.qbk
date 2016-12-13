@@ -4,7 +4,7 @@ Most of these examples are patterned after the examples from Boost.Proto.  In
 part, this was done to underscore where _yap_ can do what Proto can, and where
 it cannot.
 
-Where possible, a Proto-derived example uses identical syntax in `main()` to
+Where possible, a Proto-derived example uses syntax in `main()` identical to
 that in the original Proto example.
 
 
@@ -80,7 +80,7 @@ You can just use lambdas to wrap the expressions:
 
 [calc2a]
 
-Or you can use _make_expr_fn_ to make a callable expression:
+Or you can use _make_expr_fn_ to make a callable object from your expression:
 
 [calc2b]
 
@@ -106,11 +106,11 @@ arbitrary side effects, and may be stateful.]
 
 Finally, it starts to get interesting!  This example shows how you can add
 plus and other operations to sequences of data without creating temporaries
-(and allocating memory).
+and allocating memory.
 
 [note In this example, we see a terminal type that owns the storage of its
-value, a `std::vector<double>`.  See the Vector example later on to see one
-that does not.]
+value, a `std::vector<double>`.  See the Vector example later on to see a
+terminal type that does not.]
 
 [lazy_vector]
 
@@ -135,7 +135,7 @@ what is done in a C++ expression.  See _how_treated_ for details.]
 
 [section Vec3]
 
-An example using 3-space vectors a bit like the tarray example.
+An example using 3-space vectors, a bit like the tarray example.
 
 [vec3]
 
@@ -146,7 +146,7 @@ An example using 3-space vectors a bit like the tarray example.
 
 So far we've only seen examples with custom terminals that own the values in
 the expressions we operate on.  What happens when you've got types that you
-want to operate on, without non-intrusively?  Here's how you might do it with
+want to operate on, non-intrusively?  Here's how you might do it with
 `std::vector<>`s:
 
 [vector]
@@ -179,8 +179,8 @@ An implementation of `map_list_of()` from Boost.Assign using _yap_.
 [map_assign]
 
 [note `map_list_of_expr` defines a generic call operator that matches any
-call, including on with the wrong number of arguments.  This could be fixed by
-adding a `static_assert()` to the `map_list_of_expr` template, or by
+call, including one with the wrong number of arguments.  This could be fixed
+by adding a `static_assert()` to the `map_list_of_expr` template, or by
 hand-writing the call operator with SFNIAE or concept constraints.]
 
 [endsect]

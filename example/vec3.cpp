@@ -10,7 +10,7 @@ struct take_nth
     auto operator() (boost::yap::terminal<boost::yap::expression, std::array<int, 3>> const & expr)
     {
         int x = boost::yap::value(expr)[n];
-        // The move enforces the terminal to store the value of x, not a
+        // The move forces the terminal to store the value of x, not a
         // reference.
         return boost::yap::make_terminal(std::move(x));
     }

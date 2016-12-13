@@ -35,14 +35,23 @@ And if we evaluate it using _eval_, it does what you would expect:
 _expr_.  It has all the member operators defined, and the nonmember operators
 and the `if_else` pseudo-operator are defined in their repsective headers.
 
-_expr_ is great for prototyping, and for quick-and-dirty uses of _et_, but its
-use of every single operator makes it a suboptimal choice for most use cass.]
+_expr_ is great for prototyping, and for quick-and-dirty uses of _ets_, but
+its use of every single operator makes it a suboptimal choice for most use
+cass.]
 
-[note Because _yap_ operates on _Exprs_, it is possible to mix-and-match
+[note Because _yap_ operates on _Exprs_, it is possible to mix and match
 _Exprs_ that are instantiations of different templates.  An expression
 containing an _expr_ subexpression and subexpressions instantiated from N
 other _ExprTmpls_ can be passed as an argument to any of the _Expr_-accepting
 _yap_ functions.]
+
+One more thing.  It is important to remember that _yap_ expressions are
+all-lazy, all the time.  There is no auto-evaluation of a _yap_ expression
+like there was with Proto.  If you want your expressions to be evaluated, you
+must call _eval_ or _eval_as_, enable _conv_op_m_ (a dubious solution), or
+define non-lazy operations that force evaluation where and when you want it.
+This last approach is usually the right one, and there are lots of examples of
+how to do this in the Examples section.
 
 [endsect]
 
@@ -54,10 +63,10 @@ There are four special kinds of expression.
 [variablelist Special Expression Kinds
     [[_terminal_] [A terminal contains a non-Expression value, and represents the leaf-node in an
 expression tree.]]
-    [[_placeholder_] [A placeholder is a stand-in for some value to be provided later.]]
+    [[_placeholder_] [A placeholder is a terminal that acts as a stand-in for some value to be provided later.]]
     [[_if_else_] [An `if_else` expression is analogous to the C++ ternary operator (`?:`), but
 without the common-type conversion logic.]]
-    [[_expr_ref_] [An `exp_ref` expression is one that acts as a (possibly `const`) lvalue reference to another expression.  It exists to prevent unnecessary copies of expressions.]]
+    [[_expr_ref_] [An `expr_ref` expression is one that acts as a (possibly `const`) lvalue reference to another expression.  It exists to prevent unnecessary copies of expressions.]]
 ]
 
 The other expression kinds are all the overloadable operators, See _kind_ for
@@ -87,12 +96,13 @@ for your use case.
 
 [section Operator Macros]
 
-There are macros that define binary operators as members and as nonmembers.
-For a given operator the member-defining macro will define an operator that
-accepts anything on the right (making a terminal out of a non-_Expr_ operand);
-the nonmember-defining macro will define an operator that will only accept a
-non-_Expr_ on the left and an _Expr_ on the right.  This is to avoid creating
-ambiguous overload sets.  Here are the macros and their uses:
+There are macros that define binary operators as members and macros that
+define them as nonmembers.  For a given operator, the member-defining macro
+will define an operator that accepts anything on the right (making a terminal
+out of a non-_Expr_ operand); the nonmember-defining macro will define an
+operator that will only accept a non-_Expr_ on the left and an _Expr_ on the
+right.  This is to avoid creating ambiguous overload sets.  Here are the
+macros and their uses:
 
 [table Unary and Binary Operator-Defining Macros
     [[Macro] [Use] [First/Left Operand Type] [Right Operand Type] [Notes]]
@@ -101,7 +111,7 @@ ambiguous overload sets.  Here are the macros and their uses:
     [[_binary_member_m_] [Binary member operators.] [Any type.] [Any type.] []]
     [[_binary_free_m_] [Binary free operators.] [Any non-_Expr_.] [Any _Expr_.] []]
     [[_udt_unary_m_] [Free operators defined over types constrained by a type trait (e.g. all `std::map<>`s).] [Any non-_Expr_ that satisfies the given type trait.] [--] []]
-    [[_udt_udt_binary_m_] [Free operators defined over types constrained by a pair of type traits (e.g. a `std::map<>` on the left, and a `std::vector<>` on the right).] [Any non-_Expr_ that satisfies the left-hand type trait.] [Any non-_Expr_ that satisfies the right-hand type trait.] []]
+    [[_udt_udt_binary_m_] [Free operators defined over types constrained by a pair of type traits (e.g. a `std::map<>` on the left, and a `std::vector<>` on the right).  Useful for type-asymmetric operators.] [Any non-_Expr_ that satisfies the left-hand type trait.] [Any non-_Expr_ that satisfies the right-hand type trait.] []]
     [[_udt_any_binary_m_] [Free operators defined over pairs of types, one constrained by a type trait and one not (e.g. a `std::list<>` on either side, and anything on the other).] [Any non-_Expr_.] [--] [At least one parameter must satisfy the given type trait.]]
 ]
 
@@ -183,14 +193,17 @@ complications are not overly cumbersome.
 So, given the rules so far, here is a comprehensive breakdown of what happens
 when an operand is passed to a _yap_ operator.  In this table, `expr` is an
 _ExprTmpl_, and `T` is a non-_Expr_ type.  `E` refers to any non-`expr_ref`
-_Expr_.
+_Expr_.  _yap_ does a partial decay on non-_Expr_ operands, in which `cv` and
+reference qualifiers are left unchanged, but arrays are decayed to pointers
+and functions are decayed to function pointers. `DECAY(T)` indicates such a
+partial decay of `T`.
 
 [table Operand Handling
     [[Operand] [Captured As] [Notes]]
 
-    [[`T const &`] [`expr<expr_kind::terminal, boost::hana::tuple<T const &>>`] []]
-    [[`T &`] [`expr<expr_kind::terminal, boost::hana::tuple<T &>>`] []]
-    [[`T &&`] [`expr<expr_kind::terminal, boost::hana::tuple<T>>`] [Operand moved.]]
+    [[`T const &`] [`expr<expr_kind::terminal, boost::hana::tuple<DECAY(T) const &>>`] []]
+    [[`T &`] [`expr<expr_kind::terminal, boost::hana::tuple<DECAY(T) &>>`] []]
+    [[`T &&`] [`expr<expr_kind::terminal, boost::hana::tuple<DECAY(T)>>`] [Operand moved.]]
 
     [[`E const &`] [`expr<expr_kind::expr_ref, boost::hana::tuple<E const &>>`] []]
     [[`E &`] [`expr<expr_kind::expr_ref, boost::hana::tuple<E &>>`] []]
@@ -200,6 +213,10 @@ _Expr_.
     [[`expr<expr_kind::expr_ref, ...> &`] [`expr<expr_kind::expr_ref, ...>`] []]
     [[`expr<expr_kind::expr_ref, ...> &&`] [`expr<expr_kind::expr_ref, ...>`] [Operand moved.]]
 ]
+
+The partial decay of non-_Expr_ operands is another example of how _yap_
+attempts to create expression trees that are as semantically close to builtin
+expressions as possible.
 
 [endsect]
 

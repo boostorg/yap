@@ -108,7 +108,7 @@ int main()
         d.push_back(i);
     }
 
-    // After this point, no allcations occur.
+    // After this point, no allocations occur.
 
     assign(b, 2);
     assign(d, a + b * c);

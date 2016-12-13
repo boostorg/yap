@@ -22,10 +22,10 @@ struct take_nth
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct tarray_expr
 {
-    // Make sure that, if this expression is a terminal, that its value is one
-    // we want to support.  Note that the presence of expr_kind::expr_ref
-    // makes life slightly more difficult; we have to account for int const &
-    // and int & as well as int.
+    // Make sure that, if this expression is a terminal, its value is one we
+    // want to support.  Note that the presence of expr_kind::expr_ref makes
+    // life slightly more difficult; we have to account for int const & and
+    // int & as well as int.
     static_assert(
         Kind != boost::yap::expr_kind::terminal ||
         std::is_same<Tuple, boost::hana::tuple<int const &>>{} ||
@@ -63,8 +63,8 @@ boost::yap::terminal<tarray_expr, int>
 take_nth::operator() (boost::yap::terminal<tarray_expr, std::array<int, 3>> const & expr)
 {
     int x = boost::yap::value(expr)[n];
-    // Again, the move hack to get x into the resulting terminal as a value
-    // instead of a reference.
+    // Again, this is the move hack to get x into the resulting terminal as a
+    // value instead of a reference.
     return boost::yap::make_terminal<tarray_expr>(std::move(x));
 }
 

@@ -7,5 +7,6 @@ TODO
 [include tutorial.qbk]
 [include examples.qbk]
 [include configuration.qbk]
+[include codegen.qbk]
 
 [endsect]

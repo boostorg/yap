@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-// This transform applies all the a call-subexpressions in a map_list_of
+// This transform applies all the call-subexpressions in a map_list_of
 // expression (a nested chain of call operations) as a side effect; the
 // expression returned by the transform is ignored.
 template <typename Key, typename Value, typename Allocator>
