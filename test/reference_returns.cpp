@@ -34,15 +34,6 @@ TEST(reference_returns, test_reference_returns)
     term<reference_returning::number> unity = {{1.0}};
     auto plus_expr = unity + reference_returning::number{1.0};
 
-    // TODO: This has to fail due to the general implicit conversion rules
-    // (see [conv]/3-6).  This needs to be noted in docs.
-#if 0
-    {
-        reference_returning::number const & n = plus_expr;
-        EXPECT_EQ(&n, &reference_returning::the_result);
-    }
-#endif
-
     {
         reference_returning::number const & n = evaluate(plus_expr);
         EXPECT_EQ(&n, &reference_returning::the_result);

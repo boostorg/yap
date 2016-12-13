@@ -132,7 +132,7 @@ namespace boost { namespace yap {
             customization point.  This function is only defined if the
             configuration macro
             <code>BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</code> has been
-            defined by the user to be nonzero. */ // TODO: customization points need documentation.
+            defined by the user to be nonzero. */
         template <typename R>
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }
@@ -381,7 +381,7 @@ namespace boost { namespace yap {
             cutomization point.  This function is only defined if the
             configuration macro
             <code>BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</code> has been
-            defined by the user to be nonzero. */ // TODO
+            defined by the user to be nonzero. */
         template <typename R>
         operator R ()
         { return eval_expression_as(*this, hana::basic_type<R>{}); }

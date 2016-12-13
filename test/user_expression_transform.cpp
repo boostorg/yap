@@ -29,32 +29,6 @@ namespace user {
     number naxpy (number a, number x, number y)
     { return number{a.value * x.value + y.value + 10.0}; }
 
-#if 0 // TODO: Document this verbose form.
-    auto eval_expression_as (
-        yap::expression<
-            yap::expr_kind::plus,
-            bh::tuple<
-                yap::expression<
-                    yap::expr_kind::multiplies,
-                    bh::tuple<
-                        term<number>,
-                        term<number>
-                    >,
-                >,
-                term<number>
-            >
-        > const & expr,
-        boost::hana::basic_type<number>)
-    {
-        using namespace boost::hana::literals;
-        return naxpy(
-            expr.elements[0_c].elements[0_c].elements[0_c],
-            expr.elements[0_c].elements[1_c].elements[0_c],
-            expr.elements[1_c].elements[0_c]
-        );
-    }
-#endif
-
     decltype(auto) eval_expression_as (
         decltype(term<number>{{0.0}} * number{} + number{}) const & expr,
         boost::hana::basic_type<number>)
