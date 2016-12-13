@@ -8,8 +8,7 @@ Where possible, a Proto-derived example uses identical syntax in `main()` to
 that in the original Proto example.
 
 
-[section Hello World:
-    Building an Expression Template and Evaluating It]
+[section Hello World]
 
 Welp.  Remember how I mentioned earlier that _yap_ does things in a completely
 lazy way?  There's no easy way to get the same line of code that you saw in

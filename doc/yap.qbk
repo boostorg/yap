@@ -83,8 +83,8 @@
 [def _expr_if_else_m_      [macroref BOOST_YAP_USER_EXPR_IF_ELSE]]
 [def _udt_any_if_else_m_   [macroref BOOST_YAP_USER_UDT_ANY_IF_ELSE]]
 [def _udt_unary_m_         [macroref BOOST_YAP_USER_UDT_UNARY_OPERATOR]]
-[def _udt_udt_unary_m_     [macroref BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR]]
-[def _udt_any_unary_m_     [macroref BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR]]
+[def _udt_udt_binary_m_    [macroref BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR]]
+[def _udt_any_binary_m_    [macroref BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR]]
 [def _conv_op_m_           [macroref BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE]]
 
 [def _spirit_              [@http://boost-spirit.com Boost.Spirit]]

@@ -1,6 +1,6 @@
 [section Tutorial]
 
-[heading Expressions]
+[section Expressions]
 
 _yap_ consists of expressions and functions that operate on them.  Any type
 that models the _Expr_ concept will work with any of the functions in _yap_
@@ -38,7 +38,10 @@ and the `if_else` pseudo-operator are defined in their repsective headers.
 _expr_ is great for prototyping, and for quick-and-dirty uses of _et_, but its
 use of every single operator makes it a suboptimal choice for most use cass.
 
-[heading Kinds of Expressions]
+[endsect]
+
+
+[section Kinds of Expressions]
 
 There are four special kinds of expression.
 
@@ -54,7 +57,10 @@ without the common-type conversion logic.]]
 The other expression kinds are all the overloadable operators, See _kind_ for
 the full list.
 
-[heading Operators]
+[endsect]
+
+
+[section Operators]
 
 Let's see an expression template type with some operators:
 
@@ -70,7 +76,10 @@ Making the operators easy to define like this allows you to define custom
 expression templates that have only the operators defined that are appropriate
 for your use case.
 
-[heading Operator Macros]
+[endsect]
+
+
+[section Operator Macros]
 
 There are macros that define binary operators as members and as nonmembers.
 For a given operator the member-defining macro will define an operator that
@@ -80,27 +89,33 @@ non-_Expr_ on the left and an _Expr_ on the right.  This is to avoid creating
 ambiguous overload sets.  Here are the macros and their uses:
 
 [table Unary and Binary Operator-Defining Macros
-    [[Macro] [First/Left Operand] [Right Operand]]
+    [[Macro] [Use] [First/Left Operand Type] [Right Operand Type] [Notes]]
 
-    [[_unary_member_m_] [Any type.] []]
-    [[_binary_member_m_] [Any type.] [Any type.]]
-    [[_binary_free_m_] [Any non-_Expr_.] [_Expr_]]
-    [[_udt_unary_m_] [Any non-_Expr_ that satisfies the given type trait.] []]
-    [[_udt_udt_unary_m_] [Any non-_Expr_ that satisfies the given (left-hand) type trait.] [Any non-_Expr_ that satisfies the given (right-hand) type trait.]]
-    [[_udt_any_unary_m_] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
+    [[_unary_member_m_] [Unary member operators.] [Any type.] [--] []]
+    [[_binary_member_m_] [Binary member operators.] [Any type.] [Any type.] []]
+    [[_binary_free_m_] [Binary free operators.] [Any non-_Expr_.] [Any _Expr_.] []]
+    [[_udt_unary_m_] [Free operators defined over types constrained by a type trait (e.g. all `std::map<>`s).] [Any non-_Expr_ that satisfies the given type trait.] [--] []]
+    [[_udt_udt_binary_m_] [Free operators defined over types constrained by a pair of type traits (e.g. a `std::map<>` on the left, and a `std::vector<>` on the right).] [Any non-_Expr_ that satisfies the left-hand type trait.] [Any non-_Expr_ that satisfies the right-hand type trait.] []]
+    [[_udt_any_binary_m_] [Free operators defined over pairs of types, one constrained by a type trait and one not (e.g. a `std::list<>` on either side, and anything on the other).] [Any non-_Expr_.] [--] [At least one parameter must satisfy the given type trait.]]
 ]
 
 [table The Other Operator-Defining Macros
-    [[Macro] [Operands] [Notes]]
+    [[Macro] [Use] [Operands] [Notes]]
 
-    [[_member_call_m_] [Any type.] []]
-    [[_expr_if_else_m_] [Any type.] [At least one parameter must be an _Expr_.]]
-    [[_udt_any_if_else_m_] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
+    [[_member_call_m_] [Member call operator.] [Any type.] []]
+    [[_expr_if_else_m_] [Free `if_else()` function that requires at least one parameter to be an expression.] [Any type.] [At least one parameter must be an _Expr_.]]
+    [[_udt_any_if_else_m_] [Free `if_else()` function that requires at least one parameter to satisfy the given type trait.] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
 ]
 
-[heading How Expression Operands Are Treated]
+[endsect]
+
+
+[section How Expression Operands Are Treated]
 
 TODO: Talk about terminal and expression capture by reference/value depending
 on the l/rvalueness of the operand.
+
+[endsect]
+
 
 [endsect]
