@@ -1,0 +1,11 @@
+[section Rationale]
+
+TODO expr_ref -- what it is like without them to do
+
+    lazy_vector v2{{std::vector<double>(4, 2.0)}};
+    lazy_vector v3{{std::vector<double>(4, 3.0)}};
+
+    // How can allocations here be avoided without stealing from v2 and v3?
+    double d1 = (v2 + v3)[2];
+
+[endsect]

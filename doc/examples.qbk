@@ -34,8 +34,7 @@ place.  In this simple example, we don't really need it.
 [endsect]
 
 
-[section Minimal:
-    A Minimal Expression Template]
+[section Minimal]
 
 `minimal_expr` below models _ExprTmpl_; since it has no operators, an
 expression is built manually.

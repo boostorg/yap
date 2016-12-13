@@ -105,7 +105,7 @@ struct user_expr
 };
 
 // Free operator overloads for operator&&().  These will match any value on
-// the left-hand side, \b except an expression; the right-hand side must be an
+// the left-hand side, *except* an expression; the right-hand side must be an
 // expression.
 BOOST_YAP_USER_FREE_BINARY_OPERATOR(logical_and, ::user_expr)
 /// [USER_FREE_BINARY_OPERATOR]

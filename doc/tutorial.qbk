@@ -31,12 +31,18 @@ And if we evaluate it using _eval_, it does what you would expect:
 
 [minimal_template_evaluation]
 
-There is a reference model of the _ExprTmpl_ concept that comes with _yap_:
+[note There is a reference model of the _ExprTmpl_ concept that comes with _yap_:
 _expr_.  It has all the member operators defined, and the nonmember operators
 and the `if_else` pseudo-operator are defined in their repsective headers.
 
 _expr_ is great for prototyping, and for quick-and-dirty uses of _et_, but its
-use of every single operator makes it a suboptimal choice for most use cass.
+use of every single operator makes it a suboptimal choice for most use cass.]
+
+[note Because _yap_ operates on _Exprs_, it is possible to mix-and-match
+_Exprs_ that are instantiations of different templates.  An expression
+containing an _expr_ subexpression and subexpressions instantiated from N
+other _ExprTmpls_ can be passed as an argument to any of the _Expr_-accepting
+_yap_ functions.]
 
 [endsect]
 
@@ -107,13 +113,103 @@ ambiguous overload sets.  Here are the macros and their uses:
     [[_udt_any_if_else_m_] [Free `if_else()` function that requires at least one parameter to satisfy the given type trait.] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
 ]
 
+[note Operands are handled in a uniform way across all functions defined by
+all the macros listed here.  See _how_treated_ for details.]
+
 [endsect]
 
 
 [section How Expression Operands Are Treated]
 
-TODO: Talk about terminal and expression capture by reference/value depending
-on the l/rvalueness of the operand.
+For any _expr_ operator overload, or any function defined using one of the
+function definition macros, operands are treated in a uniform way.
+
+The guiding design principle here is that an expression built using _yap_
+should match the semantics of a builtin C++ expression as closely as possible.
+This implies that an rvalue remain treatable as a temporary (as it may in fact
+be) throughout the building and transformation of an expression, and that an
+lvalue should retain its connection to the underlying named entity to which it
+refers.
+
+For example, if you see
+
+    auto expr = a + 1;
+
+you should expect that `a` will be an lvalue reference to some object of type
+`decltype(a)`, regardless of whether `a` is an _Expr_ or a builtin type.
+Similarly, you should expect the `1` to be an rvalue, whether wrapped in a
+terminal or not.
+
+Let's take a quick look at _make_term_.  If you call it with a `T` rvalue, the
+terminal's value type is a `T`, and the rvalue gets moved into it.  If you
+call it with a `T [const]` lvalue, the value type is `T [const] &`, and the
+reference refers to the lvalue (read `[const]` as "possibly
+`const`-qualified").  This is important because you might write through the
+terminal later in an assignment operation.  You don't want to lose the ability
+to do this, or be forced to write some Baroque pile of code to do so -- it
+should be natural and easy.
+
+And it is:
+
+[assign_through_terminal]
+
+Now, there is a wrinkle.  _yap_'s lazy expressions can be built piecemeal:
+
+    auto subexpr = boost::yap::make_terminal(1) + 2;
+    // This is fine, and acts more-or-less as if you wrote "1 / (1 + 2)".
+    auto expr = 1 / subexpr;
+
+whereas C++'s eager builtin expressions cannot:
+
+    auto subexpr = 1 + 2;    // Same as "int subexpr = 3;".  Hm.
+    auto expr = 1 / subexpr; // Same as "int expr = 0;" Arg.
+
+Ok, so since you can build these lazy _yap_ expressions up from
+subexpressions, how do we treat the subexpressions?  We treat them in exactly
+the same way as _make_term_ treats its operands.  Rvalues are moved in, and
+lvalues are captured by (possibly `const`) reference.
+
+[note If you want to subvert the capture-by-reference semantics of using
+subexpressions, just `std::move()` them.  That will force a move -- or copy of
+values for which move is not defined.]
+
+The capture-by-reference behavior is implemented via a special _kind_,
+_expr_ref_.  An `expr_ref` expression has a single data element: a (possibly
+`const` (Can I stop saying that every time?  You get it, right? Ok, good.))
+reference to an expression.  This additional level of indirection causes some
+complications at times, as you can see in the examples.  Fortunately, the
+complications are not overly cumbersome.
+
+So, given the rules so far, here is a comprehensive breakdown of what happens
+when an operand is passed to a _yap_ operator.  In this table, `expr` is an
+_ExprTmpl_, and `T` is a non-_Expr_ type.  `E` refers to any non-`expr_ref`
+_Expr_.
+
+[table Operand Handling
+    [[Operand] [Captured As] [Notes]]
+
+    [[`T const &`] [`expr<expr_kind::terminal, boost::hana::tuple<T const &>>`] []]
+    [[`T &`] [`expr<expr_kind::terminal, boost::hana::tuple<T &>>`] []]
+    [[`T &&`] [`expr<expr_kind::terminal, boost::hana::tuple<T>>`] [Operand moved.]]
+
+    [[`E const &`] [`expr<expr_kind::expr_ref, boost::hana::tuple<E const &>>`] []]
+    [[`E &`] [`expr<expr_kind::expr_ref, boost::hana::tuple<E &>>`] []]
+    [[`E &&`] [`E`] [Operand moved.]]
+
+    [[`expr<expr_kind::expr_ref, ...> const &`] [`expr<expr_kind::expr_ref, ...>`] []]
+    [[`expr<expr_kind::expr_ref, ...> &`] [`expr<expr_kind::expr_ref, ...>`] []]
+    [[`expr<expr_kind::expr_ref, ...> &&`] [`expr<expr_kind::expr_ref, ...>`] [Operand moved.]]
+]
+
+[endsect]
+
+
+[section Customization Points]
+
+[endsect]
+
+
+[section Transform Matching]
 
 [endsect]
 

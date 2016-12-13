@@ -21,7 +21,7 @@ most impressive:
 
 However, this can come at a high cost.  _Ets_ are costly to implement and
 maintain.  Each of _eigen_ and Boost.Ublas has a large volume of complex _et_
-code.
+code that cannot be reused elsewhere.
 
 To date, the best solution to this problem of high implementation cost has
 been to use Boost.Proto.  Due to the limitations of C++98, the standard
@@ -44,5 +44,8 @@ compile times.
   transformations.
 
 - Easy-to-use custom explicit transformations via _xform_.
+
+- Expression tree semantics as close to those of builtin C++ expressions as
+  possible.
 
 [endsect]

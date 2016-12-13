@@ -8,3 +8,4 @@ macro(add_snippets name)
 endmacro()
 
 add_snippets(user_macros_snippets)
+add_snippets(other_snippets)
