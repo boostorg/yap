@@ -121,8 +121,8 @@ user::number eval_as_proto_expr (
 user::number eval_as_proto_expr_4x (
     decltype(
 #if 0
-        // TODO: Somewhere between 36 and 45 terminals, LLVM gives up on
-        // inlining this function.  Document this.
+        // Somewhere between 36 and 45 terminals, LLVM gives up on inlining
+        // this function.
         (a * x + y) * (a * x + y) + (a * x + y) +
 #endif
         (a * x + y) * (a * x + y) + (a * x + y) +
