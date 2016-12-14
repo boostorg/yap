@@ -331,6 +331,69 @@ receive values in their arguments, not _Exprs_.
 
 [section Transform Matching]
 
+In _yap_ a _XForm_ is a _Callable_ that has *zero or more* overloads that
+model the _ExprXForm_ or _TagXForm_ concepts.
+
+An _ExprXForm_ overload takes the expression to be transformed:
+
+[expr_xform]
+
+_ExprXForms_ are most useful when you want to transform a narrow set of
+expression types (perhaps only one).  In particular, you can distinguish
+between `const` and non-`const`, reference and non-reference, etc., in the
+expression and its operands in a way that you have less control over with the
+other kind of transform.
+
+A _TagXForm_ overload takes a tag that indicates the _kind_ of the expression
+to be transformed, and then (loosely) the value of each operand of the
+epxression to be transformed:
+
+[tag_xform]
+
+_TagXForms_ are most useful when the transform needs to match expressions
+without regard to whether its operands are _expr_ref_ expressions, or -- if
+they are terminals -- whether they contain or refer to their values.
+_TagXForms_ tend to be far more concise.
+
+[heading A More Rigorous Description of TagTransform Parameters]
+
+That "(loosely)" before probably bothered you, right?  Me too.  For an
+expression `expr`, each parameter is passed to a _TagXForm_ by calling an
+operand accessor appropriate to `expr`'s kind, and then calling _value_ on the
+result.  For example, for a plus expression, the _TagXForm_ on a transform
+object `xform` will be called like this:
+
+    xform(plus_tag, value(left(expr)), value(right(expr)))
+
+The operand accessors (_left_ and _right_ in this example) all dereference
+_expr_ref_ expressions before operating on them, and _value_ does the same.
+When given a terminal, _value_ also returns the value of the terminal.
+
+The result of this pattern is that you can effectively ignore the presence of
+_expr_ref_ expressions when writing a _TagXForm_.  You can also just deal with
+the values inside terminals, and not the terminals themselves. Also, you can
+match all terminal value qualifiers (`const` or not, lvalue or rvalue)
+uniformly with a `T const &` parameter.  Finally, you can write _TagXForm_
+parameter types that can catch conversions; for instance, you can match any
+negation expression containing terminal of a numeric type convertible to
+`double` like this:
+
+     struct xform
+     {
+         auto operator() (boost::yap::negate_tag, double x)
+         { return /* ... */; }
+     }
+
+That will match negations of `unsigned int`s, `int`s, `float`s, etc.
+
+[heading Mixing the Two Kinds of Transforms]
+
+You can have two overloads in your transform that match an expression, one an
+_ExprXForm_ and one a _TagXForm_, and there will not be any ambiguity.  The
+_TagXForm_ is prefered, except in the case of a call expression, in which case
+the _ExprXForm_ is preferred.  I know, I know.  Save youself some headaches
+and mix the two kinds of overloads as little as possible.
+
 [endsect]
 
 

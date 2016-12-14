@@ -221,19 +221,31 @@ namespace user {
 
     // ternary transforms
 
+//[ tag_xform
     struct ternary_to_else_xform_tag
     {
         template <typename Expr>
-        decltype(auto) operator() (yap::if_else_tag, Expr const & cond, user::number const & then, user::number const & else_)
-        { return yap::make_terminal(else_); }
+        decltype(auto) operator() (
+            boost::yap::if_else_tag,
+            Expr const & cond,
+            user::number const & then,
+            user::number const & else_
+        ) { return boost::yap::make_terminal(else_); }
     };
+//]
 
+//[ expr_xform
     struct ternary_to_else_xform_expr
     {
         template <typename Cond, typename Then, typename Else>
-        decltype(auto) operator() (yap::expression<yap::expr_kind::if_else, bh::tuple<Cond, Then, Else>> const & expr)
-        { return ::boost::yap::else_(expr); }
+        decltype(auto) operator() (
+            boost::yap::expression<
+                boost::yap::expr_kind::if_else,
+                boost::hana::tuple<Cond, Then, Else>
+            > const & expr
+        ) { return ::boost::yap::else_(expr); }
     };
+//]
 
     struct ternary_to_else_xform_both
     {

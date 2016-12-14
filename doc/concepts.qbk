@@ -36,9 +36,9 @@ _kind_ and a _tuple_, results in an _Expr_.
 
 [heading Transform]
 
-_xform_ takes a _XForm_ as its second parameter.  A _XForm_ is a Callable that
-takes expressions and returns values of unconstrained type.  There are two
-sorts of overloads _XForm_ may use: _ExprXForm_ and _TagXForm_.
+_xform_ takes a _XForm_ as its second parameter.  A _XForm_ is a _Callable_
+that takes expressions and returns values of unconstrained type.  There are
+two sorts of overloads _XForm_ may use: _ExprXForm_ and _TagXForm_.
 
 A _XForm_ may have nay number of overloads, including none.
 

@@ -40,6 +40,7 @@
 [import ../example/map_assign.cpp]
 [import ../example/future_group.cpp]
 [import ../test/user_expression_transform_2.cpp]
+[import ../test/user_expression_transform_3.cpp]
 
 
 [/ Images ]
@@ -61,7 +62,11 @@
 [def _XForm_               [link boost_yap__proposed_.concepts.transform Transform]]
 [def _XForms_              [link boost_yap__proposed_.concepts.transform Transforms]]
 [def _ExprXForm_           [link boost_yap__proposed_.concepts.expressiontransform ExpressionTransform]]
+[def _ExprXForms_          [link boost_yap__proposed_.concepts.expressiontransform ExpressionTransforms]]
 [def _TagXForm_            [link boost_yap__proposed_.concepts.tagtransform TagTransform]]
+[def _TagXForms_           [link boost_yap__proposed_.concepts.tagtransform TagTransforms]]
+[def _Callable_            [@http://en.cppreference.com/w/cpp/concept/Callable Callable]]
+[def _Callables_           [@http://en.cppreference.com/w/cpp/concept/Callable Callables]]
 
 [def _expr_                [classref boost::yap::expression `expression<>`]]
 [def _kind_                [enumref boost::yap::expr_kind `expr_kind`]]
@@ -78,6 +83,9 @@
 [def _make_term_           [funcref boost::yap::make_terminal `make_terminal()`]]
 [def _make_expr_           [funcref boost::yap::make_expression `make_expression()`]]
 [def _make_expr_fn_        [funcref boost::yap::make_expression_function `make_expression_function()`]]
+[def _left_                [funcref boost::yap::left `left()`]]
+[def _right_               [funcref boost::yap::right `right()`]]
+[def _value_               [funcref boost::yap::value `value()`]]
 
 [def _unary_member_m_      [macroref BOOST_YAP_USER_UNARY_OPERATOR_MEMBER]]
 [def _binary_member_m_     [macroref BOOST_YAP_USER_BINARY_OPERATOR_MEMBER]]
