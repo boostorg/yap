@@ -223,6 +223,109 @@ expressions as possible.
 
 [section Customization Points]
 
+There are a number of _cps_ defined by _yap_ that are used during expression
+evaluation.  _yap_ _cps_ are patterned after the ones in the _range_v3_
+library, the basis for the ISO Ranges TS.  To override one, you create a
+function with the same name in your own namespace; it gets picked up via ADL.
+By creating your own version of one of these _cps_, you can change how
+expressions are evaluated in _eval_ and _eval_as_.
+
+For example: first we define a UDT and an override of _yap_'s `eval_plus` for
+it:
+
+[eval_plus_example_decls]
+
+Then we use it to evaluate expressions containing UDT values, even though
+there is no user-defined plus operator for the UDT:
+
+[eval_plus_example_use]
+
+There is a _cp_ for each operator (including `if_else`), one for doing
+implicit transforms during evaluation, `transform_expression()`, and yet one
+more for replacing the entire implementation of _eval_as_,
+`eval_expression_as()`.  The complete list of the _cps_ can be found in the
+`function_objects` namespace in the _ops_header_.
+
+You just saw an example of an operator _cp_ above.  Here's an example
+overriding the `transform_expression()` _cp_:
+
+[transform_expression_example_decls]
+
+and using it:
+
+[transform_expression_example_use]
+
+The `eval_expression_as()` works similarly.
+
+You can create as many overloads of a _cp_ `C` as you like.  If there are 100
+overloads of `C`, any of them that match subexpressions within the expression
+being evaluated will be used; you only need to make sure that the overloads
+are mutually unambiguous.
+
+This is especially important when it comes to the `transform_expression()`
+_cp_.  Providing multiple overloads can be very useful for defining an
+implicit set of transformations that you always want applied to all your
+expression evaluations.  For example, if you define a template overload and a
+nontemplate overload for a certain _cp_ `C`, the template will only apply when
+the nontemplate does not (due to the normal C++ overload resolution rules);
+this allows general-casing in the template overload, and special-casing in the
+nontemplate overload.
+
+[heading How the transform_expression Customization Point Is Applied]
+
+If at any point during the execution of _eval_ or _eval_as_, if `expr` is the
+current subexpression and `transform_expression(expr)` is well-formed,
+`transform_expression(expr)` gets called in place of the normal evaluation of
+`expr`.
+
+[important Subexpressions of `expr` are not evaluated recursively, and in fact
+they are not evaluated at all!  The arguments passed to
+`transform_expression()` are _Exprs_, not values.]
+
+If you want recursive evaluation within your `transform_expression()`
+override, just use `evaluate()` directly:
+
+This transform takes expressions of the form `a * x + y` and calls a function
+that does that computation in one step:
+
+[naxpy_transform_decl]
+
+and since `evaluate()` is called on each operand in the transform, the
+transform is applied to each subexpression here, and then to the top-level
+expression:
+
+[naxpy_transform_use]
+
+[heading How the eval_expression_as Customization Point Is Applied]
+
+The `eval_expression_as()` _cp_ is only applied at the top level, replacing a
+call to _yap_'s version.  Like `transform_expression()`, it is not applied
+recursively, and is passed an expression.
+
+This may be useful if you want to evaluate an expression in a very different
+way depending on what the desired result type is.
+
+[note Evaluation of _expr_'s optional conversion operator template is done via
+`eval_expression_as()`.  See _conv_op_m_ for details.]
+
+[heading How The Other Customization Points Are Applied]
+
+_eval_ and _eval_as_ each evaluate its given expression recursively,
+leaves-to-root.  For any given subexpression `E` of kind `K` with
+subexpressions `S0` ... `Sn`, `E` is evaluated as:
+
+    eval_K(evaluate(S0), ... evaluate(Sn))
+
+For example, using `expr_kind::plus`:
+
+    eval_plus(evaluate(left(e)), evaluate(right(e)))
+
+This means that a (sufficiently general) templated `eval_plus()` _cp_ override
+would apply to all plus operations in an expression tree, even nested ones.
+
+All the _cps_ except `transform_expression()` and `eval_expression_as()`
+receive values in their arguments, not _Exprs_.
+
 [endsect]
 
 

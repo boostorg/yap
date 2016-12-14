@@ -39,6 +39,7 @@
 [import ../example/mixed.cpp]
 [import ../example/map_assign.cpp]
 [import ../example/future_group.cpp]
+[import ../test/user_expression_transform_2.cpp]
 
 
 [/ Images ]
@@ -72,6 +73,7 @@
 [def _eval_                [funcref boost::yap::transform `evaluate()`]]
 [def _eval_as_             [funcref boost::yap::transform `evaluate_as()`]]
 [def _tuple_               `boost::hana::tuple<>`]
+[def _ops_header_          [headerref boost/yap/operators.hpp operators header]]
 
 [def _make_term_           [funcref boost::yap::make_terminal `make_terminal()`]]
 [def _make_expr_           [funcref boost::yap::make_expression `make_expression()`]]
@@ -91,10 +93,13 @@
 [def _spirit_              [@http://boost-spirit.com Boost.Spirit]]
 [def _eigen_               [@http://eigen.tuxfamily.org Eigen]]
 [def _nt2_                 [@https://www.lri.fr/~falcou/nt2 NT2]]
+[def _range_v3_            [@https://github.com/ericniebler/range-v3 Range-v3]]
 
 [def _Ets_                 Expression templates]
 [def _et_                  expression template]
 [def _ets_                 expression templates]
+[def _cp_                  customization point]
+[def _cps_                 customization points]
 
 [def _how_treated_         [link boost_yap__proposed_.manual.tutorial.how_expression_operands_are_treated How Expression Operands Are Treated]]
 

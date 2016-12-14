@@ -29,14 +29,15 @@ namespace user {
     number naxpy (number a, number x, number y)
     { return number{a.value * x.value + y.value + 10.0}; }
 
+//[ naxpy_transform_decl
     template <typename Expr1, typename Expr2, typename Expr3>
     decltype(auto) transform_expression (
-        yap::expression<
-            yap::expr_kind::plus,
-            bh::tuple<
-                yap::expression<
-                    yap::expr_kind::multiplies,
-                    bh::tuple<
+        boost::yap::expression<
+            boost::yap::expr_kind::plus,
+            boost::hana::tuple<
+                boost::yap::expression<
+                    boost::yap::expr_kind::multiplies,
+                    boost::hana::tuple<
                         Expr1,
                         Expr2
                     >
@@ -51,6 +52,7 @@ namespace user {
             evaluate(expr.right())
         );
     }
+//]
 
 }
 
@@ -63,9 +65,11 @@ TEST(user_expression_transform_2, test_user_expression_transform_2)
     term<user::number> y{{3.0}};
 
     {
+//[ naxpy_transform_use
         auto expr = (a * x + y) * (a * x + y) + (a * x + y);
 
         user::number result = expr;
+//]
 
         EXPECT_EQ(result.value, 55 * 55 + 55 + 10);
     }
