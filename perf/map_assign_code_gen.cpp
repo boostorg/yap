@@ -355,6 +355,22 @@ std::map<std::string, int> make_map_with_boost_assign ()
 */
 
 
+std::map<std::string, int> make_map_manually ()
+{
+    std::map<std::string, int> retval;
+    retval.emplace("<", 1);
+    retval.emplace("<=",2);
+    retval.emplace(">", 3);
+    retval.emplace(">=",4);
+    retval.emplace("=", 5);
+    retval.emplace("<>",6);
+    return retval;
+}
+
+/* TODO!!!
+*/
+
+
 int main()
 {
     {
@@ -370,6 +386,17 @@ int main()
 
     {
         std::map<std::string, int> op = make_map_with_boost_assign();
+
+        std::cout << "\"<\"  --> " << op["<"] << std::endl;
+        std::cout << "\"<=\" --> " << op["<="] << std::endl;
+        std::cout << "\">\"  --> " << op[">"] << std::endl;
+        std::cout << "\">=\" --> " << op[">="] << std::endl;
+        std::cout << "\"=\"  --> " << op["="] << std::endl;
+        std::cout << "\"<>\" --> " << op["<>"] << std::endl;
+    }
+
+    {
+        std::map<std::string, int> op = make_map_manually();
 
         std::cout << "\"<\"  --> " << op["<"] << std::endl;
         std::cout << "\"<=\" --> " << op["<="] << std::endl;

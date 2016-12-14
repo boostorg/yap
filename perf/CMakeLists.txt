@@ -24,6 +24,7 @@ if (lldb)
 
             COMMAND lldb -f $<TARGET_FILE:map_assign_code_gen> -o "disassemble --name make_map_with_boost_yap" -o quit
             COMMAND lldb -f $<TARGET_FILE:map_assign_code_gen> -o "disassemble --name make_map_with_boost_assign" -o quit
+            COMMAND lldb -f $<TARGET_FILE:map_assign_code_gen> -o "disassemble --name make_map_manually" -o quit
     )
 elseif (gdb)
     add_custom_target(
@@ -35,5 +36,6 @@ elseif (gdb)
 
             COMMAND gdb -se $<TARGET_FILE:map_assign_code_gen> -batch -ex "disassemble make_map_with_boost_yap"
             COMMAND gdb -se $<TARGET_FILE:map_assign_code_gen> -batch -ex "disassemble make_map_with_boost_assign"
+            COMMAND gdb -se $<TARGET_FILE:map_assign_code_gen> -batch -ex "disassemble make_map_manually"
     )
 endif()
