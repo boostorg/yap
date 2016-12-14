@@ -1,9 +1,5 @@
 [section Manual]
 
-[heading Conventions]
-
-TODO
-
 [include tutorial.qbk]
 [include examples.qbk]
 [include configuration.qbk]
