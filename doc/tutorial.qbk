@@ -195,15 +195,15 @@ when an operand is passed to a _yap_ operator.  In this table, `expr` is an
 _ExprTmpl_, and `T` is a non-_Expr_ type.  `E` refers to any non-`expr_ref`
 _Expr_.  _yap_ does a partial decay on non-_Expr_ operands, in which `cv` and
 reference qualifiers are left unchanged, but arrays are decayed to pointers
-and functions are decayed to function pointers. `DECAY(T)` indicates such a
-partial decay of `T`.
+and functions are decayed to function pointers. `PARTIAL_DECAY(T)` indicates
+such a partial decay of `T`.
 
 [table Operand Handling
     [[Operand] [Captured As] [Notes]]
 
-    [[`T const &`] [`expr<expr_kind::terminal, boost::hana::tuple<DECAY(T) const &>>`] []]
-    [[`T &`] [`expr<expr_kind::terminal, boost::hana::tuple<DECAY(T) &>>`] []]
-    [[`T &&`] [`expr<expr_kind::terminal, boost::hana::tuple<DECAY(T)>>`] [Operand moved.]]
+    [[`T const &`] [`expr<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T) const &>>`] []]
+    [[`T &`] [`expr<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T) &>>`] []]
+    [[`T &&`] [`expr<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T)>>`] [Operand moved.]]
 
     [[`E const &`] [`expr<expr_kind::expr_ref, boost::hana::tuple<E const &>>`] []]
     [[`E &`] [`expr<expr_kind::expr_ref, boost::hana::tuple<E &>>`] []]
@@ -230,19 +230,19 @@ function with the same name in your own namespace; it gets picked up via ADL.
 By creating your own version of one of these _cps_, you can change how
 expressions are evaluated in _eval_ and _eval_as_.
 
-For example: first we define a UDT and an override of _yap_'s `eval_plus` for
-it:
+For example: first we define a UDT `number` and an override of _yap_'s
+`eval_plus` for it,
 
 [eval_plus_example_decls]
 
-Then we use it to evaluate expressions containing UDT values, even though
-there is no user-defined plus operator for the UDT:
+then we use it to evaluate expressions containing `number`s, even though there
+is no user-defined plus operator for `number`:
 
 [eval_plus_example_use]
 
 There is a _cp_ for each operator (including `if_else`), one for doing
-implicit transforms during evaluation, `transform_expression()`, and yet one
-more for replacing the entire implementation of _eval_as_,
+implicit transforms during evaluation, called `transform_expression()`, and
+yet one more for replacing the entire implementation of _eval_as_, called
 `eval_expression_as()`.  The complete list of the _cps_ can be found in the
 `function_objects` namespace in the _ops_header_.
 
@@ -255,7 +255,7 @@ and using it:
 
 [transform_expression_example_use]
 
-The `eval_expression_as()` works similarly.
+The `eval_expression_as()` _cp_ works similarly.
 
 You can create as many overloads of a _cp_ `C` as you like.  If there are 100
 overloads of `C`, any of them that match subexpressions within the expression
@@ -280,7 +280,7 @@ current subexpression and `transform_expression(expr)` is well-formed,
 
 [important Subexpressions of `expr` are not evaluated recursively, and in fact
 they are not evaluated at all!  The arguments passed to
-`transform_expression()` are _Exprs_, not values.]
+`transform_expression()` are _Exprs_, not evaluated values.]
 
 If you want recursive evaluation within your `transform_expression()`
 override, just use `evaluate()` directly:
@@ -291,28 +291,29 @@ that does that computation in one step:
 [naxpy_transform_decl]
 
 and since `evaluate()` is called on each operand in the transform, the
-transform is applied to each subexpression here, and then to the top-level
-expression:
+transform is applied to each parenthesized subexpression here, and then to the
+top-level expression:
 
 [naxpy_transform_use]
 
 [heading How the eval_expression_as Customization Point Is Applied]
 
 The `eval_expression_as()` _cp_ is only applied at the top level, replacing a
-call to _yap_'s version.  Like `transform_expression()`, it is not applied
-recursively, and is passed an expression.
+call to _yap_'s version.  Like `transform_expression()`, it subverts the
+normal recursive evaluation of the expression being evaluated.  Also like
+`transform_expression()`, it is passed an _Expr_.
 
-This may be useful if you want to evaluate an expression in a very different
-way depending on what the desired result type is.
+`eval_expression_as()` may be useful if you want to evaluate an expression in
+a very different way depending on what the desired result type is.
 
 [note Evaluation of _expr_'s optional conversion operator template is done via
 `eval_expression_as()`.  See _conv_op_m_ for details.]
 
 [heading How The Other Customization Points Are Applied]
 
-_eval_ and _eval_as_ each evaluate its given expression recursively,
-leaves-to-root.  For any given subexpression `E` of kind `K` with
-subexpressions `S0` ... `Sn`, `E` is evaluated as:
+Each of _eval_ and _eval_as_ evaluates its given expression recursively, depth
+first.  For any given subexpression `E` of kind `K` with subexpressions `S0`
+... `Sn`, `E` is evaluated as:
 
     eval_K(evaluate(S0), ... evaluate(Sn))
 
@@ -324,7 +325,9 @@ This means that a (sufficiently general) templated `eval_plus()` _cp_ override
 would apply to all plus operations in an expression tree, even nested ones.
 
 All the _cps_ except `transform_expression()` and `eval_expression_as()`
-receive values in their arguments, not _Exprs_.
+receive evaluated values in their arguments, not _Exprs_.  That is, unless
+some of the evaluated values happen to be _Exprs_ -- you may have written an
+expression that evaluates to an expression.  You may also be a weirdo.
 
 [endsect]
 
@@ -350,18 +353,18 @@ epxression to be transformed:
 
 [tag_xform]
 
-_TagXForms_ are most useful when the transform needs to match expressions
+_TagXForms_ are most useful when the transform needs to match an expression
 without regard to whether its operands are _expr_ref_ expressions, or -- if
 they are terminals -- whether they contain or refer to their values.
 _TagXForms_ tend to be far more concise.
 
 [heading A More Rigorous Description of TagTransform Parameters]
 
-That "(loosely)" before probably bothered you, right?  Me too.  For an
-expression `expr`, each parameter is passed to a _TagXForm_ by calling an
-operand accessor appropriate to `expr`'s kind, and then calling _value_ on the
-result.  For example, for a plus expression, the _TagXForm_ on a transform
-object `xform` will be called like this:
+That "(loosely)" before probably bothered you, right?  Me too.  Each non-tag
+parameter is passed to a _TagXForm_ by calling an operand accessor appropriate
+to `expr`'s kind, and then calling _value_ on the result.  For example,
+consider a plus expression `expr`.  The _TagXForm_ on a transform object
+`xform` would be called like this:
 
     xform(plus_tag, value(left(expr)), value(right(expr)))
 
@@ -375,8 +378,8 @@ the values inside terminals, and not the terminals themselves. Also, you can
 match all terminal value qualifiers (`const` or not, lvalue or rvalue)
 uniformly with a `T const &` parameter.  Finally, you can write _TagXForm_
 parameter types that can catch conversions; for instance, you can match any
-negation expression containing terminal of a numeric type convertible to
-`double` like this:
+negation expression containing a terminal, *or a reference to one*, containing
+a value convertible to `double` like this:
 
      struct xform
      {
@@ -384,15 +387,18 @@ negation expression containing terminal of a numeric type convertible to
          { return /* ... */; }
      }
 
-That will match negations of `unsigned int`s, `int`s, `float`s, etc.
+That will match a negation of a terminal containing an `unsigned int`,
+`unsigned int &`, `int const &`, `float &&`, etc.  It will also match a
+negation of a reference to such a terminal.
 
 [heading Mixing the Two Kinds of Transforms]
 
 You can have two overloads in your transform that match an expression, one an
 _ExprXForm_ and one a _TagXForm_, and there will not be any ambiguity.  The
 _TagXForm_ is prefered, except in the case of a call expression, in which case
-the _ExprXForm_ is preferred.  I know, I know.  Save youself some headaches
-and mix the two kinds of overloads as little as possible.
+the _ExprXForm_ is preferred.  I know, I know.  You don't have to worry about
+amiguity, but save youself some confusion and mix the two kinds of overloads
+as little as possible.
 
 [endsect]
 

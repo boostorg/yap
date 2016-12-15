@@ -20,7 +20,7 @@ important.
 _yap_ expressions can be used as subexpressions to build larger expressions.
 _expr_ref_ exists because we want to be able to do this without incurring
 unnecessay copies or moves.  Consider `v2` and `v3` in this snippet from the
-Lazy Vector example.  They are terminals that each owns its value, rather than
+Lazy Vector example.  Each is a terminal that owns its value, rather than
 referring to it.
 
     lazy_vector v2{{std::vector<double>(4, 2.0)}};
