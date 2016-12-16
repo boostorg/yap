@@ -49,7 +49,13 @@ struct map_list_of_tag {};
 auto map_list_of = boost::yap::make_terminal<map_list_of_expr>(map_list_of_tag{});
 
 
-std::map<std::string, int> make_map_with_boost_yap ()
+#if __GNUC__ || __clang__
+#define NOINLINE __attribute__((noinline))
+#else
+#define NOINLINE
+#endif
+
+NOINLINE std::map<std::string, int> make_map_with_boost_yap ()
 {
     return map_list_of
         ("<", 1)
@@ -91,7 +97,7 @@ std::map<std::string, int> make_map_with_boost_yap ()
 */
 
 
-std::map<std::string, int> make_map_with_boost_assign ()
+NOINLINE std::map<std::string, int> make_map_with_boost_assign ()
 {
     return boost::assign::map_list_of
         ("<", 1)
@@ -355,7 +361,7 @@ std::map<std::string, int> make_map_with_boost_assign ()
 */
 
 
-std::map<std::string, int> make_map_manually ()
+NOINLINE std::map<std::string, int> make_map_manually ()
 {
     std::map<std::string, int> retval;
     retval.emplace("<", 1);
@@ -424,7 +430,7 @@ std::map<std::string, int> make_map_manually ()
 */
 
 
-std::map<std::string, int> make_map_inializer_list ()
+NOINLINE std::map<std::string, int> make_map_inializer_list ()
 {
     std::map<std::string, int> retval = {
         {"<", 1},
