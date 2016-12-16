@@ -32,6 +32,7 @@ else ()
 endif ()
 
 add_subdirectory(googletest-release-1.8.0)
+add_subdirectory(benchmark-v1.1.0)
 
 add_subdirectory(test)
 add_subdirectory(example)
