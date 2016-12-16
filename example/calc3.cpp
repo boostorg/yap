@@ -10,24 +10,28 @@
 // of the expression, based on its placeholders.
 struct get_arity
 {
+    template <long long I>
+    boost::hana::llong<I> operator() (boost::yap::terminal_tag, boost::yap::placeholder<I>)
+    { return boost::hana::llong_c<I>; }
+
+    template <typename T>
+    auto operator() (boost::yap::terminal_tag, T &&)
+    {
+        using namespace boost::hana::literals;
+        return 0_c;
+    }
+
     template <typename Expr>
     auto operator() (Expr const & expr)
     {
-        if constexpr (Expr::kind == boost::yap::expr_kind::placeholder) {
-            return expr.value();
-        } else if constexpr (Expr::kind == boost::yap::expr_kind::terminal) {
-            using namespace boost::hana::literals;
-            return 0_c;
-        } else {
-            return boost::hana::maximum(
-                boost::hana::transform(
-                    expr.elements,
-                    [](auto const & element) {
-                        return boost::yap::transform(element, get_arity{});
-                    }
-                )
-            );
-        }
+        return boost::hana::maximum(
+            boost::hana::transform(
+                expr.elements,
+                [](auto const & element) {
+                    return boost::yap::transform(element, get_arity{});
+                }
+            )
+        );
     }
 };
 

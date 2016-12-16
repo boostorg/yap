@@ -28,14 +28,22 @@ namespace boost { namespace yap {
         }
 
         template <typename I, typename T, typename ...Ts>
-        auto eval_placeholder (I, T && arg, Ts && ... args)
+        decltype(auto) eval_placeholder (I, T && arg, Ts && ... args)
         {
             if constexpr (I::value == 1) {
-                return arg;
+                return static_cast<T &&>(arg);
             } else {
                 return eval_placeholder(hana::llong<I::value - 1>{}, static_cast<Ts &&>(args)...);
             }
         }
+
+        template <long long I, typename ...T>
+        decltype(auto) eval_terminal (placeholder<I>, T && ... args)
+        { return eval_placeholder(placeholder<I>{}, static_cast<T &&>(args)...); }
+
+        template <typename T, typename ...Ts>
+        decltype(auto) eval_terminal (T && value, Ts && ... args)
+        { return static_cast<T &&>(value); }
 
         template <typename Expr, typename ...T>
         decltype(auto) default_eval_expr (Expr && expr, T && ... args)
@@ -54,9 +62,7 @@ namespace boost { namespace yap {
             } else if constexpr (kind == expr_kind::expr_ref) {
                 return default_eval_expr(::boost::yap::deref(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::terminal) {
-                return ::boost::yap::value(static_cast<Expr &&>(expr));
-            } else if constexpr (kind == expr_kind::placeholder) {
-                return eval_placeholder(::boost::yap::value(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...);
+                return eval_terminal(::boost::yap::value(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...);
             }
 
 #define BOOST_YAP_UNARY_OPERATOR_CASE(op_name)                          \
@@ -182,7 +188,7 @@ namespace boost { namespace yap {
                     constexpr expr_kind kind = remove_cv_ref_t<decltype(ref)>::kind;
                     default_transform_expression_tag<decltype(ref), Transform, detail::arity_of<kind>()> transformer;
                     return transformer(ref, static_cast<Transform &&>(transform));
-                } else if constexpr (kind == expr_kind::terminal || kind == expr_kind::placeholder) {
+                } else if constexpr (kind == expr_kind::terminal) {
                     return static_cast<Expr &&>(expr);
                 } else {
                     if constexpr (std::is_lvalue_reference<Expr>{}) {

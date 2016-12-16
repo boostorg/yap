@@ -8,6 +8,9 @@
 template <typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
 
+template <long long I>
+using place_term = boost::yap::terminal<boost::yap::expression, boost::yap::placeholder<I>>;
+
 template <typename T>
 using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
@@ -19,24 +22,24 @@ TEST(placeholder_eval, test_placeholder_eval)
 {
     using namespace boost::yap::literals;
 
-    yap::placeholder<3> p3 = 3_p;
+    place_term<3> p3 = 3_p;
     int i_ = 42;
     term<int> i{std::move(i_)};
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            ref<yap::placeholder<3> &>,
+            ref<place_term<3> &>,
             term<int>
         >
     > expr = p3 + std::move(i);
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
-            ref<yap::placeholder<3> &>,
+            ref<place_term<3> &>,
             yap::expression<
                 yap::expr_kind::plus,
                 bh::tuple<
-                    ref<yap::placeholder<3> &>,
+                    ref<place_term<3> &>,
                     term<int>
                 >
             >

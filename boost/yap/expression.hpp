@@ -554,11 +554,6 @@ namespace boost { namespace yap {
 #endif // BOOST_YAP_DOXYGEN
     };
 
-    /** A convenience alias for a placeholder expression for placeholder \a
-        I.  Placeholders are 1-based. */
-    template <long long I>
-    using placeholder = expression<expr_kind::placeholder, hana::tuple<hana::llong<I>>>;
-
     /** "Dereferences" a reference-expression, forwarding its referent to the
         caller. */
     template <typename Expr>
@@ -597,8 +592,8 @@ namespace boost { namespace yap {
         <code>value(deref(x))</code>.
 
         - Otherwise, if \a x is an expression with only one value (a unary
-        expression, a terminal expression, or a placeholder expression), the
-        result is the forwarded first element of \a x.
+        expression or a terminal expression), the result is the forwarded
+        first element of \a x.
 
         - Otherwise, \a x is forwarded to the caller. */
     template <typename T>
@@ -896,7 +891,7 @@ namespace boost { namespace yap {
 namespace boost { namespace yap {
 
     /** Evaluates \a expr, substituting the subsequent parameters (if any)
-        into \a expr's placeholders.
+        into \a expr's placeholder terminals.
 
         All customization points for the evaluation of expressions \b except
         <code>eval_expression_as()</code> are used to evaluate the \a expr.
@@ -917,7 +912,7 @@ namespace boost { namespace yap {
     }
 
     /** Evaluates \a expr, substituting the subsequent parameters (if any)
-        into \a expr's placeholders.  Evaluation is performed via the
+        into \a expr's placeholder terminals.  Evaluation is performed via the
         <code>eval_expression_as()</code> customization point.
 
         Prefer this function to <code>evaluate()</code> when you want

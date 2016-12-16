@@ -9,6 +9,9 @@
 template <typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
 
+template <long long I>
+using place_term = boost::yap::terminal<boost::yap::expression, boost::yap::placeholder<I>>;
+
 template <typename T>
 using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
@@ -57,11 +60,7 @@ TEST(call_expr, test_call_expr)
     {
         yap::expression<
             yap::expr_kind::call,
-            bh::tuple<
-                yap::placeholder<1>,
-                yap::placeholder<2>,
-                yap::placeholder<3>
-            >
+            bh::tuple<place_term<1>, place_term<2>, place_term<3>>
         > expr = 1_p(2_p, 3_p);
 
         {

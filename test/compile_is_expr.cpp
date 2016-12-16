@@ -71,7 +71,11 @@ void compile_is_expr ()
     static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double> &>::value);
     static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double> &&>::value);
 
-    static_assert(yap::detail::is_expr<yap::placeholder<1>>::value);
+    {
+        using namespace yap::literals;
+        static_assert(yap::detail::is_expr<decltype(1_p)>::value);
+    }
+
     static_assert(yap::detail::is_expr<yap::expression<yap::expr_kind::unary_plus, boost::hana::tuple<yap::terminal<yap::expression, double>>>>::value);
     static_assert(yap::detail::is_expr<yap::expression<yap::expr_kind::plus, boost::hana::tuple<yap::terminal<yap::expression, double>, yap::terminal<yap::expression, double>>>>::value);
 
