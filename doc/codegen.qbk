@@ -542,6 +542,21 @@ and it's assembly is:
 
 A bit surprisingly, _yap_'s approach produces the smallest assembly.
 
+However, that is not the whole story.  Benchmarking these four functions with
+Google Benchmark yields these results:
+
+[table Runtimes of Different Map Constructions
+    [Function] [Time (ns)]
+
+    [[make_map_with_boost_yap()]          [1285]]
+    [[make_map_with_boost_assign()]       [1459]]
+    [[make_map_manually()]                 [985]]
+    [[make_map_inializer_list()]           [954]]
+]
+
+The _yap_-based implementation finishes in the middle of the pack, even though
+it has the smallest code size.
+
 In general, the expression trees produced by _yap_ get evaluated down to
 something close to the hand-written equivalent.  There is an abstraction
 penalty, but it is small for reasonably-sized expressions.  Somewhere between
