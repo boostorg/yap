@@ -62,8 +62,7 @@ There are four special kinds of expression.
 
 [variablelist Special Expression Kinds
     [[_terminal_] [A terminal contains a non-Expression value, and represents the leaf-node in an
-expression tree.]]
-    [[_placeholder_] [A placeholder is a terminal that acts as a stand-in for some value to be provided later.]]
+expression tree.  A terminal may have a _placeholder_ value, in which case it acts as a placeholder. ]]
     [[_if_else_] [An `if_else` expression is analogous to the C++ ternary operator (`?:`), but
 without the common-type conversion logic.]]
     [[_expr_ref_] [An `expr_ref` expression is one that acts as a (possibly `const`) lvalue reference to another expression.  It exists to prevent unnecessary copies of expressions.]]

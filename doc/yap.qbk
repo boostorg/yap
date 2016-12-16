@@ -71,7 +71,7 @@
 [def _expr_                [classref boost::yap::expression `expression<>`]]
 [def _kind_                [enumref boost::yap::expr_kind `expr_kind`]]
 [def _terminal_            [link boost.yap.expr_kind.terminal `expr_kind::terminal`]]
-[def _placeholder_         [link boost.yap.expr_kind.placeholder `expr_kind::placeholder`]]
+[def _placeholder_         [classref boost::yap::placeholder `placeholder<>`]]
 [def _if_else_             [link boost.yap.expr_kind.if_else `expr_kind::if_else`]]
 [def _expr_ref_            [link boost.yap.expr_kind.expr_ref `expr_kind::expr_ref`]]
 [def _xform_               [funcref boost::yap::transform `transform()`]]
