@@ -546,7 +546,7 @@ However, that is not the whole story.  Benchmarking these four functions with
 Google Benchmark yields these results:
 
 [table Runtimes of Different Map Constructions
-    [Function] [Time (ns)]
+    [[Function] [Time (ns)]]
 
     [[make_map_with_boost_yap()]          [1285]]
     [[make_map_with_boost_assign()]       [1459]]
