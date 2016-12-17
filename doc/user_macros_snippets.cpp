@@ -296,6 +296,37 @@ struct lazy_vector_9 :
 #undef is_vector
 #undef user_expr
 
+#define user_expr user_expr_10
+
+/// [USER_LITERAL_PLACEHOLDER_OPERATOR]
+template <boost::yap::expr_kind Kind, typename Tuple>
+struct user_expr
+{
+    using this_type = user_expr<Kind, Tuple>;
+
+    static const boost::yap::expr_kind kind = Kind;
+
+    Tuple elements;
+};
+
+namespace literals {
+
+    // Defines a user literal operator that makes placeholders; 2_p will be a
+    // 2-placeholder instantiated from the user_expr template.
+    BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR(user_expr)
+
+}
+/// [USER_LITERAL_PLACEHOLDER_OPERATOR]
+
+struct lazy_vector_10 :
+    user_expr<
+        boost::yap::expr_kind::terminal,
+        boost::hana::tuple<std::vector<double>>
+    >
+{};
+
+#undef user_expr
+
 
 int main ()
 {
@@ -308,6 +339,7 @@ int main ()
     lazy_vector_7 v7{{std::vector<double>(4, 1.0)}};
     lazy_vector_8 v8{{std::vector<double>(4, 1.0)}};
     lazy_vector_9 v9{{std::vector<double>(4, 1.0)}};
+    lazy_vector_10 v10{{std::vector<double>(4, 1.0)}};
 
     return 0;
 }

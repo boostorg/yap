@@ -580,6 +580,9 @@
     instantiated from the \a expr_template expression template.  It is
     recommended that you put this in its own namespace.
 
+    Example:
+    \snippet user_macros_snippets.cpp USER_LITERAL_PLACEHOLDER_OPERATOR
+
     \param expr_template The expression template to use to instantiate the
     result expression.  \a expr_template must be an \ref
     ExpressionTemplate.
