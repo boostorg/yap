@@ -49,23 +49,23 @@ namespace autodiff_placeholders {
 //]
 
 //[ autodiff_function_terminals
-struct sin_tag {};
-struct cos_tag {};
-struct sqrt_tag {};
-struct pow_tag {};
-
-template <typename Tag>
+template <OPCODE Opcode>
 struct autodiff_fn_expr :
-    autodiff_expr<boost::yap::expr_kind::terminal, boost::hana::tuple<Tag>>
+    autodiff_expr<boost::yap::expr_kind::terminal, boost::hana::tuple<OPCODE>>
 {
-    using this_type = autodiff_fn_expr<Tag>;
+    using this_type = autodiff_fn_expr<Opcode>;
+
+    autodiff_fn_expr () :
+        autodiff_expr {boost::hana::tuple<OPCODE>{Opcode}}
+    {}
+
     BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::autodiff_expr);
 };
 
-autodiff_fn_expr<sin_tag> const sin_{};
-autodiff_fn_expr<cos_tag> const cos_{};
-autodiff_fn_expr<sqrt_tag> const sqrt_{};
-autodiff_fn_expr<pow_tag> const pow_{};
+autodiff_fn_expr<OP_SIN> const sin_;
+autodiff_fn_expr<OP_COS> const cos_;
+autodiff_fn_expr<OP_SQRT> const sqrt_;
+autodiff_fn_expr<OP_POW> const pow_;
 //]
 
 //[ autodiff_xform
@@ -86,76 +86,24 @@ struct xform
     { return create_param_node(x); }
 
     template <typename Expr>
-    Node * operator() (boost::yap::call_tag, sin_tag, Expr && expr)
+    Node * operator() (boost::yap::call_tag, OPCODE opcode, Expr && expr)
     {
         return create_uary_op_node(
-            OP_SIN,
+            opcode,
             boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
         );
     }
 
-    template <typename Expr>
-    Node * operator() (boost::yap::call_tag, cos_tag, Expr && expr)
-    {
-        return create_binary_op_node(
-            OP_COS,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
-        );
-    }
+    static OPCODE op_for_tag (boost::yap::plus_tag) { return OP_PLUS; }
+    static OPCODE op_for_tag (boost::yap::minus_tag) { return OP_MINUS; }
+    static OPCODE op_for_tag (boost::yap::multiplies_tag) { return OP_TIMES; }
+    static OPCODE op_for_tag (boost::yap::divides_tag) { return OP_DIVID; }
 
-    template <typename Expr>
-    Node * operator() (boost::yap::call_tag, sqrt_tag, Expr && expr)
+    template <typename Tag, typename Expr1, typename Expr2>
+    Node * operator() (Tag tag, Expr1 && expr1, Expr2 && expr2)
     {
         return create_binary_op_node(
-            OP_SQRT,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
-        );
-    }
-
-    template <typename Expr>
-    Node * operator() (boost::yap::call_tag, pow_tag, Expr && expr)
-    {
-        return create_binary_op_node(
-            OP_POW,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
-        );
-    }
-
-    template <typename Expr1, typename Expr2>
-    Node * operator() (boost::yap::plus_tag, Expr1 && expr1, Expr2 && expr2)
-    {
-        return create_binary_op_node(
-            OP_PLUS,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
-        );
-    }
-
-    template <typename Expr1, typename Expr2>
-    Node * operator() (boost::yap::minus_tag, Expr1 && expr1, Expr2 && expr2)
-    {
-        return create_binary_op_node(
-            OP_MINUS,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
-        );
-    }
-
-    template <typename Expr1, typename Expr2>
-    Node * operator() (boost::yap::multiplies_tag, Expr1 && expr1, Expr2 && expr2)
-    {
-        return create_binary_op_node(
-            OP_TIMES,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
-        );
-    }
-
-    template <typename Expr1, typename Expr2>
-    Node * operator() (boost::yap::divides_tag, Expr1 && expr1, Expr2 && expr2)
-    {
-        return create_binary_op_node(
-            OP_DIVID,
+            op_for_tag(tag),
             boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
             boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
         );
