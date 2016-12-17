@@ -62,6 +62,7 @@ struct autodiff_fn_expr :
     BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::autodiff_expr);
 };
 
+// Someone included <math.h>, so we have to add trailing underscores.
 autodiff_fn_expr<OP_SIN> const sin_;
 autodiff_fn_expr<OP_COS> const cos_;
 autodiff_fn_expr<OP_SQRT> const sqrt_;
@@ -71,6 +72,8 @@ autodiff_fn_expr<OP_POW> const pow_;
 //[ autodiff_xform
 struct xform
 {
+    // Create a var-node for each placeholder when we see it for the first
+    // time.
     template <long long I>
     Node * operator() (boost::yap::terminal_tag, boost::yap::placeholder<I>)
     {
@@ -82,23 +85,54 @@ struct xform
         return retval;
     }
 
+    // Create a param-node for every numeric terminal in the expression.
     Node * operator() (boost::yap::terminal_tag, double x)
     { return create_param_node(x); }
 
+    // Create a "uary" node for each call expression, using its OPCODE.
     template <typename Expr>
     Node * operator() (boost::yap::call_tag, OPCODE opcode, Expr && expr)
     {
+        assert(opcode != OP_POW &&
+               "Someone called pow() with one argument.  I wonder who.");
         return create_uary_op_node(
             opcode,
             boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
         );
     }
 
+    // Same as above, but for our lone binary function pow().
+    template <typename Expr1, typename Expr2>
+    Node * operator() (boost::yap::call_tag, OPCODE opcode, Expr1 && expr1, Expr2 && expr2)
+    {
+        assert(opcode == OP_POW &&
+               "Only pow() takes two args.  It's like amateur hour around here.");
+        return create_binary_op_node(
+            opcode,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
+        );
+    }
+
+    template <typename Expr>
+    Node * operator() (boost::yap::negate_tag, Expr && expr)
+    {
+        assert(false); // TODO: Fix this!  The negation is getting stripped
+                       // off by the containing expression, and so this never
+                       // fires.
+        return create_uary_op_node(
+            OP_NEG,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
+        );
+    }
+
+    // Define a mapping from binary arothmetic tag type to OPCODE...
     static OPCODE op_for_tag (boost::yap::plus_tag) { return OP_PLUS; }
     static OPCODE op_for_tag (boost::yap::minus_tag) { return OP_MINUS; }
     static OPCODE op_for_tag (boost::yap::multiplies_tag) { return OP_TIMES; }
     static OPCODE op_for_tag (boost::yap::divides_tag) { return OP_DIVID; }
 
+    // ... and use it to handle all the binary arithmetic operators.
     template <typename Tag, typename Expr1, typename Expr2>
     Node * operator() (Tag tag, Expr1 && expr1, Expr2 && expr2)
     {
@@ -119,10 +153,13 @@ Node * to_auto_diff_node (Expr const & expr, vector<Node *> & list, T && ... arg
 {
     Node * retval = nullptr;
 
+    // This fills in list as a side effect.
     retval = boost::yap::transform(expr, xform{list});
 
     assert(list.size() == sizeof...(args));
 
+    // Fill in the values of the value-nodes in list with the "args"
+    // parameter pack.
     auto it = list.begin();
     boost::hana::for_each(
         boost::hana::make_tuple(std::forward<T &&>(args)...),
@@ -157,14 +194,14 @@ Node* build_linear_fun1_manually(vector<Node*>& list)
 	VNode*	x2 = create_var_node();
 	VNode*	x3 = create_var_node();
 
-	OPNode* op1 = create_binary_op_node(OP_TIMES,v5,x1); //op1 = v5*x1
-	OPNode* op2 = create_uary_op_node(OP_SIN,v10);       //op2 = sin(v10)
-	OPNode* op3 = create_binary_op_node(OP_TIMES,op2,x1);//op3 = op2*x1
-	OPNode* op4 = create_binary_op_node(OP_PLUS,op1,op3);//op4 = op1 + op3
-	OPNode*	op5 = create_binary_op_node(OP_TIMES,v10,x2);//op5 = v10*x2
-	OPNode* op6 = create_binary_op_node(OP_PLUS,op4,op5);//op6 = op4+op5
-	OPNode* op7 = create_binary_op_node(OP_DIVID,x3,v6); //op7 = x3/v6
-	OPNode* op8 = create_binary_op_node(OP_MINUS,op6,op7);//op8 = op6 - op7
+	OPNode* op1 = create_binary_op_node(OP_TIMES,v5,x1);   //op1 = v5*x1
+	OPNode* op2 = create_uary_op_node(OP_SIN,v10);         //op2 = sin(v10)
+	OPNode* op3 = create_binary_op_node(OP_TIMES,op2,x1);  //op3 = op2*x1
+	OPNode* op4 = create_binary_op_node(OP_PLUS,op1,op3);  //op4 = op1 + op3
+	OPNode*	op5 = create_binary_op_node(OP_TIMES,v10,x2);  //op5 = v10*x2
+	OPNode* op6 = create_binary_op_node(OP_PLUS,op4,op5);  //op6 = op4+op5
+	OPNode* op7 = create_binary_op_node(OP_DIVID,x3,v6);   //op7 = x3/v6
+	OPNode* op8 = create_binary_op_node(OP_MINUS,op6,op7); //op8 = op6 - op7
 	x1->val = -1.9;
 	x2->val = 2;
 	x3->val = 5./6.;
