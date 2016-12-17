@@ -22,4 +22,24 @@ add_sample(mixed)
 add_sample(map_assign)
 add_sample(future_group)
 
-# TODO: Add a sample using https://github.com/fqiang/autodiff_library
+# See https://github.com/fqiang/autodiff_library
+include_directories(autodiff_library)
+add_executable(
+    autodiff
+    autodiff_example.cpp
+    autodiff_library/ActNode.cpp
+    autodiff_library/BinaryOPNode.cpp
+    autodiff_library/Edge.cpp
+    autodiff_library/EdgeSet.cpp
+    autodiff_library/Node.cpp
+    autodiff_library/OPNode.cpp
+    autodiff_library/PNode.cpp
+    autodiff_library/Stack.cpp
+    autodiff_library/Tape.cpp
+    autodiff_library/UaryOPNode.cpp
+    autodiff_library/VNode.cpp
+    autodiff_library/autodiff.cpp
+)
+if (clang_on_linux)
+    target_link_libraries(autodiff c++)
+endif ()
