@@ -39,6 +39,7 @@
 [import ../example/mixed.cpp]
 [import ../example/map_assign.cpp]
 [import ../example/future_group.cpp]
+[import ../example/autodiff_example.cpp]
 [import ../test/user_expression_transform_2.cpp]
 [import ../test/user_expression_transform_3.cpp]
 
@@ -69,6 +70,7 @@
 [def _Callables_           [@http://en.cppreference.com/w/cpp/concept/Callable Callables]]
 
 [def _expr_                [classref boost::yap::expression `expression<>`]]
+[def _exprs_               [classref boost::yap::expression `expression<>`s]]
 [def _kind_                [enumref boost::yap::expr_kind `expr_kind`]]
 [def _terminal_            [link boost.yap.expr_kind.terminal `expr_kind::terminal`]]
 [def _placeholder_         [classref boost::yap::placeholder `placeholder<>`]]
@@ -97,6 +99,7 @@
 [def _udt_udt_binary_m_    [macroref BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR]]
 [def _udt_any_binary_m_    [macroref BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR]]
 [def _conv_op_m_           [macroref BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE]]
+[def _literal_op_m_        [macroref BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR]]
 
 [def _spirit_              [@http://boost-spirit.com Boost.Spirit]]
 [def _eigen_               [@http://eigen.tuxfamily.org Eigen]]

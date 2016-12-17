@@ -195,4 +195,69 @@ An implementation of Howard Hinnant's design for /future groups/.
 [endsect]
 
 
+[section Autodiff]
+
+Here we adapt an [@https://en.wikipedia.org/wiki/Automatic_differentiation
+automatic differentiation] library to use _yap_ for specifying the equations
+it operates on.
+
+Autodiff is a pretty small library, and doesn't cover every possible input
+expression.  What it covers is simple arithmetic, and the well-known functions
+`sin`, `cos`, `sqrt`, and `pow`.
+
+Here is how you would form an input to the library using its API.  This is
+taken from the test program that comes with the library.
+
+[autodiff_original_node_builder]
+
+I have a *lot* of trouble understanding what's going on here, and even more
+verifying that the expression written in the comment is actually what the code
+produces.  Let's see if we can do better.
+
+First, we start with a custom expression template, `autodiff_expr`.  It
+supports simple arithmetic, but notice it has no call operator -- we don't
+want `(a + b)()` to be a valid expression.
+
+[autodiff_expr_template_decl]
+
+We're going to be using a lot of placeholders in our Autodiff expressions, and
+it sure would be nice if they were `autodiff_expr`s and not _exprs_, so that
+only our desired operators are in play.  To do this, we define an operator
+that produces placeholder literals, using the _literal_op_m_ macro:
+
+[autodiff_expr_literals_decl]
+
+Now, how about the functions we need to support, and where do we put the call
+operator?  In other examples we created terminal subclasses or templates to
+get special behavior on terminals.  In this case, we want to create a
+function-terminal template:
+
+[autodiff_function_terminals]
+
+`OPCODE` is an enumeration in Autodiff.  We use it as a non-type template
+parameter for convenience when declaring `sin_` and friends.  All we really
+need is for the `OPCODE` to be the value of the terminals we produce, and for
+these function-terminals to have the call operator.
+
+[note Using _member_call_m_ is a bit loose here.  We could have written unary
+(for everything but `pow`) and binary (for `pow`) call operators to ensure
+that the user can't write call expressions with the wrong number of
+arguments.]
+
+Now, some tranforms:
+
+[autodiff_xform]
+
+We need a function to tie everything together, since the transforms cannot
+fill in the values for the placeholders.
+
+[autodiff_to_node]
+
+Finally, here is the _yap_ version of the function we started with:
+
+[autodiff_yap_node_builder]
+
+[endsect]
+
+
 [endsect]
