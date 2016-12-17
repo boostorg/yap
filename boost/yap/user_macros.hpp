@@ -575,4 +575,27 @@
         };                                                              \
     }
 
+
+/** Defines user defined literal template that creates literal placeholders
+    instantiated from the \a expr_template expression template.  It is
+    recommended that you put this in its own namespace.
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+*/
+#define BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR(expr_template)      \
+template <char ...c>                                                    \
+constexpr auto operator"" _p ()                                         \
+{                                                                       \
+    using i = ::boost::hana::llong<                                     \
+        ::boost::hana::ic_detail::parse<sizeof...(c)>({c...})           \
+    >;                                                                  \
+    static_assert(1 <= i::value, "Placeholders must be >= 1.");         \
+    return expr_template<                                               \
+        ::boost::yap::expr_kind::terminal,                              \
+        ::boost::hana::tuple< ::boost::yap::placeholder<i::value>>      \
+    >{};                                                                \
+}
+
 #endif
