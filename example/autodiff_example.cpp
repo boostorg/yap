@@ -15,173 +15,180 @@ double const Epsilon = 10.0e-6;
 
 using namespace AutoDiff;
 
-namespace yap = boost::yap;
+//[ autodiff_expr_template_decl
+template <boost::yap::expr_kind Kind, typename Tuple>
+struct autodiff_expr
+{
+    using this_type = autodiff_expr<Kind, Tuple>;
 
-namespace expr {
+    static boost::yap::expr_kind const kind = Kind;
 
-    template <yap::expr_kind Kind, typename Tuple>
-    struct autodiff_expr
+    Tuple elements;
+
+    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(negate, this_type, ::autodiff_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::autodiff_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::autodiff_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, this_type, ::autodiff_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, this_type, ::autodiff_expr)
+};
+
+BOOST_YAP_USER_FREE_BINARY_OPERATOR(plus, ::autodiff_expr)
+BOOST_YAP_USER_FREE_BINARY_OPERATOR(minus, ::autodiff_expr)
+BOOST_YAP_USER_FREE_BINARY_OPERATOR(multiplies, ::autodiff_expr)
+BOOST_YAP_USER_FREE_BINARY_OPERATOR(divides, ::autodiff_expr)
+//]
+
+//[ autodiff_expr_literals_decl
+namespace autodiff_placeholders {
+
+    // This defines a placeholder literal operator that creates autodiff_expr
+    // placeholders.
+    BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR(autodiff_expr)
+
+}
+//]
+
+//[ autodiff_function_terminals
+struct sin_tag {};
+struct cos_tag {};
+struct sqrt_tag {};
+struct pow_tag {};
+
+template <typename Tag>
+struct autodiff_fn_expr :
+    autodiff_expr<boost::yap::expr_kind::terminal, boost::hana::tuple<Tag>>
+{
+    using this_type = autodiff_fn_expr<Tag>;
+    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::autodiff_expr);
+};
+
+autodiff_fn_expr<sin_tag> const sin_{};
+autodiff_fn_expr<cos_tag> const cos_{};
+autodiff_fn_expr<sqrt_tag> const sqrt_{};
+autodiff_fn_expr<pow_tag> const pow_{};
+//]
+
+//[ autodiff_xform
+struct xform
+{
+    template <long long I>
+    Node * operator() (boost::yap::terminal_tag, boost::yap::placeholder<I>)
     {
-        using this_type = autodiff_expr<Kind, Tuple>;
-
-        static yap::expr_kind const kind = Kind;
-
-        Tuple elements;
-
-        BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(negate, this_type, ::expr::autodiff_expr)
-        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::expr::autodiff_expr)
-        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::expr::autodiff_expr)
-        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, this_type, ::expr::autodiff_expr)
-        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, this_type, ::expr::autodiff_expr)
-    };
-
-    BOOST_YAP_USER_FREE_BINARY_OPERATOR(plus, ::expr::autodiff_expr)
-    BOOST_YAP_USER_FREE_BINARY_OPERATOR(minus, ::expr::autodiff_expr)
-    BOOST_YAP_USER_FREE_BINARY_OPERATOR(multiplies, ::expr::autodiff_expr)
-    BOOST_YAP_USER_FREE_BINARY_OPERATOR(divides, ::expr::autodiff_expr)
-
-    namespace literals {
-
-        BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR(autodiff_expr)
-
-    }
-
-    struct sin_tag {};
-    struct cos_tag {};
-    struct sqrt_tag {};
-    struct pow_tag {};
-
-    template <typename Tag>
-    struct autodiff_fn_expr :
-        autodiff_expr<yap::expr_kind::terminal, boost::hana::tuple<Tag>>
-    {
-        using this_type = autodiff_fn_expr<Tag>;
-        BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::expr::autodiff_expr);
-    };
-
-    autodiff_fn_expr<sin_tag> const sin_{};
-    autodiff_fn_expr<cos_tag> const cos_{};
-    autodiff_fn_expr<sqrt_tag> const sqrt_{};
-    autodiff_fn_expr<pow_tag> const pow_{};
-
-    struct xform
-    {
-        template <long long I>
-        Node * operator() (yap::terminal_tag, boost::yap::placeholder<I>)
-        {
-            if (list_.size() < I)
-                list_.resize(I);
-            auto & retval = list_[I - 1];
-            if (retval == nullptr)
-                retval = create_var_node();
-            return retval;
-        }
-
-        Node * operator() (yap::terminal_tag, double x)
-        { return create_param_node(x); }
-
-        template <typename Expr>
-        Node * operator() (yap::call_tag, sin_tag, Expr && expr)
-        {
-            return create_uary_op_node(
-                OP_SIN,
-                yap::transform(yap::as_expr(std::forward<Expr &&>(expr)), *this)
-            );
-        }
-
-        template <typename Expr>
-        Node * operator() (yap::call_tag, cos_tag, Expr && expr)
-        {
-            return create_binary_op_node(
-                OP_COS,
-                yap::transform(yap::as_expr(std::forward<Expr &&>(expr)), *this)
-            );
-        }
-
-        template <typename Expr>
-        Node * operator() (yap::call_tag, sqrt_tag, Expr && expr)
-        {
-            return create_binary_op_node(
-                OP_SQRT,
-                yap::transform(yap::as_expr(std::forward<Expr &&>(expr)), *this)
-            );
-        }
-
-        template <typename Expr>
-        Node * operator() (yap::call_tag, pow_tag, Expr && expr)
-        {
-            return create_binary_op_node(
-                OP_POW,
-                yap::transform(yap::as_expr(std::forward<Expr &&>(expr)), *this)
-            );
-        }
-
-        template <typename Expr1, typename Expr2>
-        Node * operator() (yap::plus_tag, Expr1 && expr1, Expr2 && expr2)
-        {
-            return create_binary_op_node(
-                OP_PLUS,
-                yap::transform(yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-                yap::transform(yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
-            );
-        }
-
-        template <typename Expr1, typename Expr2>
-        Node * operator() (yap::minus_tag, Expr1 && expr1, Expr2 && expr2)
-        {
-            return create_binary_op_node(
-                OP_MINUS,
-                yap::transform(yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-                yap::transform(yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
-            );
-        }
-
-        template <typename Expr1, typename Expr2>
-        Node * operator() (yap::multiplies_tag, Expr1 && expr1, Expr2 && expr2)
-        {
-            return create_binary_op_node(
-                OP_TIMES,
-                yap::transform(yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-                yap::transform(yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
-            );
-        }
-
-        template <typename Expr1, typename Expr2>
-        Node * operator() (yap::divides_tag, Expr1 && expr1, Expr2 && expr2)
-        {
-            return create_binary_op_node(
-                OP_DIVID,
-                yap::transform(yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-                yap::transform(yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
-            );
-        }
-
-        vector<Node *> & list_;
-    };
-
-    template <typename Expr, typename ...T>
-    Node * to_auto_diff_node (Expr const & expr, vector<Node *> & list, T && ... args)
-    {
-        Node * retval = nullptr;
-
-        retval = yap::transform(expr, xform{list});
-
-        assert(list.size() == sizeof...(args));
-        auto it = list.begin();
-        boost::hana::for_each(
-            boost::hana::make_tuple(std::forward<T &&>(args)...),
-            [&it](auto && x) {
-                Node * n = *it;
-                VNode * v = boost::polymorphic_downcast<VNode *>(n);
-                v->val = x;
-                ++it;
-            }
-        );
-
+        if (list_.size() < I)
+            list_.resize(I);
+        auto & retval = list_[I - 1];
+        if (retval == nullptr)
+            retval = create_var_node();
         return retval;
     }
 
+    Node * operator() (boost::yap::terminal_tag, double x)
+    { return create_param_node(x); }
+
+    template <typename Expr>
+    Node * operator() (boost::yap::call_tag, sin_tag, Expr && expr)
+    {
+        return create_uary_op_node(
+            OP_SIN,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
+        );
+    }
+
+    template <typename Expr>
+    Node * operator() (boost::yap::call_tag, cos_tag, Expr && expr)
+    {
+        return create_binary_op_node(
+            OP_COS,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
+        );
+    }
+
+    template <typename Expr>
+    Node * operator() (boost::yap::call_tag, sqrt_tag, Expr && expr)
+    {
+        return create_binary_op_node(
+            OP_SQRT,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
+        );
+    }
+
+    template <typename Expr>
+    Node * operator() (boost::yap::call_tag, pow_tag, Expr && expr)
+    {
+        return create_binary_op_node(
+            OP_POW,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
+        );
+    }
+
+    template <typename Expr1, typename Expr2>
+    Node * operator() (boost::yap::plus_tag, Expr1 && expr1, Expr2 && expr2)
+    {
+        return create_binary_op_node(
+            OP_PLUS,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
+        );
+    }
+
+    template <typename Expr1, typename Expr2>
+    Node * operator() (boost::yap::minus_tag, Expr1 && expr1, Expr2 && expr2)
+    {
+        return create_binary_op_node(
+            OP_MINUS,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
+        );
+    }
+
+    template <typename Expr1, typename Expr2>
+    Node * operator() (boost::yap::multiplies_tag, Expr1 && expr1, Expr2 && expr2)
+    {
+        return create_binary_op_node(
+            OP_TIMES,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
+        );
+    }
+
+    template <typename Expr1, typename Expr2>
+    Node * operator() (boost::yap::divides_tag, Expr1 && expr1, Expr2 && expr2)
+    {
+        return create_binary_op_node(
+            OP_DIVID,
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
+            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
+        );
+    }
+
+    vector<Node *> & list_;
+};
+//]
+
+//[ autodiff_to_node
+template <typename Expr, typename ...T>
+Node * to_auto_diff_node (Expr const & expr, vector<Node *> & list, T && ... args)
+{
+    Node * retval = nullptr;
+
+    retval = boost::yap::transform(expr, xform{list});
+
+    assert(list.size() == sizeof...(args));
+
+    auto it = list.begin();
+    boost::hana::for_each(
+        boost::hana::make_tuple(std::forward<T &&>(args)...),
+        [&it](auto && x) {
+            Node * n = *it;
+            VNode * v = boost::polymorphic_downcast<VNode *>(n);
+            v->val = x;
+            ++it;
+        }
+    );
+
+    return retval;
 }
+//]
 
 struct F{
 	F() {	AutoDiff::autodiff_setup();	}
@@ -191,6 +198,7 @@ struct F{
 
 BOOST_FIXTURE_TEST_SUITE(all, F)
 
+//[ autodiff_original_node_builder
 Node* build_linear_fun1_manually(vector<Node*>& list)
 {
 	//f(x1,x2,x3) = -5*x1+sin(10)*x1+10*x2-x3/6
@@ -217,12 +225,13 @@ Node* build_linear_fun1_manually(vector<Node*>& list)
 	list.push_back(x3);
 	return op8;
 }
+//]
 
+//[ autodiff_yap_node_builder
 Node* build_linear_fun1(vector<Node*>& list)
 {
     //f(x1,x2,x3) = -5*x1+sin(10)*x1+10*x2-x3/6
-    using namespace expr;
-    using namespace expr::literals;
+    using namespace autodiff_placeholders;
     return to_auto_diff_node(
         -5 * 1_p + sin_(10) * 1_p + 10 * 2_p - 3_p / 6,
         list,
@@ -231,6 +240,7 @@ Node* build_linear_fun1(vector<Node*>& list)
         5./6.
     );
 }
+//]
 
 Node* build_linear_function2_manually(vector<Node*>& list)
 {
@@ -261,8 +271,7 @@ Node* build_linear_function2_manually(vector<Node*>& list)
 Node* build_linear_function2(vector<Node*>& list)
 {
     //f(x1,x2,x3) = -5*x1+-10*x1+10*x2-x3/6
-    using namespace expr;
-    using namespace expr::literals;
+    using namespace autodiff_placeholders;
     auto ten = boost::yap::make_terminal<autodiff_expr>(10);
     return to_auto_diff_node(
         -5 * 1_p + -ten * 1_p + 10 * 2_p - 3_p / 6,
@@ -303,8 +312,7 @@ Node* build_nl_function1_manually(vector<Node*>& list)
 Node* build_nl_function1(vector<Node*>& list)
 {
     // (x1*x2 * sin(x1))/x3 + x2*x4 - x1/x2
-    using namespace expr;
-    using namespace expr::literals;
+    using namespace autodiff_placeholders;
     return to_auto_diff_node(
         (1_p * 2_p * sin_(1_p)) / 3_p + 2_p * 4_p - 1_p / 2_p,
         list,
