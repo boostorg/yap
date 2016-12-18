@@ -66,7 +66,6 @@ struct autodiff_fn_expr :
 autodiff_fn_expr<OP_SIN> const sin_;
 autodiff_fn_expr<OP_COS> const cos_;
 autodiff_fn_expr<OP_SQRT> const sqrt_;
-autodiff_fn_expr<OP_POW> const pow_;
 //]
 
 //[ autodiff_xform
@@ -91,38 +90,20 @@ struct xform
 
     // Create a "uary" node for each call expression, using its OPCODE.
     template <typename Expr>
-    Node * operator() (boost::yap::call_tag, OPCODE opcode, Expr && expr)
+    Node * operator() (boost::yap::call_tag, OPCODE opcode, Expr const & expr)
     {
-        assert(opcode != OP_POW &&
-               "Someone called pow() with one argument.  I wonder who.");
         return create_uary_op_node(
             opcode,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
-        );
-    }
-
-    // Same as above, but for our lone binary function pow().
-    template <typename Expr1, typename Expr2>
-    Node * operator() (boost::yap::call_tag, OPCODE opcode, Expr1 && expr1, Expr2 && expr2)
-    {
-        assert(opcode == OP_POW &&
-               "Only pow() takes two args.  It's like amateur hour around here.");
-        return create_binary_op_node(
-            opcode,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
+            boost::yap::transform(boost::yap::as_expr(expr), *this)
         );
     }
 
     template <typename Expr>
-    Node * operator() (boost::yap::negate_tag, Expr && expr)
+    Node * operator() (boost::yap::negate_tag, Expr const & expr)
     {
-        assert(false); // TODO: Fix this!  The negation is getting stripped
-                       // off by the containing expression, and so this never
-                       // fires.
         return create_uary_op_node(
             OP_NEG,
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr &&>(expr)), *this)
+            boost::yap::transform(boost::yap::as_expr(expr), *this)
         );
     }
 
@@ -134,12 +115,12 @@ struct xform
 
     // ... and use it to handle all the binary arithmetic operators.
     template <typename Tag, typename Expr1, typename Expr2>
-    Node * operator() (Tag tag, Expr1 && expr1, Expr2 && expr2)
+    Node * operator() (Tag tag, Expr1 const & expr1, Expr2 const & expr2)
     {
         return create_binary_op_node(
             op_for_tag(tag),
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr1 &&>(expr1)), *this),
-            boost::yap::transform(boost::yap::as_expr(std::forward<Expr2 &&>(expr2)), *this)
+            boost::yap::transform(boost::yap::as_expr(expr1), *this),
+            boost::yap::transform(boost::yap::as_expr(expr2), *this)
         );
     }
 
@@ -149,7 +130,7 @@ struct xform
 
 //[ autodiff_to_node
 template <typename Expr, typename ...T>
-Node * to_auto_diff_node (Expr const & expr, vector<Node *> & list, T && ... args)
+Node * to_auto_diff_node (Expr const & expr, vector<Node *> & list, T ... args)
 {
     Node * retval = nullptr;
 
@@ -162,8 +143,8 @@ Node * to_auto_diff_node (Expr const & expr, vector<Node *> & list, T && ... arg
     // parameter pack.
     auto it = list.begin();
     boost::hana::for_each(
-        boost::hana::make_tuple(std::forward<T &&>(args)...),
-        [&it](auto && x) {
+        boost::hana::make_tuple(args ...),
+        [&it](auto x) {
             Node * n = *it;
             VNode * v = boost::polymorphic_downcast<VNode *>(n);
             v->val = x;
