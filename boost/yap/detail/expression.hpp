@@ -3,8 +3,9 @@
 
 #include <boost/yap/expression_fwd.hpp>
 
-#include <boost/hana/tuple.hpp>
+#include <boost/hana/core/is_a.hpp>
 #include <boost/hana/size.hpp>
+#include <boost/hana/tuple.hpp>
 
 #include <memory>
 #include <type_traits>
@@ -64,17 +65,6 @@ namespace boost { namespace yap {
         using remove_cv_ref_t = typename remove_cv_ref<T>::type;
 
 
-        // is_hana_tuple
-
-        template <typename T>
-        struct is_hana_tuple
-        { static bool const value = false; };
-
-        template <typename ...T>
-        struct is_hana_tuple<hana::tuple<T...>>
-        { static bool const value = true; };
-
-
         // is_expr
 
         template <typename Expr, typename = std::void_t<>, typename = std::void_t<>>
@@ -90,7 +80,7 @@ namespace boost { namespace yap {
         {
             static bool const value =
                 std::is_same<std::remove_cv_t<decltype(remove_cv_ref_t<Expr>::kind)>, expr_kind>{} &&
-                is_hana_tuple<remove_cv_ref_t<decltype(std::declval<Expr>().elements)>>::value;
+                hana::is_a<hana::tuple_tag, decltype(std::declval<Expr>().elements)>();
         };
 
 
