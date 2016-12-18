@@ -20,7 +20,7 @@ struct map_list_of_transform
         // without this recursive call, only the top-level call expression is
         // matched by transform().
         boost::yap::transform(fn, *this);
-        map.try_emplace(
+        map.emplace(
             Key{std::forward<Key2 &&>(key)},
             Value{std::forward<Value2 &&>(value)}
         );

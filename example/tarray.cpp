@@ -31,7 +31,8 @@ struct tarray_expr
         std::is_same<Tuple, boost::hana::tuple<int const &>>{} ||
         std::is_same<Tuple, boost::hana::tuple<int &>>{} ||
         std::is_same<Tuple, boost::hana::tuple<int>>{} ||
-        std::is_same<Tuple, boost::hana::tuple<std::array<int, 3>>>{}
+        std::is_same<Tuple, boost::hana::tuple<std::array<int, 3>>>{},
+        "tarray_expr instantiated with an unsupported terminal type."
     );
 
     using this_type = tarray_expr<Kind, Tuple>;

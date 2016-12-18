@@ -72,6 +72,11 @@ struct lazy_vector :
         boost::hana::tuple<std::vector<double>>
     >
 {
+    lazy_vector () {}
+
+    explicit lazy_vector (std::vector<double> && vec)
+    { elements = boost::hana::tuple<std::vector<double>>(std::move(vec)); }
+
     template <boost::yap::expr_kind Kind, typename Tuple>
     lazy_vector & operator+= (lazy_vector_expr<Kind, Tuple> const & rhs)
     {
@@ -85,9 +90,9 @@ struct lazy_vector :
 
 int main ()
 {
-    lazy_vector v1{{std::vector<double>(4, 1.0)}};
-    lazy_vector v2{{std::vector<double>(4, 2.0)}};
-    lazy_vector v3{{std::vector<double>(4, 3.0)}};
+    lazy_vector v1{std::vector<double>(4, 1.0)};
+    lazy_vector v2{std::vector<double>(4, 2.0)};
+    lazy_vector v3{std::vector<double>(4, 3.0)};
 
     double d1 = (v2 + v3)[2];
     std::cout << d1 << "\n";
