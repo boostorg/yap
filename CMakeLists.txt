@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_package(Boost 1.62.0 EXACT)
 if (Boost_INCLUDE_DIRS)
