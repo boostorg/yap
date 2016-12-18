@@ -751,7 +751,25 @@ namespace boost { namespace yap {
         }
     }
 
-    /** Returns <code>get(expr, i)</code>.
+    /** Returns <code>get(expr, 0)</code>.
+
+        \note <code>callable()</code> is only valid if \a Expr is an
+        <code>expr_kind::call</code> expression.
+    */
+    template <typename Expr>
+    decltype(auto) callable (Expr && expr)
+    {
+        return ::boost::yap::get(static_cast<Expr &&>(expr), hana::llong_c<0>);
+        constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
+        if constexpr (kind != expr_kind::expr_ref) {
+            static_assert(
+                detail::arity_of<kind>() == detail::expr_arity::n,
+                "callable() is only defined for call expressions."
+            );
+        }
+    }
+
+    /** Returns <code>get(expr, i + 1)</code>.
 
         \note <code>argument()</code> is only valid if \a Expr is an
         <code>expr_kind::call</code> expression.
@@ -759,7 +777,7 @@ namespace boost { namespace yap {
     template <long long I, typename Expr>
     decltype(auto) argument (Expr && expr, hana::llong<I> i)
     {
-        return ::boost::yap::get(static_cast<Expr &&>(expr), i);
+        return ::boost::yap::get(static_cast<Expr &&>(expr), hana::llong_c<I + 1>);
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
         if constexpr (kind != expr_kind::expr_ref) {
             static_assert(
@@ -767,7 +785,7 @@ namespace boost { namespace yap {
                 "argument() is only defined for call expressions."
             );
             static_assert(
-                0 <= I && I < decltype(hana::size(expr.elements))::value,
+                0 <= I && I < decltype(hana::size(expr.elements))::value - 1,
                 "In argument(expr, I), I must be nonnegative, and less "
                 "than hana::size(expr.elements)."
             );

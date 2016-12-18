@@ -317,7 +317,7 @@ namespace boost { namespace yap {
             ) -> decltype(
                 static_cast<Transform &&>(transform)(
                     call_tag{},
-                    ::boost::yap::value(::boost::yap::argument(
+                    ::boost::yap::value(::boost::yap::get(
                         static_cast<Expr &&>(expr),
                         hana::llong_c<I>
                     ))...
@@ -325,7 +325,7 @@ namespace boost { namespace yap {
             ) {
                 return static_cast<Transform &&>(transform)(
                     call_tag{},
-                    ::boost::yap::value(::boost::yap::argument(
+                    ::boost::yap::value(::boost::yap::get(
                         static_cast<Expr &&>(expr),
                         hana::llong_c<I>
                     ))...
