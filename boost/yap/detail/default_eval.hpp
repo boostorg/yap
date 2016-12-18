@@ -234,6 +234,10 @@ namespace boost { namespace yap {
             }
         };
 
+        template <typename T>
+        decltype(auto) terminal_value (T && x)
+        { return value_impl<true>(static_cast<T &&>(x)); }
+
         template <typename Expr, typename Transform>
         struct default_transform_expression_tag<
             Expr,
@@ -242,7 +246,7 @@ namespace boost { namespace yap {
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    ::boost::yap::value(::boost::yap::value(std::declval<Expr>()))
+                    terminal_value(::boost::yap::value(std::declval<Expr>()))
                 )
             )>
         >
@@ -251,7 +255,7 @@ namespace boost { namespace yap {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    ::boost::yap::value(::boost::yap::value(static_cast<Expr &&>(expr)))
+                    terminal_value(::boost::yap::value(static_cast<Expr &&>(expr)))
                 );
             }
         };
@@ -264,8 +268,8 @@ namespace boost { namespace yap {
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    ::boost::yap::value(::boost::yap::left(std::declval<Expr>())),
-                    ::boost::yap::value(::boost::yap::right(std::declval<Expr>()))
+                    terminal_value(::boost::yap::left(std::declval<Expr>())),
+                    terminal_value(::boost::yap::right(std::declval<Expr>()))
                 )
             )>
         >
@@ -274,8 +278,8 @@ namespace boost { namespace yap {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    ::boost::yap::value(::boost::yap::left(static_cast<Expr &&>(expr))),
-                    ::boost::yap::value(::boost::yap::right(static_cast<Expr &&>(expr)))
+                    terminal_value(::boost::yap::left(static_cast<Expr &&>(expr))),
+                    terminal_value(::boost::yap::right(static_cast<Expr &&>(expr)))
                 );
             }
         };
@@ -288,9 +292,9 @@ namespace boost { namespace yap {
             std::void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    ::boost::yap::value(::boost::yap::cond(std::declval<Expr>())),
-                    ::boost::yap::value(::boost::yap::then(std::declval<Expr>())),
-                    ::boost::yap::value(::boost::yap::else_(std::declval<Expr>()))
+                    terminal_value(::boost::yap::cond(std::declval<Expr>())),
+                    terminal_value(::boost::yap::then(std::declval<Expr>())),
+                    terminal_value(::boost::yap::else_(std::declval<Expr>()))
                 )
             )>
         >
@@ -299,9 +303,9 @@ namespace boost { namespace yap {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    ::boost::yap::value(::boost::yap::cond(static_cast<Expr &&>(expr))),
-                    ::boost::yap::value(::boost::yap::then(static_cast<Expr &&>(expr))),
-                    ::boost::yap::value(::boost::yap::else_(static_cast<Expr &&>(expr)))
+                    terminal_value(::boost::yap::cond(static_cast<Expr &&>(expr))),
+                    terminal_value(::boost::yap::then(static_cast<Expr &&>(expr))),
+                    terminal_value(::boost::yap::else_(static_cast<Expr &&>(expr)))
                 );
             }
         };
@@ -317,7 +321,7 @@ namespace boost { namespace yap {
             ) -> decltype(
                 static_cast<Transform &&>(transform)(
                     call_tag{},
-                    ::boost::yap::value(::boost::yap::get(
+                    terminal_value(::boost::yap::get(
                         static_cast<Expr &&>(expr),
                         hana::llong_c<I>
                     ))...
@@ -325,7 +329,7 @@ namespace boost { namespace yap {
             ) {
                 return static_cast<Transform &&>(transform)(
                     call_tag{},
-                    ::boost::yap::value(::boost::yap::get(
+                    terminal_value(::boost::yap::get(
                         static_cast<Expr &&>(expr),
                         hana::llong_c<I>
                     ))...

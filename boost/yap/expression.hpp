@@ -580,6 +580,41 @@ namespace boost { namespace yap {
         }
     }
 
+    namespace detail {
+
+        template <bool ValueOfTerminalsOnly, typename T>
+        decltype(auto) value_impl (T && x)
+        {
+            if constexpr (is_expr<T>::value) {
+                using namespace hana::literals;
+                constexpr expr_kind kind = remove_cv_ref_t<T>::kind;
+                constexpr expr_arity arity = arity_of<kind>();
+                if constexpr (kind == expr_kind::expr_ref) {
+                    return value_impl<ValueOfTerminalsOnly>(
+                        ::boost::yap::deref(static_cast<T &&>(x))
+                    );
+                } else if constexpr (ValueOfTerminalsOnly && kind == expr_kind::terminal) {
+                    if constexpr (std::is_lvalue_reference<T>{}) {
+                        return x.elements[0_c];
+                    } else {
+                        return std::move(x.elements[0_c]);
+                    }
+                } else if constexpr (!ValueOfTerminalsOnly && arity == expr_arity::one) {
+                    if constexpr (std::is_lvalue_reference<T>{}) {
+                        return x.elements[0_c];
+                    } else {
+                        return std::move(x.elements[0_c]);
+                    }
+                } else {
+                    return static_cast<T &&>(x);
+                }
+            } else {
+                return static_cast<T &&>(x);
+            }
+        }
+
+    }
+
     /** Forwards the sole element of \a x to the caller, possibly calling
         <code>deref()</code> first if \a x is a reference expression, or
         forwards \a x to the caller unchanged.
@@ -598,26 +633,7 @@ namespace boost { namespace yap {
         - Otherwise, \a x is forwarded to the caller. */
     template <typename T>
     decltype(auto) value (T && x)
-    {
-        if constexpr (detail::is_expr<T>::value) {
-            using namespace hana::literals;
-            constexpr expr_kind kind = detail::remove_cv_ref_t<T>::kind;
-            constexpr detail::expr_arity arity = detail::arity_of<kind>();
-            if constexpr (kind == expr_kind::expr_ref) {
-                return ::boost::yap::value(::boost::yap::deref(static_cast<T &&>(x)));
-            } else if constexpr (arity == detail::expr_arity::one) {
-                if constexpr (std::is_lvalue_reference<T>{}) {
-                    return x.elements[0_c];
-                } else {
-                    return std::move(x.elements[0_c]);
-                }
-            } else {
-                return static_cast<T &&>(x);
-            }
-        } else {
-            return static_cast<T &&>(x);
-        }
-    }
+    { return detail::value_impl<false>(static_cast<T &&>(x)); }
 
     /** Forwards the <i>i</i>-th element of \a expr to the caller.  If \a expr
         is a reference expression, the result is <code>get(deref(expr),
