@@ -51,20 +51,6 @@ struct non_expr_6
 
 void compile_is_expr ()
 {
-    static_assert(yap::detail::is_hana_tuple<boost::hana::tuple<>>::value, "");
-    static_assert(yap::detail::is_hana_tuple<boost::hana::tuple<int, double>>::value, "");
-
-    static_assert(! yap::detail::is_hana_tuple<int>::value, "");
-
-    static_assert(
-        yap::detail::is_hana_tuple<
-            yap::detail::remove_cv_ref_t<
-                decltype(std::declval<yap::terminal<yap::expression, double>>().elements)
-            >
-        >::value,
-        ""
-    );
-
     static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double>>::value, "");
 
     static_assert(yap::detail::is_expr<yap::terminal<yap::expression, double> const>::value, "");
