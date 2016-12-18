@@ -593,13 +593,8 @@ namespace boost { namespace yap {
                     return value_impl<ValueOfTerminalsOnly>(
                         ::boost::yap::deref(static_cast<T &&>(x))
                     );
-                } else if constexpr (ValueOfTerminalsOnly && kind == expr_kind::terminal) {
-                    if constexpr (std::is_lvalue_reference<T>{}) {
-                        return x.elements[0_c];
-                    } else {
-                        return std::move(x.elements[0_c]);
-                    }
-                } else if constexpr (!ValueOfTerminalsOnly && arity == expr_arity::one) {
+                } else if constexpr ((ValueOfTerminalsOnly && kind == expr_kind::terminal) ||
+                                     (!ValueOfTerminalsOnly && arity == expr_arity::one)) {
                     if constexpr (std::is_lvalue_reference<T>{}) {
                         return x.elements[0_c];
                     } else {
