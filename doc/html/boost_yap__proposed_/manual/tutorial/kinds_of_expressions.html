@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Kinds of Expressions</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
+<link rel="up" href="../tutorial.html" title="Tutorial">
+<link rel="prev" href="expressions.html" title="Expressions">
+<link rel="next" href="operators.html" title="Operators">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="expressions.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="operators.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_yap__proposed_.manual.tutorial.kinds_of_expressions"></a><a class="link" href="kinds_of_expressions.html" title="Kinds of Expressions">Kinds
+        of Expressions</a>
+</h4></div></div></div>
+<p>
+          There are three special kinds of expression.
+        </p>
+<div class="variablelist">
+<p class="title"><b>Special Expression Kinds</b></p>
+<dl class="variablelist">
+<dt><span class="term"><a class="link" href="../../../boost/yap/expr_kind.html#boost.yap.expr_kind.terminal"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span></code></a></span></dt>
+<dd><p>
+                A terminal contains a non-Expression value, and represents the leaf-node
+                in an expression tree. A terminal may have a <code class="computeroutput"><a class="link" href="../../../boost/yap/placeholder.html" title="Struct template placeholder">placeholder&lt;&gt;</a></code>
+                value, in which case it acts as a placeholder.
+              </p></dd>
+<dt><span class="term"><a class="link" href="../../../boost/yap/expr_kind.html#boost.yap.expr_kind.if_else"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">if_else</span></code></a></span></dt>
+<dd><p>
+                An <code class="computeroutput"><span class="identifier">if_else</span></code> expression
+                is analogous to the C++ ternary operator (<code class="computeroutput"><span class="special">?:</span></code>),
+                but without the common-type conversion logic.
+              </p></dd>
+<dt><span class="term"><a class="link" href="../../../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a></span></dt>
+<dd><p>
+                An <code class="computeroutput"><span class="identifier">expr_ref</span></code> expression
+                is one that acts as a (possibly <code class="computeroutput"><span class="keyword">const</span></code>)
+                lvalue reference to another expression. It exists to prevent unnecessary
+                copies of expressions.
+              </p></dd>
+</dl>
+</div>
+<p>
+          The other expression kinds are all the overloadable operators, See <code class="computeroutput"><a class="link" href="../../../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code>
+          for the full list.
+        </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="expressions.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="operators.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

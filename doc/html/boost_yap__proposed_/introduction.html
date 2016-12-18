@@ -1,0 +1,102 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Introduction</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
+<link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
+<link rel="prev" href="../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
+<link rel="next" href="manual.html" title="Manual">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../index.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="manual.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_yap__proposed_.introduction"></a><a class="link" href="introduction.html" title="Introduction">Introduction</a>
+</h2></div></div></div>
+<p>
+      "I like to start documentation with a quote. A nice, pithy one."
+    </p>
+<p>
+      <span class="emphasis"><em><span class="bold"><strong>-- Eric Niebler (paraphrased)</strong></span></em></span>
+    </p>
+<h4>
+<a name="boost_yap__proposed_.introduction.h0"></a>
+      <span class="phrase"><a name="boost_yap__proposed_.introduction.motivation"></a></span><a class="link" href="introduction.html#boost_yap__proposed_.introduction.motivation">Motivation</a>
+    </h4>
+<p>
+      Expression templates are rad. They are used in lots of libraries; here are
+      just three of the most impressive:
+    </p>
+<p>
+      - <a href="http://boost-spirit.com" target="_top">Boost.Spirit</a> allows you to write
+      an EBNF-style grammar that gets transformed into a PEG parser.
+    </p>
+<p>
+      - <a href="http://eigen.tuxfamily.org" target="_top">Eigen</a> allows you to do linear
+      algebra using a very natural and mathematical expression syntax that, when
+      executed, heavily optimizes your expressions.
+    </p>
+<p>
+      - <a href="https://www.lri.fr/~falcou/nt2" target="_top">NT2</a> takes slightly modified
+      MatLab code and allows it to be parsed and run as highly optimized C++ code.
+    </p>
+<p>
+      However, this can come at a high cost. Expression templates are costly to implement
+      and maintain. Each of <a href="http://eigen.tuxfamily.org" target="_top">Eigen</a>
+      and Boost.Ublas has a large volume of complex expression template code that
+      cannot be reused elsewhere.
+    </p>
+<p>
+      To date, the best solution to this problem of high implementation cost has
+      been to use Boost.Proto. Due to the limitations of C++98, the standard against
+      which Proto was written, Proto remains quite complicated and difficult to use.
+      It also imposes prohibitively long compile times for many uses.
+    </p>
+<p>
+      With the language facilities available in the C++14 and C++17 standards, an
+      expression template library is now much easier to write and use, and has very
+      reasonable compile times.
+    </p>
+<h4>
+<a name="boost_yap__proposed_.introduction.h1"></a>
+      <span class="phrase"><a name="boost_yap__proposed_.introduction.features"></a></span><a class="link" href="introduction.html#boost_yap__proposed_.introduction.features">Features</a>
+    </h4>
+<p>
+      - Functions that operate on expression trees that model the <a class="link" href="concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+      concept.
+    </p>
+<p>
+      - A reference template that models <a class="link" href="concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>.
+    </p>
+<p>
+      - Facilities for easily creating custom <a class="link" href="concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplates</a>.
+    </p>
+<p>
+      - Customization points that can be user-overridden to create implicit transformations.
+    </p>
+<p>
+      - Easy-to-use custom explicit transformations via <code class="computeroutput"><a class="link" href="../boost/yap/transform.html" title="Function template transform">transform()</a></code>.
+    </p>
+<p>
+      - Expression tree semantics as close to those of builtin C++ expressions as
+      possible.
+    </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../index.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="manual.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Expressions</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
+<link rel="up" href="../tutorial.html" title="Tutorial">
+<link rel="prev" href="../tutorial.html" title="Tutorial">
+<link rel="next" href="kinds_of_expressions.html" title="Kinds of Expressions">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="../tutorial.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="kinds_of_expressions.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_yap__proposed_.manual.tutorial.expressions"></a><a class="link" href="expressions.html" title="Expressions">Expressions</a>
+</h4></div></div></div>
+<p>
+          Boost.YAP consists of expressions and functions that operate on them. Any
+          type that models the <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+          concept will work with any of the functions in Boost.YAP that takes an
+          expression.
+        </p>
+<p>
+          For a type <code class="computeroutput"><span class="identifier">T</span></code> to model the
+          <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+          concept, <code class="computeroutput"><span class="identifier">T</span></code> must contain
+          at least an <code class="computeroutput"><a class="link" href="../../../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code>
+          (terminal, plus-operation, etc.) and a <code class="computeroutput"><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;&gt;</span></code> of values. That's it. This means
+          that user-defined templates modelling <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>
+          are very straightforward to make.
+        </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+            The <code class="computeroutput"><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;&gt;</span></code>
+            of values is also constrained, based on the kind of the expression; see
+            the full <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+            documentation for details.
+          </p></td></tr>
+</table></div>
+<p>
+          Here's an example:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">minimal_expr</span>
+<span class="special">{</span>
+    <span class="keyword">static</span> <span class="keyword">const</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
+
+    <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+        </p>
+<p>
+          That's a template that models <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>.
+          Instantiated with the proper template parameters, it produces <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expression">Expressions</a>.
+        </p>
+<p>
+          Ok, so it's not that interesting by itself -- it has no operators. But
+          we can still use it with the Boost.YAP functions that take an <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>.
+          Let's make a plus-expression manually:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">auto</span> <span class="identifier">left</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="number">1</span><span class="special">);</span>
+<span class="keyword">auto</span> <span class="identifier">right</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="number">41</span><span class="special">);</span>
+
+<span class="keyword">auto</span> <span class="identifier">expr</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_expression</span><span class="special">&lt;</span>
+    <span class="identifier">minimal_expr</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">plus</span>
+<span class="special">&gt;(</span><span class="identifier">left</span><span class="special">,</span> <span class="identifier">right</span><span class="special">);</span>
+</pre>
+<p>
+        </p>
+<p>
+          And if we evaluate it using <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate()</a></code>,
+          it does what you would expect:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">auto</span> <span class="identifier">result</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">expr</span><span class="special">);</span>
+
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">result</span> <span class="special">&lt;&lt;</span> <span class="string">"\n"</span><span class="special">;</span> <span class="comment">// prints "42"</span>
+</pre>
+<p>
+        </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>
+            There is a reference model of the <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>
+            concept that comes with Boost.YAP: <code class="computeroutput"><a class="link" href="../../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;</a></code>.
+            It has all the member operators defined, and the nonmember operators
+            and the <code class="computeroutput"><span class="identifier">if_else</span></code> pseudo-operator
+            are defined in their repsective headers.
+          </p>
+<p>
+            <code class="computeroutput"><a class="link" href="../../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;</a></code> is great for prototyping,
+            and for quick-and-dirty uses of expression templates, but its use of
+            every single operator makes it a suboptimal choice for most use cass.
+          </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+            Because Boost.YAP operates on <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expression">Expressions</a>,
+            it is possible to mix and match <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expression">Expressions</a>
+            that are instantiations of different templates. An expression containing
+            an <code class="computeroutput"><a class="link" href="../../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;</a></code> subexpression and
+            subexpressions instantiated from N other <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplates</a>
+            can be passed as an argument to any of the <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>-accepting
+            Boost.YAP functions.
+          </p></td></tr>
+</table></div>
+<p>
+          One more thing. It is important to remember that Boost.YAP expressions
+          are all-lazy, all the time. There is no auto-evaluation of a Boost.YAP
+          expression like there was with Proto. If you want your expressions to be
+          evaluated, you must call <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate()</a></code>
+          or <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate_as()</a></code>, enable <code class="computeroutput"><a class="link" href="../../../BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE.html" title="Macro BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE">BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</a></code>
+          (a dubious solution), or define non-lazy operations that force evaluation
+          where and when you want it. This last approach is usually the right one,
+          and there are lots of examples of how to do this in the Examples section.
+        </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../tutorial.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="kinds_of_expressions.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

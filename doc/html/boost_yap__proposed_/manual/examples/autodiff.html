@@ -1,0 +1,304 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Autodiff</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
+<link rel="up" href="../examples.html" title="Examples">
+<link rel="prev" href="future_group.html" title="Future Group">
+<link rel="next" href="../configuration.html" title="Configuration">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="future_group.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="../configuration.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_yap__proposed_.manual.examples.autodiff"></a><a class="link" href="autodiff.html" title="Autodiff">Autodiff</a>
+</h4></div></div></div>
+<p>
+          Here we adapt an <a href="https://en.wikipedia.org/wiki/Automatic_differentiation" target="_top">automatic
+          differentiation</a> library to use Boost.YAP for specifying the equations
+          it operates on.
+        </p>
+<p>
+          Autodiff is a pretty small library, and doesn't cover every possible input
+          expression. What it covers is simple arithmetic, and the well-known functions
+          <code class="computeroutput"><span class="identifier">sin</span></code>, <code class="computeroutput"><span class="identifier">cos</span></code>,
+          <code class="computeroutput"><span class="identifier">sqrt</span></code>, and <code class="computeroutput"><span class="identifier">pow</span></code>.
+        </p>
+<p>
+          Here is how you would form an input to the library using its API. This
+          is taken from the test program that comes with the library.
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="identifier">Node</span><span class="special">*</span> <span class="identifier">build_linear_fun1_manually</span><span class="special">(</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="identifier">Node</span><span class="special">*&gt;&amp;</span> <span class="identifier">list</span><span class="special">)</span>
+<span class="special">{</span>
+	<span class="comment">//f(x1,x2,x3) = -5*x1+sin(10)*x1+10*x2-x3/6</span>
+	<span class="identifier">PNode</span><span class="special">*</span> <span class="identifier">v5</span> <span class="special">=</span> <span class="identifier">create_param_node</span><span class="special">(-</span><span class="number">5</span><span class="special">);</span>
+	<span class="identifier">PNode</span><span class="special">*</span> <span class="identifier">v10</span> <span class="special">=</span> <span class="identifier">create_param_node</span><span class="special">(</span><span class="number">10</span><span class="special">);</span>
+	<span class="identifier">PNode</span><span class="special">*</span> <span class="identifier">v6</span> <span class="special">=</span> <span class="identifier">create_param_node</span><span class="special">(</span><span class="number">6</span><span class="special">);</span>
+	<span class="identifier">VNode</span><span class="special">*</span>	<span class="identifier">x1</span> <span class="special">=</span> <span class="identifier">create_var_node</span><span class="special">();</span>
+	<span class="identifier">VNode</span><span class="special">*</span>	<span class="identifier">x2</span> <span class="special">=</span> <span class="identifier">create_var_node</span><span class="special">();</span>
+	<span class="identifier">VNode</span><span class="special">*</span>	<span class="identifier">x3</span> <span class="special">=</span> <span class="identifier">create_var_node</span><span class="special">();</span>
+
+	<span class="identifier">OPNode</span><span class="special">*</span> <span class="identifier">op1</span> <span class="special">=</span> <span class="identifier">create_binary_op_node</span><span class="special">(</span><span class="identifier">OP_TIMES</span><span class="special">,</span><span class="identifier">v5</span><span class="special">,</span><span class="identifier">x1</span><span class="special">);</span>   <span class="comment">//op1 = v5*x1</span>
+	<span class="identifier">OPNode</span><span class="special">*</span> <span class="identifier">op2</span> <span class="special">=</span> <span class="identifier">create_uary_op_node</span><span class="special">(</span><span class="identifier">OP_SIN</span><span class="special">,</span><span class="identifier">v10</span><span class="special">);</span>         <span class="comment">//op2 = sin(v10)</span>
+	<span class="identifier">OPNode</span><span class="special">*</span> <span class="identifier">op3</span> <span class="special">=</span> <span class="identifier">create_binary_op_node</span><span class="special">(</span><span class="identifier">OP_TIMES</span><span class="special">,</span><span class="identifier">op2</span><span class="special">,</span><span class="identifier">x1</span><span class="special">);</span>  <span class="comment">//op3 = op2*x1</span>
+	<span class="identifier">OPNode</span><span class="special">*</span> <span class="identifier">op4</span> <span class="special">=</span> <span class="identifier">create_binary_op_node</span><span class="special">(</span><span class="identifier">OP_PLUS</span><span class="special">,</span><span class="identifier">op1</span><span class="special">,</span><span class="identifier">op3</span><span class="special">);</span>  <span class="comment">//op4 = op1 + op3</span>
+	<span class="identifier">OPNode</span><span class="special">*</span>	<span class="identifier">op5</span> <span class="special">=</span> <span class="identifier">create_binary_op_node</span><span class="special">(</span><span class="identifier">OP_TIMES</span><span class="special">,</span><span class="identifier">v10</span><span class="special">,</span><span class="identifier">x2</span><span class="special">);</span>  <span class="comment">//op5 = v10*x2</span>
+	<span class="identifier">OPNode</span><span class="special">*</span> <span class="identifier">op6</span> <span class="special">=</span> <span class="identifier">create_binary_op_node</span><span class="special">(</span><span class="identifier">OP_PLUS</span><span class="special">,</span><span class="identifier">op4</span><span class="special">,</span><span class="identifier">op5</span><span class="special">);</span>  <span class="comment">//op6 = op4+op5</span>
+	<span class="identifier">OPNode</span><span class="special">*</span> <span class="identifier">op7</span> <span class="special">=</span> <span class="identifier">create_binary_op_node</span><span class="special">(</span><span class="identifier">OP_DIVID</span><span class="special">,</span><span class="identifier">x3</span><span class="special">,</span><span class="identifier">v6</span><span class="special">);</span>   <span class="comment">//op7 = x3/v6</span>
+	<span class="identifier">OPNode</span><span class="special">*</span> <span class="identifier">op8</span> <span class="special">=</span> <span class="identifier">create_binary_op_node</span><span class="special">(</span><span class="identifier">OP_MINUS</span><span class="special">,</span><span class="identifier">op6</span><span class="special">,</span><span class="identifier">op7</span><span class="special">);</span> <span class="comment">//op8 = op6 - op7</span>
+	<span class="identifier">x1</span><span class="special">-&gt;</span><span class="identifier">val</span> <span class="special">=</span> <span class="special">-</span><span class="number">1.9</span><span class="special">;</span>
+	<span class="identifier">x2</span><span class="special">-&gt;</span><span class="identifier">val</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+	<span class="identifier">x3</span><span class="special">-&gt;</span><span class="identifier">val</span> <span class="special">=</span> <span class="number">5.</span><span class="special">/</span><span class="number">6.</span><span class="special">;</span>
+	<span class="identifier">list</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">x1</span><span class="special">);</span>
+	<span class="identifier">list</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">x2</span><span class="special">);</span>
+	<span class="identifier">list</span><span class="special">.</span><span class="identifier">push_back</span><span class="special">(</span><span class="identifier">x3</span><span class="special">);</span>
+	<span class="keyword">return</span> <span class="identifier">op8</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+        </p>
+<p>
+          I have a <span class="bold"><strong>lot</strong></span> of trouble understanding
+          what's going on here, and even more verifying that the expression written
+          in the comment is actually what the code produces. Let's see if we can
+          do better.
+        </p>
+<p>
+          First, we start with a custom expression template, <code class="computeroutput"><span class="identifier">autodiff_expr</span></code>.
+          It supports simple arithmetic, but notice it has no call operator -- we
+          don't want <code class="computeroutput"><span class="special">(</span><span class="identifier">a</span>
+          <span class="special">+</span> <span class="identifier">b</span><span class="special">)()</span></code> to be a valid expression.
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">autodiff_expr</span>
+<span class="special">{</span>
+    <span class="keyword">using</span> <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">autodiff_expr</span><span class="special">&lt;</span><span class="identifier">Kind</span><span class="special">,</span> <span class="identifier">Tuple</span><span class="special">&gt;;</span>
+
+    <span class="keyword">static</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="keyword">const</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
+
+    <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
+
+    <span class="identifier">BOOST_YAP_USER_UNARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">negate</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">multiplies</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">divides</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+<span class="special">};</span>
+
+<span class="identifier">BOOST_YAP_USER_FREE_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+<span class="identifier">BOOST_YAP_USER_FREE_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+<span class="identifier">BOOST_YAP_USER_FREE_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">multiplies</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+<span class="identifier">BOOST_YAP_USER_FREE_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">divides</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+</pre>
+<p>
+        </p>
+<p>
+          We're going to be using a lot of placeholders in our Autodiff expressions,
+          and it sure would be nice if they were <code class="computeroutput"><span class="identifier">autodiff_expr</span></code>s
+          and not <code class="computeroutput"><a class="link" href="../../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;s</a></code>, so that only our
+          desired operators are in play. To do this, we define an operator that produces
+          placeholder literals, using the <code class="computeroutput"><a class="link" href="../../../BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR.html" title="Macro BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR">BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR</a></code>
+          macro:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">namespace</span> <span class="identifier">autodiff_placeholders</span> <span class="special">{</span>
+
+    <span class="comment">// This defines a placeholder literal operator that creates autodiff_expr</span>
+    <span class="comment">// placeholders.</span>
+    <span class="identifier">BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR</span><span class="special">(</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+
+<span class="special">}</span>
+</pre>
+<p>
+        </p>
+<p>
+          Now, how about the functions we need to support, and where do we put the
+          call operator? In other examples we created terminal subclasses or templates
+          to get special behavior on terminals. In this case, we want to create a
+          function-terminal template:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">OPCODE</span> <span class="identifier">Opcode</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">autodiff_fn_expr</span> <span class="special">:</span>
+    <span class="identifier">autodiff_expr</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span><span class="identifier">OPCODE</span><span class="special">&gt;&gt;</span>
+<span class="special">{</span>
+    <span class="keyword">using</span> <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">autodiff_fn_expr</span><span class="special">&lt;</span><span class="identifier">Opcode</span><span class="special">&gt;;</span>
+
+    <span class="identifier">autodiff_fn_expr</span> <span class="special">()</span> <span class="special">:</span>
+        <span class="identifier">autodiff_expr</span> <span class="special">{</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span><span class="identifier">OPCODE</span><span class="special">&gt;{</span><span class="identifier">Opcode</span><span class="special">}}</span>
+    <span class="special">{}</span>
+
+    <span class="identifier">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</span><span class="special">(</span><span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">);</span>
+<span class="special">};</span>
+
+<span class="comment">// Someone included &lt;math.h&gt;, so we have to add trailing underscores.</span>
+<span class="identifier">autodiff_fn_expr</span><span class="special">&lt;</span><span class="identifier">OP_SIN</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="identifier">sin_</span><span class="special">;</span>
+<span class="identifier">autodiff_fn_expr</span><span class="special">&lt;</span><span class="identifier">OP_COS</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="identifier">cos_</span><span class="special">;</span>
+<span class="identifier">autodiff_fn_expr</span><span class="special">&lt;</span><span class="identifier">OP_SQRT</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="identifier">sqrt_</span><span class="special">;</span>
+</pre>
+<p>
+        </p>
+<p>
+          <code class="computeroutput"><span class="identifier">OPCODE</span></code> is an enumeration
+          in Autodiff. We use it as a non-type template parameter for convenience
+          when declaring <code class="computeroutput"><span class="identifier">sin_</span></code> and
+          friends. All we really need is for the <code class="computeroutput"><span class="identifier">OPCODE</span></code>
+          to be the value of the terminals we produce, and for these function-terminals
+          to have the call operator.
+        </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+            Using <code class="computeroutput"><a class="link" href="../../../BOOST_YAP_USER_MEMBER_CALL_OPERATOR.html" title="Macro BOOST_YAP_USER_MEMBER_CALL_OPERATOR">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</a></code>
+            is a bit loose here, because it defines a variadic template. We could
+            have written unary call operators to ensure that the user can't write
+            call expressions with the wrong number of arguments.
+          </p></td></tr>
+</table></div>
+<p>
+          Now, some tranforms:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">xform</span>
+<span class="special">{</span>
+    <span class="comment">// Create a var-node for each placeholder when we see it for the first</span>
+    <span class="comment">// time.</span>
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">long</span> <span class="keyword">long</span> <span class="identifier">I</span><span class="special">&gt;</span>
+    <span class="identifier">Node</span> <span class="special">*</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal_tag</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">placeholder</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;)</span>
+    <span class="special">{</span>
+        <span class="keyword">if</span> <span class="special">(</span><span class="identifier">list_</span><span class="special">.</span><span class="identifier">size</span><span class="special">()</span> <span class="special">&lt;</span> <span class="identifier">I</span><span class="special">)</span>
+            <span class="identifier">list_</span><span class="special">.</span><span class="identifier">resize</span><span class="special">(</span><span class="identifier">I</span><span class="special">);</span>
+        <span class="keyword">auto</span> <span class="special">&amp;</span> <span class="identifier">retval</span> <span class="special">=</span> <span class="identifier">list_</span><span class="special">[</span><span class="identifier">I</span> <span class="special">-</span> <span class="number">1</span><span class="special">];</span>
+        <span class="keyword">if</span> <span class="special">(</span><span class="identifier">retval</span> <span class="special">==</span> <span class="keyword">nullptr</span><span class="special">)</span>
+            <span class="identifier">retval</span> <span class="special">=</span> <span class="identifier">create_var_node</span><span class="special">();</span>
+        <span class="keyword">return</span> <span class="identifier">retval</span><span class="special">;</span>
+    <span class="special">}</span>
+
+    <span class="comment">// Create a param-node for every numeric terminal in the expression.</span>
+    <span class="identifier">Node</span> <span class="special">*</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal_tag</span><span class="special">,</span> <span class="keyword">double</span> <span class="identifier">x</span><span class="special">)</span>
+    <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">create_param_node</span><span class="special">(</span><span class="identifier">x</span><span class="special">);</span> <span class="special">}</span>
+
+    <span class="comment">// Create a "uary" node for each call expression, using its OPCODE.</span>
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr</span><span class="special">&gt;</span>
+    <span class="identifier">Node</span> <span class="special">*</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">call_tag</span><span class="special">,</span> <span class="identifier">OPCODE</span> <span class="identifier">opcode</span><span class="special">,</span> <span class="identifier">Expr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="keyword">return</span> <span class="identifier">create_uary_op_node</span><span class="special">(</span>
+            <span class="identifier">opcode</span><span class="special">,</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">expr</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)</span>
+        <span class="special">);</span>
+    <span class="special">}</span>
+
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr</span><span class="special">&gt;</span>
+    <span class="identifier">Node</span> <span class="special">*</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">negate_tag</span><span class="special">,</span> <span class="identifier">Expr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="keyword">return</span> <span class="identifier">create_uary_op_node</span><span class="special">(</span>
+            <span class="identifier">OP_NEG</span><span class="special">,</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">expr</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)</span>
+        <span class="special">);</span>
+    <span class="special">}</span>
+
+    <span class="comment">// Define a mapping from binary arothmetic tag type to OPCODE...</span>
+    <span class="keyword">static</span> <span class="identifier">OPCODE</span> <span class="identifier">op_for_tag</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">plus_tag</span><span class="special">)</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">OP_PLUS</span><span class="special">;</span> <span class="special">}</span>
+    <span class="keyword">static</span> <span class="identifier">OPCODE</span> <span class="identifier">op_for_tag</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">minus_tag</span><span class="special">)</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">OP_MINUS</span><span class="special">;</span> <span class="special">}</span>
+    <span class="keyword">static</span> <span class="identifier">OPCODE</span> <span class="identifier">op_for_tag</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">multiplies_tag</span><span class="special">)</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">OP_TIMES</span><span class="special">;</span> <span class="special">}</span>
+    <span class="keyword">static</span> <span class="identifier">OPCODE</span> <span class="identifier">op_for_tag</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">divides_tag</span><span class="special">)</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">OP_DIVID</span><span class="special">;</span> <span class="special">}</span>
+
+    <span class="comment">// ... and use it to handle all the binary arithmetic operators.</span>
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Tag</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Expr1</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Expr2</span><span class="special">&gt;</span>
+    <span class="identifier">Node</span> <span class="special">*</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">Tag</span> <span class="identifier">tag</span><span class="special">,</span> <span class="identifier">Expr1</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr1</span><span class="special">,</span> <span class="identifier">Expr2</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr2</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="keyword">return</span> <span class="identifier">create_binary_op_node</span><span class="special">(</span>
+            <span class="identifier">op_for_tag</span><span class="special">(</span><span class="identifier">tag</span><span class="special">),</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">expr1</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">),</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">expr2</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)</span>
+        <span class="special">);</span>
+    <span class="special">}</span>
+
+    <span class="identifier">vector</span><span class="special">&lt;</span><span class="identifier">Node</span> <span class="special">*&gt;</span> <span class="special">&amp;</span> <span class="identifier">list_</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+        </p>
+<p>
+          We need a function to tie everything together, since the transforms cannot
+          fill in the values for the placeholders.
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr</span><span class="special">,</span> <span class="keyword">typename</span> <span class="special">...</span><span class="identifier">T</span><span class="special">&gt;</span>
+<span class="identifier">Node</span> <span class="special">*</span> <span class="identifier">to_auto_diff_node</span> <span class="special">(</span><span class="identifier">Expr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">,</span> <span class="identifier">vector</span><span class="special">&lt;</span><span class="identifier">Node</span> <span class="special">*&gt;</span> <span class="special">&amp;</span> <span class="identifier">list</span><span class="special">,</span> <span class="identifier">T</span> <span class="special">...</span> <span class="identifier">args</span><span class="special">)</span>
+<span class="special">{</span>
+    <span class="identifier">Node</span> <span class="special">*</span> <span class="identifier">retval</span> <span class="special">=</span> <span class="keyword">nullptr</span><span class="special">;</span>
+
+    <span class="comment">// This fills in list as a side effect.</span>
+    <span class="identifier">retval</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">,</span> <span class="identifier">xform</span><span class="special">{</span><span class="identifier">list</span><span class="special">});</span>
+
+    <span class="identifier">assert</span><span class="special">(</span><span class="identifier">list</span><span class="special">.</span><span class="identifier">size</span><span class="special">()</span> <span class="special">==</span> <span class="keyword">sizeof</span><span class="special">...(</span><span class="identifier">args</span><span class="special">));</span>
+
+    <span class="comment">// Fill in the values of the value-nodes in list with the "args"</span>
+    <span class="comment">// parameter pack.</span>
+    <span class="keyword">auto</span> <span class="identifier">it</span> <span class="special">=</span> <span class="identifier">list</span><span class="special">.</span><span class="identifier">begin</span><span class="special">();</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">for_each</span><span class="special">(</span>
+        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">make_tuple</span><span class="special">(</span><span class="identifier">args</span> <span class="special">...),</span>
+        <span class="special">[&amp;</span><span class="identifier">it</span><span class="special">](</span><span class="keyword">auto</span> <span class="identifier">x</span><span class="special">)</span> <span class="special">{</span>
+            <span class="identifier">Node</span> <span class="special">*</span> <span class="identifier">n</span> <span class="special">=</span> <span class="special">*</span><span class="identifier">it</span><span class="special">;</span>
+            <span class="identifier">VNode</span> <span class="special">*</span> <span class="identifier">v</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">polymorphic_downcast</span><span class="special">&lt;</span><span class="identifier">VNode</span> <span class="special">*&gt;(</span><span class="identifier">n</span><span class="special">);</span>
+            <span class="identifier">v</span><span class="special">-&gt;</span><span class="identifier">val</span> <span class="special">=</span> <span class="identifier">x</span><span class="special">;</span>
+            <span class="special">++</span><span class="identifier">it</span><span class="special">;</span>
+        <span class="special">}</span>
+    <span class="special">);</span>
+
+    <span class="keyword">return</span> <span class="identifier">retval</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+        </p>
+<p>
+          Finally, here is the Boost.YAP version of the function we started with:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="identifier">Node</span><span class="special">*</span> <span class="identifier">build_linear_fun1</span><span class="special">(</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="identifier">Node</span><span class="special">*&gt;&amp;</span> <span class="identifier">list</span><span class="special">)</span>
+<span class="special">{</span>
+    <span class="comment">//f(x1,x2,x3) = -5*x1+sin(10)*x1+10*x2-x3/6</span>
+    <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">autodiff_placeholders</span><span class="special">;</span>
+    <span class="keyword">return</span> <span class="identifier">to_auto_diff_node</span><span class="special">(</span>
+        <span class="special">-</span><span class="number">5</span> <span class="special">*</span> <span class="number">1</span><span class="identifier">_p</span> <span class="special">+</span> <span class="identifier">sin_</span><span class="special">(</span><span class="number">10</span><span class="special">)</span> <span class="special">*</span> <span class="number">1</span><span class="identifier">_p</span> <span class="special">+</span> <span class="number">10</span> <span class="special">*</span> <span class="number">2</span><span class="identifier">_p</span> <span class="special">-</span> <span class="number">3</span><span class="identifier">_p</span> <span class="special">/</span> <span class="number">6</span><span class="special">,</span>
+        <span class="identifier">list</span><span class="special">,</span>
+        <span class="special">-</span><span class="number">1.9</span><span class="special">,</span>
+        <span class="number">2</span><span class="special">,</span>
+        <span class="number">5.</span><span class="special">/</span><span class="number">6.</span>
+    <span class="special">);</span>
+<span class="special">}</span>
+</pre>
+<p>
+        </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="future_group.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="../configuration.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
