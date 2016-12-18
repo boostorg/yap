@@ -239,10 +239,9 @@ parameter for convenience when declaring `sin_` and friends.  All we really
 need is for the `OPCODE` to be the value of the terminals we produce, and for
 these function-terminals to have the call operator.
 
-[note Using _member_call_m_ is a bit loose here.  We could have written unary
-(for everything but `pow`) and binary (for `pow`) call operators to ensure
-that the user can't write call expressions with the wrong number of
-arguments.]
+[note Using _member_call_m_ is a bit loose here, because it defines a variadic
+template.  We could have written unary call operators to ensure that the user
+can't write call expressions with the wrong number of arguments.]
 
 Now, some tranforms:
 
