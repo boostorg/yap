@@ -1,17 +1,14 @@
+include_directories(${CMAKE_HOME_DIRECTORY})
+
 include(CTest)
 
 enable_testing()
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -VV -C ${CMAKE_CFG_INTDIR})
 
-include_directories(
-    ${CMAKE_HOME_DIRECTORY}
-    ${CMAKE_HOME_DIRECTORY}/googletest-release-1.8.0/googletest/include
-)
-
 macro(add_test_executable name)
     add_executable(${name} ${name}.cpp)
-    target_link_libraries(${name} gtest gtest_main)
+    target_link_libraries(${name} yap gtest gtest_main)
     add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name} --gtest_catch_exceptions=1)
     if (clang_on_linux)
         target_link_libraries(${name} c++)
@@ -56,6 +53,7 @@ add_executable(
     compile_move_only_types.cpp
     compile_copy_only_types.cpp
 )
+target_link_libraries(compile_tests yap)
 if (clang_on_linux)
     target_link_libraries(compile_tests c++)
 endif ()

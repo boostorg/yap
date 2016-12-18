@@ -1,9 +1,9 @@
 include_directories(${CMAKE_HOME_DIRECTORY})
-include_directories(${CMAKE_HOME_DIRECTORY}/benchmark-v1.1.0/include)
 
 
 macro(add_code_gen_executable name)
     add_executable(${name} ${name}.cpp)
+    target_link_libraries(${name} yap)
     if (clang_on_linux)
         target_link_libraries(${name} c++)
     endif ()
@@ -15,7 +15,7 @@ add_code_gen_executable(map_assign_code_gen)
 
 macro(add_perf_executable name)
     add_executable(${name} ${name}.cpp)
-    target_link_libraries(${name} benchmark)
+    target_link_libraries(${name} yap benchmark)
     if (clang_on_linux)
         target_link_libraries(${name} c++)
     endif ()
