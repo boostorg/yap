@@ -14,6 +14,7 @@ namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
+//[ arithmetic_perf_decls
 namespace user {
 
     struct number
@@ -28,6 +29,7 @@ namespace user {
     };
 
 }
+//]
 
 double get_noise ()
 {
@@ -41,6 +43,7 @@ user::number g_a{get_noise()};
 user::number g_x{get_noise()};
 user::number g_y{get_noise()};
 
+//[ arithmetic_perf_eval_as_yap_expr
 user::number eval_as_yap_expr (user::number a_, user::number x_, user::number y_)
 {
     term<user::number> a{{a_}};
@@ -49,6 +52,7 @@ user::number eval_as_yap_expr (user::number a_, user::number x_, user::number y_
     auto expr = (a * x + y) * (a * x + y) + (a * x + y);
     return expr;
 }
+//]
 
 void BM_eval_as_yap_expr (benchmark::State & state)
 {
@@ -60,6 +64,7 @@ void BM_eval_as_yap_expr (benchmark::State & state)
     std::cout << "Sum of doubles=" << d << "\n";
 }
 
+//[ arithmetic_perf_eval_as_yap_expr_4x
 user::number eval_as_yap_expr_4x (user::number a_, user::number x_, user::number y_)
 {
     term<user::number> a{{a_}};
@@ -73,6 +78,7 @@ user::number eval_as_yap_expr_4x (user::number a_, user::number x_, user::number
         ;
     return expr;
 }
+//]
 
 void BM_eval_as_yap_expr_4x (benchmark::State & state)
 {
@@ -84,10 +90,12 @@ void BM_eval_as_yap_expr_4x (benchmark::State & state)
     std::cout << "Sum of doubles=" << d << "\n";
 }
 
+//[ arithmetic_perf_eval_as_cpp_expr
 user::number eval_as_cpp_expr (user::number a, user::number x, user::number y)
 {
     return (a * x + y) * (a * x + y) + (a * x + y);
 }
+//]
 
 void BM_eval_as_cpp_expr (benchmark::State & state)
 {
@@ -99,6 +107,7 @@ void BM_eval_as_cpp_expr (benchmark::State & state)
     std::cout << "Sum of doubles=" << d << "\n";
 }
 
+//[ arithmetic_perf_eval_as_cpp_expr_4x
 user::number eval_as_cpp_expr_4x (user::number a, user::number x, user::number y)
 {
     return
@@ -107,6 +116,7 @@ user::number eval_as_cpp_expr_4x (user::number a, user::number x, user::number y
         (a * x + y) * (a * x + y) + (a * x + y) +
         (a * x + y) * (a * x + y) + (a * x + y);
 }
+//]
 
 void BM_eval_as_cpp_expr_4x (benchmark::State & state)
 {

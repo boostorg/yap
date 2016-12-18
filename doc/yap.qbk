@@ -42,6 +42,7 @@
 [import ../example/autodiff_example.cpp]
 [import ../test/user_expression_transform_2.cpp]
 [import ../test/user_expression_transform_3.cpp]
+[import ../perf/arithmetic_perf.cpp]
 
 
 [/ Images ]
