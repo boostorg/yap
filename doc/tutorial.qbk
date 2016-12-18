@@ -361,15 +361,20 @@ _TagXForms_ tend to be far more concise.
 
 That "(loosely)" before probably bothered you, right?  Me too.  Each non-tag
 parameter is passed to a _TagXForm_ by calling an operand accessor appropriate
-to `expr`'s kind, and then calling _value_ on the result.  For example,
-consider a plus expression `expr`.  The _TagXForm_ on a transform object
-`xform` would be called like this:
+to `expr`'s kind, and then calling a terminal-specific version of _value_
+(`terminal_value()`) on the result.  For example, consider a plus expression
+`expr`.  The _TagXForm_ on a transform object `xform` would be called like
+this:
 
-    xform(plus_tag, value(left(expr)), value(right(expr)))
+    xform(plus_tag, terminal_value(left(expr)), terminal_value(right(expr)))
 
 The operand accessors (_left_ and _right_ in this example) all dereference
-_expr_ref_ expressions before operating on them, and _value_ does the same.
-When given a terminal, _value_ also returns the value of the terminal.
+_expr_ref_ expressions before operating on them, and `terminal_value()` does
+the same.
+
+`terminal_value()` works just like _value_, except that it does not take the
+value of a unary expression; it just forwards it through.  It still takes
+values out of terminals and unwraps _expr_ref_ expressions, though.
 
 The result of this pattern is that you can effectively ignore the presence of
 _expr_ref_ expressions when writing a _TagXForm_.  You can also just deal with
