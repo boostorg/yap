@@ -42,12 +42,11 @@ namespace user {
     template <typename ...T>
     inline auto eval_call (tag_type, T && ...t)
     {
-        if constexpr (sizeof...(T) == 2u) {
-            return tag_function((double)t...);
-        } else {
-            assert(!"Unhandled case in eval_call()");
-            return;
-        }
+        static_assert(
+            sizeof...(T) == 2u,
+            "eval_call called with the wrong number of arguments."
+        );
+        return tag_function((double)t...);
     }
 
 }
