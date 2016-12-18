@@ -672,7 +672,9 @@ namespace boost { namespace yap {
     decltype(auto) get_c (Expr && expr)
     { return ::boost::yap::get(static_cast<Expr &&>(expr), hana::llong_c<I>); }
 
-    /** Returns <code>get(expr, 0_c)</code>.
+    /** Returns the left operand in a binary operator expression.
+
+        Equivalent to <code>get(expr, 0_c)</code>.
 
         \note <code>left()</code> is only valid if \a Expr is a binary
         operator expression.
@@ -691,7 +693,9 @@ namespace boost { namespace yap {
         }
     }
 
-    /** Returns <code>get(expr, 1_c)</code>.
+    /** Returns the right operand in a binary operator expression.
+
+        Equivalent to <code>get(expr, 1_c)</code>.
 
         \note <code>right()</code> is only valid if \a Expr is a binary
         operator expression.
@@ -710,7 +714,9 @@ namespace boost { namespace yap {
         }
     }
 
-    /** Returns <code>get(expr, 0_c)</code>.
+    /** Returns the condition expression in an if_else expression.
+
+        Equivalent to <code>get(expr, 0_c)</code>.
 
         \note <code>cond()</code> is only valid if \a Expr is an
         <code>expr_kind::if_else</code> expression.
@@ -729,7 +735,9 @@ namespace boost { namespace yap {
         }
     }
 
-    /** Returns <code>get(expr, 1_c)</code>.
+    /** Returns the then-expression in an if_else expression.
+
+        Equivalent to <code>get(expr, 1_c)</code>.
 
         \note <code>then()</code> is only valid if \a Expr is an
         <code>expr_kind::if_else</code> expression.
@@ -748,7 +756,9 @@ namespace boost { namespace yap {
         }
     }
 
-    /** Returns <code>get(expr, 2_c)</code>.
+    /** Returns the else-expression in an if_else expression.
+
+        Equivalent to <code>get(expr, 2_c)</code>.
 
         \note <code>else_()</code> is only valid if \a Expr is an
         <code>expr_kind::if_else</code> expression.
@@ -767,7 +777,9 @@ namespace boost { namespace yap {
         }
     }
 
-    /** Returns <code>get(expr, 0)</code>.
+    /** Returns the callable in a call expression.
+
+        Equivalent to <code>get(expr, 0)</code>.
 
         \note <code>callable()</code> is only valid if \a Expr is an
         <code>expr_kind::call</code> expression.
@@ -785,7 +797,9 @@ namespace boost { namespace yap {
         }
     }
 
-    /** Returns <code>get(expr, i + 1)</code>.
+    /** Returns the <i>i-th</i> argument expression in a call expression.
+
+        Equivalent to <code>get(expr, i + 1)</code>.
 
         \note <code>argument()</code> is only valid if \a Expr is an
         <code>expr_kind::call</code> expression.

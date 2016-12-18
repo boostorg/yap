@@ -5,14 +5,14 @@
 _Expr_ is the central concept in _yap_.  It must contain at least an _kind_
 and a _tuple_ of values.
 
-Here is a summary of the requirements on _Expr_.  In the table below, `E` is a
-type that models _Expr_; `e` is an object of type `E`; and `Tuple` is an
-instantiation of _tuple_; and `P` is some integral constant greater than `0`.
+Here is a summary of the requirements on _Expr_.  In the tables below, `E` is
+a type that models _Expr_; `e` is an object of type `E`; and `Tuple` is an
+instantiation of _tuple_.
 
 [table Expression Requirements
     [[Expression]    [Type]     [Description]                      [Notes]]
-    [[`E::kind`]     [_kind_]   [ The kind of expression `E` is ]  [ Must be a compile-time constant. ]]
-    [[`e.elements`]  [`Tuple`]  [ The child expressions of `e` ]     [ The types of the elements must be appropriate to the kind of the expression. ]]
+    [[`E::kind`]     [_kind_]   [ The kind of expression `E` is. ]  [ Must be a compile-time constant. ]]
+    [[`e.elements`]  [`Tuple`]  [ The child expressions of `e`. ]     [ The types of the elements must be appropriate to the kind of the expression. ]]
 ]
 
 As stated above, the `elements` data member must match the kind of the expression:
@@ -20,12 +20,12 @@ As stated above, the `elements` data member must match the kind of the expressio
 [table Expression Requirements
     [[`E::kind`]                [`hana::size(e.elements)`] [Possible Tuple Element Types] [Notes]]
 
-    [[`expr_kind::expr_ref`]    [1]                   [ Any non-_expr_ref_ _Expr_ ] []]
-    [[`expr_kind::terminal`]    [1]                   [ Any non-_Expr_ ] [A terminal with a _placeholder_ value will be treated as a placeholder. ]]
-    [[Any unary operator]       [1]                   [ Any _Expr_ ] []]
-    [[Any binary operator]      [2]                   [ Any _Expr_ ] []]
-    [[`expr_kind::if_else`]     [3]                   [ Any _Expr_ ] []]
-    [[`expr_kind::call`]        [Any number >= 1]     [ Any _Expr_ ] []]
+    [[`expr_kind::expr_ref`]    [1]                   [ Any non-_expr_ref_ _Expr_. ] []]
+    [[`expr_kind::terminal`]    [1]                   [ Any non-_Expr_. ] [A terminal with a _placeholder_ value will be treated as a placeholder. ]]
+    [[Any unary operator]       [1]                   [ Any _Expr_. ] []]
+    [[Any binary operator]      [2]                   [ Any _Expr_. ] []]
+    [[`expr_kind::if_else`]     [3]                   [ Any _Expr_. ] []]
+    [[`expr_kind::call`]        [Any number >= 1.]    [ Any _Expr_. ] []]
 ]
 
 [heading ExpressionTemplate]
@@ -39,7 +39,7 @@ _xform_ takes a _XForm_ as its second parameter.  A _XForm_ is a _Callable_
 that takes expressions and returns values of unconstrained type.  There are
 two sorts of overloads _XForm_ may use: _ExprXForm_ and _TagXForm_.
 
-A _XForm_ may have nay number of overloads, including none.
+A _XForm_ may have any number of overloads, including none.
 
 [heading ExpressionTransform]
 

@@ -58,7 +58,7 @@ how to do this in the Examples section.
 
 [section Kinds of Expressions]
 
-There are four special kinds of expression.
+There are three special kinds of expression.
 
 [variablelist Special Expression Kinds
     [[_terminal_] [A terminal contains a non-Expression value, and represents the leaf-node in an
@@ -106,12 +106,12 @@ macros and their uses:
 [table Unary and Binary Operator-Defining Macros
     [[Macro] [Use] [First/Left Operand Type] [Right Operand Type] [Notes]]
 
-    [[_unary_member_m_] [Unary member operators.] [Any type.] [--] []]
-    [[_binary_member_m_] [Binary member operators.] [Any type.] [Any type.] []]
+    [[_unary_member_m_] [Unary member operators.] [`decltype(*this)`, an _Expr_.] [--] []]
+    [[_binary_member_m_] [Binary member operators.] [`decltype(*this)`, an _Expr_.] [Any type.] []]
     [[_binary_free_m_] [Binary free operators.] [Any non-_Expr_.] [Any _Expr_.] []]
-    [[_udt_unary_m_] [Free operators defined over types constrained by a type trait (e.g. all `std::map<>`s).] [Any non-_Expr_ that satisfies the given type trait.] [--] []]
-    [[_udt_udt_binary_m_] [Free operators defined over types constrained by a pair of type traits (e.g. a `std::map<>` on the left, and a `std::vector<>` on the right).  Useful for type-asymmetric operators.] [Any non-_Expr_ that satisfies the left-hand type trait.] [Any non-_Expr_ that satisfies the right-hand type trait.] []]
-    [[_udt_any_binary_m_] [Free operators defined over pairs of types, one constrained by a type trait and one not (e.g. a `std::list<>` on either side, and anything on the other).] [Any non-_Expr_.] [--] [At least one parameter must satisfy the given type trait.]]
+    [[_udt_unary_m_] [Free operators defined over non-_Expr_ types constrained by a type trait (e.g. all `std::map<>`s).] [Any non-_Expr_ that satisfies the given type trait.] [--] []]
+    [[_udt_udt_binary_m_] [Free operators defined over non-_Expr_ types constrained by a pair of type traits (e.g. a `std::map<>` on the left, and a `std::vector<>` on the right).  Useful for type-asymmetric operators.] [Any non-_Expr_ that satisfies the left-hand type trait.] [Any non-_Expr_ that satisfies the right-hand type trait.] []]
+    [[_udt_any_binary_m_] [Free operators defined over pairs of non-_Expr_ types, one constrained by a type trait and one not (e.g. a `std::list<>` on either side, and anything on the other).] [Any non-_Expr_.] [--] [At least one parameter must satisfy the given type trait.]]
 ]
 
 [table The Other Operator-Defining Macros
@@ -119,7 +119,7 @@ macros and their uses:
 
     [[_member_call_m_] [Member call operator.] [Any type.] []]
     [[_expr_if_else_m_] [Free `if_else()` function that requires at least one parameter to be an expression.] [Any type.] [At least one parameter must be an _Expr_.]]
-    [[_udt_any_if_else_m_] [Free `if_else()` function that requires at least one parameter to satisfy the given type trait.] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
+    [[_udt_any_if_else_m_] [Free `if_else()` function for non-_Expr_ types that requires at least one parameter to satisfy the given type trait.] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
 ]
 
 [note Operands are handled in a uniform way across all functions defined by
@@ -136,9 +136,9 @@ function definition macros, operands are treated in a uniform way.
 The guiding design principle here is that an expression built using _yap_
 should match the semantics of a builtin C++ expression as closely as possible.
 This implies that an rvalue remain treatable as a temporary (as it may in fact
-be) throughout the building and transformation of an expression, and that an
-lvalue should retain its connection to the underlying named entity to which it
-refers.
+have initially been) throughout the building and transformation of an
+expression, and that an lvalue should retain its connection to the underlying
+named entity to which it refers.
 
 For example, if you see
 
@@ -175,7 +175,7 @@ whereas C++'s eager builtin expressions cannot:
 
 Ok, so since you can build these lazy _yap_ expressions up from
 subexpressions, how do we treat the subexpressions?  We treat them in exactly
-the same way as _make_term_ treats its operands.  Rvalues are moved in, and
+the same way as _make_term_ treats its parameter.  Rvalues are moved in, and
 lvalues are captured by (possibly `const`) reference.
 
 [note If you want to subvert the capture-by-reference semantics of using
@@ -190,7 +190,7 @@ complications at times, as you can see in the examples.  Fortunately, the
 complications are not overly cumbersome.
 
 So, given the rules so far, here is a comprehensive breakdown of what happens
-when an operand is passed to a _yap_ operator.  In this table, `expr` is an
+when an operand is passed to a _yap_ operator.  In this table, `expr_tmpl` is an
 _ExprTmpl_, and `T` is a non-_Expr_ type.  `E` refers to any non-`expr_ref`
 _Expr_.  _yap_ does a partial decay on non-_Expr_ operands, in which `cv` and
 reference qualifiers are left unchanged, but arrays are decayed to pointers
@@ -200,17 +200,17 @@ such a partial decay of `T`.
 [table Operand Handling
     [[Operand] [Captured As] [Notes]]
 
-    [[`T const &`] [`expr<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T) const &>>`] []]
-    [[`T &`] [`expr<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T) &>>`] []]
-    [[`T &&`] [`expr<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T)>>`] [Operand moved.]]
+    [[`T const &`] [`expr_tmpl<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T) const &>>`] []]
+    [[`T &`] [`expr_tmpl<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T) &>>`] []]
+    [[`T &&`] [`expr_tmpl<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T)>>`] [Operand moved.]]
 
-    [[`E const &`] [`expr<expr_kind::expr_ref, boost::hana::tuple<E const &>>`] []]
-    [[`E &`] [`expr<expr_kind::expr_ref, boost::hana::tuple<E &>>`] []]
+    [[`E const &`] [`expr_tmpl<expr_kind::expr_ref, boost::hana::tuple<E const &>>`] []]
+    [[`E &`] [`expr_tmpl<expr_kind::expr_ref, boost::hana::tuple<E &>>`] []]
     [[`E &&`] [`E`] [Operand moved.]]
 
-    [[`expr<expr_kind::expr_ref, ...> const &`] [`expr<expr_kind::expr_ref, ...>`] []]
-    [[`expr<expr_kind::expr_ref, ...> &`] [`expr<expr_kind::expr_ref, ...>`] []]
-    [[`expr<expr_kind::expr_ref, ...> &&`] [`expr<expr_kind::expr_ref, ...>`] [Operand moved.]]
+    [[`expr_tmpl<expr_kind::expr_ref, ...> const &`] [`expr_tmpl<expr_kind::expr_ref, ...>`] []]
+    [[`expr_tmpl<expr_kind::expr_ref, ...> &`] [`expr_tmpl<expr_kind::expr_ref, ...>`] []]
+    [[`expr_tmpl<expr_kind::expr_ref, ...> &&`] [`expr_tmpl<expr_kind::expr_ref, ...>`] [Operand moved.]]
 ]
 
 The partial decay of non-_Expr_ operands is another example of how _yap_
@@ -261,14 +261,14 @@ overloads of `C`, any of them that match subexpressions within the expression
 being evaluated will be used; you only need to make sure that the overloads
 are mutually unambiguous.
 
-This is especially important when it comes to the `transform_expression()`
-_cp_.  Providing multiple overloads can be very useful for defining an
-implicit set of transformations that you always want applied to all your
-expression evaluations.  For example, if you define a template overload and a
-nontemplate overload for a certain _cp_ `C`, the template will only apply when
-the nontemplate does not (due to the normal C++ overload resolution rules);
-this allows general-casing in the template overload, and special-casing in the
-nontemplate overload.
+This feature is especially useful when it comes to the
+`transform_expression()` _cp_.  Providing multiple overloads can be very
+useful for defining an implicit set of transformations that you always want
+applied to all your expression evaluations.  For example, if you define a
+template overload and a nontemplate overload for a certain _cp_ `C`, the
+template will only apply when the nontemplate does not (due to the normal C++
+overload resolution rules); this allows general-casing in the template
+overload, and special-casing in the nontemplate overload.
 
 [heading How the transform_expression Customization Point Is Applied]
 
@@ -311,8 +311,9 @@ a very different way depending on what the desired result type is.
 [heading How The Other Customization Points Are Applied]
 
 Each of _eval_ and _eval_as_ evaluates its given expression recursively, depth
-first.  For any given subexpression `E` of kind `K` with subexpressions `S0`
-... `Sn`, `E` is evaluated as:
+first (unless of course the `transform_expression()` _cp_ subverts this).  For
+any given subexpression `E` of kind `K` with subexpressions `S0` ... `Sn`, `E`
+is evaluated as:
 
     eval_K(evaluate(S0), ... evaluate(Sn))
 
@@ -373,8 +374,9 @@ _expr_ref_ expressions before operating on them, and `terminal_value()` does
 the same.
 
 `terminal_value()` works just like _value_, except that it does not take the
-value of a unary expression; it just forwards it through.  It still takes
-values out of terminals and unwraps _expr_ref_ expressions, though.
+value of a *nonterminal* unary expression; it just forwards it through.  It
+still takes values out of terminals and unwraps _expr_ref_ expressions,
+though.
 
 The result of this pattern is that you can effectively ignore the presence of
 _expr_ref_ expressions when writing a _TagXForm_.  You can also just deal with
