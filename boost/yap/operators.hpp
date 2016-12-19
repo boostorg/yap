@@ -203,52 +203,52 @@ namespace boost { namespace yap {
     using adl_detail::eval_if_else_fn; // (analogous to) ?:
     using adl_detail::eval_call_fn; // ()
 
-    inline namespace function_objects {
+    inline namespace {
 
-        inline constexpr eval_unary_plus_fn eval_unary_plus{}; // +
-        inline constexpr eval_negate_fn eval_negate{}; // -
-        inline constexpr eval_dereference_fn eval_dereference{}; // *
-        inline constexpr eval_complement_fn eval_complement{}; // ~
-        inline constexpr eval_address_of_fn eval_address_of{}; // &
-        inline constexpr eval_logical_not_fn eval_logical_not{}; // !
-        inline constexpr eval_pre_inc_fn eval_pre_inc{}; // ++
-        inline constexpr eval_pre_dec_fn eval_pre_dec{}; // --
-        inline constexpr eval_post_inc_fn eval_post_inc{}; // ++(int)
-        inline constexpr eval_post_dec_fn eval_post_dec{}; // --(int)
-        inline constexpr eval_shift_left_fn eval_shift_left{}; // <<
-        inline constexpr eval_shift_right_fn eval_shift_right{}; // >>
-        inline constexpr eval_multiplies_fn eval_multiplies{}; // *
-        inline constexpr eval_divides_fn eval_divides{}; // /
-        inline constexpr eval_modulus_fn eval_modulus{}; // %
-        inline constexpr eval_plus_fn eval_plus{}; // +
-        inline constexpr eval_minus_fn eval_minus{}; // -
-        inline constexpr eval_less_fn eval_less{}; // <
-        inline constexpr eval_greater_fn eval_greater{}; // >
-        inline constexpr eval_less_equal_fn eval_less_equal{}; // <=
-        inline constexpr eval_greater_equal_fn eval_greater_equal{}; // >=
-        inline constexpr eval_equal_to_fn eval_equal_to{}; // ==
-        inline constexpr eval_not_equal_to_fn eval_not_equal_to{}; // !=
-        inline constexpr eval_logical_or_fn eval_logical_or{}; // ||
-        inline constexpr eval_logical_and_fn eval_logical_and{}; // &&
-        inline constexpr eval_bitwise_and_fn eval_bitwise_and{}; // &
-        inline constexpr eval_bitwise_or_fn eval_bitwise_or{}; // |
-        inline constexpr eval_bitwise_xor_fn eval_bitwise_xor{}; // ^
-        inline constexpr eval_comma_fn eval_comma{}; // ,
-        inline constexpr eval_mem_ptr_fn eval_mem_ptr{}; // ->*
-        inline constexpr eval_assign_fn eval_assign{}; // =
-        inline constexpr eval_shift_left_assign_fn eval_shift_left_assign{}; // <<=
-        inline constexpr eval_shift_right_assign_fn eval_shift_right_assign{}; // >>=
-        inline constexpr eval_multiplies_assign_fn eval_multiplies_assign{}; // *=
-        inline constexpr eval_divides_assign_fn eval_divides_assign{}; // /=
-        inline constexpr eval_modulus_assign_fn eval_modulus_assign{}; // %=
-        inline constexpr eval_plus_assign_fn eval_plus_assign{}; // +=
-        inline constexpr eval_minus_assign_fn eval_minus_assign{}; // -=
-        inline constexpr eval_bitwise_and_assign_fn eval_bitwise_and_assign{}; // &=
-        inline constexpr eval_bitwise_or_assign_fn eval_bitwise_or_assign{}; // |=
-        inline constexpr eval_bitwise_xor_assign_fn eval_bitwise_xor_assign{}; // ^=
-        inline constexpr eval_subscript_fn eval_subscript{}; // []
-        inline constexpr eval_if_else_fn eval_if_else{}; // (analogous to) ?:
-        inline constexpr eval_call_fn eval_call{}; // ()
+        constexpr auto & eval_unary_plus = detail::static_const<eval_unary_plus_fn>::value; // +
+        constexpr auto & eval_negate = detail::static_const<eval_negate_fn>::value; // -
+        constexpr auto & eval_dereference = detail::static_const<eval_dereference_fn>::value; // *
+        constexpr auto & eval_complement = detail::static_const<eval_complement_fn>::value; // ~
+        constexpr auto & eval_address_of = detail::static_const<eval_address_of_fn>::value; // &
+        constexpr auto & eval_logical_not = detail::static_const<eval_logical_not_fn>::value; // !
+        constexpr auto & eval_pre_inc = detail::static_const<eval_pre_inc_fn>::value; // ++
+        constexpr auto & eval_pre_dec = detail::static_const<eval_pre_dec_fn>::value; // --
+        constexpr auto & eval_post_inc = detail::static_const<eval_post_inc_fn>::value; // ++(int)
+        constexpr auto & eval_post_dec = detail::static_const<eval_post_dec_fn>::value; // --(int)
+        constexpr auto & eval_shift_left = detail::static_const<eval_shift_left_fn>::value; // <<
+        constexpr auto & eval_shift_right = detail::static_const<eval_shift_right_fn>::value; // >>
+        constexpr auto & eval_multiplies = detail::static_const<eval_multiplies_fn>::value; // *
+        constexpr auto & eval_divides = detail::static_const<eval_divides_fn>::value; // /
+        constexpr auto & eval_modulus = detail::static_const<eval_modulus_fn>::value; // %
+        constexpr auto & eval_plus = detail::static_const<eval_plus_fn>::value; // +
+        constexpr auto & eval_minus = detail::static_const<eval_minus_fn>::value; // -
+        constexpr auto & eval_less = detail::static_const<eval_less_fn>::value; // <
+        constexpr auto & eval_greater = detail::static_const<eval_greater_fn>::value; // >
+        constexpr auto & eval_less_equal = detail::static_const<eval_less_equal_fn>::value; // <=
+        constexpr auto & eval_greater_equal = detail::static_const<eval_greater_equal_fn>::value; // >=
+        constexpr auto & eval_equal_to = detail::static_const<eval_equal_to_fn>::value; // ==
+        constexpr auto & eval_not_equal_to = detail::static_const<eval_not_equal_to_fn>::value; // !=
+        constexpr auto & eval_logical_or = detail::static_const<eval_logical_or_fn>::value; // ||
+        constexpr auto & eval_logical_and = detail::static_const<eval_logical_and_fn>::value; // &&
+        constexpr auto & eval_bitwise_and = detail::static_const<eval_bitwise_and_fn>::value; // &
+        constexpr auto & eval_bitwise_or = detail::static_const<eval_bitwise_or_fn>::value; // |
+        constexpr auto & eval_bitwise_xor = detail::static_const<eval_bitwise_xor_fn>::value; // ^
+        constexpr auto & eval_comma = detail::static_const<eval_comma_fn>::value; // ,
+        constexpr auto & eval_mem_ptr = detail::static_const<eval_mem_ptr_fn>::value; // ->*
+        constexpr auto & eval_assign = detail::static_const<eval_assign_fn>::value; // =
+        constexpr auto & eval_shift_left_assign = detail::static_const<eval_shift_left_assign_fn>::value; // <<=
+        constexpr auto & eval_shift_right_assign = detail::static_const<eval_shift_right_assign_fn>::value; // >>=
+        constexpr auto & eval_multiplies_assign = detail::static_const<eval_multiplies_assign_fn>::value; // *=
+        constexpr auto & eval_divides_assign = detail::static_const<eval_divides_assign_fn>::value; // /=
+        constexpr auto & eval_modulus_assign = detail::static_const<eval_modulus_assign_fn>::value; // %=
+        constexpr auto & eval_plus_assign = detail::static_const<eval_plus_assign_fn>::value; // +=
+        constexpr auto & eval_minus_assign = detail::static_const<eval_minus_assign_fn>::value; // -=
+        constexpr auto & eval_bitwise_and_assign = detail::static_const<eval_bitwise_and_assign_fn>::value; // &=
+        constexpr auto & eval_bitwise_or_assign = detail::static_const<eval_bitwise_or_assign_fn>::value; // |=
+        constexpr auto & eval_bitwise_xor_assign = detail::static_const<eval_bitwise_xor_assign_fn>::value; // ^=
+        constexpr auto & eval_subscript = detail::static_const<eval_subscript_fn>::value; // []
+        constexpr auto & eval_if_else = detail::static_const<eval_if_else_fn>::value; // (analogous to) ?:
+        constexpr auto & eval_call = detail::static_const<eval_call_fn>::value; // ()
 
     }
 

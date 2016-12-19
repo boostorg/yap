@@ -29,9 +29,9 @@ namespace boost { namespace yap {
 
     using adl_detail::eval_expression_as_fn;
 
-    inline namespace function_objects {
+    inline namespace {
 
-        inline constexpr eval_expression_as_fn eval_expression_as{};
+        constexpr auto & eval_expression_as = detail::static_const<eval_expression_as_fn>::value;
 
     }
 
@@ -554,6 +554,28 @@ namespace boost { namespace yap {
 #endif // BOOST_YAP_DOXYGEN
     };
 
+#ifdef BOOST_NO_CONSTEXPR_IF
+
+    namespace detail {
+
+        template <typename Expr, bool MutableRvalueRef>
+        struct deref_impl
+        {
+            decltype(auto) operator() (Expr && expr)
+            { return std::move(*expr.elements[hana::llong_c<0>]); }
+        };
+
+        template <typename Expr>
+        struct deref_impl<Expr, false>
+        {
+            decltype(auto) operator() (Expr && expr)
+            { return *expr.elements[hana::llong_c<0>]; }
+        };
+
+    }
+
+#endif
+
     /** "Dereferences" a reference-expression, forwarding its referent to the
         caller. */
     template <typename Expr>
@@ -569,6 +591,13 @@ namespace boost { namespace yap {
             "deref() is only defined for expr_ref-kind expressions."
         );
 
+#ifdef BOOST_NO_CONSTEXPR_IF
+        return detail::deref_impl<
+            Expr,
+            std::is_rvalue_reference<Expr>{} &&
+            !std::is_const<std::remove_reference_t<Expr>>{}
+        >{}(static_cast<Expr &&>(expr));
+#else
         using namespace hana::literals;
         if constexpr (
             std::is_rvalue_reference<Expr>{} &&
@@ -578,9 +607,81 @@ namespace boost { namespace yap {
         } else {
             return *expr.elements[0_c];
         }
+#endif
     }
 
     namespace detail {
+
+#ifdef BOOST_NO_CONSTEXPR_IF
+
+        template <bool ValueOfTerminalsOnly, typename T>
+        decltype(auto) value_impl (T && x);
+
+        template <typename T, bool IsExprRef, bool ValueOfTerminalsOnly, bool TakeValue, bool IsLvalueRef>
+        struct value_expr_impl;
+
+        template <typename T, bool ValueOfTerminalsOnly, bool TakeValue, bool IsLvalueRef>
+        struct value_expr_impl<T, true, ValueOfTerminalsOnly, TakeValue, IsLvalueRef>
+        {
+            decltype(auto) operator() (T && x)
+            { return value_impl<ValueOfTerminalsOnly>(::boost::yap::deref(static_cast<T &&>(x))); }
+        };
+
+        template <typename T, bool ValueOfTerminalsOnly>
+        struct value_expr_impl<T, false, ValueOfTerminalsOnly, true, true>
+        {
+            decltype(auto) operator() (T && x)
+            { return x.elements[hana::llong_c<0>]; }
+        };
+
+        template <typename T, bool ValueOfTerminalsOnly>
+        struct value_expr_impl<T, false, ValueOfTerminalsOnly, true, false>
+        {
+            decltype(auto) operator() (T && x)
+            { return std::move(x.elements[hana::llong_c<0>]); }
+        };
+
+        template <typename T, bool ValueOfTerminalsOnly, bool IsLvalueRef>
+        struct value_expr_impl<T, false, ValueOfTerminalsOnly, false, IsLvalueRef>
+        {
+            decltype(auto) operator() (T && x)
+            { return static_cast<T &&>(x); }
+        };
+
+        template <typename T, bool IsExpr, bool ValueOfTerminalsOnly>
+        struct value_impl_t
+        {
+            decltype(auto) operator() (T && x)
+            {
+                constexpr expr_kind kind = detail::remove_cv_ref_t<T>::kind;
+                constexpr detail::expr_arity arity = detail::arity_of<kind>();
+                return value_expr_impl<
+                    T,
+                    kind == expr_kind::expr_ref,
+                    ValueOfTerminalsOnly,
+                    (ValueOfTerminalsOnly && kind == expr_kind::terminal) ||
+                    (!ValueOfTerminalsOnly && arity == detail::expr_arity::one),
+                    std::is_lvalue_reference<T>{}
+                >{}(static_cast<T &&>(x));
+            }
+        };
+
+        template <typename T, bool ValueOfTerminalsOnly>
+        struct value_impl_t<T, false, ValueOfTerminalsOnly>
+        {
+            decltype(auto) operator() (T && x)
+            { return static_cast<T &&>(x); }
+        };
+
+        template <bool ValueOfTerminalsOnly, typename T>
+        decltype(auto) value_impl (T && x)
+        {
+            return detail::value_impl_t<T, detail::is_expr<T>::value, ValueOfTerminalsOnly>{}(
+                static_cast<T &&>(x)
+            );
+        }
+
+#else
 
         template <bool ValueOfTerminalsOnly, typename T>
         decltype(auto) value_impl (T && x)
@@ -608,6 +709,8 @@ namespace boost { namespace yap {
             }
         }
 
+#endif
+
     }
 
     /** Forwards the sole element of \a x to the caller, possibly calling
@@ -630,6 +733,41 @@ namespace boost { namespace yap {
     decltype(auto) value (T && x)
     { return detail::value_impl<false>(static_cast<T &&>(x)); }
 
+#ifdef BOOST_NO_CONSTEXPR_IF
+
+    template <long long I, typename Expr>
+    decltype(auto) get (Expr && expr, hana::llong<I> i);
+
+    namespace detail {
+
+        template <long long I, typename Expr, bool IsExpr, bool IsLvalueRef>
+        struct get_impl;
+
+        template <long long I, typename Expr, bool IsLvalueRef>
+        struct get_impl<I, Expr, true, IsLvalueRef>
+        {
+            decltype(auto) operator() (Expr && expr, hana::llong<I> i)
+            { return ::boost::yap::get(::boost::yap::deref(static_cast<Expr &&>(expr)), i); }
+        };
+
+        template <long long I, typename Expr>
+        struct get_impl<I, Expr, false, true>
+        {
+            decltype(auto) operator() (Expr && expr, hana::llong<I> i)
+            { return expr.elements[i]; }
+        };
+
+        template <long long I, typename Expr>
+        struct get_impl<I, Expr, false, false>
+        {
+            decltype(auto) operator() (Expr && expr, hana::llong<I> i)
+            { return std::move(expr.elements[i]); }
+        };
+
+    }
+
+#endif
+
     /** Forwards the <i>i</i>-th element of \a expr to the caller.  If \a expr
         is a reference expression, the result is <code>get(deref(expr),
         i)</code>.
@@ -644,22 +782,34 @@ namespace boost { namespace yap {
             "get() is only defined for expressions."
         );
 
-        using namespace hana::literals;
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
+
+        static_assert(
+            kind == expr_kind::expr_ref ||
+            (0 <= I && I < decltype(hana::size(expr.elements))::value),
+            "In get(expr, I), I must be nonnegative, and less "
+            "than hana::size(expr.elements)."
+        );
+
+#ifdef BOOST_NO_CONSTEXPR_IF
+        return detail::get_impl<
+            I,
+            Expr,
+            kind == expr_kind::expr_ref,
+            std::is_lvalue_reference<Expr>{}
+        >{}(static_cast<Expr &&>(expr), i);
+#else
+        using namespace hana::literals;
         if constexpr (kind == expr_kind::expr_ref) {
             return ::boost::yap::get(::boost::yap::deref(static_cast<Expr &&>(expr)), i);
         } else {
-            static_assert(
-                0 <= I && I < decltype(hana::size(expr.elements))::value,
-                "In get(expr, I), I must be nonnegative, and less "
-                "than hana::size(expr.elements)."
-            );
             if constexpr (std::is_lvalue_reference<Expr>{}) {
                 return expr.elements[i];
             } else {
                 return std::move(expr.elements[i]);
             }
         }
+#endif
     }
 
     /** Returns <code>get(expr, boost::hana::llong_c<I>)</code>. */
@@ -680,12 +830,11 @@ namespace boost { namespace yap {
         using namespace hana::literals;
         return ::boost::yap::get(static_cast<Expr &&>(expr), 0_c);
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        if constexpr (kind != expr_kind::expr_ref) {
-            static_assert(
-                detail::arity_of<kind>() == detail::expr_arity::two,
-                "left() is only defined for binary expressions."
-            );
-        }
+        static_assert(
+            kind == expr_kind::expr_ref ||
+            detail::arity_of<kind>() == detail::expr_arity::two,
+            "left() is only defined for binary expressions."
+        );
     }
 
     /** Returns the right operand in a binary operator expression.
@@ -701,12 +850,11 @@ namespace boost { namespace yap {
         using namespace hana::literals;
         return ::boost::yap::get(static_cast<Expr &&>(expr), 1_c);
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        if constexpr (kind != expr_kind::expr_ref) {
-            static_assert(
-                detail::arity_of<kind>() == detail::expr_arity::two,
-                "right() is only defined for binary expressions."
-            );
-        }
+        static_assert(
+            kind == expr_kind::expr_ref ||
+            detail::arity_of<kind>() == detail::expr_arity::two,
+            "right() is only defined for binary expressions."
+        );
     }
 
     /** Returns the condition expression in an if_else expression.
@@ -722,12 +870,10 @@ namespace boost { namespace yap {
         using namespace hana::literals;
         return ::boost::yap::get(static_cast<Expr &&>(expr), 0_c);
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        if constexpr (kind != expr_kind::expr_ref) {
-            static_assert(
-                kind == expr_kind::if_else,
-                "cond() is only defined for if_else expressions."
-            );
-        }
+        static_assert(
+            kind == expr_kind::expr_ref || kind == expr_kind::if_else,
+            "cond() is only defined for if_else expressions."
+        );
     }
 
     /** Returns the then-expression in an if_else expression.
@@ -743,12 +889,10 @@ namespace boost { namespace yap {
         using namespace hana::literals;
         return ::boost::yap::get(static_cast<Expr &&>(expr), 1_c);
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        if constexpr (kind != expr_kind::expr_ref) {
-            static_assert(
-                kind == expr_kind::if_else,
-                "then() is only defined for if_else expressions."
-            );
-        }
+        static_assert(
+            kind == expr_kind::expr_ref || kind == expr_kind::if_else,
+            "then() is only defined for if_else expressions."
+        );
     }
 
     /** Returns the else-expression in an if_else expression.
@@ -764,12 +908,10 @@ namespace boost { namespace yap {
         using namespace hana::literals;
         return ::boost::yap::get(static_cast<Expr &&>(expr), 2_c);
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        if constexpr (kind != expr_kind::expr_ref) {
-            static_assert(
-                kind == expr_kind::if_else,
-                "else_() is only defined for if_else expressions."
-            );
-        }
+        static_assert(
+            kind == expr_kind::expr_ref || kind == expr_kind::if_else,
+            "else_() is only defined for if_else expressions."
+        );
     }
 
     /** Returns the callable in a call expression.
@@ -784,12 +926,11 @@ namespace boost { namespace yap {
     {
         return ::boost::yap::get(static_cast<Expr &&>(expr), hana::llong_c<0>);
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        if constexpr (kind != expr_kind::expr_ref) {
-            static_assert(
-                detail::arity_of<kind>() == detail::expr_arity::n,
-                "callable() is only defined for call expressions."
-            );
-        }
+        static_assert(
+            kind == expr_kind::expr_ref ||
+            detail::arity_of<kind>() == detail::expr_arity::n,
+            "callable() is only defined for call expressions."
+        );
     }
 
     /** Returns the <i>i-th</i> argument expression in a call expression.
@@ -804,17 +945,17 @@ namespace boost { namespace yap {
     {
         return ::boost::yap::get(static_cast<Expr &&>(expr), hana::llong_c<I + 1>);
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        if constexpr (kind != expr_kind::expr_ref) {
-            static_assert(
-                detail::arity_of<kind>() == detail::expr_arity::n,
-                "argument() is only defined for call expressions."
-            );
-            static_assert(
-                0 <= I && I < decltype(hana::size(expr.elements))::value - 1,
-                "In argument(expr, I), I must be nonnegative, and less "
-                "than hana::size(expr.elements)."
-            );
-        }
+        static_assert(
+            kind == expr_kind::expr_ref ||
+            detail::arity_of<kind>() == detail::expr_arity::n,
+            "argument() is only defined for call expressions."
+        );
+        static_assert(
+            kind == expr_kind::expr_ref ||
+            (0 <= I && I < decltype(hana::size(expr.elements))::value - 1),
+            "In argument(expr, I), I must be nonnegative, and less "
+            "than hana::size(expr.elements)."
+        );
     }
 
     /** Makes a new expression instantiated from the expression template \a
@@ -838,7 +979,9 @@ namespace boost { namespace yap {
             (arity == detail::expr_arity::one && sizeof...(T) == 1) ||
             (arity == detail::expr_arity::two && sizeof...(T) == 2) ||
             (arity == detail::expr_arity::three && sizeof...(T) == 3) ||
-            arity == detail::expr_arity::n
+            arity == detail::expr_arity::n,
+            "The number of parameters passed to make_expression() must match the arity "
+            "implied by the expr_kind template parameter."
         );
         using tuple_type = hana::tuple<detail::operand_type_t<ExprTemplate, T>...>;
         return ExprTemplate<Kind, tuple_type>{
@@ -876,6 +1019,28 @@ namespace boost { namespace yap {
     auto make_terminal (T && t)
     { return make_terminal<expression>(static_cast<T &&>(t)); }
 
+#ifdef BOOST_NO_CONSTEXPR_IF
+
+    namespace detail {
+
+        template <template <expr_kind, class> class ExprTemplate, typename T, bool IsExpr>
+        struct as_expr_impl
+        {
+            decltype(auto) operator() (T && t)
+            { return static_cast<T &&>(t); }
+        };
+
+        template <template <expr_kind, class> class ExprTemplate, typename T>
+        struct as_expr_impl<ExprTemplate, T, false>
+        {
+            decltype(auto) operator() (T && t)
+            { return make_terminal<ExprTemplate>(static_cast<T &&>(t)); }
+        };
+
+    }
+
+#endif
+
     /** Returns an expression formed from \a t as follows:
 
         - If \a t is an expression, \a t is forwarded to the caller.
@@ -885,11 +1050,17 @@ namespace boost { namespace yap {
     template <template <expr_kind, class> class ExprTemplate, typename T>
     decltype(auto) as_expr (T && t)
     {
+#ifdef BOOST_NO_CONSTEXPR_IF
+        return detail::as_expr_impl<ExprTemplate, T, detail::is_expr<T>::value>{}(
+            static_cast<T &&>(t)
+        );
+#else
         if constexpr (detail::is_expr<T>::value) {
             return static_cast<T &&>(t);
         } else {
             return make_terminal<ExprTemplate>(static_cast<T &&>(t));
         }
+#endif
     }
 
     /** Returns <code>as_expr<boost::yap::expression>(t)</code>. */
@@ -979,6 +1150,34 @@ namespace boost { namespace yap {
         return eval_expression_as(static_cast<Expr &&>(expr), hana::basic_type<R>{}, static_cast<T &&>(t)...);
     }
 
+#ifdef BOOST_NO_CONSTEXPR_IF
+
+    namespace detail {
+
+        template <typename Expr, typename Transform, bool IsExpr>
+        struct transform_impl
+        {
+            decltype(auto) operator() (Expr && expr, Transform && transform)
+            {
+                constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
+                return detail::default_transform_expression_tag<Expr, Transform, detail::arity_of<kind>()>{}(
+                    static_cast<Expr &&>(expr),
+                    static_cast<Transform &&>(transform)
+                );
+            }
+        };
+
+        template <typename Expr, typename Transform>
+        struct transform_impl<Expr, Transform, false>
+        {
+            decltype(auto) operator() (Expr && expr, Transform && transform)
+            { return static_cast<Expr &&>(expr); }
+        };
+
+    }
+
+#endif
+
     /** Returns the result of transforming (all or part of) \a expr using
         whatever overloads of <code>Transform::operator()</code> that match \a
         expr.
@@ -990,6 +1189,12 @@ namespace boost { namespace yap {
     template <typename Expr, typename Transform>
     decltype(auto) transform (Expr && expr, Transform && transform)
     {
+#ifdef BOOST_NO_CONSTEXPR_IF
+        return detail::transform_impl<Expr, Transform, detail::is_expr<Expr>::value>{}(
+            static_cast<Expr &&>(expr),
+            static_cast<Transform &&>(transform)
+        );
+#else
         if constexpr (detail::is_expr<Expr>::value) {
             constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
             return detail::default_transform_expression_tag<Expr, Transform, detail::arity_of<kind>()>{}(
@@ -999,6 +1204,7 @@ namespace boost { namespace yap {
         } else {
             return static_cast<Expr &&>(expr);
         }
+#endif
     }
 
     namespace adl_detail {

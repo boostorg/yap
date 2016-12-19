@@ -15,6 +15,21 @@ namespace boost { namespace yap {
 
     namespace detail {
 
+        // void_t
+
+        template <class...> using void_t = void;
+
+
+        // static_const
+
+        template <typename T>
+        struct static_const
+        { static constexpr T value {}; };
+
+        template <typename T>
+        constexpr T static_const<T>::value;
+
+
         // partial_decay
 
         template <typename T>
@@ -42,7 +57,7 @@ namespace boost { namespace yap {
         template <
             typename T,
             typename U = typename detail::partial_decay<T>::type,
-            bool AddRValueRef = std::is_same_v<T, U> && !std::is_const_v<U>
+            bool AddRValueRef = std::is_same<T, U>{} && !std::is_const<U>{}
         >
         struct operand_value_type_phase_1;
 
@@ -67,15 +82,15 @@ namespace boost { namespace yap {
 
         // is_expr
 
-        template <typename Expr, typename = std::void_t<>, typename = std::void_t<>>
+        template <typename Expr, typename = void_t<>, typename = void_t<>>
         struct is_expr
         { static bool const value = false; };
 
         template <typename Expr>
         struct is_expr<
             Expr,
-            std::void_t<decltype(remove_cv_ref_t<Expr>::kind)>,
-            std::void_t<decltype(std::declval<Expr>().elements)>
+            void_t<decltype(remove_cv_ref_t<Expr>::kind)>,
+            void_t<decltype(std::declval<Expr>().elements)>
         >
         {
             static bool const value =
@@ -118,7 +133,7 @@ namespace boost { namespace yap {
             template <expr_kind, class> class ExprTemplate,
             typename T,
             typename U = typename operand_value_type_phase_1<T>::type,
-            bool RemoveRefs = std::is_rvalue_reference_v<U>,
+            bool RemoveRefs = std::is_rvalue_reference<U>{},
             bool IsExpr = is_expr<T>::value,
             bool IsLRef = std::is_lvalue_reference<T>{}
         >
@@ -536,69 +551,70 @@ namespace boost { namespace yap {
         // tag_for
 
         template <expr_kind Kind>
-        constexpr auto tag_for ()
-        {
-#define CASE(x) if constexpr (Kind == expr_kind::x) return x ## _tag{}
+        constexpr auto tag_for ();
 
-            CASE(expr_ref);
+#define CASE(x)                                         \
+        template <>                                     \
+        constexpr auto tag_for<expr_kind:: x> ()        \
+        { return x ## _tag{}; }
 
-            CASE(terminal);
+        CASE(expr_ref);
 
-            // unary
-            CASE(unary_plus); // +
-            CASE(negate); // -
-            CASE(dereference); // *
-            CASE(complement); // ~
-            CASE(address_of); // &
-            CASE(logical_not); // !
-            CASE(pre_inc); // ++
-            CASE(pre_dec); // --
-            CASE(post_inc); // ++(int)
-            CASE(post_dec); // --(int)
+        CASE(terminal);
 
-            // binary
-            CASE(shift_left); // <<
-            CASE(shift_right); // >>
-            CASE(multiplies); // *
-            CASE(divides); // /
-            CASE(modulus); // %
-            CASE(plus); // +
-            CASE(minus); // -
-            CASE(less); // <
-            CASE(greater); // >
-            CASE(less_equal); // <=
-            CASE(greater_equal); // >=
-            CASE(equal_to); // ==
-            CASE(not_equal_to); // !=
-            CASE(logical_or); // ||
-            CASE(logical_and); // &&
-            CASE(bitwise_and); // &
-            CASE(bitwise_or); // |
-            CASE(bitwise_xor); // ^
-            CASE(comma); // );
-            CASE(mem_ptr); // ->*
-            CASE(assign); // =
-            CASE(shift_left_assign); // <<=
-            CASE(shift_right_assign); // >>=
-            CASE(multiplies_assign); // *=
-            CASE(divides_assign); // /=
-            CASE(modulus_assign); // %=
-            CASE(plus_assign); // +=
-            CASE(minus_assign); // -=
-            CASE(bitwise_and_assign); // &=
-            CASE(bitwise_or_assign); // |=
-            CASE(bitwise_xor_assign); // ^=
-            CASE(subscript); // []
+        // unary
+        CASE(unary_plus); // +
+        CASE(negate); // -
+        CASE(dereference); // *
+        CASE(complement); // ~
+        CASE(address_of); // &
+        CASE(logical_not); // !
+        CASE(pre_inc); // ++
+        CASE(pre_dec); // --
+        CASE(post_inc); // ++(int)
+        CASE(post_dec); // --(int)
 
-            // ternary
-            CASE(if_else); // (analogous to) ?:
+        // binary
+        CASE(shift_left); // <<
+        CASE(shift_right); // >>
+        CASE(multiplies); // *
+        CASE(divides); // /
+        CASE(modulus); // %
+        CASE(plus); // +
+        CASE(minus); // -
+        CASE(less); // <
+        CASE(greater); // >
+        CASE(less_equal); // <=
+        CASE(greater_equal); // >=
+        CASE(equal_to); // ==
+        CASE(not_equal_to); // !=
+        CASE(logical_or); // ||
+        CASE(logical_and); // &&
+        CASE(bitwise_and); // &
+        CASE(bitwise_or); // |
+        CASE(bitwise_xor); // ^
+        CASE(comma); // );
+        CASE(mem_ptr); // ->*
+        CASE(assign); // =
+        CASE(shift_left_assign); // <<=
+        CASE(shift_right_assign); // >>=
+        CASE(multiplies_assign); // *=
+        CASE(divides_assign); // /=
+        CASE(modulus_assign); // %=
+        CASE(plus_assign); // +=
+        CASE(minus_assign); // -=
+        CASE(bitwise_and_assign); // &=
+        CASE(bitwise_or_assign); // |=
+        CASE(bitwise_xor_assign); // ^=
+        CASE(subscript); // []
 
-            // n-ary
-            CASE(call); // ()
+        // ternary
+        CASE(if_else); // (analogous to) ?:
+
+        // n-ary
+        CASE(call); // ()
 
 #undef CASE
-    };
-
 
     }
 

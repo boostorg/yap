@@ -330,16 +330,16 @@ struct lazy_vector_10 :
 
 int main ()
 {
-    lazy_vector_2 v1{{std::vector<double>(4, 1.0)}};
-    lazy_vector_2 v2{{std::vector<double>(4, 1.0)}};
-    lazy_vector_3 v3{{std::vector<double>(4, 1.0)}};
-    lazy_vector_4 v4{{std::vector<double>(4, 1.0)}};
-    lazy_vector_5 v5{{std::vector<double>(4, 1.0)}};
-    lazy_vector_6 v6{{std::vector<double>(4, 1.0)}};
-    lazy_vector_7 v7{{std::vector<double>(4, 1.0)}};
-    lazy_vector_8 v8{{std::vector<double>(4, 1.0)}};
-    lazy_vector_9 v9{{std::vector<double>(4, 1.0)}};
-    lazy_vector_10 v10{{std::vector<double>(4, 1.0)}};
+    lazy_vector_1 v1;
+    lazy_vector_2 v2;
+    lazy_vector_3 v3;
+    lazy_vector_4 v4;
+    lazy_vector_5 v5;
+    lazy_vector_6 v6;
+    lazy_vector_7 v7;
+    lazy_vector_8 v8;
+    lazy_vector_9 v9;
+    lazy_vector_10 v10;
 
     return 0;
 }
