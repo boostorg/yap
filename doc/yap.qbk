@@ -89,6 +89,7 @@
 [def _left_                [funcref boost::yap::left `left()`]]
 [def _right_               [funcref boost::yap::right `right()`]]
 [def _value_               [funcref boost::yap::value `value()`]]
+[def _print_               [funcref boost::yap::print `print()`]]
 
 [def _unary_member_m_      [macroref BOOST_YAP_USER_UNARY_OPERATOR_MEMBER]]
 [def _binary_member_m_     [macroref BOOST_YAP_USER_BINARY_OPERATOR_MEMBER]]
@@ -116,6 +117,7 @@
 [def _how_treated_         [link boost_yap__proposed_.manual.tutorial.how_expression_operands_are_treated How Expression Operands Are Treated]]
 
 [include intro.qbk]
+[include compiler_support.qbk]
 [include manual.qbk]
 [include concepts.qbk]
 

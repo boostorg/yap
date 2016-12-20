@@ -1,12 +1,9 @@
-find_program(lldb lldb)
-find_program(gdb gdb)
-
 include_directories(${CMAKE_HOME_DIRECTORY})
-include_directories(${CMAKE_HOME_DIRECTORY}/benchmark-v1.1.0/include)
 
 
 macro(add_code_gen_executable name)
     add_executable(${name} ${name}.cpp)
+    target_link_libraries(${name} yap)
     if (clang_on_linux)
         target_link_libraries(${name} c++)
     endif ()
@@ -18,7 +15,7 @@ add_code_gen_executable(map_assign_code_gen)
 
 macro(add_perf_executable name)
     add_executable(${name} ${name}.cpp)
-    target_link_libraries(${name} benchmark)
+    target_link_libraries(${name} yap benchmark)
     if (clang_on_linux)
         target_link_libraries(${name} c++)
     endif ()
@@ -27,37 +24,22 @@ endmacro()
 add_perf_executable(map_assign_perf)
 add_perf_executable(arithmetic_perf)
 
+include(Disassemble)
+set(disassemble_dump_targets)
+foreach(fun eval_as_cpp_expr eval_as_yap_expr eval_as_cpp_expr_4x eval_as_yap_expr_4x)
+    disassemble(disassemble.arithmetic_perf.${fun} EXECUTABLE arithmetic_perf FUNCTION ${fun})
+    disassemble(disassemble.code_gen_samples.${fun} EXECUTABLE code_gen_samples FUNCTION ${fun})
 
-if (lldb)
-    add_custom_target(
-        perf
-            COMMAND lldb -f $<TARGET_FILE:arithmetic_perf> -o "disassemble --name eval_as_cpp_expr" -o quit
-            COMMAND lldb -f $<TARGET_FILE:arithmetic_perf> -o "disassemble --name eval_as_yap_expr" -o quit
-            COMMAND lldb -f $<TARGET_FILE:arithmetic_perf> -o "disassemble --name eval_as_cpp_expr_4x" -o quit
-            COMMAND lldb -f $<TARGET_FILE:arithmetic_perf> -o "disassemble --name eval_as_yap_expr_4x" -o quit
-
-            COMMAND lldb -f $<TARGET_FILE:code_gen_samples> -o "disassemble --name eval_as_cpp_expr" -o quit
-            COMMAND lldb -f $<TARGET_FILE:code_gen_samples> -o "disassemble --name eval_as_yap_expr" -o quit
-            COMMAND lldb -f $<TARGET_FILE:code_gen_samples> -o "disassemble --name eval_as_cpp_expr_4x" -o quit
-            COMMAND lldb -f $<TARGET_FILE:code_gen_samples> -o "disassemble --name eval_as_yap_expr_4x" -o quit
-
-            COMMAND map_assign_perf
-            COMMAND arithmetic_perf
+    add_custom_target(disass_dump.${fun}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target disassemble.arithmetic_perf.${fun}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target disassemble.code_gen_samples.${fun}
     )
-elseif (gdb)
-    add_custom_target(
-        perf
-            COMMAND gdb -se $<TARGET_FILE:arithmetic_perf> -batch -ex "disassemble eval_as_cpp_expr"
-            COMMAND gdb -se $<TARGET_FILE:arithmetic_perf> -batch -ex "disassemble eval_as_yap_expr"
-            COMMAND gdb -se $<TARGET_FILE:arithmetic_perf> -batch -ex "disassemble eval_as_cpp_expr_4x"
-            COMMAND gdb -se $<TARGET_FILE:arithmetic_perf> -batch -ex "disassemble eval_as_yap_expr_4x"
+    list(APPEND disassemble_dump_targets disass_dump.${fun})
+endforeach()
 
-            COMMAND gdb -se $<TARGET_FILE:code_gen_samples> -batch -ex "disassemble eval_as_cpp_expr"
-            COMMAND gdb -se $<TARGET_FILE:code_gen_samples> -batch -ex "disassemble eval_as_yap_expr"
-            COMMAND gdb -se $<TARGET_FILE:code_gen_samples> -batch -ex "disassemble eval_as_cpp_expr_4x"
-            COMMAND gdb -se $<TARGET_FILE:code_gen_samples> -batch -ex "disassemble eval_as_yap_expr_4x"
+add_custom_target(perf
+    COMMAND map_assign_perf
+    COMMAND arithmetic_perf
 
-            COMMAND map_assign_perf
-            COMMAND arithmetic_perf
-    )
-endif()
+    DEPENDS ${disassemble_dump_targets}
+)

@@ -275,40 +275,62 @@
     ExpressionTemplate.
 */
 #define BOOST_YAP_USER_FREE_BINARY_OPERATOR(op_name, expr_template)     \
+    template <                                                          \
+        typename T,                                                     \
+        template< ::boost::yap::expr_kind, class> class ExprTemplate,   \
+        ::boost::yap::expr_kind Kind,                                   \
+        typename Tuple                                                  \
+    >                                                                   \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (                  \
+        T && lhs,                                                       \
+        ExprTemplate<Kind, Tuple> && rhs                                \
+    ) -> ::boost::yap::detail::free_binary_op_result_t<                 \
+        expr_template,                                                  \
+        ::boost::yap::expr_kind::op_name,                               \
+        T,                                                              \
+        ExprTemplate<Kind, Tuple> &&                                    \
+    > {                                                                 \
+        using result_types = ::boost::yap::detail::free_binary_op_result< \
+            expr_template,                                              \
+            ::boost::yap::expr_kind::op_name,                           \
+            T,                                                          \
+            ExprTemplate<Kind, Tuple> &&                                \
+        >;                                                              \
+        using lhs_type = typename result_types::lhs_type;               \
+        using rhs_type = typename result_types::rhs_type;               \
+        using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
+        return {                                                        \
+            tuple_type{                                                 \
+                lhs_type{static_cast<T &&>(lhs)},                       \
+                std::move(rhs)                                          \
+            }                                                           \
+        };                                                              \
+    }                                                                   \
     template <typename T, typename Expr>                                \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (T && lhs, Expr && rhs) \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (T && lhs, Expr & rhs) \
         -> ::boost::yap::detail::free_binary_op_result_t<               \
             expr_template,                                              \
             ::boost::yap::expr_kind::op_name,                           \
             T,                                                          \
-            Expr &&                                                     \
+            Expr &                                                      \
         >                                                               \
     {                                                                   \
         using result_types = ::boost::yap::detail::free_binary_op_result< \
             expr_template,                                              \
             ::boost::yap::expr_kind::op_name,                           \
             T,                                                          \
-            Expr &&                                                     \
+            Expr &                                                      \
         >;                                                              \
         using lhs_type = typename result_types::lhs_type;               \
         using rhs_type = typename result_types::rhs_type;               \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
-        if constexpr (std::is_lvalue_reference<Expr>{}) {               \
-            using rhs_tuple_type = typename result_types::rhs_tuple_type; \
-            return {                                                    \
-                tuple_type{                                             \
-                    lhs_type{static_cast<T &&>(lhs)},                   \
-                    rhs_type{rhs_tuple_type{std::addressof(rhs)}}       \
-                }                                                       \
-            };                                                          \
-        } else {                                                        \
-            return {                                                    \
-                tuple_type{                                             \
-                    lhs_type{static_cast<T &&>(lhs)},                   \
-                    std::move(rhs)                                      \
-                }                                                       \
-            };                                                          \
-        }                                                               \
+        using rhs_tuple_type = typename result_types::rhs_tuple_type;   \
+        return {                                                        \
+            tuple_type{                                                 \
+                lhs_type{static_cast<T &&>(lhs)},                       \
+                rhs_type{rhs_tuple_type{std::addressof(rhs)}}           \
+            }                                                           \
+        };                                                              \
     }
 
 
@@ -579,9 +601,6 @@
 /** Defines user defined literal template that creates literal placeholders
     instantiated from the \a expr_template expression template.  It is
     recommended that you put this in its own namespace.
-
-    Example:
-    \snippet user_macros_snippets.cpp USER_LITERAL_PLACEHOLDER_OPERATOR
 
     \param expr_template The expression template to use to instantiate the
     result expression.  \a expr_template must be an \ref

@@ -1,38 +1,65 @@
 cmake_minimum_required(VERSION 3.5)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-find_package(Boost 1.62.0 EXACT)
-if (Boost_INCLUDE_DIRS)
-    include_directories(${Boost_INCLUDE_DIRS})
-else ()
-    message("-- Boost was not found; attempting to download it if we haven't already...")
-    set(boost_url https://sourceforge.net/projects/boost/files/boost/1.62.0/boost_1_62_0.tar.bz2)
-    include(ExternalProject)
-    ExternalProject_Add(
-        Boost
-        PREFIX ${CMAKE_BINARY_DIR}/boost_1_62_0
-        URL ${boost_url}
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
-        LOG_DOWNLOAD ON
+function(constexpr_if_std std_flag var)
+    try_compile(
+        worked
+        ${CMAKE_BINARY_DIR}
+        ${CMAKE_SOURCE_DIR}/cmake/constexpr_if.cpp
+        COMPILE_DEFINITIONS ${std_flag} -Wall -Werror -DCHECK_CONSTEXPR_IF=1
     )
-    include_directories(${CMAKE_BINARY_DIR}/boost_1_62_0/src/Boost)
+    set(${var} ${worked} PARENT_SCOPE)
+endfunction ()
+
+function(try_std_flag std_flag)
+    try_compile(
+        std_supported
+        ${CMAKE_BINARY_DIR}
+        ${CMAKE_SOURCE_DIR}/cmake/constexpr_if.cpp
+        COMPILE_DEFINITIONS ${std_flag} -Wall -Werror -DCHECK_CONSTEXPR_IF=0
+    )
+    if (std_supported)
+        message("-- Checking compiler flag ${std_flag} -- success")
+        set(std_flag ${std_flag} PARENT_SCOPE)
+        constexpr_if_std(${std_flag} have_constexpr_if)
+        if (have_constexpr_if)
+            message("-- Checking constexpr if support -- success")
+        else ()
+            set(constexpr_if_define -DBOOST_NO_CONSTEXPR_IF PARENT_SCOPE)
+            message("-- Checking constexpr if support -- failed to compile")
+        endif ()
+    else ()
+        message("-- Checking compiler flag ${std_flag} -- failed to compile")
+    endif ()
+endfunction ()
+
+try_std_flag(-std=c++17)
+if (NOT std_flag)
+    try_std_flag(-std=c++1z) 
+elseif (NOT std_flag)
+    try_std_flag(-std=c++14)
+elseif (NOT std_flag)
+    message(FATAL_ERROR "Only Clang or GCC with -std=c++14 or later will work")
 endif ()
 
 set(clang_on_linux false)
 if (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
-    add_definitions(-std=c++1z -stdlib=libc++ -g -Wall)
+    add_definitions(${std_flag} -stdlib=libc++ -g -Wall)
     if (CMAKE_SYSTEM_NAME STREQUAL Linux)
         set(clang_on_linux true)
     endif ()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
-    add_definitions(-std=c++1z -g -Wall)
+    add_definitions(${std_flag} -g -Wall)
 else ()
-    message(FATAL_ERROR "Only Clang or GCC with -std=c++1z will work")
+    message(FATAL_ERROR "Only Clang or GCC with -std=c++14 or later will work")
 endif ()
 
-add_subdirectory(googletest-release-1.8.0)
-add_subdirectory(benchmark-v1.1.0)
+include(dependencies)
+
+add_library(yap INTERFACE)
+target_include_directories(yap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(yap INTERFACE boost)
+target_compile_definitions(yap INTERFACE ${constexpr_if_define})
 
 add_subdirectory(test)
 add_subdirectory(example)
