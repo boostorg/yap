@@ -89,6 +89,7 @@
 [def _left_                [funcref boost::yap::left `left()`]]
 [def _right_               [funcref boost::yap::right `right()`]]
 [def _value_               [funcref boost::yap::value `value()`]]
+[def _print_               [funcref boost::yap::print `print()`]]
 
 [def _unary_member_m_      [macroref BOOST_YAP_USER_UNARY_OPERATOR_MEMBER]]
 [def _binary_member_m_     [macroref BOOST_YAP_USER_BINARY_OPERATOR_MEMBER]]

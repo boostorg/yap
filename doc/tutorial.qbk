@@ -93,6 +93,59 @@ for your use case.
 [endsect]
 
 
+[section Printing]
+
+_yap_ has a convenient _print_ function, that prints an expression tree to a
+stream.  It is not intended for production work (for instance, it has no
+formatting options), but it is excellent for debugging and instrumentation.
+
+Since it is only a debugging aid, _print_ is found in a separate header not
+included when you include _yap_ with
+
+    #include <boost/yap/yap.hpp>
+
+You must include `<boost/yap/print.hpp>` explicitly.
+
+_print_ handles several patterns of expression specially, to allow a concise
+representation of a given expression tree.  For example, given this
+definition:
+
+[print_decl]
+
+and this expression:
+
+[print_expr]
+
+_print_ produces this output:
+
+[pre
+expr<->
+    expr<+>
+        term<boost::yap::placeholder<4ll>>[=4\]
+        expr<*>
+            term<double &>[=1\]
+            term<thing>[=<<unprintable-value>>\] &
+    term<char const*>[=lvalue terminal\] const &
+]
+
+As you can see, _print_ shows one node per line, and represents the tree
+structure with indentation.  It abbreviates non-terminal nodes in the tree
+`expr<op>`, where `op` is an operator symbol.  Terminal nodes are abbreviated
+`term<T>`, where `T` is the type of value contained in the terminal; this may
+be a reference type or a value.
+
+A `term` node may not ba a terminal node at all, but an _expr_ref_ expression
+containing a terminal.  Such a _expr_ref_ node has a `&` or `const &` suffix,
+to indicate that it is a mutable or `const` reference, respectively.
+
+Each `term` node has a bracketed value near the end.  The format is `[=X]`
+where `X` is the value the terminal contains.  If the terminal contains a
+value for which no `operator<<(std::ostream &, ...)` overload exists (such as
+the `thing` type above), `X` will be `<<unprintable-value>>`.
+
+[endsect]
+
+
 [section Operator Macros]
 
 There are macros that define binary operators as members and macros that
