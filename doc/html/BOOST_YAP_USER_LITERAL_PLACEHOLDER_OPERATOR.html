@@ -24,28 +24,9 @@
 
 </span>BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR(expr_template)</pre></div>
 <div class="refsect1">
-<a name="idp140667506440696"></a><h2>Description</h2>
+<a name="idp140377023293976"></a><h2>Description</h2>
 <p>Defines user defined literal template that creates literal placeholders instantiated from the <span class="emphasis"><em>expr_template</em></span> expression template. It is recommended that you put this in its own namespace.</p>
-<p>Example: </p>
-<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
-<span class="keyword">struct</span> <span class="identifier">user_expr</span>
-<span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">user_expr</span><span class="special">&lt;</span><span class="identifier">Kind</span><span class="special">,</span> <span class="identifier">Tuple</span><span class="special">&gt;</span><span class="special">;</span>
-
-    <span class="keyword">static</span> <span class="keyword">const</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
-
-    <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
-<span class="special">}</span><span class="special">;</span>
-
-<span class="keyword">namespace</span> <span class="identifier">literals</span> <span class="special">{</span>
-
-    <span class="comment">// Defines a user literal operator that makes placeholders; 2_p will be a</span>
-    <span class="comment">// 2-placeholder instantiated from the user_expr template.</span>
-    <span class="identifier">BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR</span><span class="special">(</span><span class="identifier">user_expr</span><span class="special">)</span>
-
-<span class="special">}</span>
-</pre>
-<p> 
+<p>
 </p>
 <div class="variablelist"><table border="0" class="variablelist compact">
 <colgroup>
