@@ -115,6 +115,14 @@ TEST(expression, test_print)
     term<double>[=1] const &
 )");
     }
+
+    {
+        using namespace yap::literals;
+        std::ostringstream oss;
+        yap::print(oss, 1_p);
+        EXPECT_EQ(oss.str(), R"(term<boost::yap::placeholder<1ll>>[=1]
+)");
+    }
 }
 
 TEST(user_expr, test_print)
