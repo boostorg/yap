@@ -9,7 +9,6 @@ function(constexpr_if_std std_flag var)
         COMPILE_DEFINITIONS ${std_flag} -Wall -Werror -DCHECK_CONSTEXPR_IF=1
     )
     set(${var} ${worked} PARENT_SCOPE)
-#    message("flag=${flag} worked=${worked}")
 endfunction ()
 
 function(try_std_flag std_flag)
@@ -39,6 +38,8 @@ if (NOT std_flag)
     try_std_flag(-std=c++1z) 
 elseif (NOT std_flag)
     try_std_flag(-std=c++14)
+elseif (NOT std_flag)
+    message(FATAL_ERROR "Only Clang or GCC with -std=c++14 or later will work")
 endif ()
 
 set(clang_on_linux false)
