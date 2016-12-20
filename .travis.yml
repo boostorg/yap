@@ -8,7 +8,22 @@ matrix:
         # OSX
         - env: ASAN=off MAC_OSX=true
           os: osx
+          osx_image: xcode7.3
+          compiler: clang
+
+        - env: ASAN=off MAC_OSX=true
+          os: osx
+          osx_image: xcode8
+          compiler: clang
+
+        - env: ASAN=off MAC_OSX=true
+          os: osx
           osx_image: xcode8.1
+          compiler: clang
+
+        - env: ASAN=off MAC_OSX=true
+          os: osx
+          osx_image: xcode8.2
           compiler: clang
 
         # Gcc
