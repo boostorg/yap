@@ -116,6 +116,7 @@
 [def _how_treated_         [link boost_yap__proposed_.manual.tutorial.how_expression_operands_are_treated How Expression Operands Are Treated]]
 
 [include intro.qbk]
+[include compiler_support.qbk]
 [include manual.qbk]
 [include concepts.qbk]
 
