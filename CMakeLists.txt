@@ -41,13 +41,6 @@ elseif (NOT std_flag)
     try_std_flag(-std=c++14)
 endif ()
 
-include(dependencies)
-
-add_library(yap INTERFACE)
-target_include_directories(yap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(yap INTERFACE boost)
-target_compile_definitions(yap INTERFACE ${constexpr_if_define})
-
 set(clang_on_linux false)
 if (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
     add_definitions(${std_flag} -stdlib=libc++ -g -Wall)
@@ -59,6 +52,13 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 else ()
     message(FATAL_ERROR "Only Clang or GCC with -std=c++14 or later will work")
 endif ()
+
+include(dependencies)
+
+add_library(yap INTERFACE)
+target_include_directories(yap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(yap INTERFACE boost)
+target_compile_definitions(yap INTERFACE ${constexpr_if_define})
 
 add_subdirectory(test)
 add_subdirectory(example)
