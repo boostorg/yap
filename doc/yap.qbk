@@ -81,7 +81,14 @@
 [def _eval_                [funcref boost::yap::transform `evaluate()`]]
 [def _eval_as_             [funcref boost::yap::transform `evaluate_as()`]]
 [def _tuple_               `boost::hana::tuple<>`]
+
+[def _alg_header_          [headerref boost/yap/algorithm.hpp algorithm header]]
+[def _yap_header_          `<boost/yap/yap.hpp>` header]
+[def _expr_header_         [headerref boost/yap/expression.hpp expression header]]
+[def _free_expr_header_    [headerref boost/yap/expression_free_operators.hpp _expr_ free binary operators header]]
+[def _if_else_expr_header_ [headerref boost/yap/expression_if_else.hpp _expr_ `if_else()` header]]
 [def _ops_header_          [headerref boost/yap/operators.hpp operators header]]
+[def _print_header_        [headerref boost/yap/print.hpp print header]]
 
 [def _make_term_           [funcref boost::yap::make_terminal `make_terminal()`]]
 [def _make_expr_           [funcref boost::yap::make_expression `make_expression()`]]
