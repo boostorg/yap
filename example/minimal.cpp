@@ -1,4 +1,4 @@
-#include <boost/yap/expression.hpp>
+#include <boost/yap/algorithm.hpp>
 
 #include <array>
 #include <iostream>

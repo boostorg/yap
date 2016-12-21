@@ -1,5 +1,5 @@
 //[ map_assign
-#include <boost/yap/expression.hpp>
+#include <boost/yap/algorithm.hpp>
 
 #include <map>
 #include <iostream>
