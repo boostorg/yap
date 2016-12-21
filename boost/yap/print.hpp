@@ -1,7 +1,7 @@
 #ifndef BOOST_YAP_PRINT_HPP_INCLUDED
 #define BOOST_YAP_PRINT_HPP_INCLUDED
 
-#include <boost/yap/expression_fwd.hpp>
+#include <boost/yap/algorithm_fwd.hpp>
 
 #include <boost/hana/for_each.hpp>
 #include <boost/type_index.hpp>

@@ -1,7 +1,7 @@
 #ifndef BOOST_YAP_DETAIL_EXPRESSION_HPP_INCLUDED
 #define BOOST_YAP_DETAIL_EXPRESSION_HPP_INCLUDED
 
-#include <boost/yap/expression_fwd.hpp>
+#include <boost/yap/algorithm_fwd.hpp>
 
 #include <boost/hana/core/is_a.hpp>
 #include <boost/hana/size.hpp>

@@ -1,5 +1,5 @@
-#ifndef BOOST_YAP_EXPRESSION_FWD_HPP_INCLUDED
-#define BOOST_YAP_EXPRESSION_FWD_HPP_INCLUDED
+#ifndef BOOST_YAP_ALGORITHM_FWD_HPP_INCLUDED
+#define BOOST_YAP_ALGORITHM_FWD_HPP_INCLUDED
 
 #include <boost/yap/config.hpp>
 
@@ -103,12 +103,6 @@ namespace boost { namespace yap {
 
     template <typename Expr>
     decltype(auto) value (Expr && expr);
-
-    template <typename Expr>
-    decltype(auto) left (Expr && expr);
-
-    template <typename Expr>
-    decltype(auto) right (Expr && expr);
 
 #endif // BOOST_YAP_DOXYGEN
 

@@ -1,7 +1,7 @@
 #ifndef BOOST_YAP_DETAIL_DEFAULT_EVAL_HPP_INCLUDED
 #define BOOST_YAP_DETAIL_DEFAULT_EVAL_HPP_INCLUDED
 
-#include <boost/yap/expression_fwd.hpp>
+#include <boost/yap/algorithm_fwd.hpp>
 #include <boost/yap/operators.hpp>
 
 #include <boost/hana/transform.hpp>
