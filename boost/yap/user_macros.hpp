@@ -82,20 +82,22 @@
 #define BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, expr_template) \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) const &          \
     {                                                                   \
-        using lhs_type = ::boost::yap::detail::expr_ref_t<expr_template, this_type const &>; \
-        using lhs_tuple_type = ::boost::yap::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
         using tuple_type = ::boost::hana::tuple<lhs_type>;              \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
-            tuple_type{lhs_type{lhs_tuple_type{this}}}                  \
+            tuple_type{                                                 \
+                ::boost::yap::detail::make_operand<lhs_type>{}(*this)   \
+            }                                                           \
         };                                                              \
     }                                                                   \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) &                \
     {                                                                   \
-        using lhs_type = ::boost::yap::detail::expr_ref_t<expr_template, this_type &>; \
-        using lhs_tuple_type = ::boost::yap::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
         using tuple_type = ::boost::hana::tuple<lhs_type>;              \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
-            tuple_type{lhs_type{lhs_tuple_type{this}}}                  \
+            tuple_type{                                                 \
+                ::boost::yap::detail::make_operand<lhs_type>{}(*this)   \
+            }                                                           \
         };                                                              \
     }                                                                   \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) &&               \
@@ -137,13 +139,12 @@
     template <typename Expr>                                            \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (Expr && rhs) const & \
     {                                                                   \
-        using lhs_type = ::boost::yap::detail::expr_ref_t<expr_template, this_type const &>; \
-        using lhs_tuple_type = ::boost::yap::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
         using rhs_type = ::boost::yap::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
             tuple_type{                                                 \
-                lhs_type{lhs_tuple_type{this}},                         \
+                ::boost::yap::detail::make_operand<lhs_type>{}(*this),  \
                 ::boost::yap::detail::make_operand<rhs_type>{}(static_cast<Expr &&>(rhs)) \
             }                                                           \
         };                                                              \
@@ -151,13 +152,12 @@
     template <typename Expr>                                            \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (Expr && rhs) &    \
     {                                                                   \
-        using lhs_type = ::boost::yap::detail::expr_ref_t<expr_template, this_type &>; \
-        using lhs_tuple_type = ::boost::yap::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
         using rhs_type = ::boost::yap::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
             tuple_type{                                                 \
-                lhs_type{lhs_tuple_type{this}},                         \
+                ::boost::yap::detail::make_operand<lhs_type>{}(*this),  \
                 ::boost::yap::detail::make_operand<rhs_type>{}(static_cast<Expr &&>(rhs)) \
             }                                                           \
         };                                                              \
@@ -202,15 +202,14 @@
     template <typename ...U>                                            \
     auto operator() (U && ... u) const &                                \
     {                                                                   \
-        using lhs_type = ::boost::yap::detail::expr_ref_t<expr_template, this_type const &>; \
-        using lhs_tuple_type = ::boost::yap::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
         using tuple_type = ::boost::hana::tuple<                        \
             lhs_type,                                                   \
             ::boost::yap::detail::operand_type_t<expr_template, U>...   \
         >;                                                              \
         return expr_template< ::boost::yap::expr_kind::call, tuple_type>{ \
             tuple_type{                                                 \
-                lhs_type{lhs_tuple_type{this}},                         \
+                ::boost::yap::detail::make_operand<lhs_type>{}(*this),  \
                 ::boost::yap::detail::make_operand<                     \
                     ::boost::yap::detail::operand_type_t<expr_template, U> \
                 >{}(static_cast<U &&>(u))...                            \
@@ -220,15 +219,14 @@
     template <typename ...U>                                            \
     auto operator() (U && ... u) &                                      \
     {                                                                   \
-        using lhs_type = ::boost::yap::detail::expr_ref_t<expr_template, this_type &>; \
-        using lhs_tuple_type = ::boost::yap::detail::expr_ref_tuple_t<expr_template, lhs_type>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
         using tuple_type = ::boost::hana::tuple<                        \
             lhs_type,                                                   \
             ::boost::yap::detail::operand_type_t<expr_template, U>...   \
         >;                                                              \
         return expr_template< ::boost::yap::expr_kind::call, tuple_type>{ \
             tuple_type{                                                 \
-                lhs_type{lhs_tuple_type{this}},                         \
+                ::boost::yap::detail::make_operand<lhs_type>{}(*this),  \
                 ::boost::yap::detail::make_operand<                     \
                     ::boost::yap::detail::operand_type_t<expr_template, U> \
                 >{}(static_cast<U &&>(u))...                            \
