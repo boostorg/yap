@@ -466,6 +466,21 @@ namespace boost { namespace yap {
 #endif // BOOST_YAP_DOXYGEN
     };
 
+    /** Returns <code>make_expression<boost::yap::expression, Kind>(...)</code>. */
+    template <expr_kind Kind, typename ...T>
+    auto make_expression (T && ... t)
+    { return make_expression<expression, Kind>(static_cast<T &&>(t)...); }
+
+    /** Returns <code>make_terminal<boost::yap::expression>(t)</code>. */
+    template <typename T>
+    auto make_terminal (T && t)
+    { return make_terminal<expression>(static_cast<T &&>(t)); }
+
+    /** Returns <code>as_expr<boost::yap::expression>(t)</code>. */
+    template <typename T>
+    decltype(auto) as_expr (T && t)
+    { return as_expr<expression>(static_cast<T &&>(t)); }
+
 } }
 
 #endif

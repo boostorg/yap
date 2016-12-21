@@ -474,11 +474,6 @@ namespace boost { namespace yap {
         };
     }
 
-    /** Returns <code>make_expression<boost::yap::expression, Kind>(...)</code>. */
-    template <expr_kind Kind, typename ...T>
-    auto make_expression (T && ... t)
-    { return make_expression<expression, Kind>(static_cast<T &&>(t)...); }
-
     /** Makes a new terminal expression instantiated from the expression
         template \a ExprTemplate, with the given value as its sole element.
 
@@ -496,11 +491,6 @@ namespace boost { namespace yap {
         using tuple_type = decltype(std::declval<result_type>().elements);
         return result_type{tuple_type{static_cast<T &&>(t)}};
     }
-
-    /** Returns <code>make_terminal<boost::yap::expression>(t)</code>. */
-    template <typename T>
-    auto make_terminal (T && t)
-    { return make_terminal<expression>(static_cast<T &&>(t)); }
 
 #ifdef BOOST_NO_CONSTEXPR_IF
 
@@ -545,11 +535,6 @@ namespace boost { namespace yap {
         }
 #endif
     }
-
-    /** Returns <code>as_expr<boost::yap::expression>(t)</code>. */
-    template <typename T>
-    decltype(auto) as_expr (T && t)
-    { return as_expr<expression>(static_cast<T &&>(t)); }
 
     /** A callable type that evaluates its contained expression when called.
 
