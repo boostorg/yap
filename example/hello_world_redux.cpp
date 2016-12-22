@@ -1,5 +1,5 @@
 //[hello_world_redux
-#include <boost/yap/expression.hpp>
+#include <boost/yap/algorithm.hpp>
 
 #include <iostream>
 

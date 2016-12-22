@@ -1,5 +1,6 @@
 [section Manual]
 
+[include headers.qbk]
 [include tutorial.qbk]
 [include examples.qbk]
 [include configuration.qbk]

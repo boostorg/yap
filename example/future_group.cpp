@@ -1,5 +1,5 @@
 //[ future_group
-#include <boost/yap/expression.hpp>
+#include <boost/yap/algorithm.hpp>
 
 #include <boost/hana/concat.hpp>
 

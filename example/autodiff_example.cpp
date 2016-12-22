@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <boost/yap/expression.hpp>
+#include <boost/yap/algorithm.hpp>
 #include <boost/polymorphic_cast.hpp>
 #include <boost/hana/for_each.hpp>
 
@@ -94,7 +94,7 @@ struct xform
     {
         return create_uary_op_node(
             opcode,
-            boost::yap::transform(boost::yap::as_expr(expr), *this)
+            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr), *this)
         );
     }
 
@@ -103,7 +103,7 @@ struct xform
     {
         return create_uary_op_node(
             OP_NEG,
-            boost::yap::transform(boost::yap::as_expr(expr), *this)
+            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr), *this)
         );
     }
 
@@ -119,8 +119,8 @@ struct xform
     {
         return create_binary_op_node(
             op_for_tag(tag),
-            boost::yap::transform(boost::yap::as_expr(expr1), *this),
-            boost::yap::transform(boost::yap::as_expr(expr2), *this)
+            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr1), *this),
+            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr2), *this)
         );
     }
 
