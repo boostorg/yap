@@ -45,7 +45,7 @@
           to be an rvalue, whether wrapped in a terminal or not.
         </p>
 <p>
-          Let's take a quick look at <code class="computeroutput"><a class="link" href="../../../boost/yap/make_te_idp140372495009320.html" title="Function template make_terminal">make_terminal()</a></code>.
+          Let's take a quick look at <code class="computeroutput"><a class="link" href="../../../boost/yap/make_te_idp140214351937000.html" title="Function template make_terminal">make_terminal()</a></code>.
           If you call it with a <code class="computeroutput"><span class="identifier">T</span></code>
           rvalue, the terminal's value type is a <code class="computeroutput"><span class="identifier">T</span></code>,
           and the rvalue gets moved into it. If you call it with a <code class="computeroutput"><span class="identifier">T</span> <span class="special">[</span><span class="keyword">const</span><span class="special">]</span></code> lvalue, the value type is <code class="computeroutput"><span class="identifier">T</span> <span class="special">[</span><span class="keyword">const</span><span class="special">]</span> <span class="special">&amp;</span></code>,
@@ -84,7 +84,7 @@
 <p>
           Ok, so since you can build these lazy Boost.YAP expressions up from subexpressions,
           how do we treat the subexpressions? We treat them in exactly the same way
-          as <code class="computeroutput"><a class="link" href="../../../boost/yap/make_te_idp140372495009320.html" title="Function template make_terminal">make_terminal()</a></code> treats its parameter.
+          as <code class="computeroutput"><a class="link" href="../../../boost/yap/make_te_idp140214351937000.html" title="Function template make_terminal">make_terminal()</a></code> treats its parameter.
           Rvalues are moved in, and lvalues are captured by (possibly <code class="computeroutput"><span class="keyword">const</span></code>) reference.
         </p>
 <div class="note"><table border="0" summary="Note">

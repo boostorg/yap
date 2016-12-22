@@ -24,7 +24,7 @@
 
 </span>BOOST_YAP_USER_UDT_ANY_IF_ELSE(expr_template, udt_trait)</pre></div>
 <div class="refsect1">
-<a name="idp140377022950280"></a><h2>Description</h2>
+<a name="idp140723082738696"></a><h2>Description</h2>
 <p>Defines a function <code class="computeroutput">if_else()</code> that acts as an analogue to the ternary operator (<code class="computeroutput">?:</code>), since the ternary operator is not user-overloadable. The return type of <code class="computeroutput">if_else()</code> is an expression instantiated from the <span class="emphasis"><em>expr_template</em></span> expression template.</p>
 <p>Each parameter to <code class="computeroutput">if_else()</code> may be any type that is <span class="bold"><strong>not</strong></span> an expression. At least on parameter must be a type <code class="computeroutput">T</code> for which </p>
 <pre class="programlisting"><span class="identifier">udt_trait</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_cv_t</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_reference_t</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;&gt;</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span>
