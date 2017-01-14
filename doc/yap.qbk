@@ -126,6 +126,7 @@
 
 [include intro.qbk]
 [include compiler_support.qbk]
+[include dependencies.qbk]
 [include manual.qbk]
 [include concepts.qbk]
 
