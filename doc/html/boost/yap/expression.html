@@ -7,11 +7,11 @@
 <link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
 <link rel="up" href="../../header/boost/yap/expression_hpp.html" title="Header &lt;boost/yap/expression.hpp&gt;">
 <link rel="prev" href="../../header/boost/yap/expression_hpp.html" title="Header &lt;boost/yap/expression.hpp&gt;">
-<link rel="next" href="express_idp140279454481384.html" title="Struct template expression&lt;expr_kind::terminal, hana::tuple&lt; T &gt;&gt;">
+<link rel="next" href="express_idp140239779699480.html" title="Struct template expression&lt;expr_kind::terminal, hana::tuple&lt; T &gt;&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="../../header/boost/yap/expression_hpp.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../../header/boost/yap/expression_hpp.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="express_idp140279454481384.html"><img src="../../images/next.png" alt="Next"></a>
+<a accesskey="p" href="../../header/boost/yap/expression_hpp.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../../header/boost/yap/expression_hpp.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="express_idp140239779699480.html"><img src="../../images/next.png" alt="Next"></a>
 </div>
 <div class="refentry">
 <a name="boost.yap.expression"></a><div class="titlepage"></div>
@@ -29,64 +29,64 @@
   <span class="keyword">typedef</span> <span class="identifier">Tuple</span>                     <a name="boost.yap.expression.tuple_type"></a><span class="identifier">tuple_type</span><span class="special">;</span>
 
   <span class="comment">// <a class="link" href="expression.html#boost.yap.expressionconstruct-copy-destruct">construct/copy/destruct</a></span>
-  <a class="link" href="expression.html#idp140279454475192-bb"><span class="identifier">expression</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <a class="link" href="expression.html#idp140279454475896-bb"><span class="identifier">expression</span></a><span class="special">(</span><span class="identifier">tuple_type</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454478056-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="expression.html#idp140239779693288-bb"><span class="identifier">expression</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <a class="link" href="expression.html#idp140239779693992-bb"><span class="identifier">expression</span></a><span class="special">(</span><span class="identifier">tuple_type</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779696152-bb"><span class="keyword">operator</span><span class="special">=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
 
-  <span class="comment">// <a class="link" href="expression.html#idp140279454328520-bb">public member functions</a></span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> R<span class="special">&gt;</span> <a class="link" href="expression.html#idp140279454329048-bb"><span class="keyword">operator</span> <span class="identifier">R</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a class="link" href="expression.html#idp140279454332888-bb"><span class="identifier">value</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a class="link" href="expression.html#idp140279454334552-bb"><span class="identifier">left</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a class="link" href="expression.html#idp140279454336216-bb"><span class="identifier">right</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454337880-bb"><span class="keyword">operator</span><span class="special">+</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454340024-bb"><span class="keyword">operator</span><span class="special">-</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454342168-bb"><span class="keyword">operator</span><span class="special">*</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454344312-bb"><span class="keyword">operator</span><span class="special">~</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454346456-bb"><span class="keyword">operator</span><span class="special">&amp;</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454348600-bb"><span class="keyword">operator</span><span class="special">!</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454350744-bb"><span class="keyword">operator</span><span class="special">++</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454352888-bb"><span class="keyword">operator</span><span class="special">--</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454355032-bb"><span class="keyword">operator</span><span class="special">++</span></a><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454357816-bb"><span class="keyword">operator</span><span class="special">--</span></a><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454360600-bb"><span class="keyword">operator</span><span class="special">&lt;&lt;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454364168-bb"><span class="keyword">operator</span><span class="special">&gt;&gt;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454367736-bb"><span class="keyword">operator</span><span class="special">*</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454371304-bb"><span class="keyword">operator</span><span class="special">/</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454374872-bb"><span class="keyword">operator</span><span class="special">%</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454378440-bb"><span class="keyword">operator</span><span class="special">+</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454382008-bb"><span class="keyword">operator</span><span class="special">-</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454385576-bb"><span class="keyword">operator</span><span class="special">&lt;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454389144-bb"><span class="keyword">operator</span><span class="special">&gt;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454392712-bb"><span class="keyword">operator</span><span class="special">&lt;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454396280-bb"><span class="keyword">operator</span><span class="special">&gt;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454399848-bb"><span class="keyword">operator</span><span class="special">==</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454403416-bb"><span class="keyword">operator</span><span class="special">!=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454406984-bb"><span class="keyword">operator</span><span class="special">||</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454410552-bb"><span class="keyword">operator</span><span class="special">&amp;&amp;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454414120-bb"><span class="keyword">operator</span><span class="special">&amp;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454417688-bb"><span class="keyword">operator</span><span class="special">|</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454421256-bb"><span class="keyword">operator</span><span class="special">^</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454424824-bb"><span class="keyword">operator</span><span class="special">,</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454428392-bb"><span class="keyword">operator</span><span class="special">-&gt;*</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454431960-bb"><span class="keyword">operator</span><span class="special">&lt;&lt;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454435528-bb"><span class="keyword">operator</span><span class="special">&gt;&gt;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454439096-bb"><span class="keyword">operator</span><span class="special">*=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454442664-bb"><span class="keyword">operator</span><span class="special">/=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454446232-bb"><span class="keyword">operator</span><span class="special">%=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454449800-bb"><span class="keyword">operator</span><span class="special">+=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454453368-bb"><span class="keyword">operator</span><span class="special">-=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454456936-bb"><span class="keyword">operator</span><span class="special">&amp;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454460504-bb"><span class="keyword">operator</span><span class="special">|=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454464072-bb"><span class="keyword">operator</span><span class="special">^=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454467640-bb"><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140279454471208-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="expression.html#idp140239779530360-bb">public member functions</a></span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> R<span class="special">&gt;</span> <a class="link" href="expression.html#idp140239779530888-bb"><span class="keyword">operator</span> <span class="identifier">R</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a class="link" href="expression.html#idp140239779534728-bb"><span class="identifier">value</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a class="link" href="expression.html#idp140239779536392-bb"><span class="identifier">left</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a class="link" href="expression.html#idp140239779538056-bb"><span class="identifier">right</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779539720-bb"><span class="keyword">operator</span><span class="special">+</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779541864-bb"><span class="keyword">operator</span><span class="special">-</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779544008-bb"><span class="keyword">operator</span><span class="special">*</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779546152-bb"><span class="keyword">operator</span><span class="special">~</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779548296-bb"><span class="keyword">operator</span><span class="special">&amp;</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779550440-bb"><span class="keyword">operator</span><span class="special">!</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779552584-bb"><span class="keyword">operator</span><span class="special">++</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779554728-bb"><span class="keyword">operator</span><span class="special">--</span></a><span class="special">(</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779556872-bb"><span class="keyword">operator</span><span class="special">++</span></a><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779559656-bb"><span class="keyword">operator</span><span class="special">--</span></a><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779562440-bb"><span class="keyword">operator</span><span class="special">&lt;&lt;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779566008-bb"><span class="keyword">operator</span><span class="special">&gt;&gt;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779569576-bb"><span class="keyword">operator</span><span class="special">*</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779589400-bb"><span class="keyword">operator</span><span class="special">/</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779592968-bb"><span class="keyword">operator</span><span class="special">%</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779596536-bb"><span class="keyword">operator</span><span class="special">+</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779600104-bb"><span class="keyword">operator</span><span class="special">-</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779603672-bb"><span class="keyword">operator</span><span class="special">&lt;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779607240-bb"><span class="keyword">operator</span><span class="special">&gt;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779610808-bb"><span class="keyword">operator</span><span class="special">&lt;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779614376-bb"><span class="keyword">operator</span><span class="special">&gt;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779617944-bb"><span class="keyword">operator</span><span class="special">==</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779621512-bb"><span class="keyword">operator</span><span class="special">!=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779625080-bb"><span class="keyword">operator</span><span class="special">||</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779628648-bb"><span class="keyword">operator</span><span class="special">&amp;&amp;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779632216-bb"><span class="keyword">operator</span><span class="special">&amp;</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779635784-bb"><span class="keyword">operator</span><span class="special">|</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779639352-bb"><span class="keyword">operator</span><span class="special">^</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779642920-bb"><span class="keyword">operator</span><span class="special">,</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779646488-bb"><span class="keyword">operator</span><span class="special">-&gt;*</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779650056-bb"><span class="keyword">operator</span><span class="special">&lt;&lt;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779653624-bb"><span class="keyword">operator</span><span class="special">&gt;&gt;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779657192-bb"><span class="keyword">operator</span><span class="special">*=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779660760-bb"><span class="keyword">operator</span><span class="special">/=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779664328-bb"><span class="keyword">operator</span><span class="special">%=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779667896-bb"><span class="keyword">operator</span><span class="special">+=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779671464-bb"><span class="keyword">operator</span><span class="special">-=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779675032-bb"><span class="keyword">operator</span><span class="special">&amp;=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779678600-bb"><span class="keyword">operator</span><span class="special">|=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779682168-bb"><span class="keyword">operator</span><span class="special">^=</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779685736-bb"><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">)</span><span class="special">;</span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a class="link" href="expression.html#idp140239779689304-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
 
   <span class="comment">// public data members</span>
   <span class="keyword">static</span> <span class="keyword">const</span> <span class="identifier">expr_kind</span> <span class="identifier">kind</span><span class="special">;</span>
   <span class="identifier">tuple_type</span> <span class="identifier">elements</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp140611503597432"></a><h2>Description</h2>
+<a name="idp140224204922680"></a><h2>Description</h2>
 <p>Reference expression template that provides all operator overloads.</p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -108,21 +108,21 @@
 <p>
 </p>
 <div class="refsect2">
-<a name="idp140611503616664"></a><h3>
+<a name="idp140224204941912"></a><h3>
 <a name="boost.yap.expressionconstruct-copy-destruct"></a><code class="computeroutput">expression</code> 
         public
        construct/copy/destruct</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><a name="idp140279454475192-bb"></a><span class="identifier">expression</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp140239779693288-bb"></a><span class="identifier">expression</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Default constructor. Does nothing. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><a name="idp140279454475896-bb"></a><span class="identifier">expression</span><span class="special">(</span><span class="identifier">tuple_type</span> <span class="special">&amp;&amp;</span> rhs<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><a name="idp140239779693992-bb"></a><span class="identifier">expression</span><span class="special">(</span><span class="identifier">tuple_type</span> <span class="special">&amp;&amp;</span> rhs<span class="special">)</span><span class="special">;</span></pre>
 <p>Moves <span class="emphasis"><em>rhs</em></span> into the only data mamber, <code class="computeroutput">elements</code>. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454478056-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779696152-bb"></a><span class="keyword">operator</span><span class="special">=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
@@ -131,314 +131,314 @@
 </ol></div>
 </div>
 <div class="refsect2">
-<a name="idp140611503637624"></a><h3>
-<a name="idp140279454328520-bb"></a><code class="computeroutput">expression</code> public member functions</h3>
+<a name="idp140224204962920"></a><h3>
+<a name="idp140239779530360-bb"></a><code class="computeroutput">expression</code> public member functions</h3>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> R<span class="special">&gt;</span> <a name="idp140279454329048-bb"></a><span class="keyword">operator</span> <span class="identifier">R</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> R<span class="special">&gt;</span> <a name="idp140239779530888-bb"></a><span class="keyword">operator</span> <span class="identifier">R</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>Conversion operator. Attempts to convert <code class="computeroutput">*this</code> to any type <span class="emphasis"><em>R</em></span> with a call to the <code class="computeroutput">eval_expression_as()</code> customization point. This function is only defined if the configuration macro <code class="computeroutput">BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</code> has been defined by the user to be nonzero. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a name="idp140279454332888-bb"></a><span class="identifier">value</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a name="idp140239779534728-bb"></a><span class="identifier">value</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>A convenience member function that dispatches to the free function <code class="computeroutput">value()</code>. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a name="idp140279454334552-bb"></a><span class="identifier">left</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a name="idp140239779536392-bb"></a><span class="identifier">left</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>A convenience member function that dispatches to the free function <code class="computeroutput">left()</code>. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a name="idp140279454336216-bb"></a><span class="identifier">right</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a name="idp140239779538056-bb"></a><span class="identifier">right</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p>A convenience member function that dispatches to the free function <code class="computeroutput">right()</code>. </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454337880-bb"></a><span class="keyword">operator</span><span class="special">+</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779539720-bb"></a><span class="keyword">operator</span><span class="special">+</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454340024-bb"></a><span class="keyword">operator</span><span class="special">-</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779541864-bb"></a><span class="keyword">operator</span><span class="special">-</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454342168-bb"></a><span class="keyword">operator</span><span class="special">*</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779544008-bb"></a><span class="keyword">operator</span><span class="special">*</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454344312-bb"></a><span class="keyword">operator</span><span class="special">~</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779546152-bb"></a><span class="keyword">operator</span><span class="special">~</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454346456-bb"></a><span class="keyword">operator</span><span class="special">&amp;</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779548296-bb"></a><span class="keyword">operator</span><span class="special">&amp;</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454348600-bb"></a><span class="keyword">operator</span><span class="special">!</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779550440-bb"></a><span class="keyword">operator</span><span class="special">!</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454350744-bb"></a><span class="keyword">operator</span><span class="special">++</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779552584-bb"></a><span class="keyword">operator</span><span class="special">++</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454352888-bb"></a><span class="keyword">operator</span><span class="special">--</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779554728-bb"></a><span class="keyword">operator</span><span class="special">--</span><span class="special">(</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454355032-bb"></a><span class="keyword">operator</span><span class="special">++</span><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779556872-bb"></a><span class="keyword">operator</span><span class="special">++</span><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140279454357816-bb"></a><span class="keyword">operator</span><span class="special">--</span><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">auto</span> <a name="idp140239779559656-bb"></a><span class="keyword">operator</span><span class="special">--</span><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454360600-bb"></a><span class="keyword">operator</span><span class="special">&lt;&lt;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779562440-bb"></a><span class="keyword">operator</span><span class="special">&lt;&lt;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454364168-bb"></a><span class="keyword">operator</span><span class="special">&gt;&gt;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779566008-bb"></a><span class="keyword">operator</span><span class="special">&gt;&gt;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454367736-bb"></a><span class="keyword">operator</span><span class="special">*</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779569576-bb"></a><span class="keyword">operator</span><span class="special">*</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454371304-bb"></a><span class="keyword">operator</span><span class="special">/</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779589400-bb"></a><span class="keyword">operator</span><span class="special">/</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454374872-bb"></a><span class="keyword">operator</span><span class="special">%</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779592968-bb"></a><span class="keyword">operator</span><span class="special">%</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454378440-bb"></a><span class="keyword">operator</span><span class="special">+</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779596536-bb"></a><span class="keyword">operator</span><span class="special">+</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454382008-bb"></a><span class="keyword">operator</span><span class="special">-</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779600104-bb"></a><span class="keyword">operator</span><span class="special">-</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454385576-bb"></a><span class="keyword">operator</span><span class="special">&lt;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779603672-bb"></a><span class="keyword">operator</span><span class="special">&lt;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454389144-bb"></a><span class="keyword">operator</span><span class="special">&gt;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779607240-bb"></a><span class="keyword">operator</span><span class="special">&gt;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454392712-bb"></a><span class="keyword">operator</span><span class="special">&lt;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779610808-bb"></a><span class="keyword">operator</span><span class="special">&lt;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454396280-bb"></a><span class="keyword">operator</span><span class="special">&gt;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779614376-bb"></a><span class="keyword">operator</span><span class="special">&gt;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454399848-bb"></a><span class="keyword">operator</span><span class="special">==</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779617944-bb"></a><span class="keyword">operator</span><span class="special">==</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454403416-bb"></a><span class="keyword">operator</span><span class="special">!=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779621512-bb"></a><span class="keyword">operator</span><span class="special">!=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454406984-bb"></a><span class="keyword">operator</span><span class="special">||</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779625080-bb"></a><span class="keyword">operator</span><span class="special">||</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454410552-bb"></a><span class="keyword">operator</span><span class="special">&amp;&amp;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779628648-bb"></a><span class="keyword">operator</span><span class="special">&amp;&amp;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454414120-bb"></a><span class="keyword">operator</span><span class="special">&amp;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779632216-bb"></a><span class="keyword">operator</span><span class="special">&amp;</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454417688-bb"></a><span class="keyword">operator</span><span class="special">|</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779635784-bb"></a><span class="keyword">operator</span><span class="special">|</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454421256-bb"></a><span class="keyword">operator</span><span class="special">^</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779639352-bb"></a><span class="keyword">operator</span><span class="special">^</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454424824-bb"></a><span class="keyword">operator</span><span class="special">,</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779642920-bb"></a><span class="keyword">operator</span><span class="special">,</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454428392-bb"></a><span class="keyword">operator</span><span class="special">-&gt;*</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779646488-bb"></a><span class="keyword">operator</span><span class="special">-&gt;*</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454431960-bb"></a><span class="keyword">operator</span><span class="special">&lt;&lt;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779650056-bb"></a><span class="keyword">operator</span><span class="special">&lt;&lt;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454435528-bb"></a><span class="keyword">operator</span><span class="special">&gt;&gt;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779653624-bb"></a><span class="keyword">operator</span><span class="special">&gt;&gt;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454439096-bb"></a><span class="keyword">operator</span><span class="special">*=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779657192-bb"></a><span class="keyword">operator</span><span class="special">*=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454442664-bb"></a><span class="keyword">operator</span><span class="special">/=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779660760-bb"></a><span class="keyword">operator</span><span class="special">/=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454446232-bb"></a><span class="keyword">operator</span><span class="special">%=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779664328-bb"></a><span class="keyword">operator</span><span class="special">%=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454449800-bb"></a><span class="keyword">operator</span><span class="special">+=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779667896-bb"></a><span class="keyword">operator</span><span class="special">+=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454453368-bb"></a><span class="keyword">operator</span><span class="special">-=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779671464-bb"></a><span class="keyword">operator</span><span class="special">-=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454456936-bb"></a><span class="keyword">operator</span><span class="special">&amp;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779675032-bb"></a><span class="keyword">operator</span><span class="special">&amp;=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454460504-bb"></a><span class="keyword">operator</span><span class="special">|=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779678600-bb"></a><span class="keyword">operator</span><span class="special">|=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454464072-bb"></a><span class="keyword">operator</span><span class="special">^=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779682168-bb"></a><span class="keyword">operator</span><span class="special">^=</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454467640-bb"></a><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779685736-bb"></a><span class="keyword">operator</span><span class="special">[</span><span class="special">]</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. </p>
 <p>
 </p>
 </li>
 <li class="listitem">
-<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140279454471208-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">...</span> t<span class="special">)</span><span class="special">;</span></pre>
+<pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> T<span class="special">&gt;</span> <span class="keyword">auto</span> <a name="idp140239779689304-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">...</span> t<span class="special">)</span><span class="special">;</span></pre>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p>BOOST_YAP_USER_MEMBER_CALL_OPERATOR for full semantics. </p>
 <p>
@@ -458,7 +458,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../../header/boost/yap/expression_hpp.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../../header/boost/yap/expression_hpp.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="express_idp140279454481384.html"><img src="../../images/next.png" alt="Next"></a>
+<a accesskey="p" href="../../header/boost/yap/expression_hpp.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../../header/boost/yap/expression_hpp.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="express_idp140239779699480.html"><img src="../../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>
