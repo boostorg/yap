@@ -136,4 +136,11 @@
 
 [xinclude yap_reference.xml]
 
+[template named_index[type title]
+'''<index type="'''[type]'''"><title>'''[title]'''</title></index>'''
+]
+[named_index class_name Class Index]
+[named_index function_name Function Index]
+[named_index macro_name Macro Index]
+
 [include rationale.qbk]
