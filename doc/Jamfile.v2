@@ -6,15 +6,17 @@ import path ;
 import doxygen ;
 import quickbook ;
 
+using auto-index ;
 using doxygen ;
+using quickbook ;
 using boostbook ;
 
-rule run_doxygen ( target : files * : name : expand ? )
+rule run_doxygen ( files * : name : expand ? )
 {
 
     expand ?= <doxygen:param>EXPAND_ONLY_PREDEF=YES ;
 
-doxygen $(target)
+doxygen yap_reference
   :
     $(files)
   :
@@ -36,12 +38,7 @@ doxygen $(target)
 
 }
 
-run_doxygen yap_reference
-  :
-    [ glob ../boost/yap/*.hpp ]
-  :
-    "Reference"
-  ;
+run_doxygen [ glob ../boost/yap/*.hpp ] : "Reference" ;
 
 xml yap
     :
@@ -94,6 +91,13 @@ boostbook standalone
         # better use SVG's instead:
         # <xsl:param>admon.graphics.extension=".svg"
 
+        <auto-index>on
+        <auto-index-verbose>on
+        <auto-index-internal>on
+        <auto-index-script>yap.idx
+        <quickbook-define>enable_index
+        <auto-index-prefix>..
+        <xsl:param>index.on.type=1
     ;
 
 install css : [ glob $(BOOST_ROOT)/doc/src/*.css ]

@@ -124,6 +124,10 @@
 
 [def _how_treated_         [link boost_yap__proposed_.manual.tutorial.how_expression_operands_are_treated How Expression Operands Are Treated]]
 
+[def _calc3_               [link boost_yap__proposed_.manual.examples.calc3 Calc3]]
+[def _mixed_               [link boost_yap__proposed_.manual.examples.mixed Mixed]]
+[def _lazy_vector_         [link boost_yap__proposed_.manual.examples.lazy_vector Lazy Vector]]
+
 [include intro.qbk]
 [include compiler_support.qbk]
 [include dependencies.qbk]
@@ -131,5 +135,12 @@
 [include concepts.qbk]
 
 [xinclude yap_reference.xml]
+
+[template named_index[type title]
+'''<index type="'''[type]'''"><title>'''[title]'''</title></index>'''
+]
+[named_index class_name Class Index]
+[named_index function_name Function Index]
+[named_index macro_name Macro Index]
 
 [include rationale.qbk]
