@@ -1,10 +1,17 @@
 #ifndef BOOST_YAP_USER_MACROS_HPP_INCLUDED
 #define BOOST_YAP_USER_MACROS_HPP_INCLUDED
 
-#include <boost/preprocessor/cat.hpp>
-
 
 #ifndef BOOST_YAP_DOXYGEN
+
+#if defined(__MWERKS__)
+#  define BOOST_PP_CAT(lhs, rhs) BOOST_PP_CAT_O((lhs, rhs))
+#  define BOOST_PP_CAT_0(x) BOOST_PP_CAT_1 ## x
+#else
+#  define BOOST_YAP_CAT(lhs, rhs) BOOST_YAP_CAT_1(lhs, rhs)
+#endif
+#define BOOST_YAP_CAT_1(lhs, rhs) BOOST_YAP_CAT_2(dummy, lhs ## rhs)
+#define BOOST_YAP_CAT_2(dummy, x) x
 
 // unary
 #define BOOST_YAP_OPERATOR_unary_plus(param_list) + param_list
@@ -52,7 +59,7 @@
 #define BOOST_YAP_OPERATOR_bitwise_xor_assign() ^=
 #define BOOST_YAP_OPERATOR_subscript() []
 
-#define BOOST_YAP_INDIRECT_CALL(macro) BOOST_PP_CAT(BOOST_YAP_OPERATOR_, macro)
+#define BOOST_YAP_INDIRECT_CALL(macro) BOOST_YAP_CAT(BOOST_YAP_OPERATOR_, macro)
 
 #endif // BOOST_YAP_DOXYGEN
 
