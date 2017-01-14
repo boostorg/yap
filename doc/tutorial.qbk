@@ -93,6 +93,39 @@ for your use case.
 [endsect]
 
 
+[section Transforming Expressions]
+
+_yap_ expressions are evaluated explicitly and implicitly:
+
+Explicit transformations are done using the _xform_ function.  See _calc3_ for
+an example.
+
+Implicit transformations are estabished by overriding the _cps_ provided by
+_yap_; this is explained in detail [link
+boost_yap__proposed_.manual.tutorial.customization_points later] in the
+tutorial.  Implicit transformations are only executed when an expression is
+evaluated.  See _mixed_ for an example; it overrides the `eval_call()` _cp_.
+
+[endsect]
+
+
+[section Evaluating Expressions]
+
+_yap_ expressions are evaluated explicitly and implicitly:
+
+_yap_ expressions are explicitly evaluated by calling the _eval_ or _eval_as_
+functions.  _eval_as_ only differs in that the expected return type is
+explicitly provided as a template parameter, to allow for different evaluation
+behavior for different return types.  For most use cases, _eval_ will be the
+right one to use.
+
+Implicit evaluation can apply when _conv_op_m_ is defined.  Note that this
+macro only changes the definition of _expr_, though.  Your custom _ets_ will
+not be affected.  See the assignment to `d1` in _lazy_vector_ for an example.
+
+[endsect]
+
+
 [section Printing]
 
 _yap_ has a convenient _print_ function, that prints an expression tree to a
