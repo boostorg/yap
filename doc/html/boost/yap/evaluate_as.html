@@ -26,7 +26,7 @@
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> R<span class="special">,</span> <span class="keyword">typename</span> Expr<span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> T<span class="special">&gt;</span> 
   <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="identifier">evaluate_as</span><span class="special">(</span><span class="identifier">Expr</span> <span class="special">&amp;&amp;</span> expr<span class="special">,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;</span><span class="special">...</span> t<span class="special">)</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp140723079562360"></a><h2>Description</h2>
+<a name="idp140611502956424"></a><h2>Description</h2>
 <p>Evaluates <span class="emphasis"><em>expr</em></span>, substituting the subsequent parameters (if any) into <span class="emphasis"><em>expr's</em></span> placeholder terminals. Evaluation is performed via the <code class="computeroutput">eval_expression_as()</code> customization point.</p>
 <p>Prefer this function to <code class="computeroutput">evaluate()</code> when you want evaluation to differ based on the result type.</p>
 <p>All customization points for the evaluation of expressions are used to evaluate the <span class="emphasis"><em>expr</em></span>. If you've overridden any, that will be reflected in the result.</p>

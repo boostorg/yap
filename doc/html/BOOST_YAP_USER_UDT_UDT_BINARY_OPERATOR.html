@@ -24,7 +24,7 @@
 
 </span>BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR(op_name, expr_template, t_udt_trait, u_udt_trait)</pre></div>
 <div class="refsect1">
-<a name="idp140723082906344"></a><h2>Description</h2>
+<a name="idp140611506305416"></a><h2>Description</h2>
 <p>Defines a free/non-member operator overload for binary operator <span class="emphasis"><em>op_name</em></span> that produces an expression instantiated from the <span class="emphasis"><em>expr_template</em></span> expression template.</p>
 <p>The <span class="emphasis"><em>lhs</em></span> parameter to the defined operator overload may be any type that is <span class="bold"><strong>not</strong></span> an expression and for which</p>
 <pre class="programlisting"><span class="identifier">t_udt_trait</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_cv_t</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_reference_t</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;&gt;</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span> 

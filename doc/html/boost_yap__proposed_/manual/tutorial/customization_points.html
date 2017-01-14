@@ -25,8 +25,8 @@
           library, the basis for the ISO Ranges TS. To override one, you create a
           function with the same name in your own namespace; it gets picked up via
           ADL. By creating your own version of one of these customization points,
-          you can change how expressions are evaluated in <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate()</a></code>
-          and <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate_as()</a></code>.
+          you can change how expressions are evaluated in <code class="computeroutput"><a class="link" href="../../../boost/yap/evaluate.html" title="Function template evaluate">evaluate()</a></code>
+          and <code class="computeroutput"><a class="link" href="../../../boost/yap/evaluate_as.html" title="Function template evaluate_as">evaluate_as()</a></code>.
         </p>
 <p>
           For example: first we define a UDT <code class="computeroutput"><span class="identifier">number</span></code>
@@ -69,7 +69,7 @@
 <p>
           There is a customization point for each operator (including <code class="computeroutput"><span class="identifier">if_else</span></code>), one for doing implicit transforms
           during evaluation, called <code class="computeroutput"><span class="identifier">transform_expression</span><span class="special">()</span></code>, and yet one more for replacing the entire
-          implementation of <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate_as()</a></code>,
+          implementation of <code class="computeroutput"><a class="link" href="../../../boost/yap/evaluate_as.html" title="Function template evaluate_as">evaluate_as()</a></code>,
           called <code class="computeroutput"><span class="identifier">eval_expression_as</span><span class="special">()</span></code>. The complete list of the customization
           points can be found in the <code class="computeroutput"><span class="identifier">function_objects</span></code>
           namespace in the <code class="computeroutput"><a class="link" href="../../../header/boost/yap/operators_hpp.html" title="Header &lt;boost/yap/operators.hpp&gt;">operators header</a></code>.
@@ -128,8 +128,8 @@
           the transform_expression Customization Point Is Applied</a>
         </h6>
 <p>
-          If at any point during the execution of <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate()</a></code>
-          or <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate_as()</a></code>, if <code class="computeroutput"><span class="identifier">expr</span></code>
+          If at any point during the execution of <code class="computeroutput"><a class="link" href="../../../boost/yap/evaluate.html" title="Function template evaluate">evaluate()</a></code>
+          or <code class="computeroutput"><a class="link" href="../../../boost/yap/evaluate_as.html" title="Function template evaluate_as">evaluate_as()</a></code>, if <code class="computeroutput"><span class="identifier">expr</span></code>
           is the current subexpression and <code class="computeroutput"><span class="identifier">transform_expression</span><span class="special">(</span><span class="identifier">expr</span><span class="special">)</span></code> is well-formed, <code class="computeroutput"><span class="identifier">transform_expression</span><span class="special">(</span><span class="identifier">expr</span><span class="special">)</span></code> gets called in place of the normal evaluation
           of <code class="computeroutput"><span class="identifier">expr</span></code>.
         </p>
@@ -227,7 +227,7 @@
           The Other Customization Points Are Applied</a>
         </h6>
 <p>
-          Each of <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate()</a></code> and <code class="computeroutput"><a class="link" href="../../../boost/yap/transform.html" title="Function template transform">evaluate_as()</a></code>
+          Each of <code class="computeroutput"><a class="link" href="../../../boost/yap/evaluate.html" title="Function template evaluate">evaluate()</a></code> and <code class="computeroutput"><a class="link" href="../../../boost/yap/evaluate_as.html" title="Function template evaluate_as">evaluate_as()</a></code>
           evaluates its given expression recursively, depth first (unless of course
           the <code class="computeroutput"><span class="identifier">transform_expression</span><span class="special">()</span></code> customization point subverts this). For
           any given subexpression <code class="computeroutput"><span class="identifier">E</span></code>
