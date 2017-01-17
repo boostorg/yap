@@ -24,7 +24,7 @@
 
 </span>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, expr_template)</pre></div>
 <div class="refsect1">
-<a name="idp140716441056440"></a><h2>Description</h2>
+<a name="idp140633721113144"></a><h2>Description</h2>
 <p>Defines operator overloads for unary operator <span class="emphasis"><em>op_name</em></span> that each produce an expression instantiated from the <span class="emphasis"><em>expr_template</em></span> expression template. One overload is defined for each of the qualifiers <code class="computeroutput">const &amp;</code>, <code class="computeroutput">&amp;</code>, and <code class="computeroutput">&amp;&amp;</code>. For the lvalue reference overloads, <code class="computeroutput">*this</code> is captured by reference into the resulting expression. For the rvalue reference overload, <code class="computeroutput">*this</code> is moved into the resulting expression.</p>
 <p>Example: </p>
 <pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
