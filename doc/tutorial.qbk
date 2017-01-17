@@ -98,7 +98,9 @@ for your use case.
 _yap_ expressions are evaluated explicitly and implicitly:
 
 Explicit transformations are done using the _xform_ function.  See _calc3_ for
-an example.
+an example.  A _yap_ transformation is free-form.  It can transform an
+expression into anything -- a new expression of any kind, or even a non-expression
+value (effectively evaluating the expression)
 
 Implicit transformations are estabished by overriding the _cps_ provided by
 _yap_; this is explained in detail [link
