@@ -563,7 +563,7 @@ namespace boost { namespace yap {
             detail::is_expr<Expr>::value,
             "make_expression_function() is only defined for expressions."
         );
-        return expression_function<Expr>{std::move(expr)};
+        return expression_function<Expr>{static_cast<Expr &&>(expr)};
     }
 
 } }
