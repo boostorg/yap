@@ -115,10 +115,10 @@ namespace user {
 
     struct term_nonterm_xform_tag
     {
-        decltype(auto) operator() (yap::terminal_tag, user::number const & n)
+        auto operator() (yap::terminal_tag, user::number const & n)
         { return yap::make_terminal(n * user::number{2.0}); }
 
-        decltype(auto) operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
+        auto operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
         {
             return yap::make_expression<yap::expr_kind::minus>(
                 term<user::number>{lhs},
@@ -136,8 +136,8 @@ namespace user {
         decltype(auto) operator() (yap::expression<yap::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
         {
             return yap::make_expression<yap::expr_kind::minus>(
-                ::boost::yap::left(expr),
-                ::boost::yap::right(expr)
+                yap::transform(::boost::yap::left(expr), *this),
+                yap::transform(::boost::yap::right(expr), *this)
             );
         }
     };
@@ -162,8 +162,8 @@ namespace user {
         decltype(auto) operator() (yap::expression<yap::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
         {
             return yap::make_expression<yap::expr_kind::minus>(
-                ::boost::yap::left(expr),
-                ::boost::yap::right(expr)
+                yap::transform(::boost::yap::left(expr), *this),
+                yap::transform(::boost::yap::right(expr), *this)
             );
         }
     };
@@ -286,11 +286,11 @@ namespace user {
 
     struct disable_negate_xform_tag
     {
-        decltype(auto) operator() (yap::negate_tag, user::number const & value)
-        { return yap::make_terminal(value); }
+        auto operator() (yap::negate_tag, user::number value)
+        { return yap::make_terminal(std::move(value)); }
 
         template <typename Expr>
-        decltype(auto) operator() (yap::negate_tag, Expr const & expr)
+        auto operator() (yap::negate_tag, Expr const & expr)
         { return expr; }
     };
 
@@ -303,8 +303,8 @@ namespace user {
 
     struct disable_negate_xform_both
     {
-        decltype(auto) operator() (yap::negate_tag, user::number const & value)
-        { return yap::make_terminal(value); }
+        decltype(auto) operator() (yap::negate_tag, user::number value)
+        { return yap::make_terminal(std::move(value)); }
 
         template <typename Expr>
         decltype(auto) operator() (yap::negate_tag, Expr const & expr)
@@ -328,9 +328,9 @@ namespace user {
         decltype(auto) operator() (
             boost::yap::if_else_tag,
             Expr const & cond,
-            user::number const & then,
-            user::number const & else_
-        ) { return boost::yap::make_terminal(else_); }
+            user::number then,
+            user::number else_
+        ) { return boost::yap::make_terminal(std::move(else_)); }
     };
 //]
 
@@ -350,8 +350,8 @@ namespace user {
     struct ternary_to_else_xform_both
     {
         template <typename Expr>
-        decltype(auto) operator() (yap::if_else_tag, Expr const & cond, user::number const & then, user::number const & else_)
-        { return yap::make_terminal(else_); }
+        decltype(auto) operator() (yap::if_else_tag, Expr const & cond, user::number then, user::number else_)
+        { return yap::make_terminal(std::move(else_)); }
 
         template <typename Cond, typename Then, typename Else>
         decltype(auto) operator() (yap::expression<yap::expr_kind::if_else, bh::tuple<Cond, Then, Else>> const & expr)
@@ -484,6 +484,8 @@ TEST(user_expression_transform_3, test_user_expression_transform_3)
         }
 
         {
+            // Differs from those below, because it matches terminals, not
+            // expressions.
             auto transformed_expr = transform(expr, user::term_nonterm_xform_tag{});
             user::number result = evaluate(transformed_expr);
             EXPECT_EQ(result.value, 40 * 2);
@@ -492,13 +494,13 @@ TEST(user_expression_transform_3, test_user_expression_transform_3)
         {
             auto transformed_expr = transform(expr, user::term_nonterm_xform_expr{});
             user::number result = evaluate(transformed_expr);
-            EXPECT_EQ(result.value, 40 * 2);
+            EXPECT_EQ(result.value, 38 * 2);
         }
 
         {
             auto transformed_expr = transform(expr, user::term_nonterm_xform_both{});
             user::number result = evaluate(transformed_expr);
-            EXPECT_EQ(result.value, 40 * 2);
+            EXPECT_EQ(result.value, 38 * 2);
         }
     }
 
@@ -557,17 +559,17 @@ TEST(user_expression_transform_3, test_user_expression_transform_3)
 
         {
             user::number result = transform(expr, user::eval_term_nonterm_xform_tag{});
-            EXPECT_EQ(result.value, 40 * 2);
+            EXPECT_EQ(result.value, 38 * 2);
         }
 
         {
             user::number result = transform(expr, user::eval_term_nonterm_xform_expr{});
-            EXPECT_EQ(result.value, 40 * 2);
+            EXPECT_EQ(result.value, 38 * 2);
         }
 
         {
             user::number result = transform(expr, user::eval_term_nonterm_xform_both{});
-            EXPECT_EQ(result.value, 40 * 2);
+            EXPECT_EQ(result.value, 38 * 2);
         }
     }
 

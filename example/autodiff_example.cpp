@@ -88,24 +88,18 @@ struct xform
     Node * operator() (boost::yap::terminal_tag, double x)
     { return create_param_node(x); }
 
+    // Just pass through the OPCODE within a function-terminal.
+    OPCODE operator() (boost::yap::terminal_tag, OPCODE opcode)
+    { return opcode; }
+
     // Create a "uary" node for each call expression, using its OPCODE.
     template <typename Expr>
     Node * operator() (boost::yap::call_tag, OPCODE opcode, Expr const & expr)
-    {
-        return create_uary_op_node(
-            opcode,
-            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr), *this)
-        );
-    }
+    { return create_uary_op_node(opcode, boost::yap::transform(expr, *this)); }
 
     template <typename Expr>
     Node * operator() (boost::yap::negate_tag, Expr const & expr)
-    {
-        return create_uary_op_node(
-            OP_NEG,
-            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr), *this)
-        );
-    }
+    { return create_uary_op_node(OP_NEG, boost::yap::transform(expr, *this)); }
 
     // Define a mapping from binary arothmetic tag type to OPCODE...
     static OPCODE op_for_tag (boost::yap::plus_tag) { return OP_PLUS; }
@@ -119,8 +113,8 @@ struct xform
     {
         return create_binary_op_node(
             op_for_tag(tag),
-            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr1), *this),
-            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr2), *this)
+            boost::yap::transform(expr1, *this),
+            boost::yap::transform(expr2, *this)
         );
     }
 

@@ -496,7 +496,7 @@ namespace boost { namespace yap {
             }
         };
 
-#endif
+#endif // BOOST_NO_CONSTEXPR_IF
 
         template <typename Expr, typename Transform>
         struct default_transform_expression_expr<
@@ -524,9 +524,114 @@ namespace boost { namespace yap {
             }
         };
 
-        template <typename T>
-        decltype(auto) terminal_value (T && x)
-        { return value_impl<true>(static_cast<T &&>(x)); }
+        template <typename T, typename Transform>
+        decltype(auto) terminal_value (T && x, Transform && transform);
+
+#ifdef BOOST_NO_CONSTEXPR_IF
+
+        template <typename T, typename Transform, expr_kind Kind>
+        struct terminal_value_expr_impl
+        {
+            decltype(auto) operator() (T && x, Transform && transform)
+            { return static_cast<T &&>(x); }
+        };
+
+        template <typename T, typename Transform>
+        struct terminal_value_expr_impl<T, Transform, expr_kind::terminal>
+        {
+            decltype(auto) operator() (T && x, Transform && transform)
+            {
+                default_transform_expression_tag<T, Transform, detail::arity_of<expr_kind::terminal>()> transformer;
+                // This temporary is necessary.  The transform here may
+                // create a new object, and we don't want value_impl<>()
+                // to leak a reference to it.
+                auto retval = value_impl<true>(
+                    transformer(static_cast<T &&>(x), static_cast<Transform &&>(transform))
+                );
+                return retval;
+            }
+        };
+
+        template <typename T, typename Transform>
+        struct terminal_value_expr_impl<T, Transform, expr_kind::expr_ref>
+        {
+            decltype(auto) operator() (T && x, Transform && transform)
+            {
+                return terminal_value(
+                    ::boost::yap::deref(static_cast<T &&>(x)),
+                    static_cast<Transform &&>(transform)
+                );
+            }
+        };
+
+        template <typename T, typename Transform, bool IsExpr>
+        struct terminal_value_impl_t
+        {
+            decltype(auto) operator() (T && x, Transform && transform)
+            {
+                constexpr expr_kind kind = detail::remove_cv_ref_t<T>::kind;
+                return terminal_value_expr_impl<T, Transform, kind>{}(
+                    static_cast<T &&>(x),
+                    static_cast<Transform &&>(transform)
+                );
+            }
+        };
+
+        template <typename T, typename Transform>
+        struct terminal_value_impl_t<T, Transform, false>
+        {
+            decltype(auto) operator() (T && x, Transform && transform)
+            { return static_cast<T &&>(x); }
+        };
+
+        template <typename T, typename Transform>
+        decltype(auto) terminal_value_impl (T && x, Transform && transform)
+        {
+            return detail::terminal_value_impl_t<T, Transform, detail::is_expr<T>::value>{}(
+                static_cast<T &&>(x),
+                static_cast<Transform &&>(transform)
+            );
+        }
+
+#else
+
+        template <typename T, typename Transform>
+        decltype(auto) terminal_value_impl (T && x, Transform && transform)
+        {
+            if constexpr (is_expr<T>::value) {
+                constexpr expr_kind kind = remove_cv_ref_t<T>::kind;
+                if constexpr (kind == expr_kind::terminal) {
+                    default_transform_expression_tag<T, Transform, detail::arity_of<kind>()> transformer;
+                    // This temporary is necessary.  The transform here may
+                    // create a new object, and we don't want value_impl<>()
+                    // to leak a reference to it.
+                    auto retval = value_impl<true>(
+                        transformer(static_cast<T &&>(x), static_cast<Transform &&>(transform))
+                    );
+                    return retval;
+                } else if constexpr (kind == expr_kind::expr_ref) {
+                    return terminal_value(
+                        ::boost::yap::deref(static_cast<T &&>(x)),
+                        static_cast<Transform &&>(transform)
+                    );
+                } else {
+                    return static_cast<T &&>(x);
+                }
+            } else {
+                return static_cast<T &&>(x);
+            }
+        }
+
+#endif // BOOST_NO_CONSTEXPR_IF
+
+        template <typename T, typename Transform>
+        decltype(auto) terminal_value (T && x, Transform && transform)
+        {
+            return terminal_value_impl(
+                static_cast<T &&>(x),
+                static_cast<Transform &&>(transform)
+            );
+        }
 
         template <typename Expr, typename Transform>
         struct default_transform_expression_tag<
@@ -536,16 +641,21 @@ namespace boost { namespace yap {
             void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    terminal_value(::boost::yap::value(std::declval<Expr>()))
+                    terminal_value(::boost::yap::get(std::declval<Expr>(), hana::llong<0>{}),
+                                   std::declval<Transform>())
                 )
             )>
         >
         {
             decltype(auto) operator() (Expr && expr, Transform && transform)
             {
+                using namespace hana::literals;
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    terminal_value(::boost::yap::value(static_cast<Expr &&>(expr)))
+                    terminal_value(
+                        ::boost::yap::get(static_cast<Expr &&>(expr), 0_c),
+                        static_cast<Transform &&>(transform)
+                    )
                 );
             }
         };
@@ -558,8 +668,10 @@ namespace boost { namespace yap {
             void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    terminal_value(::boost::yap::left(std::declval<Expr>())),
-                    terminal_value(::boost::yap::right(std::declval<Expr>()))
+                    terminal_value(::boost::yap::left(std::declval<Expr>()),
+                                   std::declval<Transform>()),
+                    terminal_value(::boost::yap::right(std::declval<Expr>()),
+                                   std::declval<Transform>())
                 )
             )>
         >
@@ -568,8 +680,10 @@ namespace boost { namespace yap {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    terminal_value(::boost::yap::left(static_cast<Expr &&>(expr))),
-                    terminal_value(::boost::yap::right(static_cast<Expr &&>(expr)))
+                    terminal_value(::boost::yap::left(static_cast<Expr &&>(expr)),
+                                   static_cast<Transform &&>(transform)),
+                    terminal_value(::boost::yap::right(static_cast<Expr &&>(expr)),
+                                   static_cast<Transform &&>(transform))
                 );
             }
         };
@@ -582,9 +696,12 @@ namespace boost { namespace yap {
             void_t<decltype(
                 std::declval<Transform>()(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    terminal_value(::boost::yap::cond(std::declval<Expr>())),
-                    terminal_value(::boost::yap::then(std::declval<Expr>())),
-                    terminal_value(::boost::yap::else_(std::declval<Expr>()))
+                    terminal_value(::boost::yap::cond(std::declval<Expr>()),
+                                   std::declval<Transform>()),
+                    terminal_value(::boost::yap::then(std::declval<Expr>()),
+                                   std::declval<Transform>()),
+                    terminal_value(::boost::yap::else_(std::declval<Expr>()),
+                                   std::declval<Transform>())
                 )
             )>
         >
@@ -593,9 +710,12 @@ namespace boost { namespace yap {
             {
                 return static_cast<Transform &&>(transform)(
                     detail::tag_for<remove_cv_ref_t<Expr>::kind>(),
-                    terminal_value(::boost::yap::cond(static_cast<Expr &&>(expr))),
-                    terminal_value(::boost::yap::then(static_cast<Expr &&>(expr))),
-                    terminal_value(::boost::yap::else_(static_cast<Expr &&>(expr)))
+                    terminal_value(::boost::yap::cond(static_cast<Expr &&>(expr)),
+                                   static_cast<Transform &&>(transform)),
+                    terminal_value(::boost::yap::then(static_cast<Expr &&>(expr)),
+                                   static_cast<Transform &&>(transform)),
+                    terminal_value(::boost::yap::else_(static_cast<Expr &&>(expr)),
+                                   static_cast<Transform &&>(transform))
                 );
             }
         };
@@ -611,18 +731,24 @@ namespace boost { namespace yap {
             ) -> decltype(
                 static_cast<Transform &&>(transform)(
                     call_tag{},
-                    terminal_value(::boost::yap::get(
-                        static_cast<Expr &&>(expr),
-                        hana::llong_c<I>
-                    ))...
+                    terminal_value(
+                        ::boost::yap::get(
+                            static_cast<Expr &&>(expr),
+                            hana::llong_c<I>
+                        ),
+                        std::declval<Transform>()
+                    )...
                 )
             ) {
                 return static_cast<Transform &&>(transform)(
                     call_tag{},
-                    terminal_value(::boost::yap::get(
-                        static_cast<Expr &&>(expr),
-                        hana::llong_c<I>
-                    ))...
+                    terminal_value(
+                        ::boost::yap::get(
+                            static_cast<Expr &&>(expr),
+                            hana::llong_c<I>
+                        ),
+                        static_cast<Transform &&>(transform)
+                    )...
                 );
             }
         };
