@@ -11,6 +11,7 @@ endmacro()
 
 add_code_gen_executable(code_gen_samples)
 add_code_gen_executable(map_assign_code_gen)
+add_code_gen_executable(lazy_vector_perf)
 
 
 macro(add_perf_executable name)
@@ -33,6 +34,15 @@ foreach(fun eval_as_cpp_expr eval_as_yap_expr eval_as_cpp_expr_4x eval_as_yap_ex
     add_custom_target(disass_dump.${fun}
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target disassemble.arithmetic_perf.${fun}
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target disassemble.code_gen_samples.${fun}
+    )
+    list(APPEND disassemble_dump_targets disass_dump.${fun})
+endforeach()
+
+foreach(fun get_d1_with_yap get_d1_by_hand update_v1_with_yap update_v1_by_hand)
+    disassemble(disassemble.lazy_vector_perf.${fun} EXECUTABLE lazy_vector_perf FUNCTION ${fun})
+
+    add_custom_target(disass_dump.${fun}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target disassemble.lazy_vector_perf.${fun}
     )
     list(APPEND disassemble_dump_targets disass_dump.${fun})
 endforeach()
