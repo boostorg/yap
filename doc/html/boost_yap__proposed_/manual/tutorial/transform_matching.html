@@ -66,9 +66,9 @@
     <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span>
         <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">if_else_tag</span><span class="special">,</span>
         <span class="identifier">Expr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">cond</span><span class="special">,</span>
-        <span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">then</span><span class="special">,</span>
-        <span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">else_</span>
-    <span class="special">)</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">(</span><span class="identifier">else_</span><span class="special">);</span> <span class="special">}</span>
+        <span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span> <span class="identifier">then</span><span class="special">,</span>
+        <span class="identifier">user</span><span class="special">::</span><span class="identifier">number</span> <span class="identifier">else_</span>
+    <span class="special">)</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">move</span><span class="special">(</span><span class="identifier">else_</span><span class="special">));</span> <span class="special">}</span>
 <span class="special">};</span>
 </pre>
 <p>
