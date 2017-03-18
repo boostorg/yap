@@ -484,19 +484,52 @@ The operand accessors (_left_ and _right_ in this example) all dereference
 _expr_ref_ expressions before operating on them, and `terminal_value()` does
 the same.
 
-`terminal_value()` works just like _value_, except that it does not take the
-value of a *nonterminal* unary expression; it just forwards it through.  It
-still takes values out of terminals and unwraps _expr_ref_ expressions,
-though.
+`terminal_value()` works much like _value_, except that it does not take the
+value of a *nonterminal* unary expression; it just forwards a nonterminal
+through.  It still takes values out of terminals and unwraps _expr_ref_
+expressions, though.
 
-The result of this pattern is that you can effectively ignore the presence of
-_expr_ref_ expressions when writing a _TagXForm_.  You can also just deal with
-the values inside terminals, and not the terminals themselves. Also, you can
-match all terminal value qualifiers (`const` or not, lvalue or rvalue)
-uniformly with a `T const &` parameter.  Finally, you can write _TagXForm_
-parameter types that can catch conversions; for instance, you can match any
-negation expression containing a terminal, *or a reference to one*, containing
-a value convertible to `double` like this:
+`terminal_value()` differs from _value_ in one important way, though.  If it
+simply extracted values out of terminal expressions, there would be no way to
+apply `terminal_tag` transforms uniformly.  Consider this evaluating
+transform:
+
+    struct xform
+    {
+        // This transform negates terminals.
+        auto operator() (boost::yap::terminal_tag, double x)
+        { return -x; }
+
+        // This transform removes negations.
+        auto operator() (boost::yap::negate_tag, double x)
+        { return x; }
+    }
+
+Now consider what happens when we use the transform like this:
+
+    auto expr = -boost::yap::make_terminal(9);
+    std::cout << boost::yap::transform(expr, xform{}); // Applies both transforms; prints -9.
+
+If `terminal_value()` did *not* automatically apply terminal transforms, this
+would be the result:
+
+    // Thankfully, TagTransforms do *not* work like this!
+    auto term = boost::yap::make_terminal(9);
+    std::cout << boost::yap::transform(term, xform{}); // Only applies the terminal_tag transform; prints -9.
+    std::cout << boost::yap::transform(-term, xform{}); // Only applies the negate_tag transform; prints -9.
+
+[tip _TagXForm_ is intended to be the more terse and automatic form.  If you
+don't want auto-application of terminal transforms for a certain transform's
+arguments, use an _ExprXForm_.]
+
+All of this means that you can effectively ignore the presence of _expr_ref_
+expressions when writing a _TagXForm_.  You can also just deal with the values
+inside terminals, and not the terminals themselves. Also, you can match all
+terminal value qualifiers (`const` or not, lvalue or rvalue) uniformly with a
+`T const &` parameter.  Finally, you can write _TagXForm_ parameter types that
+can catch conversions; for instance, you can match any negation expression
+containing a terminal, *or a reference to one*, containing a value convertible
+to `double` like this:
 
      struct xform
      {
@@ -516,6 +549,10 @@ _TagXForm_ is prefered, except in the case of a call expression, in which case
 the _ExprXForm_ is preferred.  I know, I know.  You don't have to worry about
 amiguity, but save youself some confusion and mix the two kinds of overloads
 as little as possible.
+
+[note The above only applies when you have a _ExprXForm_ and a _TagXForm_ that
+match *the same expression type*.  Having unrelated _ExprXForms_ and
+_TagXForms_ within the same transform object is often quite useful.]
 
 [endsect]
 
