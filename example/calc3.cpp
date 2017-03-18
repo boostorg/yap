@@ -8,6 +8,7 @@
 
 // Look! A transform!  This one transforms the expression tree into the arity
 // of the expression, based on its placeholders.
+//[ calc3_get_arity_xform
 struct get_arity
 {
     template <long long I>
@@ -34,6 +35,7 @@ struct get_arity
         );
     }
 };
+//]
 
 int main ()
 {

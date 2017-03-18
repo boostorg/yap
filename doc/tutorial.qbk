@@ -95,18 +95,41 @@ for your use case.
 
 [section Transforming Expressions]
 
-_yap_ expressions are evaluated explicitly and implicitly:
+[section Explicit Transformations]
 
-Explicit transformations are done using the _xform_ function.  See _calc3_ for
-an example.  A _yap_ transformation is free-form.  It can transform an
-expression into anything -- a new expression of any kind, or even a non-expression
-value (effectively evaluating the expression)
+Explicit transformations are the preferred way to work in _yap_.  They are
+done using the _xform_ function.  See _calc3_ for an extended example.
+
+A _yap_ transformation is free-form; it must return a value, but may do just
+about anything else.  It can transform an expression into anything -- a new
+expression of any kind, or even a non-expression value (effectively evaluating
+the expression).  For example, here is the `get_arity` transform from the
+_calc3_ example:
+
+[calc3_get_arity_xform]
+
+In this case, the transform is stateless; you could also give your transforms
+data members containing contextual state:
+
+[vector_take_nth_xform]
+
+[tip Often when you create an expression, you will want to evaluate it in
+different contexts, changing its evaluation -- or even entire meaning -- in
+each context.  _eval_ Is wrong for this task, since it only takes values for
+substitution into placeholders.  In these situations, you should instead use
+an explicit transform that evaluates your expression.]
+
+[endsect]
+
+[section Implicit Transformations]
 
 Implicit transformations are estabished by overriding the _cps_ provided by
 _yap_; this is explained in detail [link
 boost_yap__proposed_.manual.tutorial.customization_points later] in the
 tutorial.  Implicit transformations are only executed when an expression is
 evaluated.  See _mixed_ for an example; it overrides the `eval_call()` _cp_.
+
+[endsect]
 
 [endsect]
 

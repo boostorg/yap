@@ -5,6 +5,7 @@
 #include <iostream>
 
 
+//[ vector_take_nth_xform
 struct take_nth
 {
     template <typename T>
@@ -13,6 +14,7 @@ struct take_nth
 
     std::size_t n;
 };
+//]
 
 // A stateful transform that records whether all the std::vector<> terminals
 // it has seen are equal to the given size.
