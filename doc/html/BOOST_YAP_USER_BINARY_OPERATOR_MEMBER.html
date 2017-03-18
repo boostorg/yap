@@ -24,7 +24,7 @@
 
 </span>BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, expr_template)</pre></div>
 <div class="refsect1">
-<a name="idp140402913726776"></a><h2>Description</h2>
+<a name="idp140296608257096"></a><h2>Description</h2>
 <p>Defines operator overloads for binary operator <span class="emphasis"><em>op_name</em></span> that each produce an expression instantiated from the <span class="emphasis"><em>expr_template</em></span> expression template. One overload is defined for each of the qualifiers <code class="computeroutput">const &amp;</code>, <code class="computeroutput">&amp;</code>, and <code class="computeroutput">&amp;&amp;</code>. For the lvalue reference overloads, <code class="computeroutput">*this</code> is captured by reference into the resulting expression. For the rvalue reference overload, <code class="computeroutput">*this</code> is moved into the resulting expression.</p>
 <p>The <span class="emphasis"><em>rhs</em></span> parameter to each of the defined overloads may be any type, including an expression. If <span class="emphasis"><em>rhs</em></span> is a non-expression, it is wrapped in a terminal expression.</p>
 <p>Example: </p>

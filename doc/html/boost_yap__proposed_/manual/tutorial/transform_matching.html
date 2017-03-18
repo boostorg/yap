@@ -106,14 +106,59 @@
         </p>
 <p>
           <code class="computeroutput"><span class="identifier">terminal_value</span><span class="special">()</span></code>
-          works just like <code class="computeroutput"><a class="link" href="../../../boost/yap/value.html" title="Function template value">value()</a></code>, except that it does not
+          works much like <code class="computeroutput"><a class="link" href="../../../boost/yap/value.html" title="Function template value">value()</a></code>, except that it does not
           take the value of a <span class="bold"><strong>nonterminal</strong></span> unary
-          expression; it just forwards it through. It still takes values out of terminals
-          and unwraps <a class="link" href="../../../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a> expressions, though.
+          expression; it just forwards a nonterminal through. It still takes values
+          out of terminals and unwraps <a class="link" href="../../../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a> expressions, though.
         </p>
 <p>
-          The result of this pattern is that you can effectively ignore the presence
-          of <a class="link" href="../../../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a>
+          <code class="computeroutput"><span class="identifier">terminal_value</span><span class="special">()</span></code>
+          differs from <code class="computeroutput"><a class="link" href="../../../boost/yap/value.html" title="Function template value">value()</a></code> in one important way,
+          though. If it simply extracted values out of terminal expressions, there
+          would be no way to apply <code class="computeroutput"><span class="identifier">terminal_tag</span></code>
+          transforms uniformly. Consider this evaluating transform:
+        </p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">xform</span>
+<span class="special">{</span>
+    <span class="comment">// This transform negates terminals.</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal_tag</span><span class="special">,</span> <span class="keyword">double</span> <span class="identifier">x</span><span class="special">)</span>
+    <span class="special">{</span> <span class="keyword">return</span> <span class="special">-</span><span class="identifier">x</span><span class="special">;</span> <span class="special">}</span>
+
+    <span class="comment">// This transform removes negations.</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">negate_tag</span><span class="special">,</span> <span class="keyword">double</span> <span class="identifier">x</span><span class="special">)</span>
+    <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">x</span><span class="special">;</span> <span class="special">}</span>
+<span class="special">}</span>
+</pre>
+<p>
+          Now consider what happens when we use the transform like this:
+        </p>
+<pre class="programlisting"><span class="keyword">auto</span> <span class="identifier">expr</span> <span class="special">=</span> <span class="special">-</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">(</span><span class="number">9</span><span class="special">);</span>
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">,</span> <span class="identifier">xform</span><span class="special">{});</span> <span class="comment">// Applies both transforms; prints -9.</span>
+</pre>
+<p>
+          If <code class="computeroutput"><span class="identifier">terminal_value</span><span class="special">()</span></code>
+          did <span class="bold"><strong>not</strong></span> automatically apply terminal transforms,
+          this would be the result:
+        </p>
+<pre class="programlisting"><span class="comment">// Thankfully, TagTransforms do *not* work like this!</span>
+<span class="keyword">auto</span> <span class="identifier">term</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">(</span><span class="number">9</span><span class="special">);</span>
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">term</span><span class="special">,</span> <span class="identifier">xform</span><span class="special">{});</span> <span class="comment">// Only applies the terminal_tag transform; prints -9.</span>
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(-</span><span class="identifier">term</span><span class="special">,</span> <span class="identifier">xform</span><span class="special">{});</span> <span class="comment">// Only applies the negate_tag transform; prints -9.</span>
+</pre>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="../../../images/tip.png"></td>
+<th align="left">Tip</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+            <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.tagtransform">TagTransform</a>
+            is intended to be the more terse and automatic form. If you don't want
+            auto-application of terminal transforms for a certain transform's arguments,
+            use an <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expressiontransform">ExpressionTransform</a>.
+          </p></td></tr>
+</table></div>
+<p>
+          All of this means that you can effectively ignore the presence of <a class="link" href="../../../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a>
           expressions when writing a <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.tagtransform">TagTransform</a>.
           You can also just deal with the values inside terminals, and not the terminals
           themselves. Also, you can match all terminal value qualifiers (<code class="computeroutput"><span class="keyword">const</span></code> or not, lvalue or rvalue) uniformly
@@ -155,6 +200,20 @@
           save youself some confusion and mix the two kinds of overloads as little
           as possible.
         </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+            The above only applies when you have a <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expressiontransform">ExpressionTransform</a>
+            and a <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.tagtransform">TagTransform</a>
+            that match <span class="bold"><strong>the same expression type</strong></span>.
+            Having unrelated <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.expressiontransform">ExpressionTransforms</a>
+            and <a class="link" href="../../concepts.html#boost_yap__proposed_.concepts.tagtransform">TagTransforms</a>
+            within the same transform object is often quite useful.
+          </p></td></tr>
+</table></div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
