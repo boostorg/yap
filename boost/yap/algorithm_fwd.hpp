@@ -118,6 +118,8 @@ namespace boost { namespace yap {
         hana::is_a<hana::tuple_tag, decltype(std::declval<Expr>().elements)>()
     > {};
 
+#endif // BOOST_YAP_DOXYGEN
+
     /** A convenience alias for a terminal expression holding a \a T,
         instantiated from expression template \a expr_template. */
     template <template <expr_kind, class> class expr_template, typename T>
@@ -127,6 +129,8 @@ namespace boost { namespace yap {
         \a T, instantiated from expression template \a expr_template. */
     template <template <expr_kind, class> class expr_template, typename T>
     using expression_ref = expr_template<expr_kind::expr_ref, hana::tuple<std::remove_reference_t<T> *>>;
+
+#ifndef BOOST_YAP_DOXYGEN
 
     template <typename Expr, typename ...T>
     decltype(auto) evaluate (Expr && expr, T && ... t);
