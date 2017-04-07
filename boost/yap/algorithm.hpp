@@ -550,8 +550,22 @@ namespace boost { namespace yap {
         Expr expr;
     };
 
-    /** Returns a callable object that \a expr has been moved into.  This is
-        useful for using expressions as function objects.
+    namespace detail {
+
+        template <expr_kind Kind, typename Tuple>
+        struct expression_function_expr
+        {
+            static const expr_kind kind = Kind;
+            Tuple elements;
+        };
+
+    }
+
+    /** Returns a callable object that \a expr has been forwarded into.  This
+        is useful for using expressions as function objects.
+
+        Lvalue expressions are stored in the result by reference; rvalue
+        expressions are moved into the result.
 
         \note <code>make_expression_function()</code> is only valid if \a
         Expr is an expression.
@@ -563,7 +577,11 @@ namespace boost { namespace yap {
             is_expr<Expr>::value,
             "make_expression_function() is only defined for expressions."
         );
-        return expression_function<Expr>{static_cast<Expr &&>(expr)};
+        using stored_type =
+            detail::operand_type_t<detail::expression_function_expr, Expr &&>;
+        return expression_function<stored_type>{
+            detail::make_operand<stored_type>{}(static_cast<Expr &&>(expr))
+        };
     }
 
 } }
