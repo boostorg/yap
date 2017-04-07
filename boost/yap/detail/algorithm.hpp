@@ -3,7 +3,6 @@
 
 #include <boost/yap/algorithm_fwd.hpp>
 
-#include <boost/hana/core/is_a.hpp>
 #include <boost/hana/size.hpp>
 #include <boost/hana/tuple.hpp>
 
@@ -14,11 +13,6 @@
 namespace boost { namespace yap {
 
     namespace detail {
-
-        // void_t
-
-        template <class...> using void_t = void;
-
 
         // static_const
 
@@ -68,35 +62,6 @@ namespace boost { namespace yap {
         template <typename T, typename U>
         struct operand_value_type_phase_1<T, U, false>
         { using type = U; };
-
-
-        // remove_cv_ref
-
-        template <typename T>
-        struct remove_cv_ref : std::remove_cv<std::remove_reference_t<T>>
-        {};
-
-        template <typename T>
-        using remove_cv_ref_t = typename remove_cv_ref<T>::type;
-
-
-        // is_expr
-
-        template <typename Expr, typename = void_t<>, typename = void_t<>>
-        struct is_expr
-        { static bool const value = false; };
-
-        template <typename Expr>
-        struct is_expr<
-            Expr,
-            void_t<decltype(remove_cv_ref_t<Expr>::kind)>,
-            void_t<decltype(std::declval<Expr>().elements)>
-        >
-        {
-            static bool const value =
-                std::is_same<std::remove_cv_t<decltype(remove_cv_ref_t<Expr>::kind)>, expr_kind>{} &&
-                hana::is_a<hana::tuple_tag, decltype(std::declval<Expr>().elements)>();
-        };
 
 
         // expr_ref
