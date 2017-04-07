@@ -587,7 +587,7 @@ namespace boost { namespace yap {
         template <typename T, typename Transform>
         decltype(auto) terminal_value_impl (T && x, Transform && transform)
         {
-            return detail::terminal_value_impl_t<T, Transform, detail::is_expr<T>::value>{}(
+            return detail::terminal_value_impl_t<T, Transform, is_expr<T>::value>{}(
                 static_cast<T &&>(x),
                 static_cast<Transform &&>(transform)
             );

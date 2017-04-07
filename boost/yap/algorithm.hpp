@@ -65,7 +65,7 @@ namespace boost { namespace yap {
     decltype(auto) deref (Expr && expr)
     {
         static_assert(
-            detail::is_expr<Expr>::value,
+            is_expr<Expr>::value,
             "deref() is only defined for expressions."
         );
 
@@ -159,7 +159,7 @@ namespace boost { namespace yap {
         template <bool ValueOfTerminalsOnly, typename T>
         decltype(auto) value_impl (T && x)
         {
-            return detail::value_impl_t<T, detail::is_expr<T>::value, ValueOfTerminalsOnly>{}(
+            return detail::value_impl_t<T, is_expr<T>::value, ValueOfTerminalsOnly>{}(
                 static_cast<T &&>(x)
             );
         }
@@ -261,7 +261,7 @@ namespace boost { namespace yap {
     decltype(auto) get (Expr && expr, hana::llong<I> i)
     {
         static_assert(
-            detail::is_expr<Expr>::value,
+            is_expr<Expr>::value,
             "get() is only defined for expressions."
         );
 
@@ -484,7 +484,7 @@ namespace boost { namespace yap {
     auto make_terminal (T && t)
     {
         static_assert(
-            !detail::is_expr<T>::value,
+            !is_expr<T>::value,
             "make_terminal() is only defined for non expressions."
         );
         using result_type = detail::operand_type_t<ExprTemplate, T>;
@@ -524,11 +524,11 @@ namespace boost { namespace yap {
     decltype(auto) as_expr (T && t)
     {
 #ifdef BOOST_NO_CONSTEXPR_IF
-        return detail::as_expr_impl<ExprTemplate, T, detail::is_expr<T>::value>{}(
+        return detail::as_expr_impl<ExprTemplate, T, is_expr<T>::value>{}(
             static_cast<T &&>(t)
         );
 #else
-        if constexpr (detail::is_expr<T>::value) {
+        if constexpr (is_expr<T>::value) {
             return static_cast<T &&>(t);
         } else {
             return make_terminal<ExprTemplate>(static_cast<T &&>(t));
@@ -560,7 +560,7 @@ namespace boost { namespace yap {
     auto make_expression_function (Expr && expr)
     {
         static_assert(
-            detail::is_expr<Expr>::value,
+            is_expr<Expr>::value,
             "make_expression_function() is only defined for expressions."
         );
         return expression_function<Expr>{static_cast<Expr &&>(expr)};
@@ -587,7 +587,7 @@ namespace boost { namespace yap {
     decltype(auto) evaluate (Expr && expr, T && ... t)
     {
         static_assert(
-            detail::is_expr<Expr>::value,
+            is_expr<Expr>::value,
             "evaluate() is only defined for expressions."
         );
         return detail::default_eval_expr(static_cast<Expr &&>(expr), static_cast<T &&>(t)...);
@@ -612,7 +612,7 @@ namespace boost { namespace yap {
     decltype(auto) evaluate_as (Expr && expr, T && ... t)
     {
         static_assert(
-            detail::is_expr<Expr>::value,
+            is_expr<Expr>::value,
             "evaluate_as() is only defined for expressions."
         );
         return eval_expression_as(static_cast<Expr &&>(expr), hana::basic_type<R>{}, static_cast<T &&>(t)...);
@@ -658,12 +658,12 @@ namespace boost { namespace yap {
     decltype(auto) transform (Expr && expr, Transform && transform)
     {
 #ifdef BOOST_NO_CONSTEXPR_IF
-        return detail::transform_impl<Expr, Transform, detail::is_expr<Expr>::value>{}(
+        return detail::transform_impl<Expr, Transform, is_expr<Expr>::value>{}(
             static_cast<Expr &&>(expr),
             static_cast<Transform &&>(transform)
         );
 #else
-        if constexpr (detail::is_expr<Expr>::value) {
+        if constexpr (is_expr<Expr>::value) {
             constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
             return detail::default_transform_expression_tag<Expr, Transform, detail::arity_of<kind>()>{}(
                 static_cast<Expr &&>(expr),

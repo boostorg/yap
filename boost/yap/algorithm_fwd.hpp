@@ -5,6 +5,7 @@
 
 #include <boost/hana/integral_constant.hpp>
 #include <boost/hana/tuple.hpp>
+#include <boost/hana/core/is_a.hpp>
 
 
 namespace boost { namespace yap {
@@ -74,10 +75,48 @@ namespace boost { namespace yap {
     template <long long I>
     struct placeholder : hana::llong<I> {};
 
-#ifndef BOOST_YAP_DOXYGEN
+#ifdef BOOST_YAP_DOXYGEN
+
+    /** A metafunction that evaluates to std::true_type if \a Expr is an
+        Expression, and std::false_type otherwise. */
+    template <typename Expr>
+    struct is_expr;
+
+#else
 
     template <expr_kind Kind, typename Tuple>
     struct expression;
+
+    namespace detail {
+
+        // void_t
+
+        template <class...> using void_t = void;
+
+        // remove_cv_ref
+
+        template <typename T>
+        struct remove_cv_ref : std::remove_cv<std::remove_reference_t<T>>
+        {};
+
+        template <typename T>
+        using remove_cv_ref_t = typename remove_cv_ref<T>::type;
+
+    }
+
+    template <typename Expr, typename = detail::void_t<>, typename = detail::void_t<>>
+    struct is_expr : std::false_type {};
+
+    template <typename Expr>
+    struct is_expr<
+        Expr,
+        detail::void_t<decltype(detail::remove_cv_ref_t<Expr>::kind)>,
+        detail::void_t<decltype(std::declval<Expr>().elements)>
+    > : std::integral_constant<
+        bool,
+        std::is_same<std::remove_cv_t<decltype(detail::remove_cv_ref_t<Expr>::kind)>, expr_kind>{} &&
+        hana::is_a<hana::tuple_tag, decltype(std::declval<Expr>().elements)>()
+    > {};
 
     /** A convenience alias for a terminal expression holding a \a T,
         instantiated from expression template \a expr_template. */
