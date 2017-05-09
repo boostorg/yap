@@ -36,14 +36,12 @@ struct take_nth
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct lazy_vector_expr
 {
-    using this_type = lazy_vector_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
 
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::lazy_vector_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::lazy_vector_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::lazy_vector_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::lazy_vector_expr)
 
     auto operator[] (std::size_t n) const
     { return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n})); }

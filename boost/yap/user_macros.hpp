@@ -79,16 +79,14 @@
     unary enumerators in <code>expr_kind</code>, without the
     <code>expr_kind::</code> qualification.
 
-    \param this_type The type in which the operator overloads are being
-    defined.
-
     \param expr_template The expression template to use to instantiate the
     result expression.  \a expr_template must be an \ref
     ExpressionTemplate.
 */
-#define BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, expr_template) \
+#define BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, expr_template)    \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) const &          \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
         using tuple_type = ::boost::hana::tuple<lhs_type>;              \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
@@ -99,6 +97,7 @@
     }                                                                   \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) &                \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
         using tuple_type = ::boost::hana::tuple<lhs_type>;              \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
@@ -109,6 +108,7 @@
     }                                                                   \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) &&               \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using tuple_type = ::boost::hana::tuple<this_type>;             \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
             tuple_type{std::move(*this)}                                \
@@ -135,17 +135,15 @@
     binary enumerators in <code>expr_kind</code>, without the
     <code>expr_kind::</code> qualification.
 
-    \param this_type The type in which the operator overloads are being
-    defined.
-
     \param expr_template The expression template to use to instantiate the
     result expression.  \a expr_template must be an \ref
     ExpressionTemplate.
 */
-#define BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, expr_template) \
+#define BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, expr_template)   \
     template <typename Expr>                                            \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (Expr && rhs) const & \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
         using rhs_type = ::boost::yap::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
@@ -159,6 +157,7 @@
     template <typename Expr>                                            \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (Expr && rhs) &    \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
         using rhs_type = ::boost::yap::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
@@ -172,6 +171,7 @@
     template <typename Expr>                                            \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (Expr && rhs) &&   \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using rhs_type = ::boost::yap::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<this_type, rhs_type>;   \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
@@ -198,17 +198,15 @@
     Example:
     \snippet user_macros_snippets.cpp USER_MEMBER_CALL_OPERATOR
 
-    \param this_type The type in which the operator overloads are being
-    defined.
-
     \param expr_template The expression template to use to instantiate the
     result expression.  \a expr_template must be an \ref
     ExpressionTemplate.
 */
-#define BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, expr_template)   \
+#define BOOST_YAP_USER_MEMBER_CALL_OPERATOR(expr_template)              \
     template <typename ...U>                                            \
     auto operator() (U && ... u) const &                                \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
         using tuple_type = ::boost::hana::tuple<                        \
             lhs_type,                                                   \
@@ -226,6 +224,7 @@
     template <typename ...U>                                            \
     auto operator() (U && ... u) &                                      \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
         using tuple_type = ::boost::hana::tuple<                        \
             lhs_type,                                                   \
@@ -243,6 +242,7 @@
     template <typename ...U>                                            \
     auto operator() (U && ... u) &&                                     \
     {                                                                   \
+        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
         using tuple_type = ::boost::hana::tuple<                        \
             this_type,                                                  \
             ::boost::yap::detail::operand_type_t<expr_template, U>...   \

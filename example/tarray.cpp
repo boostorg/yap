@@ -35,18 +35,16 @@ struct tarray_expr
         "tarray_expr instantiated with an unsupported terminal type."
     );
 
-    using this_type = tarray_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
 
     // Define operators +, -, *, and / for an expression on the left, and
     // anythng on the right.
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::tarray_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, this_type, ::tarray_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, this_type, ::tarray_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, this_type, ::tarray_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::tarray_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::tarray_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, ::tarray_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, ::tarray_expr)
 
     int operator[] (std::size_t n) const
     { return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n})); }
