@@ -23,7 +23,6 @@ namespace boost { namespace yap {
     template <expr_kind Kind, typename Tuple>
     struct expression
     {
-        using this_type = expression<Kind, Tuple>;
         using tuple_type = Tuple;
 
         static const expr_kind kind = Kind;
@@ -189,7 +188,7 @@ namespace boost { namespace yap {
 #else
 
 #define BOOST_YAP_UNARY_MEMBER_OPERATOR(op_name)                    \
-        BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
+        BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
 
         BOOST_YAP_UNARY_MEMBER_OPERATOR(unary_plus) // +
         BOOST_YAP_UNARY_MEMBER_OPERATOR(negate) // -
@@ -208,7 +207,7 @@ namespace boost { namespace yap {
         // types), for expression and terminal.  Don't forget the free
         // operators.
 #define BOOST_YAP_BINARY_MEMBER_OPERATOR(op_name)                   \
-        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
+        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
 
         BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_left) // <<
         BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_right) // >>
@@ -245,7 +244,7 @@ namespace boost { namespace yap {
 
 #undef BOOST_YAP_BINARY_MEMBER_OPERATOR
 
-        BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::yap::expression)
+        BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::boost::yap::expression)
 
 #endif // BOOST_YAP_DOXYGEN
     };
@@ -267,7 +266,6 @@ namespace boost { namespace yap {
     template <typename T>
     struct expression<expr_kind::terminal, hana::tuple<T>>
     {
-        using this_type = expression<expr_kind::terminal, hana::tuple<T>>;
         using tuple_type = hana::tuple<T>;
 
         static const expr_kind kind = expr_kind::terminal;
@@ -408,7 +406,7 @@ namespace boost { namespace yap {
 #else
 
 #define BOOST_YAP_UNARY_MEMBER_OPERATOR(op_name)                    \
-        BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
+        BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
 
         BOOST_YAP_UNARY_MEMBER_OPERATOR(unary_plus) // +
         BOOST_YAP_UNARY_MEMBER_OPERATOR(negate) // -
@@ -424,7 +422,7 @@ namespace boost { namespace yap {
 #undef BOOST_YAP_UNARY_MEMBER_OPERATOR
 
 #define BOOST_YAP_BINARY_MEMBER_OPERATOR(op_name)                   \
-        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, this_type, ::boost::yap::expression)
+        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
 
         BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_left) // <<
         BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_right) // >>
@@ -461,7 +459,7 @@ namespace boost { namespace yap {
 
 #undef BOOST_YAP_BINARY_MEMBER_OPERATOR
 
-        BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::boost::yap::expression)
+        BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::boost::yap::expression)
 
 #endif // BOOST_YAP_DOXYGEN
     };

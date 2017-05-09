@@ -29,8 +29,6 @@ struct map_list_of_transform
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct map_list_of_expr
 {
-    using this_type = map_list_of_expr<Kind, Tuple>;
-
     static boost::yap::expr_kind const kind = Kind;
 
     Tuple elements;
@@ -43,7 +41,7 @@ struct map_list_of_expr
         return transform.map;
     }
 
-    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::map_list_of_expr)
+    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::map_list_of_expr)
 };
 
 struct map_list_of_tag {};

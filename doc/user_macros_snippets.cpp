@@ -10,14 +10,12 @@
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
 
     // Member operator overloads for operator!().
-    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(logical_not, this_type, ::user_expr)
+    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(logical_not, ::user_expr)
 };
 /// [USER_UNARY_OPERATOR_MEMBER]
 
@@ -36,8 +34,6 @@ struct lazy_vector_1 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
@@ -46,7 +42,7 @@ struct user_expr
     // on the right-hand side, even another expression.  Left as-is, there is
     // no matching overload for x && y, where x is not an expression and y is.
     // BOOST_YAP_USER_FREE_BINARY_OPERATOR can help with that.
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, this_type, ::user_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, ::user_expr)
 };
 /// [USER_BINARY_OPERATOR_MEMBER]
 
@@ -65,8 +61,6 @@ struct lazy_vector_2 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
@@ -74,7 +68,7 @@ struct user_expr
     // Member operator overloads for operator()().  These will match any
     // number of parameters.  Each one can be any type, even another
     // expression.
-    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(this_type, ::user_expr)
+    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::user_expr)
 };
 /// [USER_MEMBER_CALL_OPERATOR]
 
@@ -93,15 +87,13 @@ struct lazy_vector_3 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
 
     // Member operator overloads for operator&&().  These will match any value
     // on the right-hand side, even another expression.
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, this_type, ::user_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, ::user_expr)
 };
 
 // Free operator overloads for operator&&().  These will match any value on
@@ -125,8 +117,6 @@ struct lazy_vector_4 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
@@ -153,8 +143,6 @@ struct lazy_vector_5 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
@@ -188,8 +176,6 @@ struct lazy_vector_6 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
@@ -223,8 +209,6 @@ struct lazy_vector_7 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
@@ -268,8 +252,6 @@ struct lazy_vector_8 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
@@ -302,8 +284,6 @@ struct lazy_vector_9 :
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;

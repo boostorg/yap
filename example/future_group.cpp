@@ -9,8 +9,6 @@
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct future_expr
 {
-    using this_type = future_expr<Kind, Tuple>;
-
     static boost::yap::expr_kind const kind = Kind;
 
     future_expr (Tuple && tuple) :
@@ -22,8 +20,8 @@ struct future_expr
     // Returns the transformed/flattenen expression.
     auto get () const;
 
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_or, this_type, ::future_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, this_type, ::future_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_or, ::future_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, ::future_expr)
 };
 
 // A special-cased future terminal that matches the semantics from the

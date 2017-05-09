@@ -19,13 +19,11 @@ namespace bh = boost::hana;
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
-    using this_type = user_expr<Kind, Tuple>;
-
     static boost::yap::expr_kind const kind = Kind;
 
     Tuple elements;
 
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, this_type, ::user_expr)
+    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::user_expr)
 };
 
 template <typename T>
