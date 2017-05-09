@@ -33,8 +33,6 @@
 <span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">future_expr</span>
 <span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">future_expr</span><span class="special">&lt;</span><span class="identifier">Kind</span><span class="special">,</span> <span class="identifier">Tuple</span><span class="special">&gt;;</span>
-
     <span class="keyword">static</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="keyword">const</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
 
     <span class="identifier">future_expr</span> <span class="special">(</span><span class="identifier">Tuple</span> <span class="special">&amp;&amp;</span> <span class="identifier">tuple</span><span class="special">)</span> <span class="special">:</span>
@@ -46,8 +44,8 @@
     <span class="comment">// Returns the transformed/flattenen expression.</span>
     <span class="keyword">auto</span> <span class="identifier">get</span> <span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
 
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">logical_or</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">future_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">logical_and</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">future_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">logical_or</span><span class="special">,</span> <span class="special">::</span><span class="identifier">future_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">logical_and</span><span class="special">,</span> <span class="special">::</span><span class="identifier">future_expr</span><span class="special">)</span>
 <span class="special">};</span>
 
 <span class="comment">// A special-cased future terminal that matches the semantics from the</span>

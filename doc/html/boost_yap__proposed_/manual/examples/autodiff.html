@@ -80,17 +80,15 @@
 <pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">autodiff_expr</span>
 <span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">autodiff_expr</span><span class="special">&lt;</span><span class="identifier">Kind</span><span class="special">,</span> <span class="identifier">Tuple</span><span class="special">&gt;;</span>
-
     <span class="keyword">static</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="keyword">const</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
 
     <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
 
-    <span class="identifier">BOOST_YAP_USER_UNARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">negate</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">multiplies</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">divides</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_UNARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">negate</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">multiplies</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">divides</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
 <span class="special">};</span>
 
 <span class="identifier">BOOST_YAP_USER_FREE_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">)</span>
@@ -132,13 +130,11 @@
 <span class="keyword">struct</span> <span class="identifier">autodiff_fn_expr</span> <span class="special">:</span>
     <span class="identifier">autodiff_expr</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span><span class="identifier">OPCODE</span><span class="special">&gt;&gt;</span>
 <span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">autodiff_fn_expr</span><span class="special">&lt;</span><span class="identifier">Opcode</span><span class="special">&gt;;</span>
-
     <span class="identifier">autodiff_fn_expr</span> <span class="special">()</span> <span class="special">:</span>
         <span class="identifier">autodiff_expr</span> <span class="special">{</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span><span class="identifier">OPCODE</span><span class="special">&gt;{</span><span class="identifier">Opcode</span><span class="special">}}</span>
     <span class="special">{}</span>
 
-    <span class="identifier">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</span><span class="special">(</span><span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">autodiff_expr</span><span class="special">);</span>
+    <span class="identifier">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</span><span class="special">(::</span><span class="identifier">autodiff_expr</span><span class="special">);</span>
 <span class="special">};</span>
 
 <span class="comment">// Someone included &lt;math.h&gt;, so we have to add trailing underscores.</span>

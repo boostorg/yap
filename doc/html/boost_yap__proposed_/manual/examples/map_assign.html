@@ -63,8 +63,6 @@
 <span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">map_list_of_expr</span>
 <span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">map_list_of_expr</span><span class="special">&lt;</span><span class="identifier">Kind</span><span class="special">,</span> <span class="identifier">Tuple</span><span class="special">&gt;;</span>
-
     <span class="keyword">static</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="keyword">const</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
 
     <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
@@ -77,7 +75,7 @@
         <span class="keyword">return</span> <span class="identifier">transform</span><span class="special">.</span><span class="identifier">map</span><span class="special">;</span>
     <span class="special">}</span>
 
-    <span class="identifier">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</span><span class="special">(</span><span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">map_list_of_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</span><span class="special">(::</span><span class="identifier">map_list_of_expr</span><span class="special">)</span>
 <span class="special">};</span>
 
 <span class="comment">// A tag type for creating the map_list_of function terminal.</span>

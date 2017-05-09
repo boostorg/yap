@@ -22,22 +22,20 @@
 <h2 xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv-title">Synopsis</h2>
 <div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="header/boost/yap/user_macros_hpp.html" title="Header &lt;boost/yap/user_macros.hpp&gt;">boost/yap/user_macros.hpp</a>&gt;
 
-</span>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, this_type, expr_template)</pre></div>
+</span>BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, expr_template)</pre></div>
 <div class="refsect1">
-<a name="idp140669139221512"></a><h2>Description</h2>
+<a name="idp140503047869528"></a><h2>Description</h2>
 <p>Defines operator overloads for unary operator <span class="emphasis"><em>op_name</em></span> that each produce an expression instantiated from the <span class="emphasis"><em>expr_template</em></span> expression template. One overload is defined for each of the qualifiers <code class="computeroutput">const &amp;</code>, <code class="computeroutput">&amp;</code>, and <code class="computeroutput">&amp;&amp;</code>. For the lvalue reference overloads, <code class="computeroutput">*this</code> is captured by reference into the resulting expression. For the rvalue reference overload, <code class="computeroutput">*this</code> is moved into the resulting expression.</p>
 <p>Example: </p>
 <pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">user_expr</span>
 <span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">this_type</span> <span class="special">=</span> <span class="identifier">user_expr</span><span class="special">&lt;</span><span class="identifier">Kind</span><span class="special">,</span> <span class="identifier">Tuple</span><span class="special">&gt;</span><span class="special">;</span>
-
     <span class="keyword">static</span> <span class="keyword">const</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
 
     <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
 
     <span class="comment">// Member operator overloads for operator!().</span>
-    <span class="identifier">BOOST_YAP_USER_UNARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">logical_not</span><span class="special">,</span> <span class="identifier">this_type</span><span class="special">,</span> <span class="special">::</span><span class="identifier">user_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_UNARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">logical_not</span><span class="special">,</span> <span class="special">::</span><span class="identifier">user_expr</span><span class="special">)</span>
 <span class="special">}</span><span class="special">;</span>
 </pre>
 <p> 
@@ -62,10 +60,6 @@
 <tr>
 <td><p><span class="term"><code class="computeroutput">op_name</code></span></p></td>
 <td><p>The operator to be overloaded; this must be one of the <span class="bold"><strong>unary</strong></span> enumerators in <code class="computeroutput">expr_kind</code>, without the <code class="computeroutput">expr_kind::</code> qualification.</p></td>
-</tr>
-<tr>
-<td><p><span class="term"><code class="computeroutput">this_type</code></span></p></td>
-<td><p>The type in which the operator overloads are being defined.</p></td>
 </tr>
 </tbody>
 </table></div></td>
