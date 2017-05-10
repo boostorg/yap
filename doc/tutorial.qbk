@@ -460,7 +460,7 @@ other kind of transform.
 
 A _TagXForm_ overload takes a tag that indicates the _kind_ of the expression
 to be transformed, and then (loosely) the value of each operand of the
-epxression to be transformed:
+expression to be transformed:
 
 [tag_xform]
 
