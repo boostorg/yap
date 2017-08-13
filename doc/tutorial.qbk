@@ -8,7 +8,7 @@ that takes an expression.
 
 For a type `T` to model the _Expr_ concept, `T` must contain at least an
 _kind_ (terminal, plus-operation, etc.) and a _tuple_ of values.  That's it.
-This means that user-defined templates modelling _ExprTmpl_ are very
+This means that user-defined templates modeling _ExprTmpl_ are very
 straightforward to make.
 
 [note The _tuple_ of values is also constrained, based on the kind of the
@@ -33,11 +33,11 @@ And if we evaluate it using _eval_, it does what you would expect:
 
 [note There is a reference model of the _ExprTmpl_ concept that comes with _yap_:
 _expr_.  It has all the member operators defined, and the nonmember operators
-and the `if_else` pseudo-operator are defined in their repsective headers.
+and the `if_else` pseudo-operator are defined in their respective headers.
 
 _expr_ is great for prototyping, and for quick-and-dirty uses of _ets_, but
 its use of every single operator makes it a suboptimal choice for most use
-cass.]
+cases.]
 
 [note Because _yap_ operates on _Exprs_, it is possible to mix and match
 _Exprs_ that are instantiations of different templates.  An expression
@@ -123,7 +123,7 @@ an explicit transform that evaluates your expression.]
 
 [section Implicit Transformations]
 
-Implicit transformations are estabished by overriding the _cps_ provided by
+Implicit transformations are established by overriding the _cps_ provided by
 _yap_; this is explained in detail [link
 boost_yap__proposed_.manual.tutorial.customization_points later] in the
 tutorial.  Implicit transformations are only executed when an expression is
@@ -192,7 +192,7 @@ structure with indentation.  It abbreviates non-terminal nodes in the tree
 `term<T>`, where `T` is the type of value contained in the terminal; this may
 be a reference type or a value.
 
-A `term` node may not ba a terminal node at all, but an _expr_ref_ expression
+A `term` node may not be a terminal node at all, but an _expr_ref_ expression
 containing a terminal.  Such a _expr_ref_ node has a `&` or `const &` suffix,
 to indicate that it is a mutable or `const` reference, respectively.
 
@@ -545,9 +545,9 @@ negation of a reference to such a terminal.
 
 You can have two overloads in your transform that match an expression, one an
 _ExprXForm_ and one a _TagXForm_, and there will not be any ambiguity.  The
-_TagXForm_ is prefered, except in the case of a call expression, in which case
+_TagXForm_ is preferred, except in the case of a call expression, in which case
 the _ExprXForm_ is preferred.  I know, I know.  You don't have to worry about
-amiguity, but save youself some confusion and mix the two kinds of overloads
+ambiguity, but save yourself some confusion and mix the two kinds of overloads
 as little as possible.
 
 [note The above only applies when you have a _ExprXForm_ and a _TagXForm_ that
