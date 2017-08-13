@@ -33,7 +33,7 @@ endif ()
 ###############################################################################
 # GoogleTest
 ###############################################################################
-add_subdirectory(${CMAKE_SOURCE_DIR}/googletest-release-1.8.0)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletest-release-1.8.0)
 target_include_directories(gtest      INTERFACE ${CMAKE_HOME_DIRECTORY}/googletest-release-1.8.0/googletest/include)
 target_include_directories(gtest_main INTERFACE ${CMAKE_HOME_DIRECTORY}/googletest-release-1.8.0/googletest/include)
 
@@ -41,7 +41,7 @@ target_include_directories(gtest_main INTERFACE ${CMAKE_HOME_DIRECTORY}/googlete
 ###############################################################################
 # Google Benchmark
 ###############################################################################
-add_subdirectory(${CMAKE_SOURCE_DIR}/benchmark-v1.1.0)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark-v1.1.0)
 target_include_directories(benchmark INTERFACE ${CMAKE_HOME_DIRECTORY}/benchmark-v1.1.0/include)
 
 
@@ -49,18 +49,18 @@ target_include_directories(benchmark INTERFACE ${CMAKE_HOME_DIRECTORY}/benchmark
 # Autodiff (see https://github.com/fqiang/autodiff_library)
 ###############################################################################
 add_library(autodiff_library
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/ActNode.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/BinaryOPNode.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/Edge.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/EdgeSet.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/Node.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/OPNode.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/PNode.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/Stack.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/Tape.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/UaryOPNode.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/VNode.cpp
-  ${CMAKE_SOURCE_DIR}/example/autodiff_library/autodiff.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/ActNode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/BinaryOPNode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/Edge.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/EdgeSet.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/Node.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/OPNode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/PNode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/Stack.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/Tape.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/UaryOPNode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/VNode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/autodiff.cpp
 )
-target_include_directories(autodiff_library PUBLIC ${CMAKE_SOURCE_DIR}/example/autodiff_library)
+target_include_directories(autodiff_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library)
 target_link_libraries(autodiff_library boost)

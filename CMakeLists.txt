@@ -5,7 +5,7 @@ function(constexpr_if_std std_flag var)
     try_compile(
         worked
         ${CMAKE_BINARY_DIR}
-        ${CMAKE_SOURCE_DIR}/cmake/constexpr_if.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/constexpr_if.cpp
         COMPILE_DEFINITIONS ${std_flag} -Wall -Werror -DCHECK_CONSTEXPR_IF=1
     )
     set(${var} ${worked} PARENT_SCOPE)
@@ -15,7 +15,7 @@ function(try_std_flag std_flag)
     try_compile(
         std_supported
         ${CMAKE_BINARY_DIR}
-        ${CMAKE_SOURCE_DIR}/cmake/constexpr_if.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/constexpr_if.cpp
         COMPILE_DEFINITIONS ${std_flag} -Wall -Werror -DCHECK_CONSTEXPR_IF=0
     )
     if (std_supported)
