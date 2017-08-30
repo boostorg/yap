@@ -100,6 +100,21 @@ for your use case.
 Explicit transformations are the preferred way to work in _yap_.  They are
 done using the _xform_ function.  See _calc3_ for an extended example.
 
+Here's how _xform_ works.  Consider this call to _xform_:
+
+    auto result = transform(expr, xform);
+
+`result` is created by visiting each node in `expr`, in top-down,
+breadth-first order.  For one such node `N`, we compute a value that will be
+placed into `result` at the corresponding place in `result`.  If `xform(N)` is
+a well-formed C++ expression, that `xform(N)` is used, and no nodes under `N`
+in `expr` are visited.  Otherwise, `N` is used, and visitation of nodes in
+`expr` continues below `N`.
+
+One common result of calling _xform_ is that you create a copy of `expr`, with
+a few matching nodes transformed.  Note the use of "common"; transforms don't
+always work out that way.
+
 A _yap_ transformation is free-form; it must return a value, but may do just
 about anything else.  It can transform an expression into anything -- a new
 expression of any kind, or even a non-expression value (effectively evaluating
