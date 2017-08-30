@@ -58,8 +58,8 @@ install:
         travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C usr
       fi
     - echo $PATH
-    - travis_retry wget --no-check-certificate --quiet https://sourceforge.net/projects/boost/files/boost/1.62.0/boost_1_62_0.tar.bz2
-    - tar xjf boost_1_62_0.tar.bz2
+    - travis_retry wget --no-check-certificate --quiet https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.bz2
+    - tar xjf boost_1_64_0.tar.bz2
     # Show compiler info
     - $CXX --version
     - which $CXX
@@ -82,9 +82,9 @@ script:
           mkdir $build_dir
           cd $build_dir
           if [[ "$asan_type" == "on" ]]; then 
-            CXXFLAGS="$CXXFLAGS $ASANFLAGS" cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_62_0 -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+            CXXFLAGS="$CXXFLAGS $ASANFLAGS" cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
           else
-            cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_62_0 -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+            cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
           fi
           VERBOSE=1 make -j4 && CTEST_OUTPUT_ON_FAILURE=1 CTEST_PARALLEL_LEVEL=4 make check
           if [ $? -ne 0 ]

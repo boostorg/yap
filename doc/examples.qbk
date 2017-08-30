@@ -120,7 +120,7 @@ terminal type that does not.]
 [section TArray]
 
 Proto refers to this as the "mini-library for linear algebra" example.  It
-shows how quite complicated expressions involving sequences can be evaliated
+shows how quite complicated expressions involving sequences can be evaluated
 elementwise, requiring no temporaries.
 
 [note The original Proto example used a terminal that contained an array of

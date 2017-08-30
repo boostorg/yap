@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/tzlaine/yap.svg?branch=master)](https://travis-ci.org/tzlaine/yap)
+[![License](https://img.shields.io/badge/license-boost-brightgreen.svg)](LICENSE_1_0.txt)
+
 
 # yap
 A C++14-and-later expression template library
