@@ -11,10 +11,14 @@
 //[ calc3_get_arity_xform
 struct get_arity
 {
+    // Base case 1: Match a placeholder terminal, and return its arity as the
+    // result.
     template <long long I>
     boost::hana::llong<I> operator() (boost::yap::terminal_tag, boost::yap::placeholder<I>)
     { return boost::hana::llong_c<I>; }
 
+    // Base case 2: Match any other terminal.  Return 0; non-placeholders to
+    // not contribute to arity.
     template <typename T>
     auto operator() (boost::yap::terminal_tag, T &&)
     {
@@ -22,6 +26,8 @@ struct get_arity
         return 0_c;
     }
 
+    // Recursive case: Match any expression not covered above, and return the
+    // maximum of its children's arities.
     template <typename Expr>
     auto operator() (Expr const & expr)
     {

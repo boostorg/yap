@@ -111,6 +111,14 @@ a well-formed C++ expression, that `xform(N)` is used, and no nodes under `N`
 in `expr` are visited.  Otherwise, `N` is used, and visitation of nodes in
 `expr` continues below `N`.
 
+[note The code you write with _yap_ is likely going to be very generic,
+especially when you're writing a transform.  To make transforms play nicer
+with generic code, _xform_ `std::forward`s-through anything you give it that
+is not a _yap_ expression.  In other words, if returns any non-_yap_ argument
+completely unchanged.  If situations when you want to make sure that a
+parameter you pass to _xform_ is always a _yap_ expression, use the _as_expr_
+function.]
+
 One common result of calling _xform_ is that you create a copy of `expr`, with
 a few matching nodes transformed.  Note the use of "common"; transforms don't
 always work out that way.
@@ -123,8 +131,14 @@ _calc3_ example:
 
 [calc3_get_arity_xform]
 
-In this case, the transform is stateless; you could also give your transforms
-data members containing contextual state:
+Note there are a couple of different forms that _yap_ accepts for function
+signatures on a transform.  In the example above, we use both the tag form and
+the expression form.  There's a fuller explanation of how _yap_ matches
+expressions to transform calls in [link
+boost_yap__proposed_.manual.tutorial.transform_matching Transform Matching].
+
+Also, note that in this case the transform is stateless, but you could also
+give your transforms data members containing contextual state:
 
 [vector_take_nth_xform]
 
