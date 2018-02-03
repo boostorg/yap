@@ -93,6 +93,7 @@
 [def _make_term_           [funcref boost::yap::make_terminal `make_terminal()`]]
 [def _make_expr_           [funcref boost::yap::make_expression `make_expression()`]]
 [def _make_expr_fn_        [funcref boost::yap::make_expression_function `make_expression_function()`]]
+[def _as_expr_             [funcref boost::yap::as_expr `as_expr()`]]
 [def _left_                [funcref boost::yap::left `left()`]]
 [def _right_               [funcref boost::yap::right `right()`]]
 [def _value_               [funcref boost::yap::value `value()`]]
