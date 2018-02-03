@@ -42,6 +42,23 @@
             is used, and visitation of nodes in <code class="computeroutput"><span class="identifier">expr</span></code>
             continues below <code class="computeroutput"><span class="identifier">N</span></code>.
           </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+              The code you write with Boost.YAP is likely going to be very generic,
+              especially when you're writing a transform. To make transforms play
+              nicer with generic code, <code class="computeroutput"><a class="link" href="../../../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
+              <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span></code>s-through anything you give
+              it that is not a Boost.YAP expression. In other words, if returns any
+              non-Boost.YAP argument completely unchanged. If situations when you
+              want to make sure that a parameter you pass to <code class="computeroutput"><a class="link" href="../../../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
+              is always a Boost.YAP expression, use the <code class="computeroutput"><a class="link" href="../../../../boost/yap/as_expr_idm11603.html" title="Function template as_expr">as_expr()</a></code>
+              function.
+            </p></td></tr>
+</table></div>
 <p>
             One common result of calling <code class="computeroutput"><a class="link" href="../../../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
             is that you create a copy of <code class="computeroutput"><span class="identifier">expr</span></code>,
@@ -58,10 +75,14 @@
 </p>
 <pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">get_arity</span>
 <span class="special">{</span>
+    <span class="comment">// Base case 1: Match a placeholder terminal, and return its arity as the</span>
+    <span class="comment">// result.</span>
     <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">long</span> <span class="keyword">long</span> <span class="identifier">I</span><span class="special">&gt;</span>
     <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">llong</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal_tag</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">placeholder</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;)</span>
     <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">llong_c</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;;</span> <span class="special">}</span>
 
+    <span class="comment">// Base case 2: Match any other terminal.  Return 0; non-placeholders to</span>
+    <span class="comment">// not contribute to arity.</span>
     <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">&gt;</span>
     <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal_tag</span><span class="special">,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;)</span>
     <span class="special">{</span>
@@ -69,6 +90,8 @@
         <span class="keyword">return</span> <span class="number">0</span><span class="identifier">_c</span><span class="special">;</span>
     <span class="special">}</span>
 
+    <span class="comment">// Recursive case: Match any expression not covered above, and return the</span>
+    <span class="comment">// maximum of its children's arities.</span>
     <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr</span><span class="special">&gt;</span>
     <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">Expr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
     <span class="special">{</span>
@@ -86,8 +109,15 @@
 <p>
           </p>
 <p>
-            In this case, the transform is stateless; you could also give your transforms
-            data members containing contextual state:
+            Note there are a couple of different forms that Boost.YAP accepts for
+            function signatures on a transform. In the example above, we use both
+            the tag form and the expression form. There's a fuller explanation of
+            how Boost.YAP matches expressions to transform calls in <a class="link" href="../transform_matching.html" title="Transform Matching">Transform
+            Matching</a>.
+          </p>
+<p>
+            Also, note that in this case the transform is stateless, but you could
+            also give your transforms data members containing contextual state:
           </p>
 <p>
 </p>
