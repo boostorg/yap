@@ -25,23 +25,23 @@
 </span><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Expr<span class="special">&gt;</span> 
 <span class="keyword">struct</span> <a class="link" href="expression_function.html" title="Struct template expression_function">expression_function</a> <span class="special">{</span>
 
-  <span class="comment">// <a class="link" href="expression_function.html#idm11366-bb">public member functions</a></span>
-  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="special">...</span> U<span class="special">&gt;</span> <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a class="link" href="expression_function.html#idm11367-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="identifier">U</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
+  <span class="comment">// <a class="link" href="expression_function.html#idp140597636609064-bb">public member functions</a></span>
+  <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> U<span class="special">&gt;</span> <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a class="link" href="expression_function.html#idp140597636609448-bb"><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span></a><span class="special">(</span><span class="identifier">U</span> <span class="special">&amp;&amp;</span><span class="special">...</span><span class="special">)</span><span class="special">;</span>
 
   <span class="comment">// public data members</span>
   <span class="identifier">Expr</span> <span class="identifier">expr</span><span class="special">;</span>
 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idm11654"></a><h2>Description</h2>
+<a name="idp140687736870200"></a><h2>Description</h2>
 <p>A callable type that evaluates its contained expression when called.</p>
 <p><span class="bold"><strong>See Also:</strong></span></p>
 <p><code class="computeroutput">make_expression_function()</code> </p>
 <p>
 </p>
 <div class="refsect2">
-<a name="idm11662"></a><h3>
-<a name="idm11366-bb"></a><code class="computeroutput">expression_function</code> public member functions</h3>
-<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="special">...</span> U<span class="special">&gt;</span> <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a name="idm11367-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="identifier">U</span> <span class="special">&amp;&amp;</span><span class="special">...</span> u<span class="special">)</span><span class="special">;</span></pre></li></ol></div>
+<a name="idp140687736872616"></a><h3>
+<a name="idp140597636609064-bb"></a><code class="computeroutput">expression_function</code> public member functions</h3>
+<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><pre class="literallayout"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span><span class="special">...</span> U<span class="special">&gt;</span> <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <a name="idp140597636609448-bb"></a><span class="keyword">operator</span><span class="special">(</span><span class="special">)</span><span class="special">(</span><span class="identifier">U</span> <span class="special">&amp;&amp;</span><span class="special">...</span> u<span class="special">)</span><span class="special">;</span></pre></li></ol></div>
 </div>
 </div>
 </div>
