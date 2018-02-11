@@ -82,13 +82,13 @@
 [def _eval_as_             [funcref boost::yap::evaluate_as `evaluate_as()`]]
 [def _tuple_               `boost::hana::tuple<>`]
 
-[def _alg_header_          [headerref boost/yap/algorithm.hpp algorithm header]]
+[def _alg_header_          `<boost/yap/algorithm.hpp>` header]
 [def _yap_header_          `<boost/yap/yap.hpp>` header]
-[def _expr_header_         [headerref boost/yap/expression.hpp expression header]]
-[def _free_expr_header_    [headerref boost/yap/expression_free_operators.hpp _expr_ free binary operators header]]
-[def _if_else_expr_header_ [headerref boost/yap/expression_if_else.hpp _expr_ `if_else()` header]]
-[def _ops_header_          [headerref boost/yap/operators.hpp operators header]]
-[def _print_header_        [headerref boost/yap/print.hpp print header]]
+[def _expr_header_         `<boost/yap/expression.hpp>` header]
+[def _free_expr_header_    `<boost/yap/expression_free_operators.hpp>` header]
+[def _if_else_expr_header_ `<boost/yap/expression_if_else.hpp>` header]
+[def _ops_header_          `<boost/yap/operators.hpp>` header]
+[def _print_header_        `<boost/yap/print.hpp>` header]
 
 [def _make_term_           [funcref boost::yap::make_terminal `make_terminal()`]]
 [def _make_expr_           [funcref boost::yap::make_expression `make_expression()`]]
@@ -123,8 +123,11 @@
 [def _cp_                  customization point]
 [def _cps_                 customization points]
 
+[def _emdash_              \u2014]
+
 [def _how_treated_         [link boost_yap__proposed_.manual.tutorial.how_expression_operands_are_treated How Expression Operands Are Treated]]
 
+[def _examples_            [link boost_yap__proposed_.manual.examples Examples]]
 [def _calc3_               [link boost_yap__proposed_.manual.examples.calc3 Calc3]]
 [def _mixed_               [link boost_yap__proposed_.manual.examples.mixed Mixed]]
 [def _lazy_vector_         [link boost_yap__proposed_.manual.examples.lazy_vector Lazy Vector]]

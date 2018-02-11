@@ -113,9 +113,6 @@ int main()
     int num = count_leaves(expr1);
     std::cout << num << std::endl;
 
-    // We're able to write this more simply than the equivalent Proto code;
-    // since YAP is always lazy, we can just use the expressions below
-    // directly.
     num = count_leaves(b + 3 * c);
     std::cout << num << std::endl;
 

@@ -21,15 +21,15 @@ struct map_list_of_transform
         // matched by transform().
         boost::yap::transform(fn, *this);
         map.emplace(
-            Key{std::forward<Key2 &&>(key)},
-            Value{std::forward<Value2 &&>(value)}
+            std::forward<Key2 &&>(key),
+            std::forward<Value2 &&>(value)
         );
         // All we care about are the side effects of this transform, so we can
         // return any old thing here.
         return 0;
     }
 
-    std::map<Key, Value, Allocator> map;
+    std::map<Key, Value, Allocator> & map;
 };
 
 
@@ -46,9 +46,10 @@ struct map_list_of_expr
     template <typename Key, typename Value, typename Allocator>
     operator std::map<Key, Value, Allocator> () const
     {
-        map_list_of_transform<Key, Value, Allocator> transform;
+        std::map<Key, Value, Allocator> retval;
+        map_list_of_transform<Key, Value, Allocator> transform{retval};
         boost::yap::transform(*this, transform);
-        return transform.map;
+        return retval;
     }
 
     BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::map_list_of_expr)

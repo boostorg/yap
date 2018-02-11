@@ -21,13 +21,13 @@ Here's an example:
 That's a template that models _ExprTmpl_.  Instantiated with the proper
 template parameters, it produces _Exprs_.
 
-Ok, so it's not that interesting by itself -- it has no operators.  But we can
-still use it with the _yap_ functions that take an _Expr_.  Let's make a
-plus-expression manually:
+Ok, so it's not that interesting by itself _emdash_ it has no operators.  But
+we can still use it with the _yap_ functions that take an _Expr_.  Let's make
+a plus-expression manually:
 
 [minimal_template_manual_construction]
 
-And if we evaluate it using _eval_, it does what you would expect:
+If we evaluate it using _eval_, it does what you would expect:
 
 [minimal_template_evaluation]
 
@@ -40,10 +40,11 @@ its use of every single operator makes it a suboptimal choice for most use
 cases.]
 
 [note Because _yap_ operates on _Exprs_, it is possible to mix and match
-_Exprs_ that are instantiations of different templates.  An expression
-containing an _expr_ subexpression and subexpressions instantiated from N
-other _ExprTmpls_ can be passed as an argument to any of the _Expr_-accepting
-_yap_ functions.]
+_Exprs_ that are instantiations of different templates.  Let's say we have a
+_yap_ expression `E` that contains an _expr_ subexpression `s0` and
+subexpressions instantiated from N other _ExprTmpls_ `s1`..`sN`.  `E` can be
+passed as an argument to any _yap_ function that accepts a _Expr_ parameter
+(this last _Expr_ is the concept, not the template).]
 
 One more thing.  It is important to remember that _yap_ expressions are
 all-lazy, all the time.  There is no auto-evaluation of a _yap_ expression
@@ -51,20 +52,20 @@ like there was with Proto.  If you want your expressions to be evaluated, you
 must call _eval_ or _eval_as_, enable _conv_op_m_ (a dubious solution), or
 define non-lazy operations that force evaluation where and when you want it.
 This last approach is usually the right one, and there are lots of examples of
-how to do this in the Examples section.
+how to do this in the _examples_ section.
 
 [endsect]
 
 
 [section Kinds of Expressions]
 
-There are three special kinds of expression.
+There are three special kinds of expressions.
 
 [variablelist Special Expression Kinds
-    [[_terminal_] [A terminal contains a non-Expression value, and represents the leaf-node in an
+    [[_terminal_] [A terminal contains a non-Expression value, and represents a leaf-node in an
 expression tree.  A terminal may have a _placeholder_ value, in which case it acts as a placeholder. ]]
     [[_if_else_] [An `if_else` expression is analogous to the C++ ternary operator (`?:`), but
-without the common-type conversion logic.]]
+without the common-type conversion logic (`if_else` doesn't even check that the alternatives are compatible or interconvertible).]]
     [[_expr_ref_] [An `expr_ref` expression is one that acts as a (possibly `const`) lvalue reference to another expression.  It exists to prevent unnecessary copies of expressions.]]
 ]
 
@@ -105,7 +106,7 @@ Here's how _xform_ works.  Consider this call to _xform_:
     auto result = transform(expr, xform);
 
 `result` is created by visiting each node in `expr`, in top-down,
-breadth-first order.  For one such node `N`, we compute a value that will be
+depth-first order.  For one such node `N`, we compute a value that will be
 placed into `result` at the corresponding place in `result`.  If `xform(N)` is
 a well-formed C++ expression, that `xform(N)` is used, and no nodes under `N`
 in `expr` are visited.  Otherwise, `N` is used, and visitation of nodes in
@@ -114,8 +115,8 @@ in `expr` are visited.  Otherwise, `N` is used, and visitation of nodes in
 [note The code you write with _yap_ is likely going to be very generic,
 especially when you're writing a transform.  To make transforms play nicer
 with generic code, _xform_ `std::forward`s-through anything you give it that
-is not a _yap_ expression.  In other words, if returns any non-_yap_ argument
-completely unchanged.  If situations when you want to make sure that a
+is not a _yap_ expression.  In other words, it returns any non-_yap_ argument
+completely unchanged.  In situations when you want to make sure that a
 parameter you pass to _xform_ is always a _yap_ expression, use the _as_expr_
 function.]
 
@@ -124,10 +125,10 @@ a few matching nodes transformed.  Note the use of "common"; transforms don't
 always work out that way.
 
 A _yap_ transformation is free-form; it must return a value, but may do just
-about anything else.  It can transform an expression into anything -- a new
-expression of any kind, or even a non-expression value (effectively evaluating
-the expression).  For example, here is the `get_arity` transform from the
-_calc3_ example:
+about anything else.  It can transform an expression into anything _emdash_ a
+new expression of any kind, or even a non-expression value (effectively
+evaluating the expression).  For example, here is the `get_arity` transform
+from the _calc3_ example:
 
 [calc3_get_arity_xform]
 
@@ -143,10 +144,10 @@ give your transforms data members containing contextual state:
 [vector_take_nth_xform]
 
 [tip Often when you create an expression, you will want to evaluate it in
-different contexts, changing its evaluation -- or even entire meaning -- in
-each context.  _eval_ Is wrong for this task, since it only takes values for
-substitution into placeholders.  In these situations, you should instead use
-an explicit transform that evaluates your expression.]
+different contexts, changing its evaluation _emdash_ or even entire meaning
+_emdash_ in each context.  _eval_ is wrong for this task, since it only takes
+values for substitution into placeholders.  In these situations, you should
+instead use an explicit transform that evaluates your expression.]
 
 [endsect]
 
@@ -275,8 +276,8 @@ function definition macros, operands are treated in a uniform way.
 
 The guiding design principle here is that an expression built using _yap_
 should match the semantics of a builtin C++ expression as closely as possible.
-This implies that an rvalue remain treatable as a temporary (as it may in fact
-have initially been) throughout the building and transformation of an
+This implies that an rvalue be treated as if it were a temporary (as it may in
+fact have initially been) throughout the building and transformation of an
 expression, and that an lvalue should retain its connection to the underlying
 named entity to which it refers.
 
@@ -295,8 +296,8 @@ call it with a `T [const]` lvalue, the value type is `T [const] &`, and the
 reference refers to the lvalue (read `[const]` as "possibly
 `const`-qualified").  This is important because you might write through the
 terminal later in an assignment operation.  You don't want to lose the ability
-to do this, or be forced to write some Baroque pile of code to do so -- it
-should be natural and easy.
+to do this, or be forced to write some Baroque pile of code to do so _emdash_
+it should be natural and easy.
 
 And it is:
 
@@ -319,8 +320,8 @@ the same way as _make_term_ treats its parameter.  Rvalues are moved in, and
 lvalues are captured by (possibly `const`) reference.
 
 [note If you want to subvert the capture-by-reference semantics of using
-subexpressions, just `std::move()` them.  That will force a move -- or copy of
-values for which move is not defined.]
+subexpressions, just `std::move()` them.  That will force a move _emdash_ or
+copy of values for which move is not defined.]
 
 The capture-by-reference behavior is implemented via a special _kind_,
 _expr_ref_.  An `expr_ref` expression has a single data element: a (possibly
@@ -340,8 +341,8 @@ such a partial decay of `T`.
 [table Operand Handling
     [[Operand] [Captured As] [Notes]]
 
-    [[`T const &`] [`expr_tmpl<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T) const &>>`] []]
-    [[`T &`] [`expr_tmpl<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T) &>>`] []]
+    [[`T const &`] [`expr_tmpl<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T)>>`] []]
+    [[`T &`] [`expr_tmpl<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T)>>`] []]
     [[`T &&`] [`expr_tmpl<expr_kind::terminal, boost::hana::tuple<PARTIAL_DECAY(T)>>`] [Operand moved.]]
 
     [[`E const &`] [`expr_tmpl<expr_kind::expr_ref, boost::hana::tuple<E const &>>`] []]
@@ -466,8 +467,9 @@ would apply to all plus operations in an expression tree, even nested ones.
 
 All the _cps_ except `transform_expression()` and `eval_expression_as()`
 receive evaluated values in their arguments, not _Exprs_.  That is, unless
-some of the evaluated values happen to be _Exprs_ -- you may have written an
-expression that evaluates to an expression.  You may also be a weirdo.
+some of the evaluated values happen to be _Exprs_ _emdash_ you may have
+written an expression that evaluates to an expression.  You may also be a
+weirdo.
 
 [endsect]
 
@@ -494,8 +496,8 @@ expression to be transformed:
 [tag_xform]
 
 _TagXForms_ are most useful when the transform needs to match an expression
-without regard to whether its operands are _expr_ref_ expressions, or -- if
-they are terminals -- whether they contain or refer to their values.
+without regard to whether its operands are _expr_ref_ expressions, or _emdash_
+if they are terminals _emdash_ whether they contain or refer to their values.
 _TagXForms_ tend to be far more concise.
 
 [heading A More Rigorous Description of TagTransform Parameters]
@@ -545,7 +547,7 @@ would be the result:
     // Thankfully, TagTransforms do *not* work like this!
     auto term = boost::yap::make_terminal(9);
     std::cout << boost::yap::transform(term, xform{}); // Only applies the terminal_tag transform; prints -9.
-    std::cout << boost::yap::transform(-term, xform{}); // Only applies the negate_tag transform; prints -9.
+    std::cout << boost::yap::transform(-term, xform{}); // Only applies the negate_tag transform; prints 9.
 
 [tip _TagXForm_ is intended to be the more terse and automatic form.  If you
 don't want auto-application of terminal transforms for a certain transform's
@@ -579,8 +581,8 @@ the _ExprXForm_ is preferred.  I know, I know.  You don't have to worry about
 ambiguity, but save yourself some confusion and mix the two kinds of overloads
 as little as possible.
 
-[note The above only applies when you have a _ExprXForm_ and a _TagXForm_ that
-match *the same expression type*.  Having unrelated _ExprXForms_ and
+[note The above only applies when you have an _ExprXForm_ and a _TagXForm_
+that match *the same expression type*.  Having unrelated _ExprXForms_ and
 _TagXForms_ within the same transform object is often quite useful.]
 
 [endsect]

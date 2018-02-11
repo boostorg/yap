@@ -63,16 +63,6 @@ struct future_transform
             boost::hana::tuple<T, U>
         > const & or_expr
     ) {
-        // Assertion that left and right are compatible types.  We use value()
-        // here on the results of left() and right() because that makes the
-        // resulting expressions comparable if one is an expr_ref and the
-        // other is not.
-        static_assert(
-            std::is_same<
-                decltype(boost::yap::value(boost::yap::left(or_expr))),
-                decltype(boost::yap::value(boost::yap::right(or_expr)))
-            >{}
-        );
         // Recursively transform the left side, and return the result.
         // Without the recursion, we might return a terminal expression here
         // insead of a tuple.

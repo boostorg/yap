@@ -552,7 +552,7 @@
     expression template.
 
     The \a lhs and \a rhs parameters to the defined operator overload may be any types that
-    is \b not expressions.  Each parameter is wrapped in a terminal expression.
+    are \b not expressions.  Each parameter is wrapped in a terminal expression.
 
     At least one of the parameters to the defined operator overload must be a
     type \c T for which \code
