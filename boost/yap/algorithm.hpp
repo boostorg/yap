@@ -694,10 +694,17 @@ namespace boost { namespace yap {
     }
 
     /** Returns the <code>char const *</code> string for the spelling of the
-        C++ operator associated with \a kind. */
+        C++ operator associated with \a kind.  It returns the special values
+        "ref" and "term" for the non-operator kinds
+        <code>expr_kind::expr_ref</code> amd <code>expr_kind::terminal</code>,
+        respectively.*/
     inline char const * op_string (expr_kind kind)
     {
         switch (kind) {
+        case expr_kind::expr_ref: return "ref";
+
+        case expr_kind::terminal: return "term";
+
         case expr_kind::unary_plus: return "+";
         case expr_kind::negate: return "-";
         case expr_kind::dereference: return "*";
