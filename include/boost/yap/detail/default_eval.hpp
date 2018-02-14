@@ -2,7 +2,6 @@
 #define BOOST_YAP_DETAIL_DEFAULT_EVAL_HPP_INCLUDED
 
 #include <boost/yap/algorithm_fwd.hpp>
-#include <boost/yap/operators.hpp>
 
 #include <boost/hana/transform.hpp>
 
@@ -13,8 +12,11 @@ namespace boost { namespace yap {
 
     namespace detail {
 
-        struct nonexistent_transform {};
-        inline nonexistent_transform transform_expression (...) { return {}; }
+        template <typename F, typename ...T>
+        constexpr auto eval_call (F && f, T && ... t)
+        {
+            return static_cast<F &&>(f)(static_cast<T &&>(t)...);
+        }
 
         template <typename I, typename T>
         decltype(auto) eval_placeholder (I, T && arg)
@@ -76,14 +78,6 @@ namespace boost { namespace yap {
         };
 
         template <>
-        struct default_eval_expr_impl<expr_kind(-1)>
-        {
-            template <typename Expr, typename ...T>
-            decltype(auto) operator() (Expr && expr, T && ... args)
-            { return transform_expression(static_cast<Expr &&>(expr), static_cast<T &&>(args)...); }
-        };
-
-        template <>
         struct default_eval_expr_impl<expr_kind::terminal>
         {
             template <typename Expr, typename ...T>
@@ -91,7 +85,7 @@ namespace boost { namespace yap {
             { return eval_terminal(::boost::yap::value(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...); }
         };
 
-#define BOOST_YAP_UNARY_OPERATOR_CASE(op_name)                          \
+#define BOOST_YAP_UNARY_OPERATOR_CASE(op, op_name)                      \
         template <>                                                     \
         struct default_eval_expr_impl<expr_kind:: op_name>              \
         {                                                               \
@@ -99,26 +93,47 @@ namespace boost { namespace yap {
             decltype(auto) operator() (Expr && expr, T && ... args)     \
             {                                                           \
                 using namespace hana::literals;                         \
-                return eval_ ## op_name(                                \
-                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) \
-                );                                                      \
+                return op                                               \
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...); \
             }                                                           \
         };
 
-        BOOST_YAP_UNARY_OPERATOR_CASE(unary_plus) // +
-        BOOST_YAP_UNARY_OPERATOR_CASE(negate) // -
-        BOOST_YAP_UNARY_OPERATOR_CASE(dereference) // *
-        BOOST_YAP_UNARY_OPERATOR_CASE(complement) // ~
-        BOOST_YAP_UNARY_OPERATOR_CASE(address_of) // &
-        BOOST_YAP_UNARY_OPERATOR_CASE(logical_not) // !
-        BOOST_YAP_UNARY_OPERATOR_CASE(pre_inc) // ++
-        BOOST_YAP_UNARY_OPERATOR_CASE(pre_dec) // --
-        BOOST_YAP_UNARY_OPERATOR_CASE(post_inc) // ++(int)
-        BOOST_YAP_UNARY_OPERATOR_CASE(post_dec) // --(int)
+        BOOST_YAP_UNARY_OPERATOR_CASE(+, unary_plus)
+        BOOST_YAP_UNARY_OPERATOR_CASE(-, negate)
+        BOOST_YAP_UNARY_OPERATOR_CASE(*, dereference)
+        BOOST_YAP_UNARY_OPERATOR_CASE(~, complement)
+        BOOST_YAP_UNARY_OPERATOR_CASE(&, address_of)
+        BOOST_YAP_UNARY_OPERATOR_CASE(!, logical_not)
+        BOOST_YAP_UNARY_OPERATOR_CASE(++, pre_inc)
+        BOOST_YAP_UNARY_OPERATOR_CASE(--, pre_dec)
+
+        template <>
+        struct default_eval_expr_impl<expr_kind::post_inc>
+        {
+            template <typename Expr, typename ...T>
+            decltype(auto) operator() (Expr && expr, T && ... args)
+            {
+                using namespace hana::literals;
+                return
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) ++;
+            }
+        };
+
+        template <>
+        struct default_eval_expr_impl<expr_kind::post_dec>
+        {
+            template <typename Expr, typename ...T>
+            decltype(auto) operator() (Expr && expr, T && ... args)
+            {
+                using namespace hana::literals;
+                return
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) --;
+            }
+        };
 
 #undef BOOST_YAP_UNARY_OPERATOR_CASE
 
-#define BOOST_YAP_BINARY_OPERATOR_CASE(op_name)                         \
+#define BOOST_YAP_BINARY_OPERATOR_CASE(op, op_name)                     \
         template <>                                                     \
         struct default_eval_expr_impl<expr_kind:: op_name>              \
         {                                                               \
@@ -126,31 +141,30 @@ namespace boost { namespace yap {
             decltype(auto) operator() (Expr && expr, T && ... args)     \
             {                                                           \
                 using namespace hana::literals;                         \
-                return eval_ ## op_name(                                \
-                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...), \
-                    default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...) \
-                );                                                      \
+                return                                                  \
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) op \
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...);                                                      \
             }                                                           \
         };
 
-        BOOST_YAP_BINARY_OPERATOR_CASE(shift_left) // <<
-        BOOST_YAP_BINARY_OPERATOR_CASE(shift_right) // >>
-        BOOST_YAP_BINARY_OPERATOR_CASE(multiplies) // *
-        BOOST_YAP_BINARY_OPERATOR_CASE(divides) // /
-        BOOST_YAP_BINARY_OPERATOR_CASE(modulus) // %
-        BOOST_YAP_BINARY_OPERATOR_CASE(plus) // +
-        BOOST_YAP_BINARY_OPERATOR_CASE(minus) // -
-        BOOST_YAP_BINARY_OPERATOR_CASE(less) // <
-        BOOST_YAP_BINARY_OPERATOR_CASE(greater) // >
-        BOOST_YAP_BINARY_OPERATOR_CASE(less_equal) // <=
-        BOOST_YAP_BINARY_OPERATOR_CASE(greater_equal) // >=
-        BOOST_YAP_BINARY_OPERATOR_CASE(equal_to) // ==
-        BOOST_YAP_BINARY_OPERATOR_CASE(not_equal_to) // !=
-        BOOST_YAP_BINARY_OPERATOR_CASE(logical_or) // ||
-        BOOST_YAP_BINARY_OPERATOR_CASE(logical_and) // &&
-        BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_and) // &
-        BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_or) // |
-        BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_xor) // ^
+        BOOST_YAP_BINARY_OPERATOR_CASE(<<, shift_left)
+        BOOST_YAP_BINARY_OPERATOR_CASE(>>, shift_right)
+        BOOST_YAP_BINARY_OPERATOR_CASE(*, multiplies)
+        BOOST_YAP_BINARY_OPERATOR_CASE(/, divides)
+        BOOST_YAP_BINARY_OPERATOR_CASE(%, modulus)
+        BOOST_YAP_BINARY_OPERATOR_CASE(+, plus)
+        BOOST_YAP_BINARY_OPERATOR_CASE(-, minus)
+        BOOST_YAP_BINARY_OPERATOR_CASE(<, less)
+        BOOST_YAP_BINARY_OPERATOR_CASE(>, greater)
+        BOOST_YAP_BINARY_OPERATOR_CASE(<=, less_equal)
+        BOOST_YAP_BINARY_OPERATOR_CASE(>=, greater_equal)
+        BOOST_YAP_BINARY_OPERATOR_CASE(==, equal_to)
+        BOOST_YAP_BINARY_OPERATOR_CASE(!=, not_equal_to)
+        BOOST_YAP_BINARY_OPERATOR_CASE(||, logical_or)
+        BOOST_YAP_BINARY_OPERATOR_CASE(&&, logical_and)
+        BOOST_YAP_BINARY_OPERATOR_CASE(&, bitwise_and)
+        BOOST_YAP_BINARY_OPERATOR_CASE(|, bitwise_or)
+        BOOST_YAP_BINARY_OPERATOR_CASE(^, bitwise_xor)
 
         template <>
         struct default_eval_expr_impl<expr_kind::comma>
@@ -159,26 +173,37 @@ namespace boost { namespace yap {
             decltype(auto) operator() (Expr && expr, T && ... args)
             {
                 using namespace hana::literals;
-                return eval_comma(
+                return
                     default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...),
-                    default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...)
-                );
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...);
             }
         };
 
-        BOOST_YAP_BINARY_OPERATOR_CASE(mem_ptr) // ->*
-        BOOST_YAP_BINARY_OPERATOR_CASE(assign) // =
-        BOOST_YAP_BINARY_OPERATOR_CASE(shift_left_assign) // <<=
-        BOOST_YAP_BINARY_OPERATOR_CASE(shift_right_assign) // >>=
-        BOOST_YAP_BINARY_OPERATOR_CASE(multiplies_assign) // *=
-        BOOST_YAP_BINARY_OPERATOR_CASE(divides_assign) // /=
-        BOOST_YAP_BINARY_OPERATOR_CASE(modulus_assign) // %=
-        BOOST_YAP_BINARY_OPERATOR_CASE(plus_assign) // +=
-        BOOST_YAP_BINARY_OPERATOR_CASE(minus_assign) // -=
-        BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_and_assign) // &=
-        BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_or_assign) // |=
-        BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_xor_assign) // ^=
-        BOOST_YAP_BINARY_OPERATOR_CASE(subscript) // []
+        BOOST_YAP_BINARY_OPERATOR_CASE(->*, mem_ptr)
+        BOOST_YAP_BINARY_OPERATOR_CASE(=, assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(<<=, shift_left_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(>>=, shift_right_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(*=, multiplies_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(/=, divides_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(%=, modulus_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(+=, plus_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(-=, minus_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(&=, bitwise_and_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(|=, bitwise_or_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(^=, bitwise_xor_assign)
+
+        template <>
+        struct default_eval_expr_impl<expr_kind::subscript>
+        {
+            template <typename Expr, typename ...T>
+            decltype(auto) operator() (Expr && expr, T && ... args)
+            {
+                using namespace hana::literals;
+                return
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...)[
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...)];
+            }
+        };
 
 #undef BOOST_YAP_BINARY_OPERATOR_CASE
 
@@ -189,11 +214,11 @@ namespace boost { namespace yap {
             decltype(auto) operator() (Expr && expr, T && ... args)
             {
                 using namespace hana::literals;
-                return eval_if_else(
-                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...),
-                    default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...),
-                    default_eval_expr(static_cast<Expr &&>(expr).elements[2_c], static_cast<T &&>(args)...)
-                );
+                if (default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...)) {
+                    return default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...);
+                } else {
+                    return default_eval_expr(static_cast<Expr &&>(expr).elements[2_c], static_cast<T &&>(args)...);
+                }
             }
         };
 
@@ -224,13 +249,8 @@ namespace boost { namespace yap {
         template <typename Expr, typename ...T>
         decltype(auto) default_eval_expr (Expr && expr, T && ... args)
         {
-            constexpr bool transform_exists = !std::is_same<
-                decltype(transform_expression(static_cast<Expr &&>(expr), static_cast<T &&>(args)...)),
-                nonexistent_transform
-            >{};
-            constexpr expr_kind kind = transform_exists ?
-                expr_kind(-1) :
-                remove_cv_ref_t<Expr>::kind;
+            constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
+
             return default_eval_expr_impl<kind>{}(static_cast<Expr &&>(expr), static_cast<T &&>(args)...);
         }
 
@@ -243,97 +263,88 @@ namespace boost { namespace yap {
 
             using namespace hana::literals;
 
-            if constexpr (
-                !std::is_same_v<
-                    decltype(transform_expression(static_cast<Expr &&>(expr), static_cast<T &&>(args)...)),
-                    nonexistent_transform
-                >
-            ) {
-                return transform_expression(static_cast<Expr &&>(expr), static_cast<T &&>(args)...);
-            } else if constexpr (kind == expr_kind::expr_ref) {
+            if constexpr (kind == expr_kind::expr_ref) {
                 return default_eval_expr(::boost::yap::deref(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...);
             } else if constexpr (kind == expr_kind::terminal) {
                 return eval_terminal(::boost::yap::value(static_cast<Expr &&>(expr)), static_cast<T &&>(args)...);
             }
 
-#define BOOST_YAP_UNARY_OPERATOR_CASE(op_name)                          \
+#define BOOST_YAP_UNARY_OPERATOR_CASE(op, op_name)                      \
             else if constexpr (kind == expr_kind:: op_name) {           \
-                return                                                  \
-                    eval_ ## op_name(                                   \
-                        default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) \
-                    );                                                  \
+                return op                                               \
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...); \
             }
 
-            BOOST_YAP_UNARY_OPERATOR_CASE(unary_plus) // +
-            BOOST_YAP_UNARY_OPERATOR_CASE(negate) // -
-            BOOST_YAP_UNARY_OPERATOR_CASE(dereference) // *
-            BOOST_YAP_UNARY_OPERATOR_CASE(complement) // ~
-            BOOST_YAP_UNARY_OPERATOR_CASE(address_of) // &
-            BOOST_YAP_UNARY_OPERATOR_CASE(logical_not) // !
-            BOOST_YAP_UNARY_OPERATOR_CASE(pre_inc) // ++
-            BOOST_YAP_UNARY_OPERATOR_CASE(pre_dec) // --
-            BOOST_YAP_UNARY_OPERATOR_CASE(post_inc) // ++(int)
-            BOOST_YAP_UNARY_OPERATOR_CASE(post_dec) // --(int)
+            BOOST_YAP_UNARY_OPERATOR_CASE(+, unary_plus)
+            BOOST_YAP_UNARY_OPERATOR_CASE(-, negate)
+            BOOST_YAP_UNARY_OPERATOR_CASE(*, dereference)
+            BOOST_YAP_UNARY_OPERATOR_CASE(~, complement)
+            BOOST_YAP_UNARY_OPERATOR_CASE(&, address_of)
+            BOOST_YAP_UNARY_OPERATOR_CASE(!, logical_not)
+            BOOST_YAP_UNARY_OPERATOR_CASE(++, pre_inc)
+            BOOST_YAP_UNARY_OPERATOR_CASE(--, pre_dec)
+
+            else if constexpr (kind == expr_kind::post_inc) {
+                return
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) ++;
+            } else if constexpr (kind == expr_kind::post_dec) {
+                return
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) --;
+            }
 
 #undef BOOST_YAP_UNARY_OPERATOR_CASE
 
-#define BOOST_YAP_BINARY_OPERATOR_CASE(op_name)                         \
+#define BOOST_YAP_BINARY_OPERATOR_CASE(op, op_name)                     \
             else if constexpr (kind == expr_kind:: op_name) {           \
                 return                                                  \
-                    eval_ ## op_name(                                   \
-                        default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...), \
-                        default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...) \
-                    );                                                  \
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) op \
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...); \
             }
 
-            BOOST_YAP_BINARY_OPERATOR_CASE(shift_left) // <<
-            BOOST_YAP_BINARY_OPERATOR_CASE(shift_right) // >>
-            BOOST_YAP_BINARY_OPERATOR_CASE(multiplies) // *
-            BOOST_YAP_BINARY_OPERATOR_CASE(divides) // /
-            BOOST_YAP_BINARY_OPERATOR_CASE(modulus) // %
-            BOOST_YAP_BINARY_OPERATOR_CASE(plus) // +
-            BOOST_YAP_BINARY_OPERATOR_CASE(minus) // -
-            BOOST_YAP_BINARY_OPERATOR_CASE(less) // <
-            BOOST_YAP_BINARY_OPERATOR_CASE(greater) // >
-            BOOST_YAP_BINARY_OPERATOR_CASE(less_equal) // <=
-            BOOST_YAP_BINARY_OPERATOR_CASE(greater_equal) // >=
-            BOOST_YAP_BINARY_OPERATOR_CASE(equal_to) // ==
-            BOOST_YAP_BINARY_OPERATOR_CASE(not_equal_to) // !=
-            BOOST_YAP_BINARY_OPERATOR_CASE(logical_or) // ||
-            BOOST_YAP_BINARY_OPERATOR_CASE(logical_and) // &&
-            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_and) // &
-            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_or) // |
-            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_xor) // ^
+            BOOST_YAP_BINARY_OPERATOR_CASE(<<, shift_left)
+            BOOST_YAP_BINARY_OPERATOR_CASE(>>, shift_right)
+            BOOST_YAP_BINARY_OPERATOR_CASE(*, multiplies)
+            BOOST_YAP_BINARY_OPERATOR_CASE(/, divides)
+            BOOST_YAP_BINARY_OPERATOR_CASE(%, modulus)
+            BOOST_YAP_BINARY_OPERATOR_CASE(+, plus)
+            BOOST_YAP_BINARY_OPERATOR_CASE(-, minus)
+            BOOST_YAP_BINARY_OPERATOR_CASE(<, less)
+            BOOST_YAP_BINARY_OPERATOR_CASE(>, greater)
+            BOOST_YAP_BINARY_OPERATOR_CASE(<=, less_equal)
+            BOOST_YAP_BINARY_OPERATOR_CASE(>=, greater_equal)
+            BOOST_YAP_BINARY_OPERATOR_CASE(==, equal_to)
+            BOOST_YAP_BINARY_OPERATOR_CASE(!=, not_equal_to)
+            BOOST_YAP_BINARY_OPERATOR_CASE(||, logical_or)
+            BOOST_YAP_BINARY_OPERATOR_CASE(&&, logical_and)
+            BOOST_YAP_BINARY_OPERATOR_CASE(&, bitwise_and)
+            BOOST_YAP_BINARY_OPERATOR_CASE(|, bitwise_or)
+            BOOST_YAP_BINARY_OPERATOR_CASE(^, bitwise_xor)
 
             else if constexpr (kind == expr_kind::comma) {
                 return
-                    eval_comma(
-                        default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...),
-                        default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...)
-                    );
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...) ,
+                    default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...);
             }
 
-            BOOST_YAP_BINARY_OPERATOR_CASE(mem_ptr) // ->*
-            BOOST_YAP_BINARY_OPERATOR_CASE(assign) // =
-            BOOST_YAP_BINARY_OPERATOR_CASE(shift_left_assign) // <<=
-            BOOST_YAP_BINARY_OPERATOR_CASE(shift_right_assign) // >>=
-            BOOST_YAP_BINARY_OPERATOR_CASE(multiplies_assign) // *=
-            BOOST_YAP_BINARY_OPERATOR_CASE(divides_assign) // /=
-            BOOST_YAP_BINARY_OPERATOR_CASE(modulus_assign) // %=
-            BOOST_YAP_BINARY_OPERATOR_CASE(plus_assign) // +=
-            BOOST_YAP_BINARY_OPERATOR_CASE(minus_assign) // -=
-            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_and_assign) // &=
-            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_or_assign) // |=
-            BOOST_YAP_BINARY_OPERATOR_CASE(bitwise_xor_assign) // ^=
-            BOOST_YAP_BINARY_OPERATOR_CASE(subscript) // []
+            BOOST_YAP_BINARY_OPERATOR_CASE(->*, mem_ptr)
+            BOOST_YAP_BINARY_OPERATOR_CASE(=, assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(<<=, shift_left_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(>>=, shift_right_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(*=, multiplies_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(/=, divides_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(%=, modulus_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(+=, plus_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(-=, minus_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(&=, bitwise_and_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(|=, bitwise_or_assign)
+            BOOST_YAP_BINARY_OPERATOR_CASE(^=, bitwise_xor_assign)
 
             else if constexpr (kind == expr_kind::if_else) {
-                return
-                    eval_if_else(
-                        default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...),
-                        default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...),
-                        default_eval_expr(static_cast<Expr &&>(expr).elements[2_c], static_cast<T &&>(args)...)
-                    );
+                if (default_eval_expr(static_cast<Expr &&>(expr).elements[0_c], static_cast<T &&>(args)...)) {
+                    return default_eval_expr(static_cast<Expr &&>(expr).elements[1_c], static_cast<T &&>(args)...);
+                } else {
+                    return default_eval_expr(static_cast<Expr &&>(expr).elements[2_c], static_cast<T &&>(args)...);
+                }
             }
 
 #undef BOOST_YAP_BINARY_OPERATOR_CASE

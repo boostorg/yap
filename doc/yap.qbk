@@ -111,7 +111,6 @@
 [def _udt_unary_m_         [macroref BOOST_YAP_USER_UDT_UNARY_OPERATOR]]
 [def _udt_udt_binary_m_    [macroref BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR]]
 [def _udt_any_binary_m_    [macroref BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR]]
-[def _conv_op_m_           [macroref BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE]]
 [def _no_constexpr_if_m_   [macroref BOOST_NO_CONSTEXPR_IF]]
 [def _literal_op_m_        [macroref BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR]]
 

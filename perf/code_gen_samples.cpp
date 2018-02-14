@@ -1,4 +1,3 @@
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
 
@@ -60,7 +59,7 @@ term<user::number> y{{3.0}};
 user::number eval_as_yap_expr (
     decltype((a * x + y) * (a * x + y) + (a * x + y)) & expr
 ) {
-    return expr;
+    return yap::evaluate(expr);
 }
 
 user::number eval_as_yap_expr_4x (
@@ -71,7 +70,7 @@ user::number eval_as_yap_expr_4x (
         (a * x + y) * (a * x + y) + (a * x + y)
     ) & expr
 ) {
-    return expr;
+    return yap::evaluate(expr);
 }
 
 user::number eval_as_cpp_expr (user::number a, user::number x, user::number y)
@@ -93,7 +92,8 @@ int main ()
 {
     auto expr = (a * x + y) * (a * x + y) + (a * x + y);
     user::number result_1 = eval_as_yap_expr(expr);
-    user::number result_2 = eval_as_cpp_expr(a, x, y);
+    user::number result_2 =
+        eval_as_cpp_expr(yap::value(a), yap::value(x), yap::value(y));
 
     (void)result_1;
     (void)result_2;

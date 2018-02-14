@@ -11,32 +11,6 @@
 
 namespace boost { namespace yap {
 
-#ifndef BOOST_YAP_DOXYGEN
-
-    namespace adl_detail {
-
-        template <typename R, typename E, typename ...T>
-        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T && ... args);
-
-        struct eval_expression_as_fn
-        {
-            template <typename R, typename E, typename ...T>
-            constexpr decltype(auto) operator() (E const & expr, hana::basic_type<R> rtype, T && ... args) const
-            { return eval_expression_as(expr, rtype, static_cast<T &&>(args)...); }
-        };
-
-    }
-
-    using adl_detail::eval_expression_as_fn;
-
-    inline namespace {
-
-        constexpr auto & eval_expression_as = detail::static_const<eval_expression_as_fn>::value;
-
-    }
-
-#endif
-
 #ifdef BOOST_NO_CONSTEXPR_IF
 
     namespace detail {
@@ -612,31 +586,6 @@ namespace boost { namespace yap {
         return detail::default_eval_expr(static_cast<Expr &&>(expr), static_cast<T &&>(t)...);
     }
 
-    /** Evaluates \a expr, substituting the subsequent parameters (if any)
-        into \a expr's placeholder terminals.  Evaluation is performed via the
-        <code>eval_expression_as()</code> customization point.
-
-        Prefer this function to <code>evaluate()</code> when you want
-        evaluation to differ based on the result type.
-
-        All customization points for the evaluation of expressions are used to
-        evaluate the \a expr.  If you've overridden any, that will be
-        reflected in the result.
-
-        \note <code>evaluate()</code> is only valid if \a Expr is an
-        expression, and <code>max_p <= sizeof...(T)</code>, where
-        <code>max_p</code> is the maximum placeholder index in \a expr.
-    */
-    template <typename R, typename Expr, typename ...T>
-    decltype(auto) evaluate_as (Expr && expr, T && ... t)
-    {
-        static_assert(
-            is_expr<Expr>::value,
-            "evaluate_as() is only defined for expressions."
-        );
-        return eval_expression_as(static_cast<Expr &&>(expr), hana::basic_type<R>{}, static_cast<T &&>(t)...);
-    }
-
 #ifdef BOOST_NO_CONSTEXPR_IF
 
     namespace detail {
@@ -692,14 +641,6 @@ namespace boost { namespace yap {
             return static_cast<Expr &&>(expr);
         }
 #endif
-    }
-
-    namespace adl_detail {
-
-        template <typename R, typename E, typename ...T>
-        constexpr decltype(auto) eval_expression_as (E const & expr, hana::basic_type<R>, T && ... args)
-        { return static_cast<R>(detail::default_eval_expr(expr, static_cast<T &&>(args)...)); }
-
     }
 
 } }

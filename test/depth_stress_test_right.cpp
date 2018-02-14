@@ -1,4 +1,3 @@
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
 #include <gtest/gtest.h>
@@ -18,7 +17,7 @@ TEST(right, depth_stress_test)
 
     {
         auto expr = unity + unity + unity + unity +    unity + unity + unity + unity;
-        double result = expr;
+        double result = boost::yap::evaluate(expr);
         EXPECT_EQ(result, 8.0);
     }
 
@@ -33,7 +32,7 @@ TEST(right, depth_stress_test)
             unity + unity + unity + unity +    unity + unity + unity + unity +
             unity + unity + unity + unity +    unity + unity + unity + unity +
             unity + unity + unity + unity +    unity + unity + unity + unity;
-        double result = expr;
+        double result = boost::yap::evaluate(expr);
         EXPECT_EQ(result, 64.0);
     }
 
@@ -49,11 +48,12 @@ TEST(right, depth_stress_test)
             unity + unity + unity + unity +    unity + unity + unity + unity +
             unity + unity + unity + unity +    unity + unity + unity + unity +
             unity + unity + unity + unity +    unity + unity + unity + unity;
-        double result =
+        double result = boost::yap::evaluate(
             expr + expr + expr + expr +    expr + expr + expr + expr +
             expr + expr + expr + expr +    expr + expr + expr + expr +
             expr + expr + expr + expr +    expr + expr + expr + expr +
-            expr + expr + expr + expr +    expr + expr + expr + expr;
+            expr + expr + expr + expr +    expr + expr + expr + expr
+        );
         EXPECT_EQ(result, 64.0 * 32.0);
     }
 #endif

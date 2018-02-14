@@ -49,10 +49,10 @@ passed as an argument to any _yap_ function that accepts a _Expr_ parameter
 One more thing.  It is important to remember that _yap_ expressions are
 all-lazy, all the time.  There is no auto-evaluation of a _yap_ expression
 like there was with Proto.  If you want your expressions to be evaluated, you
-must call _eval_ or _eval_as_, enable _conv_op_m_ (a dubious solution), or
-define non-lazy operations that force evaluation where and when you want it.
-This last approach is usually the right one, and there are lots of examples of
-how to do this in the _examples_ section.
+must call _eval_ or _eval_as_, or define non-lazy operations that force
+evaluation where and when you want it.  This last approach is usually the
+right one, and there are lots of examples of how to do this in the _examples_
+section.
 
 [endsect]
 
@@ -175,10 +175,6 @@ functions.  _eval_as_ only differs in that the expected return type is
 explicitly provided as a template parameter, to allow for different evaluation
 behavior for different return types.  For most use cases, _eval_ will be the
 right one to use.
-
-Implicit evaluation can apply when _conv_op_m_ is defined.  Note that this
-macro only changes the definition of _expr_, though.  Your custom _ets_ will
-not be affected.  See the assignment to `d1` in _lazy_vector_ for an example.
 
 [endsect]
 
@@ -307,119 +303,6 @@ such a partial decay of `T`.
 The partial decay of non-_Expr_ operands is another example of how _yap_
 attempts to create expression trees that are as semantically close to builtin
 expressions as possible.
-
-[endsect]
-
-
-[section Customization Points]
-
-There are a number of _cps_ defined by _yap_ that are used during expression
-evaluation.  _yap_ _cps_ are patterned after the ones in the _range_v3_
-library, the basis for the ISO Ranges TS.  To override one, you create a
-function with the same name in your own namespace; it gets picked up via ADL.
-By creating your own version of one of these _cps_, you can change how
-expressions are evaluated in _eval_ and _eval_as_.
-
-For example: first we define a UDT `number` and an override of _yap_'s
-`eval_plus` for it,
-
-[eval_plus_example_decls]
-
-then we use it to evaluate expressions containing `number`s, even though there
-is no user-defined plus operator for `number`:
-
-[eval_plus_example_use]
-
-There is a _cp_ for each operator (including `if_else`), one for doing
-implicit transforms during evaluation, called `transform_expression()`, and
-yet one more for replacing the entire implementation of _eval_as_, called
-`eval_expression_as()`.  The complete list of the _cps_ can be found in the
-`function_objects` namespace in the _ops_header_.
-
-You just saw an example of an operator _cp_ above.  Here's an example
-overriding the `transform_expression()` _cp_:
-
-[transform_expression_example_decls]
-
-and using it:
-
-[transform_expression_example_use]
-
-The `eval_expression_as()` _cp_ works similarly.
-
-You can create as many overloads of a _cp_ `C` as you like.  If there are 100
-overloads of `C`, any of them that match subexpressions within the expression
-being evaluated will be used; you only need to make sure that the overloads
-are mutually unambiguous.
-
-This feature is especially useful when it comes to the
-`transform_expression()` _cp_.  Providing multiple overloads can be very
-useful for defining an implicit set of transformations that you always want
-applied to all your expression evaluations.  For example, if you define a
-template overload and a nontemplate overload for a certain _cp_ `C`, the
-template will only apply when the nontemplate does not (due to the normal C++
-overload resolution rules); this allows general-casing in the template
-overload, and special-casing in the nontemplate overload.
-
-[heading How the transform_expression Customization Point Is Applied]
-
-If at any point during the execution of _eval_ or _eval_as_, if `expr` is the
-current subexpression and `transform_expression(expr)` is well-formed,
-`transform_expression(expr)` gets called in place of the normal evaluation of
-`expr`.
-
-[important Subexpressions of `expr` are not evaluated recursively, and in fact
-they are not evaluated at all!  The arguments passed to
-`transform_expression()` are _Exprs_, not evaluated values.]
-
-If you want recursive evaluation within your `transform_expression()`
-override, just use `evaluate()` directly:
-
-This transform takes expressions of the form `a * x + y` and calls a function
-that does that computation in one step:
-
-[naxpy_transform_decl]
-
-and since `evaluate()` is called on each operand in the transform, the
-transform is applied to each parenthesized subexpression here, and then to the
-top-level expression:
-
-[naxpy_transform_use]
-
-[heading How the eval_expression_as Customization Point Is Applied]
-
-The `eval_expression_as()` _cp_ is only applied at the top level, replacing a
-call to _yap_'s version.  Like `transform_expression()`, it subverts the
-normal recursive evaluation of the expression being evaluated.  Also like
-`transform_expression()`, it is passed an _Expr_.
-
-`eval_expression_as()` may be useful if you want to evaluate an expression in
-a very different way depending on what the desired result type is.
-
-[note Evaluation of _expr_'s optional conversion operator template is done via
-`eval_expression_as()`.  See _conv_op_m_ for details.]
-
-[heading How The Other Customization Points Are Applied]
-
-Each of _eval_ and _eval_as_ evaluates its given expression recursively, depth
-first (unless of course the `transform_expression()` _cp_ subverts this).  For
-any given subexpression `E` of kind `K` with subexpressions `S0` ... `Sn`, `E`
-is evaluated as:
-
-    eval_K(evaluate(S0), ... evaluate(Sn))
-
-For example, using `expr_kind::plus`:
-
-    eval_plus(evaluate(left(e)), evaluate(right(e)))
-
-This means that a (sufficiently general) templated `eval_plus()` _cp_ override
-would apply to all plus operations in an expression tree, even nested ones.
-
-All the _cps_ except `transform_expression()` and `eval_expression_as()`
-receive evaluated values in their arguments, not _Exprs_.  That is, unless
-some of the evaluated values happen to be _Exprs_ _emdash_ you may have
-written an expression that evaluates to an expression.  You may also be a
-weirdo.
 
 [endsect]
 

@@ -1,4 +1,3 @@
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
 #include <gtest/gtest.h>
@@ -19,12 +18,10 @@ namespace reference_returning {
     number a_result{3.0};
     number const the_result{13.0};
 
-    template <typename A, typename B>
-    inline number const & eval_plus (A a, B b)
+    number const & operator+ (number a, number b)
     { return the_result; }
 
-    template <typename A, typename B>
-    inline number & eval_minus (A a, B b)
+    number & operator- (number a, number b)
     { return a_result; }
 
 }

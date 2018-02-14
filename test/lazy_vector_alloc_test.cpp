@@ -1,4 +1,3 @@
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
 #include <algorithm>

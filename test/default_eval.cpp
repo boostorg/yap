@@ -1,4 +1,3 @@
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
 #include <gtest/gtest.h>
@@ -58,27 +57,27 @@ TEST(default_eval, default_eval)
     > unevaluated_expr_3 = unity + const_unity;
 
     {
-        double result = unity;
+        double result = evaluate(unity);
         EXPECT_EQ(result, 1);
     }
 
     {
-        double result = expr;
+        double result = evaluate(expr);
         EXPECT_EQ(result, -41);
     }
 
     {
-        double result = unevaluated_expr_1;
+        double result = evaluate(unevaluated_expr_1);
         EXPECT_EQ(result, -40);
     }
 
     {
-        double result = unevaluated_expr_2;
+        double result = evaluate(unevaluated_expr_2);
         EXPECT_EQ(result, 2);
     }
 
     {
-        double result = unevaluated_expr_3;
+        double result = evaluate(unevaluated_expr_3);
         EXPECT_EQ(result, 2);
     }
 

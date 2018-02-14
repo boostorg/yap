@@ -37,18 +37,6 @@ namespace boost { namespace yap {
 
         tuple_type elements;
 
-#if BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE || defined(BOOST_YAP_DOXYGEN)
-        /** Conversion operator.  Attempts to convert \c *this to any type \a
-            R with a call to the <code>eval_expression_as()</code>
-            customization point.  This function is only defined if the
-            configuration macro
-            <code>BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</code> has been
-            defined by the user to be nonzero. */
-        template <typename R>
-        operator R ()
-        { return eval_expression_as(*this, hana::basic_type<R>{}); }
-#endif
-
         /** A convenience member function that dispatches to the free function
             <code>value()</code>. */
         decltype(auto) value () &
@@ -284,18 +272,6 @@ namespace boost { namespace yap {
         {}
 
         tuple_type elements;
-
-#if BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE || defined(BOOST_YAP_DOXYGEN)
-        /** Conversion operator.  Attempts to convert \c *this to any type \a
-            R with a call to the <code>eval_expression_as()</code>
-            cutomization point.  This function is only defined if the
-            configuration macro
-            <code>BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</code> has been
-            defined by the user to be nonzero. */
-        template <typename R>
-        operator R ()
-        { return eval_expression_as(*this, hana::basic_type<R>{}); }
-#endif
 
         /** A convenience member function that dispatches to the free function
             <code>value()</code>. */

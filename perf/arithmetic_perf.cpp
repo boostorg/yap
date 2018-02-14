@@ -1,4 +1,3 @@
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
 #include <chrono>
@@ -50,7 +49,7 @@ user::number eval_as_yap_expr (user::number a_, user::number x_, user::number y_
     term<user::number> x{{x_}};
     term<user::number> y{{y_}};
     auto expr = (a * x + y) * (a * x + y) + (a * x + y);
-    return expr;
+    return yap::evaluate(expr);
 }
 //]
 
@@ -76,7 +75,7 @@ user::number eval_as_yap_expr_4x (user::number a_, user::number x_, user::number
         (a * x + y) * (a * x + y) + (a * x + y) +
         (a * x + y) * (a * x + y) + (a * x + y)
         ;
-    return expr;
+    return yap::evaluate(expr);
 }
 //]
 

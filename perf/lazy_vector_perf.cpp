@@ -1,7 +1,6 @@
 //[ lazy_vector
 // Defining this allows the assignment below of an expression to a double
 // without writing any specific code to do so.
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
 #include <algorithm>
