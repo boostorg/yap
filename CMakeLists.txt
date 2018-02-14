@@ -57,7 +57,7 @@ endif ()
 include(dependencies)
 
 add_library(yap INTERFACE)
-target_include_directories(yap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(yap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(yap INTERFACE boost)
 target_compile_definitions(yap INTERFACE ${constexpr_if_define})
 
