@@ -10,6 +10,70 @@
 
 namespace boost { namespace yap {
 
+    /** Returns the <code>char const *</code> string for the spelling of the
+        C++ operator associated with \a kind.  It returns the special values
+        "ref" and "term" for the non-operator kinds
+        <code>expr_kind::expr_ref</code> amd <code>expr_kind::terminal</code>,
+        respectively.*/
+    inline char const * op_string (expr_kind kind)
+    {
+        switch (kind) {
+        case expr_kind::expr_ref: return "ref";
+
+        case expr_kind::terminal: return "term";
+
+        case expr_kind::unary_plus: return "+";
+        case expr_kind::negate: return "-";
+        case expr_kind::dereference: return "*";
+        case expr_kind::complement: return "~";
+        case expr_kind::address_of: return "&";
+        case expr_kind::logical_not: return "!";
+        case expr_kind::pre_inc: return "++";
+        case expr_kind::pre_dec: return "--";
+        case expr_kind::post_inc: return "++(int)";
+        case expr_kind::post_dec: return "--(int)";
+
+        case expr_kind::shift_left: return "<<";
+        case expr_kind::shift_right: return ">>";
+        case expr_kind::multiplies: return "*";
+        case expr_kind::divides: return "/";
+        case expr_kind::modulus: return "%";
+        case expr_kind::plus: return "+";
+        case expr_kind::minus: return "-";
+        case expr_kind::less: return "<";
+        case expr_kind::greater: return ">";
+        case expr_kind::less_equal: return "<=";
+        case expr_kind::greater_equal: return ">=";
+        case expr_kind::equal_to: return "==";
+        case expr_kind::not_equal_to: return "!=";
+        case expr_kind::logical_or: return "||";
+        case expr_kind::logical_and: return "&&";
+        case expr_kind::bitwise_and: return "&";
+        case expr_kind::bitwise_or: return "|";
+        case expr_kind::bitwise_xor: return "^";
+        case expr_kind::comma: return ",";
+        case expr_kind::mem_ptr: return "->*";
+        case expr_kind::assign: return "=";
+        case expr_kind::shift_left_assign: return "<<=";
+        case expr_kind::shift_right_assign: return ">>=";
+        case expr_kind::multiplies_assign: return "*=";
+        case expr_kind::divides_assign: return "/=";
+        case expr_kind::modulus_assign: return "%=";
+        case expr_kind::plus_assign: return "+=";
+        case expr_kind::minus_assign: return "-=";
+        case expr_kind::bitwise_and_assign: return "&=";
+        case expr_kind::bitwise_or_assign: return "|=";
+        case expr_kind::bitwise_xor_assign: return "^=";
+        case expr_kind::subscript: return "[]";
+
+        case expr_kind::if_else: return "?:";
+
+        case expr_kind::call: return "()";
+
+        default: return "** ERROR: UNKNOWN OPERATOR! **";
+        }
+    }
+
     namespace detail {
 
         inline std::ostream & print_kind (std::ostream & os, expr_kind kind)
@@ -57,7 +121,8 @@ namespace boost { namespace yap {
             return os;
         }
 
-        inline bool is_const_expr_ref (...) { return false; }
+        template <typename T>
+        bool is_const_expr_ref (T const &) { return false; }
         template <typename T, template <expr_kind, class> class expr_template>
         bool is_const_expr_ref (expr_template<expr_kind::expr_ref, hana::tuple<T const *>> const &)
         { return true; }
@@ -81,7 +146,7 @@ namespace boost { namespace yap {
                 }
 
                 os << "expr<";
-                print_kind(os, Expr::kind);
+                ::boost::yap::detail::print_kind(os, Expr::kind);
                 os << ">";
                 if (is_const_ref)
                     os << " const &";
@@ -118,7 +183,7 @@ namespace boost { namespace yap {
                     indent,
                     indent_str,
                     true,
-                    is_const_expr_ref(expr)
+                    ::boost::yap::detail::is_const_expr_ref(expr)
                 );
                 return os;
             }
@@ -141,9 +206,9 @@ namespace boost { namespace yap {
                 }
 
                 os << "term<";
-                print_type(os, expr.elements);
+                ::boost::yap::detail::print_type(os, expr.elements);
                 os << ">[=";
-                print_value(os, ::boost::yap::value(expr));
+                ::boost::yap::detail::print_value(os, ::boost::yap::value(expr));
                 os << "]";
                 if (is_const_ref)
                     os << " const &";
@@ -173,7 +238,7 @@ namespace boost { namespace yap {
                     indent,
                     indent_str,
                     true,
-                    is_const_expr_ref(expr)
+                    ::boost::yap::detail::is_const_expr_ref(expr)
                 );
             } else {
                 for (int i = 0; i < indent; ++i) {
@@ -182,9 +247,9 @@ namespace boost { namespace yap {
 
                 if constexpr (Expr::kind == expr_kind::terminal) {
                     os << "term<";
-                    print_type(os, expr.elements);
+                    ::boost::yap::detail::print_type(os, expr.elements);
                     os << ">[=";
-                    print_value(os, ::boost::yap::value(expr));
+                    ::boost::yap::detail::print_value(os, ::boost::yap::value(expr));
                     os << "]";
                     if (is_const_ref)
                         os << " const &";
@@ -193,7 +258,7 @@ namespace boost { namespace yap {
                     os << "\n";
                 } else {
                     os << "expr<";
-                    print_kind(os, Expr::kind);
+                    ::boost::yap::detail::print_kind(os, Expr::kind);
                     os << ">";
                     if (is_const_ref)
                         os << " const &";
@@ -201,7 +266,7 @@ namespace boost { namespace yap {
                         os << " &";
                     os << "\n";
                     hana::for_each(expr.elements, [&os, indent, indent_str](auto const & element) {
-                        print_impl(os, element, indent + 1, indent_str);
+                        ::boost::yap::detail::print_impl(os, element, indent + 1, indent_str);
                     });
                 }
             }

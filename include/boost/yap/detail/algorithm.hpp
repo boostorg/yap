@@ -45,6 +45,11 @@ namespace boost { namespace yap {
         template <typename R, typename ...A>
         struct partial_decay<R(A..., ...)> { using type = R(*)(A..., ...); };
 
+        template <typename R, typename ...A>
+        struct partial_decay<R(&)(A...)> { using type = R(*)(A...); };
+        template <typename R, typename ...A>
+        struct partial_decay<R(&)(A..., ...)> { using type = R(*)(A..., ...); };
+
 
         // operand_value_type_phase_1
         
@@ -188,16 +193,6 @@ namespace boost { namespace yap {
             using rhs_type = remove_cv_ref_t<U>;
             using type = ExprTemplate<OpKind, hana::tuple<lhs_type, rhs_type>>;
         };
-
-        template <
-            template <expr_kind, class> class ExprTemplate,
-            expr_kind OpKind,
-            typename T,
-            typename U,
-            bool ULvalueRef
-        >
-        struct free_binary_op_result<ExprTemplate, OpKind, T, U, false, ULvalueRef>
-        {};
 
         template <
             template <expr_kind, class> class ExprTemplate,

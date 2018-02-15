@@ -14,7 +14,7 @@ namespace boost { namespace yap {
         YAP.
     */
     enum class expr_kind {
-        expr_ref, ///< An (possibly \c const) reference to another expression.
+        expr_ref, ///< A (possibly \c const) reference to another expression.
 
         terminal, ///< A terminal expression.
 

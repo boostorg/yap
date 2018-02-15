@@ -1,5 +1,6 @@
 //[ tarray
 #include <boost/yap/algorithm.hpp>
+#include <boost/yap/print.hpp>
 
 #include <array>
 #include <iostream>

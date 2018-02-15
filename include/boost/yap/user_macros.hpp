@@ -5,8 +5,8 @@
 #ifndef BOOST_YAP_DOXYGEN
 
 #if defined(__MWERKS__)
-#  define BOOST_PP_CAT(lhs, rhs) BOOST_PP_CAT_O((lhs, rhs))
-#  define BOOST_PP_CAT_0(x) BOOST_PP_CAT_1 ## x
+#  define BOOST_YAP_CAT(lhs, rhs) BOOST_YAP_CAT_O((lhs, rhs))
+#  define BOOST_YAP_CAT_0(x) BOOST_YAP_CAT_1 ## x
 #else
 #  define BOOST_YAP_CAT(lhs, rhs) BOOST_YAP_CAT_1(lhs, rhs)
 #endif
@@ -86,8 +86,7 @@
 #define BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, expr_template)    \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) const &          \
     {                                                                   \
-        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
-        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, decltype(*this)>; \
         using tuple_type = ::boost::hana::tuple<lhs_type>;              \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
             tuple_type{                                                 \
@@ -97,8 +96,7 @@
     }                                                                   \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) &                \
     {                                                                   \
-        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
-        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, decltype(*this)>; \
         using tuple_type = ::boost::hana::tuple<lhs_type>;              \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
             tuple_type{                                                 \
@@ -143,8 +141,7 @@
     template <typename Expr>                                            \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (Expr && rhs) const & \
     {                                                                   \
-        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
-        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, decltype(*this)>; \
         using rhs_type = ::boost::yap::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
@@ -157,8 +154,7 @@
     template <typename Expr>                                            \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)() (Expr && rhs) &    \
     {                                                                   \
-        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
-        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, decltype(*this)>; \
         using rhs_type = ::boost::yap::detail::operand_type_t<expr_template, Expr>; \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;    \
         return expr_template< ::boost::yap::expr_kind::op_name, tuple_type>{ \
@@ -206,8 +202,7 @@
     template <typename ...U>                                            \
     auto operator() (U && ... u) const &                                \
     {                                                                   \
-        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
-        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type const &>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, decltype(*this)>; \
         using tuple_type = ::boost::hana::tuple<                        \
             lhs_type,                                                   \
             ::boost::yap::detail::operand_type_t<expr_template, U>...   \
@@ -224,8 +219,7 @@
     template <typename ...U>                                            \
     auto operator() (U && ... u) &                                      \
     {                                                                   \
-        using this_type = ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>; \
-        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, this_type &>; \
+        using lhs_type = ::boost::yap::detail::operand_type_t<expr_template, decltype(*this)>; \
         using tuple_type = ::boost::hana::tuple<                        \
             lhs_type,                                                   \
             ::boost::yap::detail::operand_type_t<expr_template, U>...   \

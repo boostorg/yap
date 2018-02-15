@@ -107,7 +107,10 @@ namespace boost { namespace yap {
         struct value_expr_impl<T, true, ValueOfTerminalsOnly, TakeValue, IsLvalueRef>
         {
             decltype(auto) operator() (T && x)
-            { return value_impl<ValueOfTerminalsOnly>(::boost::yap::deref(static_cast<T &&>(x))); }
+            {
+                return ::boost::yap::detail::value_impl<ValueOfTerminalsOnly>(
+                    ::boost::yap::deref(static_cast<T &&>(x)));
+            }
         };
 
         template <typename T, bool ValueOfTerminalsOnly>
@@ -177,7 +180,7 @@ namespace boost { namespace yap {
                     return value_impl<ValueOfTerminalsOnly>(
                         ::boost::yap::deref(static_cast<T &&>(x))
                     );
-                } else if constexpr ((ValueOfTerminalsOnly && kind == expr_kind::terminal) ||
+                } else if constexpr (kind == expr_kind::terminal ||
                                      (!ValueOfTerminalsOnly && arity == expr_arity::one)) {
                     if constexpr (std::is_lvalue_reference<T>{}) {
                         return x.elements[0_c];
@@ -270,8 +273,7 @@ namespace boost { namespace yap {
         static_assert(
             kind == expr_kind::expr_ref ||
             (0 <= I && I < decltype(hana::size(expr.elements))::value),
-            "In get(expr, I), I must be nonnegative, and less "
-            "than hana::size(expr.elements)."
+            "In get(expr, I), I must be a valid index into expr's tuple elements."
         );
 
 #ifdef BOOST_NO_CONSTEXPR_IF
@@ -436,8 +438,7 @@ namespace boost { namespace yap {
         static_assert(
             kind == expr_kind::expr_ref ||
             (0 <= I && I < decltype(hana::size(expr.elements))::value - 1),
-            "In argument(expr, I), I must be nonnegative, and less "
-            "than hana::size(expr.elements)."
+            "I must be a valid call-expression argument index."
         );
     }
 
@@ -665,7 +666,7 @@ namespace boost { namespace yap {
 #endif
 
     /** Returns the result of transforming (all or part of) \a expr using
-        whatever overloads of <code>Transform::operator()</code> that match \a
+        whatever overloads of <code>Transform::operator()</code> match \a
         expr.
 
         \note Transformations can do anything: they may have side effects;
@@ -691,70 +692,6 @@ namespace boost { namespace yap {
             return static_cast<Expr &&>(expr);
         }
 #endif
-    }
-
-    /** Returns the <code>char const *</code> string for the spelling of the
-        C++ operator associated with \a kind.  It returns the special values
-        "ref" and "term" for the non-operator kinds
-        <code>expr_kind::expr_ref</code> amd <code>expr_kind::terminal</code>,
-        respectively.*/
-    inline char const * op_string (expr_kind kind)
-    {
-        switch (kind) {
-        case expr_kind::expr_ref: return "ref";
-
-        case expr_kind::terminal: return "term";
-
-        case expr_kind::unary_plus: return "+";
-        case expr_kind::negate: return "-";
-        case expr_kind::dereference: return "*";
-        case expr_kind::complement: return "~";
-        case expr_kind::address_of: return "&";
-        case expr_kind::logical_not: return "!";
-        case expr_kind::pre_inc: return "++";
-        case expr_kind::pre_dec: return "--";
-        case expr_kind::post_inc: return "++(int)";
-        case expr_kind::post_dec: return "--(int)";
-
-        case expr_kind::shift_left: return "<<";
-        case expr_kind::shift_right: return ">>";
-        case expr_kind::multiplies: return "*";
-        case expr_kind::divides: return "/";
-        case expr_kind::modulus: return "%";
-        case expr_kind::plus: return "+";
-        case expr_kind::minus: return "-";
-        case expr_kind::less: return "<";
-        case expr_kind::greater: return ">";
-        case expr_kind::less_equal: return "<=";
-        case expr_kind::greater_equal: return ">=";
-        case expr_kind::equal_to: return "==";
-        case expr_kind::not_equal_to: return "!=";
-        case expr_kind::logical_or: return "||";
-        case expr_kind::logical_and: return "&&";
-        case expr_kind::bitwise_and: return "&";
-        case expr_kind::bitwise_or: return "|";
-        case expr_kind::bitwise_xor: return "^";
-        case expr_kind::comma: return ",";
-        case expr_kind::mem_ptr: return "->*";
-        case expr_kind::assign: return "=";
-        case expr_kind::shift_left_assign: return "<<=";
-        case expr_kind::shift_right_assign: return ">>=";
-        case expr_kind::multiplies_assign: return "*=";
-        case expr_kind::divides_assign: return "/=";
-        case expr_kind::modulus_assign: return "%=";
-        case expr_kind::plus_assign: return "+=";
-        case expr_kind::minus_assign: return "-=";
-        case expr_kind::bitwise_and_assign: return "&=";
-        case expr_kind::bitwise_or_assign: return "|=";
-        case expr_kind::bitwise_xor_assign: return "^=";
-        case expr_kind::subscript: return "[]";
-
-        case expr_kind::if_else: return "?:";
-
-        case expr_kind::call: return "()";
-
-        default: return "** ERROR: UNKNOWN OPERATOR! **";
-        }
     }
 
     namespace adl_detail {
