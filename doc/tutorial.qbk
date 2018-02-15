@@ -49,10 +49,9 @@ passed as an argument to any _yap_ function that accepts a _Expr_ parameter
 One more thing.  It is important to remember that _yap_ expressions are
 all-lazy, all the time.  There is no auto-evaluation of a _yap_ expression
 like there was with Proto.  If you want your expressions to be evaluated, you
-must call _eval_ or _eval_as_, or define non-lazy operations that force
-evaluation where and when you want it.  This last approach is usually the
-right one, and there are lots of examples of how to do this in the _examples_
-section.
+must call _eval_, or define non-lazy operations that force evaluation where
+and when you want it.  This last approach is usually the right one, and there
+are lots of examples of how to do this in the _examples_ section.
 
 [endsect]
 
@@ -97,8 +96,6 @@ Detailed documentation can be found later in the _operator_macros_ section.
 
 
 [section Transforming Expressions]
-
-[section Explicit Transformations]
 
 Explicit transformations are the preferred way to work in _yap_.  They are
 done using the _xform_ function.  See _calc3_ for an extended example.
@@ -153,28 +150,11 @@ instead use an explicit transform that evaluates your expression.]
 
 [endsect]
 
-[section Implicit Transformations]
-
-Implicit transformations are established by overriding the _cps_ provided by
-_yap_; this is explained in detail [link
-boost_yap__proposed_.manual.tutorial.customization_points later] in the
-tutorial.  Implicit transformations are only executed when an expression is
-evaluated.  See _mixed_ for an example; it overrides the `eval_call()` _cp_.
-
-[endsect]
-
-[endsect]
-
 
 [section Evaluating Expressions]
 
-_yap_ expressions are evaluated explicitly and implicitly:
-
-_yap_ expressions are explicitly evaluated by calling the _eval_ or _eval_as_
-functions.  _eval_as_ only differs in that the expected return type is
-explicitly provided as a template parameter, to allow for different evaluation
-behavior for different return types.  For most use cases, _eval_ will be the
-right one to use.
+_yap_ expressions are evaluated explicitly _emdash_ _yap_ expressions are
+explicitly evaluated by calling the _eval_ function.
 
 [endsect]
 

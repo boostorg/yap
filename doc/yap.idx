@@ -1,3 +1,3 @@
-!scan-path "boost/yap" ".*\.hpp" true 
+!scan-path "include/boost/yap" ".*\.hpp" true
 
-!scan-path "example" ".*\.cpp" 
+!scan-path "example" ".*\.cpp"
