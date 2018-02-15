@@ -31,6 +31,7 @@ add_test_executable(depth_stress_test_right)
 add_test_executable(lazy_vector_alloc_test)
 add_test_executable(vector_alloc_test)
 add_test_executable(operators_unary)
+add_test_executable(comma)
 add_test_executable(expression_function)
 
 add_executable(

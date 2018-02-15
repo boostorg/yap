@@ -49,7 +49,7 @@ namespace boost { namespace yap {
         bitwise_and = 27, ///< \c &
         bitwise_or = 28, ///< \c |
         bitwise_xor = 29, ///< \c ^
-        comma = 30, ///< \c  = ,
+        comma = 30, ///< \c ,
         mem_ptr = 31, ///< \c ->*
         assign = 32, ///< \c =
         shift_left_assign = 33, ///< \c <<=
