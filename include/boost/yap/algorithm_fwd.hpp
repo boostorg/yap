@@ -14,61 +14,61 @@ namespace boost { namespace yap {
         YAP.
     */
     enum class expr_kind {
-        expr_ref, ///< A (possibly \c const) reference to another expression.
+        expr_ref = 0, ///< A (possibly \c const) reference to another expression.
 
-        terminal, ///< A terminal expression.
+        terminal = 1, ///< A terminal expression.
 
         // unary
-        unary_plus, ///< \c +
-        negate, ///< \c -
-        dereference, ///< \c *
-        complement, ///< \c ~
-        address_of, ///< \c &
-        logical_not, ///< \c !
-        pre_inc, ///< \c ++
-        pre_dec, ///< \c --
-        post_inc, ///< \c ++(int)
-        post_dec, ///< \c --(int)
+        unary_plus = 2, ///< \c +
+        negate = 3, ///< \c -
+        dereference = 4, ///< \c *
+        complement = 5, ///< \c ~
+        address_of = 6, ///< \c &
+        logical_not = 7, ///< \c !
+        pre_inc = 8, ///< \c ++
+        pre_dec = 9, ///< \c --
+        post_inc = 10, ///< \c ++(int)
+        post_dec = 11, ///< \c --(int)
 
         // binary
-        shift_left, ///< \c <<
-        shift_right, ///< \c >>
-        multiplies, ///< \c *
-        divides, ///< \c /
-        modulus, ///< \c %
-        plus, ///< \c +
-        minus, ///< \c -
-        less, ///< \c <
-        greater, ///< \c >
-        less_equal, ///< \c <=
-        greater_equal, ///< \c >=
-        equal_to, ///< \c ==
-        not_equal_to, ///< \c !=
-        logical_or, ///< \c ||
-        logical_and, ///< \c &&
-        bitwise_and, ///< \c &
-        bitwise_or, ///< \c |
-        bitwise_xor, ///< \c ^
-        comma, ///< \c ,
-        mem_ptr, ///< \c ->*
-        assign, ///< \c =
-        shift_left_assign, ///< \c <<=
-        shift_right_assign, ///< \c >>=
-        multiplies_assign, ///< \c *=
-        divides_assign, ///< \c /=
-        modulus_assign, ///< \c %=
-        plus_assign, ///< \c +=
-        minus_assign, ///< \c -=
-        bitwise_and_assign, ///< \c &=
-        bitwise_or_assign, ///< \c |=
-        bitwise_xor_assign, ///< \c ^=
-        subscript, ///< \c []
+        shift_left = 12, ///< \c <<
+        shift_right = 13, ///< \c >>
+        multiplies = 14, ///< \c *
+        divides = 15, ///< \c /
+        modulus = 16, ///< \c %
+        plus = 17, ///< \c +
+        minus = 18, ///< \c -
+        less = 19, ///< \c <
+        greater = 20, ///< \c >
+        less_equal = 21, ///< \c <=
+        greater_equal = 22, ///< \c >=
+        equal_to = 23, ///< \c ==
+        not_equal_to = 24, ///< \c !=
+        logical_or = 25, ///< \c ||
+        logical_and = 26, ///< \c &&
+        bitwise_and = 27, ///< \c &
+        bitwise_or = 28, ///< \c |
+        bitwise_xor = 29, ///< \c ^
+        comma = 30, ///< \c  = ,
+        mem_ptr = 31, ///< \c ->*
+        assign = 32, ///< \c =
+        shift_left_assign = 33, ///< \c <<=
+        shift_right_assign = 34, ///< \c >>=
+        multiplies_assign = 35, ///< \c *=
+        divides_assign = 36, ///< \c /=
+        modulus_assign = 37, ///< \c %=
+        plus_assign = 38, ///< \c +=
+        minus_assign = 39, ///< \c -=
+        bitwise_and_assign = 40, ///< \c &=
+        bitwise_or_assign = 41, ///< \c |=
+        bitwise_xor_assign = 42, ///< \c ^=
+        subscript = 43, ///< \c []
 
         // ternary
-        if_else, ///< Analogous to \c ?: .
+        if_else = 44, ///< Analogous to \c ?: .
 
         // n-ary
-        call ///< \c ()
+        call = 45 ///< \c ()
     };
 
     /** The type used to represent the index of a placeholder terminal. */

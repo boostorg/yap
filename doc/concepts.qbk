@@ -62,11 +62,11 @@ its template parameters:
 
     template <typename Expr1, typename Expr2, typename Expr3>
     decltype(auto) xform (
-        bost::yap::expression<
-            bost::yap::expr_kind::plus,
+        boost::yap::expression<
+            boost::yap::expr_kind::plus,
             boost::hana::tuple<
-                bost::yap::expression<
-                    bost::yap::expr_kind::multiplies,
+                boost::yap::expression<
+                    boost::yap::expr_kind::multiplies,
                     boost::hana::tuple<
                         Expr1,
                         Expr2

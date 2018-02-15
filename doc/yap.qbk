@@ -57,6 +57,9 @@
 
 [def _yap_                 Boost.YAP]
 
+[def _operators_           [link boost_yap__proposed_.manual.tutorial.operators Operators]]
+[def _operator_macros_     [link boost_yap__proposed_.manual.tutorial.operator_macros Operator Macros]]
+
 [def _Expr_                [link boost_yap__proposed_.concepts.expression Expression]]
 [def _Exprs_               [link boost_yap__proposed_.concepts.expression Expressions]]
 [def _ExprTmpl_            [link boost_yap__proposed_.concepts.expressiontemplate ExpressionTemplate]]
