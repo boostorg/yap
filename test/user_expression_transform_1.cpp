@@ -124,8 +124,8 @@ namespace user {
         auto operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
         {
             return yap::make_expression<yap::expr_kind::minus>(
-                term<user::number>{lhs},
-                term<user::number>{rhs}
+                yap::transform(::boost::yap::make_terminal(lhs), *this),
+                yap::transform(::boost::yap::make_terminal(rhs), *this)
             );
         }
     };
@@ -156,8 +156,8 @@ namespace user {
         decltype(auto) operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
         {
             return yap::make_expression<yap::expr_kind::minus>(
-                term<user::number>{lhs},
-                term<user::number>{rhs}
+                yap::transform(::boost::yap::make_terminal(lhs), *this),
+                yap::transform(::boost::yap::make_terminal(rhs), *this)
             );
         }
 
@@ -178,7 +178,11 @@ namespace user {
 
         template <typename Expr1, typename Expr2>
         decltype(auto) operator() (yap::plus_tag, Expr1 const & lhs, Expr2 const & rhs)
-        { return boost::yap::transform(lhs, *this) - boost::yap::transform(rhs, *this); }
+        {
+            return
+                boost::yap::transform(::boost::yap::as_expr(lhs), *this) -
+                boost::yap::transform(::boost::yap::as_expr(rhs), *this);
+        }
     };
 
     struct eval_term_nonterm_xform_expr
@@ -205,7 +209,10 @@ namespace user {
 
         template <typename Expr1, typename Expr2>
         decltype(auto) operator() (yap::plus_tag, Expr1 const & lhs, Expr2 const & rhs)
-        { return boost::yap::transform(lhs, *this) - boost::yap::transform(rhs, *this); }
+        {
+            return
+                boost::yap::transform(::boost::yap::as_expr(lhs), *this) -
+                boost::yap::transform(::boost::yap::as_expr(rhs), *this); }
 
         template <typename Expr1, typename Expr2>
         decltype(auto) operator() (yap::expression<yap::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
