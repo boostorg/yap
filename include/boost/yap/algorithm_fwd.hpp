@@ -229,6 +229,86 @@ namespace boost { namespace yap {
 
 #endif // BOOST_YAP_DOXYGEN
 
+    /** Returns the <code>expr_kind</code> associated with tag type
+        Tag. */
+    template <typename Tag>
+    constexpr auto to_kind ();
+
+    /** Returns the tag type associated with <code>expr_kind</code>
+        Kind. */
+    template <expr_kind Kind>
+    constexpr auto to_tag ();
+
+#ifndef BOOST_YAP_DOXYGEN
+
+#define CASE(x)                                     \
+    template <>                                     \
+    constexpr auto to_kind<x ## _tag> ()            \
+    { return expr_kind:: x; }                       \
+    template <>                                     \
+    constexpr auto to_tag<expr_kind:: x> ()         \
+    { return x ## _tag{}; }
+
+    CASE(expr_ref);
+
+    CASE(terminal);
+
+    // unary
+    CASE(unary_plus); // +
+    CASE(negate); // -
+    CASE(dereference); // *
+    CASE(complement); // ~
+    CASE(address_of); // &
+    CASE(logical_not); // !
+    CASE(pre_inc); // ++
+    CASE(pre_dec); // --
+    CASE(post_inc); // ++(int)
+    CASE(post_dec); // --(int)
+
+    // binary
+    CASE(shift_left); // <<
+    CASE(shift_right); // >>
+    CASE(multiplies); // *
+    CASE(divides); // /
+    CASE(modulus); // %
+    CASE(plus); // +
+    CASE(minus); // -
+    CASE(less); // <
+    CASE(greater); // >
+    CASE(less_equal); // <=
+    CASE(greater_equal); // >=
+    CASE(equal_to); // ==
+    CASE(not_equal_to); // !=
+    CASE(logical_or); // ||
+    CASE(logical_and); // &&
+    CASE(bitwise_and); // &
+    CASE(bitwise_or); // |
+    CASE(bitwise_xor); // ^
+    CASE(comma); // );
+    CASE(mem_ptr); // ->*
+    CASE(assign); // =
+    CASE(shift_left_assign); // <<=
+    CASE(shift_right_assign); // >>=
+    CASE(multiplies_assign); // *=
+    CASE(divides_assign); // /=
+    CASE(modulus_assign); // %=
+    CASE(plus_assign); // +=
+    CASE(minus_assign); // -=
+    CASE(bitwise_and_assign); // &=
+    CASE(bitwise_or_assign); // |=
+    CASE(bitwise_xor_assign); // ^=
+    CASE(subscript); // []
+
+    // ternary
+    CASE(if_else); // (analogous to) ?:
+
+    // n-ary
+    CASE(call); // ()
+
+#undef CASE
+
+#endif // BOOST_YAP_DOXYGEN
+
 } }
 
 #endif
