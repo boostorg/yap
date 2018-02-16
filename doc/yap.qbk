@@ -88,9 +88,6 @@
 [def _alg_header_          `<boost/yap/algorithm.hpp>` header]
 [def _yap_header_          `<boost/yap/yap.hpp>` header]
 [def _expr_header_         `<boost/yap/expression.hpp>` header]
-[def _free_expr_header_    `<boost/yap/expression_free_operators.hpp>` header]
-[def _if_else_expr_header_ `<boost/yap/expression_if_else.hpp>` header]
-[def _ops_header_          `<boost/yap/operators.hpp>` header]
 [def _print_header_        `<boost/yap/print.hpp>` header]
 
 [def _make_term_           [funcref boost::yap::make_terminal `make_terminal()`]]

@@ -4,8 +4,6 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
-#include <boost/yap/expression_free_operators.hpp>
-#include <boost/yap/expression_if_else.hpp>
 
 #include <gtest/gtest.h>
 
