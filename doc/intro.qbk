@@ -32,6 +32,52 @@ With the language facilities available in the C++14 and C++17 standards, an
 _et_ library is now much easier to write and use, and has very reasonable
 compile times.
 
+As a quick example, let's say we are doing a bit of matrix math:
+
+    D = A * B + C;
+
+where all the variables are matrices.  It turns out that making a temporary
+for `A * B` and then another temporary for the resulting sum-plus-`C` is very
+inefficient.  Most matrix math libraries will have a single function that does
+it in one go:
+
+    mul_add_assign(D, A, B, C);
+
+If you use a matrix library that offers both kinds of syntax, you have to
+notice when some bit of operator-using code should be replaced with some more
+efficient function; this is tedious and error-prone.  If the library does not
+provide the operator syntax at all, only providing the more-efficient function
+calls, code using the library is a lot less writable and readable.
+
+Using _yap_, you can write some library code that allows expressions like `D =
+A * B + C` get automatically transformed into expressions like
+`mul_add_assign(D, A, B, C)`.
+
+Consider another example.  Most of use have used Unix command line tools to
+remove duplicate lines in a file:
+
+    sort file_with_duplicates | uniq > file_without_duplicates
+
+Let's say you want to create code that pipes together standard algorithm calls
+in a similar way.  (Let's also pretend that _range_v3_ doesn't already do
+almost exactly this.)  The standard algorithms have an interface like this:
+
+    std::vector<int> v1 = {/* ... */};
+    std::sort(v1.begin(), v1.end());
+    auto it = std::unique(v1.begin(), v1.end());
+    std::vector<int> v2(it, v1.end());
+
+It would be much better if our code did exactly that, but with a more concise
+syntax:
+
+    std::vector<int> v1 = {/* ... */};
+    std::vector<int> v2 = sort(v) | unique;
+
+This looks much more similar to the Unix command line above.
+
+_yap_ can be used to do both of these things, in a pretty small amount of
+code. (TODO: Make examples for each of these!)
+
 [heading Features]
 
 * Functions that operate on expression trees that model the _Expr_ concept.
@@ -40,10 +86,7 @@ compile times.
 
 * Facilities for easily creating custom _ExprTmpls_.
 
-* Customization points that can be user-overridden to create implicit
-  transformations.
-
-* Easy-to-use custom explicit transformations via _xform_.
+* Easy-to-use code transformations via _xform_.
 
 * Expression tree semantics as close to those of builtin C++ expressions as
   possible.

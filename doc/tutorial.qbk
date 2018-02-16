@@ -1,5 +1,3 @@
-[section Tutorial]
-
 [section Expressions]
 
 _yap_ consists of expressions and functions that operate on them.  Any type
@@ -135,7 +133,7 @@ Note there are a couple of different forms that _yap_ accepts for function
 signatures on a transform.  In the example above, we use both the tag form and
 the expression form.  There's a fuller explanation of how _yap_ matches
 expressions to transform calls in [link
-boost_yap__proposed_.manual.tutorial.transform_matching Transform Matching].
+boost_yap__proposed_.manual.transform_matching Transform Matching].
 
 Also, note that in this case the transform is stateless, but you could also
 give your transforms data members containing contextual state:
@@ -450,8 +448,5 @@ Each `term` node has a bracketed value near the end.  The format is `[=X]`
 where `X` is the value the terminal contains.  If the terminal contains a
 value for which no `operator<<(std::ostream &, ...)` overload exists (such as
 the `thing` type above), `X` will be `<<unprintable-value>>`.
-
-[endsect]
-
 
 [endsect]

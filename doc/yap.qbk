@@ -56,8 +56,8 @@
 
 [def _yap_                 Boost.YAP]
 
-[def _operators_           [link boost_yap__proposed_.manual.tutorial.operators Operators]]
-[def _operator_macros_     [link boost_yap__proposed_.manual.tutorial.operator_macros Operator Macros]]
+[def _operators_           [link boost_yap__proposed_.manual.operators Operators]]
+[def _operator_macros_     [link boost_yap__proposed_.manual.operator_macros Operator Macros]]
 
 [def _Expr_                [link boost_yap__proposed_.concepts.expression Expression]]
 [def _Exprs_               [link boost_yap__proposed_.concepts.expression Expressions]]
@@ -71,6 +71,8 @@
 [def _TagXForms_           [link boost_yap__proposed_.concepts.tagtransform TagTransforms]]
 [def _Callable_            [@http://en.cppreference.com/w/cpp/concept/Callable Callable]]
 [def _Callables_           [@http://en.cppreference.com/w/cpp/concept/Callable Callables]]
+[def _range_v3_            [@https://github.com/ericniebler/range-v3 Range-v3]]
+[def _ast_                 [@https://en.wikipedia.org/wiki/Abstract_syntax_tree abstract syntax tree]]
 
 [def _expr_                [classref boost::yap::expression `expression<>`]]
 [def _exprs_               [classref boost::yap::expression `expression<>`s]]
@@ -123,7 +125,7 @@
 
 [def _emdash_              \u2014]
 
-[def _how_treated_         [link boost_yap__proposed_.manual.tutorial.how_expression_operands_are_treated How Expression Operands Are Treated]]
+[def _how_treated_         [link boost_yap__proposed_.manual.how_expression_operands_are_treated How Expression Operands Are Treated]]
 
 [def _examples_            [link boost_yap__proposed_.manual.examples Examples]]
 [def _calc3_               [link boost_yap__proposed_.manual.examples.calc3 Calc3]]
@@ -131,10 +133,10 @@
 [def _lazy_vector_         [link boost_yap__proposed_.manual.examples.lazy_vector Lazy Vector]]
 
 [include intro.qbk]
-[include compiler_support.qbk]
-[include dependencies.qbk]
 [include manual.qbk]
 [include concepts.qbk]
+[include compiler_support.qbk]
+[include dependencies.qbk]
 
 [xinclude yap_reference.xml]
 

@@ -1,8 +1,9 @@
 [section Manual]
 
-[include headers.qbk]
+[include primer.qbk]
 [include tutorial.qbk]
 [include examples.qbk]
+[include headers.qbk]
 [include configuration.qbk]
 [include codegen.qbk]
 

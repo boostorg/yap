@@ -8,6 +8,54 @@
 
 #include <iostream>
 
+#include <cmath>
+
+
+//[ plus_sqrt_term_alias
+    template <typename T>
+    using term = boost::yap::terminal<boost::yap::expression, T>;
+//]
+void primer()
+{
+//[ plus_sqrt_yap_value
+//[ plus_sqrt_yap_type
+//[ plus_sqrt_yap_top_level_1
+    boost::yap::expression<
+        boost::yap::expr_kind::plus,
+        boost::hana::tuple<
+//]
+//[ plus_sqrt_yap_lhs
+            boost::yap::expression<
+                boost::yap::expr_kind::call,
+                boost::hana::tuple<
+                    boost::yap::expression<
+                        boost::yap::expr_kind::terminal,
+                        boost::hana::tuple<double (*)(double)>
+                    >,
+                    boost::yap::expression<
+                        boost::yap::expr_kind::terminal,
+                        boost::hana::tuple<double>
+                    >
+                >
+            >,
+//]
+//[ plus_sqrt_yap_rhs
+            boost::yap::expression<
+                boost::yap::expr_kind::terminal,
+                boost::hana::tuple<float>
+            >
+//]
+//[ plus_sqrt_yap_top_level_2
+        >
+    >
+//]
+//]
+    yap_expr = term<double (*)(double)>{{std::sqrt}}(3.0) + 8.0f;
+//]
+//[ print_plus_sqrt_yap_value
+    print(std::cout, yap_expr);
+//]
+}
 
 void foo ()
 {
@@ -46,6 +94,8 @@ boost::yap::print(std::cout, expr) << "\n";
 
 int main ()
 {
+    primer();
+
     foo();
 
     print_expr();
