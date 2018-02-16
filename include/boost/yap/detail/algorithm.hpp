@@ -55,6 +55,11 @@ namespace boost { namespace yap {
         template <typename R, typename ...A>
         struct partial_decay<R(&)(A..., ...)> { using type = R(*)(A..., ...); };
 
+        template <typename R, typename ...A>
+        struct partial_decay<R(*&)(A...)> { using type = R(*)(A...); };
+        template <typename R, typename ...A>
+        struct partial_decay<R(*&)(A..., ...)> { using type = R(*)(A..., ...); };
+
 
         // operand_value_type_phase_1
         
