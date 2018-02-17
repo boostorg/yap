@@ -34,15 +34,15 @@ struct get_arity
 
     // Recursive case: Match any expression not covered above, and return the
     // maximum of its children's arities.
-    template <typename Expr>
-    auto operator() (Expr const & expr)
+    template <boost::yap::expr_kind Kind, typename... Arg>
+    auto operator() (boost::yap::expr_tag<Kind>, Arg &&... arg)
     {
         return boost::hana::maximum(
-            boost::hana::transform(
-                expr.elements,
-                [](auto const & element) {
-                    return boost::yap::transform(element, get_arity{});
-                }
+            boost::hana::make_tuple(
+                boost::yap::transform(
+                    boost::yap::as_expr(std::forward<Arg>(arg)),
+                    get_arity{}
+                )...
             )
         );
     }
