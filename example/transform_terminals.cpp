@@ -20,25 +20,15 @@ struct iota_terminal_transform
         return boost::yap::make_terminal(index_++);
     }
 
-    // Recursive case: Match any binary expression.
-    template<boost::yap::expr_kind Kind, typename LExpr, typename RExpr>
-    auto operator()(boost::yap::expr_tag<Kind>, LExpr const & left, RExpr const & right)
-    {
-        // Since we need an expr_kind and not a tag-type to make an
-        // expression, we use yap::to_kind<>() to covnert one to the other.
-        return boost::yap::make_expression<Kind>(
-            boost::yap::transform(boost::yap::as_expr(left), *this),
-            boost::yap::transform(boost::yap::as_expr(right), *this));
-    }
-
-    // Recursive case: Match any unary expression.
-    template<boost::yap::expr_kind Kind, typename Expr>
-    auto operator()(boost::yap::expr_tag<Kind>, Expr const & expr)
+    // Recursive case: Match any non-terminal, non-call expression.
+    template<boost::yap::expr_kind Kind, typename... Arg>
+    auto operator()(boost::yap::expr_tag<Kind>, Arg &&... arg)
     {
         return boost::yap::make_expression<Kind>(
-            boost::yap::transform(boost::yap::as_expr(expr), *this));
+            boost::yap::transform(boost::yap::as_expr(arg), *this)...);
     }
 
+    // Recursive case: Match any call expression.
     template<typename CallableExpr, typename... Arg>
     auto operator()(boost::yap::expr_tag<boost::yap::expr_kind::call>,
                     CallableExpr callable, Arg &&... arg)
