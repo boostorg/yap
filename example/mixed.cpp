@@ -29,7 +29,8 @@ auto make_iter_wrapper (Iter it)
 struct begin
 {
     template <typename Cont>
-    auto operator() (boost::yap::terminal_tag, Cont const & cont)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     Cont const & cont)
         -> decltype(boost::yap::make_terminal(make_iter_wrapper(cont.begin())))
     { return boost::yap::make_terminal(make_iter_wrapper(cont.begin())); }
 };
@@ -38,7 +39,8 @@ struct begin
 struct deref
 {
     template <typename Iter>
-    auto operator() (boost::yap::terminal_tag, iter_wrapper<Iter> wrapper)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     iter_wrapper<Iter> wrapper)
         -> decltype(boost::yap::make_terminal(*wrapper.it))
     { return boost::yap::make_terminal(*wrapper.it); }
 };
@@ -47,7 +49,8 @@ struct deref
 struct incr
 {
     template <typename Iter>
-    auto operator() (boost::yap::terminal_tag, iter_wrapper<Iter> & wrapper)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     iter_wrapper<Iter> & wrapper)
         -> decltype(++wrapper.it, boost::yap::make_terminal(wrapper.it))
     {
         ++wrapper.it;

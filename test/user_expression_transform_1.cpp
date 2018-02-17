@@ -50,7 +50,8 @@ namespace user {
 
     struct eval_xform_tag
     {
-        decltype(auto) operator() (yap::terminal_tag, user::number const & n)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::terminal>,
+                                   user::number const & n)
         { return n; }
     };
 
@@ -62,7 +63,8 @@ namespace user {
 
     struct eval_xform_both
     {
-        decltype(auto) operator() (yap::terminal_tag, user::number const & n)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::terminal>,
+                                   user::number const & n)
         { return n; }
 
         decltype(auto) operator() (term<user::number> const & expr)
@@ -74,7 +76,8 @@ namespace user {
 
     struct plus_to_minus_xform_tag
     {
-        decltype(auto) operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::plus>,
+                                   user::number const & lhs, user::number const & rhs)
         {
             return yap::make_expression<yap::expr_kind::minus>(
                 term<user::number>{lhs},
@@ -97,7 +100,8 @@ namespace user {
 
     struct plus_to_minus_xform_both
     {
-        decltype(auto) operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::plus>,
+                                   user::number const & lhs, user::number const & rhs)
         {
             return yap::make_expression<yap::expr_kind::minus>(
                 term<user::number>{lhs},
@@ -118,10 +122,11 @@ namespace user {
 
     struct term_nonterm_xform_tag
     {
-        auto operator() (yap::terminal_tag, user::number const & n)
+        auto operator() (yap::expr_tag<yap::expr_kind::terminal>, user::number const & n)
         { return yap::make_terminal(n * user::number{2.0}); }
 
-        auto operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
+        auto operator() (yap::expr_tag<yap::expr_kind::plus>,
+                         user::number const & lhs, user::number const & rhs)
         {
             return yap::make_expression<yap::expr_kind::minus>(
                 yap::transform(::boost::yap::make_terminal(lhs), *this),
@@ -147,13 +152,15 @@ namespace user {
 
     struct term_nonterm_xform_both
     {
-        decltype(auto) operator() (yap::terminal_tag, user::number const & n)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::terminal>,
+                                   user::number const & n)
         { return yap::make_terminal(n * user::number{2.0}); }
 
         decltype(auto) operator() (term<user::number> const & expr)
         { return yap::make_terminal(::boost::yap::value(expr) * user::number{2.0}); }
 
-        decltype(auto) operator() (yap::plus_tag, user::number const & lhs, user::number const & rhs)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::plus>,
+                                   user::number const & lhs, user::number const & rhs)
         {
             return yap::make_expression<yap::expr_kind::minus>(
                 yap::transform(::boost::yap::make_terminal(lhs), *this),
@@ -173,11 +180,13 @@ namespace user {
 
     struct eval_term_nonterm_xform_tag
     {
-        decltype(auto) operator() (yap::terminal_tag, user::number const & n)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::terminal>,
+                                   user::number const & n)
         { return n * user::number{2.0}; }
 
         template <typename Expr1, typename Expr2>
-        decltype(auto) operator() (yap::plus_tag, Expr1 const & lhs, Expr2 const & rhs)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::plus>,
+                                   Expr1 const & lhs, Expr2 const & rhs)
         {
             return
                 boost::yap::transform(::boost::yap::as_expr(lhs), *this) -
@@ -201,14 +210,16 @@ namespace user {
 
     struct eval_term_nonterm_xform_both
     {
-        decltype(auto) operator() (yap::terminal_tag, user::number const & n)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::terminal>,
+                                   user::number const & n)
         { return n * user::number{2.0}; }
 
         decltype(auto) operator() (term<user::number> const & expr)
         { return ::boost::yap::value(expr) * user::number{2.0}; }
 
         template <typename Expr1, typename Expr2>
-        decltype(auto) operator() (yap::plus_tag, Expr1 const & lhs, Expr2 const & rhs)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::plus>,
+                                   Expr1 const & lhs, Expr2 const & rhs)
         {
             return
                 boost::yap::transform(::boost::yap::as_expr(lhs), *this) -
@@ -296,11 +307,11 @@ namespace user {
 
     struct disable_negate_xform_tag
     {
-        auto operator() (yap::negate_tag, user::number value)
+        auto operator() (yap::expr_tag<yap::expr_kind::negate>, user::number value)
         { return yap::make_terminal(std::move(value)); }
 
         template <typename Expr>
-        auto operator() (yap::negate_tag, Expr const & expr)
+        auto operator() (yap::expr_tag<yap::expr_kind::negate>, Expr const & expr)
         { return expr; }
     };
 
@@ -313,11 +324,11 @@ namespace user {
 
     struct disable_negate_xform_both
     {
-        decltype(auto) operator() (yap::negate_tag, user::number value)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::negate>, user::number value)
         { return yap::make_terminal(std::move(value)); }
 
         template <typename Expr>
-        decltype(auto) operator() (yap::negate_tag, Expr const & expr)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::negate>, Expr const & expr)
         { return expr; }
 
         template <typename Expr>
@@ -336,7 +347,7 @@ namespace user {
     {
         template <typename Expr>
         decltype(auto) operator() (
-            boost::yap::if_else_tag,
+            boost::yap::expr_tag<yap::expr_kind::if_else>,
             Expr const & cond,
             user::number then,
             user::number else_
@@ -360,11 +371,13 @@ namespace user {
     struct ternary_to_else_xform_both
     {
         template <typename Expr>
-        decltype(auto) operator() (yap::if_else_tag, Expr const & cond, user::number then, user::number else_)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::if_else>,
+                                   Expr const & cond, user::number then, user::number else_)
         { return yap::make_terminal(std::move(else_)); }
 
         template <typename Cond, typename Then, typename Else>
-        decltype(auto) operator() (yap::expression<yap::expr_kind::if_else, bh::tuple<Cond, Then, Else>> const & expr)
+        decltype(auto) operator() (yap::expression<yap::expr_kind::if_else,
+                                   bh::tuple<Cond, Then, Else>> const & expr)
         {
             throw std::logic_error("Oops!  Picked the wrong overload!");
             return ::boost::yap::else_(expr);

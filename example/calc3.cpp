@@ -19,13 +19,14 @@ struct get_arity
     // Base case 1: Match a placeholder terminal, and return its arity as the
     // result.
     template <long long I>
-    boost::hana::llong<I> operator() (boost::yap::terminal_tag, boost::yap::placeholder<I>)
+    boost::hana::llong<I> operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                                      boost::yap::placeholder<I>)
     { return boost::hana::llong_c<I>; }
 
     // Base case 2: Match any other terminal.  Return 0; non-placeholders to
     // not contribute to arity.
     template <typename T>
-    auto operator() (boost::yap::terminal_tag, T &&)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>, T &&)
     {
         using namespace boost::hana::literals;
         return 0_c;

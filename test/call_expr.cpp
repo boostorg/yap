@@ -42,10 +42,12 @@ namespace user {
 
     struct eval_xform_tag
     {
-        decltype(auto) operator() (yap::call_tag, tag_type, number a, double b)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::call>,
+                                   tag_type, number a, double b)
         { return tag_function(a.value, b); }
 
-        int operator() (yap::terminal_tag, tag_type, double a, double b)
+        int operator() (yap::expr_tag<yap::expr_kind::call>,
+                        tag_type, double a, double b)
         { return 42; }
 
         char const * operator() ()
@@ -77,7 +79,7 @@ namespace user {
             yap::expression<
                 yap::expr_kind::call,
                 bh::tuple<
-                    ref<term<user::tag_type> >,
+                    ref<term<user::tag_type>>,
                     ref<term<user::number>>,
                     term<int>
                 >
@@ -93,7 +95,8 @@ namespace user {
 
     struct eval_xform_both
     {
-        decltype(auto) operator() (yap::call_tag, tag_type, double a, double b)
+        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::call>,
+                                   tag_type, double a, double b)
         {
             // TODO: Document that this differs from the behavior for
             // non-call_tag tagged overloads, which will always be preferred

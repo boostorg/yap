@@ -26,7 +26,8 @@ void operator delete (void * ptr) noexcept
 struct take_nth
 {
     template <typename T>
-    auto operator() (boost::yap::terminal_tag, std::vector<T> const & vec)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     std::vector<T> const & vec)
     { return boost::yap::make_terminal(std::move(vec[n])); }
 
     std::size_t n;
@@ -35,7 +36,8 @@ struct take_nth
 struct equal_sizes_impl
 {
     template <typename T>
-    auto operator() (boost::yap::terminal_tag, std::vector<T> const & vec)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     std::vector<T> const & vec)
     {
         auto const expr_size = vec.size();
         if (expr_size != size)

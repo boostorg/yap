@@ -75,7 +75,8 @@ struct xform
     // Create a var-node for each placeholder when we see it for the first
     // time.
     template <long long I>
-    Node * operator() (boost::yap::terminal_tag, boost::yap::placeholder<I>)
+    Node * operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                       boost::yap::placeholder<I>)
     {
         if (list_.size() < I)
             list_.resize(I);
@@ -86,12 +87,13 @@ struct xform
     }
 
     // Create a param-node for every numeric terminal in the expression.
-    Node * operator() (boost::yap::terminal_tag, double x)
+    Node * operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>, double x)
     { return create_param_node(x); }
 
     // Create a "uary" node for each call expression, using its OPCODE.
     template <typename Expr>
-    Node * operator() (boost::yap::call_tag, OPCODE opcode, Expr const & expr)
+    Node * operator() (boost::yap::expr_tag<boost::yap::expr_kind::call>,
+                       OPCODE opcode, Expr const & expr)
     {
         return create_uary_op_node(
             opcode,
@@ -100,7 +102,8 @@ struct xform
     }
 
     template <typename Expr>
-    Node * operator() (boost::yap::negate_tag, Expr const & expr)
+    Node * operator() (boost::yap::expr_tag<boost::yap::expr_kind::negate>,
+                       Expr const & expr)
     {
         return create_uary_op_node(
             OP_NEG,
@@ -108,18 +111,26 @@ struct xform
         );
     }
 
-    // Define a mapping from binary arothmetic tag type to OPCODE...
-    static OPCODE op_for_tag (boost::yap::plus_tag) { return OP_PLUS; }
-    static OPCODE op_for_tag (boost::yap::minus_tag) { return OP_MINUS; }
-    static OPCODE op_for_tag (boost::yap::multiplies_tag) { return OP_TIMES; }
-    static OPCODE op_for_tag (boost::yap::divides_tag) { return OP_DIVID; }
+    // Define a mapping from binary arithmetic expr_kind to OPCODE...
+    static OPCODE op_for_kind (boost::yap::expr_kind kind)
+    {
+        switch (kind) {
+        case boost::yap::expr_kind::plus: return OP_PLUS;
+        case boost::yap::expr_kind::minus: return OP_MINUS;
+        case boost::yap::expr_kind::multiplies: return OP_TIMES;
+        case boost::yap::expr_kind::divides: return OP_DIVID;
+        default: assert(!"This should never execute"); return OPCODE{};
+        }
+        assert(!"This should never execute");
+        return OPCODE{};
+    }
 
     // ... and use it to handle all the binary arithmetic operators.
-    template <typename Tag, typename Expr1, typename Expr2>
-    Node * operator() (Tag tag, Expr1 const & expr1, Expr2 const & expr2)
+    template <boost::yap::expr_kind Kind, typename Expr1, typename Expr2>
+    Node * operator() (boost::yap::expr_tag<Kind>, Expr1 const & expr1, Expr2 const & expr2)
     {
         return create_binary_op_node(
-            op_for_tag(tag),
+            op_for_kind(Kind),
             boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr1), *this),
             boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr2), *this)
         );

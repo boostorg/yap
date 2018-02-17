@@ -27,7 +27,7 @@ namespace user {
 
     struct eval_xform
     {
-        auto operator() (yap::terminal_tag, number const & n)
+        auto operator() (yap::expr_tag<yap::expr_kind::terminal>, number const & n)
         { return n; }
 
         template <typename Expr>

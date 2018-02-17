@@ -552,7 +552,7 @@ namespace boost { namespace yap {
             expr_arity::one,
             void_t<decltype(
                 std::declval<Transform>()(
-                    to_tag<remove_cv_ref_t<Expr>::kind>(),
+                    expr_tag<remove_cv_ref_t<Expr>::kind>{},
                     terminal_value(::boost::yap::value(std::declval<Expr>()))
                 )
             )>
@@ -561,7 +561,7 @@ namespace boost { namespace yap {
             decltype(auto) operator() (Expr && expr, Transform && transform)
             {
                 return static_cast<Transform &&>(transform)(
-                    to_tag<remove_cv_ref_t<Expr>::kind>(),
+                    expr_tag<remove_cv_ref_t<Expr>::kind>{},
                     terminal_value(::boost::yap::value(static_cast<Expr &&>(expr)))
                 );
             }
@@ -574,7 +574,7 @@ namespace boost { namespace yap {
             expr_arity::two,
             void_t<decltype(
                 std::declval<Transform>()(
-                    to_tag<remove_cv_ref_t<Expr>::kind>(),
+                    expr_tag<remove_cv_ref_t<Expr>::kind>{},
                     terminal_value(::boost::yap::left(std::declval<Expr>())),
                     terminal_value(::boost::yap::right(std::declval<Expr>()))
                 )
@@ -584,7 +584,7 @@ namespace boost { namespace yap {
             decltype(auto) operator() (Expr && expr, Transform && transform)
             {
                 return static_cast<Transform &&>(transform)(
-                    to_tag<remove_cv_ref_t<Expr>::kind>(),
+                    expr_tag<remove_cv_ref_t<Expr>::kind>{},
                     terminal_value(::boost::yap::left(static_cast<Expr &&>(expr))),
                     terminal_value(::boost::yap::right(static_cast<Expr &&>(expr)))
                 );
@@ -598,7 +598,7 @@ namespace boost { namespace yap {
             expr_arity::three,
             void_t<decltype(
                 std::declval<Transform>()(
-                    to_tag<remove_cv_ref_t<Expr>::kind>(),
+                    expr_tag<remove_cv_ref_t<Expr>::kind>{},
                     terminal_value(::boost::yap::cond(std::declval<Expr>())),
                     terminal_value(::boost::yap::then(std::declval<Expr>())),
                     terminal_value(::boost::yap::else_(std::declval<Expr>()))
@@ -609,7 +609,7 @@ namespace boost { namespace yap {
             decltype(auto) operator() (Expr && expr, Transform && transform)
             {
                 return static_cast<Transform &&>(transform)(
-                    to_tag<remove_cv_ref_t<Expr>::kind>(),
+                    expr_tag<remove_cv_ref_t<Expr>::kind>{},
                     terminal_value(::boost::yap::cond(static_cast<Expr &&>(expr))),
                     terminal_value(::boost::yap::then(static_cast<Expr &&>(expr))),
                     terminal_value(::boost::yap::else_(static_cast<Expr &&>(expr)))
@@ -627,7 +627,7 @@ namespace boost { namespace yap {
                 std::integer_sequence<long long, I...>
             ) -> decltype(
                 static_cast<Transform &&>(transform)(
-                    call_tag{},
+                    expr_tag<expr_kind::call>{},
                     terminal_value(::boost::yap::get(
                         static_cast<Expr &&>(expr),
                         hana::llong_c<I>
@@ -635,7 +635,7 @@ namespace boost { namespace yap {
                 )
             ) {
                 return static_cast<Transform &&>(transform)(
-                    call_tag{},
+                    expr_tag<expr_kind::call>{},
                     terminal_value(::boost::yap::get(
                         static_cast<Expr &&>(expr),
                         hana::llong_c<I>

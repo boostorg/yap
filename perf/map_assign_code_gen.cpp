@@ -15,7 +15,8 @@ template <typename Key, typename Value, typename Allocator>
 struct map_list_of_transform
 {
     template <typename Fn, typename Key2, typename Value2>
-    auto operator() (boost::yap::call_tag, Fn const & fn, Key2 && key, Value2 && value)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::call>,
+                     Fn const & fn, Key2 && key, Value2 && value)
     {
         boost::yap::transform(fn, *this);
         map.emplace(
