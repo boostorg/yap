@@ -49,7 +49,8 @@ all-lazy, all the time.  There is no auto-evaluation of a _yap_ expression
 like there was with Proto.  If you want your expressions to be evaluated, you
 must call _eval_, or define non-lazy operations that force evaluation where
 and when you want it.  This last approach is usually the right one, and there
-are lots of examples of how to do this in the _examples_ section.
+are lots of examples of how to do this in the _examples_ section.  In
+particular, checkout the _lazy_vector_ and _tarray_ examples.
 
 [endsect]
 

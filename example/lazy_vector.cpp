@@ -56,10 +56,11 @@ boost::yap::terminal<lazy_vector_expr, double>
 take_nth::operator() (boost::yap::terminal<lazy_vector_expr, std::vector<double>> const & expr)
 {
     double x = boost::yap::value(expr)[n];
-    // This move is something of a hack.  The move indicates that the terminal
-    // should keep the value of x (since, being an rvalue, it may be a
-    // temporary), rather than a reference to x.  See the "How Expression
-    // Operands Are Treated" section of the tutorial for details.
+    // This move is something of a hack; we're forcing Yap to take a copy of x
+    // by using std::move().  The move indicates that the terminal should keep
+    // the value of x (since, being an rvalue, it may be a temporary), rather
+    // than a reference to x.  See the "How Expression Operands Are Treated"
+    // section of the tutorial for details.
     return boost::yap::make_terminal<lazy_vector_expr, double>(std::move(x));
 }
 

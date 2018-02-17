@@ -128,6 +128,7 @@
 [def _calc3_               [link boost_yap__proposed_.manual.examples.calc3 Calc3]]
 [def _mixed_               [link boost_yap__proposed_.manual.examples.mixed Mixed]]
 [def _lazy_vector_         [link boost_yap__proposed_.manual.examples.lazy_vector Lazy Vector]]
+[def _tarray_              [link boost_yap__proposed_.manual.examples.tarray TArray]]
 
 [include intro.qbk]
 [include manual.qbk]
