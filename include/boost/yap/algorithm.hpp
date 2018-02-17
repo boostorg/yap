@@ -200,8 +200,8 @@ namespace boost { namespace yap {
 
 #ifdef BOOST_NO_CONSTEXPR_IF
 
-    template <long long I, typename Expr>
-    decltype(auto) get (Expr && expr, hana::llong<I> i);
+    template <typename Expr, typename I>
+    decltype(auto) get (Expr && expr, I const & i);
 
     namespace detail {
 
@@ -239,25 +239,29 @@ namespace boost { namespace yap {
 
         \note <code>get()</code> is only valid if \a Expr is an expression.
     */
-    template <long long I, typename Expr>
-    decltype(auto) get (Expr && expr, hana::llong<I> i)
+    template <typename Expr, typename I>
+    decltype(auto) get (Expr && expr, I const & i)
     {
         static_assert(
             is_expr<Expr>::value,
             "get() is only defined for expressions."
+        );
+        static_assert(
+            hana::IntegralConstant<I>::value,
+            "'i' must be an IntegralConstant"
         );
 
         constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
 
         static_assert(
             kind == expr_kind::expr_ref ||
-            (0 <= I && I < decltype(hana::size(expr.elements))::value),
+            (0 <= I::value && I::value < decltype(hana::size(expr.elements))::value),
             "In get(expr, I), I must be a valid index into expr's tuple elements."
         );
 
 #ifdef BOOST_NO_CONSTEXPR_IF
         return detail::get_impl<
-            I,
+            I::value,
             Expr,
             kind == expr_kind::expr_ref,
             std::is_lvalue_reference<Expr>{}
