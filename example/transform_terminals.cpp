@@ -10,7 +10,7 @@
 //[ iota_terminal_transform
 struct iota_terminal_transform
 {
-    // Base case. Note that we're ignoring placeholders entirely for this
+    // Base case. Note that we're not treating placeholders specially for this
     // example (they're easy to special-case if necessary).
     template<typename T>
     auto operator()(boost::yap::expr_tag<boost::yap::expr_kind::terminal>, T && t)
@@ -40,8 +40,6 @@ struct iota_terminal_transform
             boost::yap::as_expr(callable),
             boost::yap::transform(boost::yap::as_expr(arg), *this)...);
     }
-
-    // if_else/ternary added as necessary.
 
     int index_;
 };
