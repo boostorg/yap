@@ -23,13 +23,8 @@ However, this can come at a high cost.  _Ets_ are costly to implement and
 maintain.  Each of _eigen_ and Boost.Ublas has a large volume of complex _et_
 code that cannot be reused elsewhere.
 
-To date, the best solution to this problem of high implementation cost has
-been to use Boost.Proto.  Due to the limitations of C++98, the standard
-against which Proto was written, Proto remains quite complicated and difficult
-to use.  It also imposes prohibitively long compile times for many uses.
-
 With the language facilities available in the C++14 and C++17 standards, an
-_et_ library is now much easier to write and use, and has very reasonable
+_et_ library is now straightforward to write and use, and has very reasonable
 compile times.
 
 As a quick example, let's say we are doing a bit of matrix math:
