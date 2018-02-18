@@ -255,9 +255,26 @@ Finally, here is the _yap_ version of the function we started with:
 
 [endsect]
 
+[section Transforming Terminals Only]
+
+Sometimes it can be useful only to transform the terminals in an expression.
+For instance, if you have some type you use for SIMD operations called
+`simd<double>`, you may want to replace all the `double` terminals with
+`simd<double>`.  Perhaps you just want to change out `double` for `float`, or
+`int` for `std::size_t`.  You get the idea.
+
+In this example, we're replacing all the terminals with something essentially
+arbitrary, the sequence of integer terminals `N, N + 1, N + 2, ...`.  This
+makes it easier to observe the result of the replacement in a simple example.
+
+[transform_terminals]
+
+[endsect]
+
 [section Pipable Algorithms]
 
-TODO
+Let's revisit the pipable standard algorithm example from the intro.  Here's
+how you might implement it.
 
 [pipable_algorithms]
 

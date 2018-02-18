@@ -67,7 +67,8 @@ This looks much more similar to the Unix command line above.  (Let's pretend
 that _range_v3_ doesn't already do almost exactly this.)
 
 _yap_ can be used to do both of these things, in a pretty small amount of
-code. (TODO: Make examples for each of these!)
+code.  In fact, you can jump right into the _pipable_algorithms_ example if
+you want to see how the second one can be implemented.
 
 [heading Features]
 

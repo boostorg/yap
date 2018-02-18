@@ -132,6 +132,8 @@
 [def _lazy_vector_         [link boost_yap__proposed_.manual.examples.lazy_vector Lazy Vector]]
 [def _tarray_              [link boost_yap__proposed_.manual.examples.tarray TArray]]
 
+[def _pipable_algorithms_  [link boost_yap__proposed_.manual.examples.pipable_algorithms Pipable Algorithms]]
+
 [include intro.qbk]
 [include manual.qbk]
 [include concepts.qbk]
