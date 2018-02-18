@@ -56,16 +56,12 @@ remove duplicate lines in a file:
 
 We can do something very similar with the standard algorithms, of course:
 
-    std::vector<int> v1 = {/* ... */};
-    std::sort(v1.begin(), v1.end());
-    auto it = std::unique(v1.begin(), v1.end());
-    std::vector<int> v2(v1.begin(), it);
+[typical_sort_unique_usage]
 
 However, it would be much better if our code did exactly that, but with a more
 concise syntax:
 
-    std::vector<int> v1 = {/* ... */};
-    std::vector<int> v2 = sort(v) | unique;
+[pipable_sort_unique_usage]
 
 This looks much more similar to the Unix command line above.  (Let's pretend
 that _range_v3_ doesn't already do almost exactly this.)

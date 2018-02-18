@@ -40,6 +40,8 @@
 [import ../example/map_assign.cpp]
 [import ../example/future_group.cpp]
 [import ../example/autodiff_example.cpp]
+[import ../example/transform_terminals.cpp]
+[import ../example/pipable_algorithms.cpp]
 [import ../test/user_expression_transform_2.cpp]
 [import ../perf/arithmetic_perf.cpp]
 
