@@ -27,14 +27,15 @@ With the language facilities available in the C++14 and C++17 standards, an
 _et_ library is now straightforward to write and use, and has very reasonable
 compile times.
 
-As a quick example, let's say we are doing a bit of matrix math:
+As a quick example, let's say we are doing a bit of matrix math, and we write
+this statement:
 
     D = A * B + C;
 
-where all the variables are matrices.  It turns out that making a temporary
-for `A * B` and then another temporary for the resulting sum-plus-`C` is very
-inefficient.  Most matrix math libraries will have a single function that does
-it in one go:
+in which all the variables are matrices.  It turns out that making a temporary
+for `A * B` and then another temporary for the resulting product plus `C` is
+very inefficient.  Most matrix math libraries will have a single function that
+does it in one go:
 
     mul_add_assign(D, A, B, C);
 
@@ -44,31 +45,30 @@ efficient function; this is tedious and error-prone.  If the library does not
 provide the operator syntax at all, only providing the more-efficient function
 calls, code using the library is a lot less writable and readable.
 
-Using _yap_, you can write some library code that allows expressions like `D =
-A * B + C` get automatically transformed into expressions like
+Using _yap_, you can write some library code that enables expressions like `D
+= A * B + C` to be automatically transformed into expressions like
 `mul_add_assign(D, A, B, C)`.
 
-Consider another example.  Most of use have used Unix command line tools to
+Consider another example.  Many of us have used Unix command line tools to
 remove duplicate lines in a file:
 
     sort file_with_duplicates | uniq > file_without_duplicates
 
-Let's say you want to create code that pipes together standard algorithm calls
-in a similar way.  (Let's also pretend that _range_v3_ doesn't already do
-almost exactly this.)  The standard algorithms have an interface like this:
+We can do something very similar with the standard algorithms, of course:
 
     std::vector<int> v1 = {/* ... */};
     std::sort(v1.begin(), v1.end());
     auto it = std::unique(v1.begin(), v1.end());
-    std::vector<int> v2(it, v1.end());
+    std::vector<int> v2(v1.begin(), it);
 
-It would be much better if our code did exactly that, but with a more concise
-syntax:
+However, it would be much better if our code did exactly that, but with a more
+concise syntax:
 
     std::vector<int> v1 = {/* ... */};
     std::vector<int> v2 = sort(v) | unique;
 
-This looks much more similar to the Unix command line above.
+This looks much more similar to the Unix command line above.  (Let's pretend
+that _range_v3_ doesn't already do almost exactly this.)
 
 _yap_ can be used to do both of these things, in a pretty small amount of
 code. (TODO: Make examples for each of these!)
