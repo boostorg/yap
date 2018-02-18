@@ -72,15 +72,27 @@ you want to see how the second one can be implemented.
 
 [heading Features]
 
-* Functions that operate on expression trees that model the _Expr_ concept.
+* Simple _ExprTmpl_ and _Expr_ concepts easily modeled by user code.  Member
+  and non-member functions on _ExprTmpls_ and _Exprs_ can be added with
+  compact macros, and a reference template that models _ExprTmpl_ exists for
+  prototyping or experimentation.
 
-* A reference template that models _ExprTmpl_.
+* Evaluation of _yap_ expressions matches the semantics of builtin C++
+  expressions as closely as possible.  This leads to clearer understanding of
+  the semantics of expression evaluation, because the definitions are local to
+  the types involved.
 
-* Facilities for easily creating custom _ExprTmpls_.
+* Expressions may be transformed explicitly in a user-defined way.  This is
+  accomplished with overloaded call operators in a transform class, which are
+  matched against subexpressions in the overall expression.  While these
+  member functions may transform a subexpression into anything, a common
+  pattern is to transform only some subexpressions into either new
+  subexpressions or appropriate values and to leave other subexpressions
+  unchanged.  This `evaluate(transform(expr))` idiom is expected to be one of
+  the most common ways of using Yap to manipulate and evaluate expressions.
 
-* Easy-to-use code transformations via _xform_.
-
-* Expression tree semantics as close to those of builtin C++ expressions as
-  possible.
+* Functions that operate on or create expressions.  Functions are provided
+  (and used within _yap_) that manipulate expressions or their subexpressions.
+  These simplify the process of writing user-defined transforms, for example.
 
 [endsect]
