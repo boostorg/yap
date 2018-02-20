@@ -5,6 +5,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
+#include <boost/mpl/assert.hpp>
+
 #include <gtest/gtest.h>
 
 
@@ -41,12 +43,12 @@ TEST(reference_returns, test_reference_returns)
         EXPECT_EQ(&n, &reference_returning::the_result);
     }
 
-    static_assert(
+    BOOST_MPL_ASSERT((
         std::is_same<
             decltype(evaluate(plus_expr)),
             reference_returning::number const &
-        >{}, "type failure"
-    );
+        >
+    ));
 
     auto minus_expr = unity - reference_returning::number{1.0};
 
@@ -55,12 +57,12 @@ TEST(reference_returns, test_reference_returns)
         EXPECT_EQ(&n, &reference_returning::a_result);
     }
 
-    static_assert(
+    BOOST_MPL_ASSERT((
         std::is_same<
             decltype(evaluate(minus_expr)),
             reference_returning::number &
-        >{}, "type failure"
-    );
+        >
+    ));
 
     using namespace yap::literals;
 
@@ -69,22 +71,22 @@ TEST(reference_returns, test_reference_returns)
         EXPECT_EQ(&n, &reference_returning::a_result);
     }
 
-    static_assert(
+    BOOST_MPL_ASSERT((
         std::is_same<
             decltype(evaluate(1_p, reference_returning::a_result)),
             reference_returning::number &
-        >{}, "type failure"
-    );
+        >
+    ));
 
     {
         reference_returning::number const & n = evaluate(1_p, reference_returning::the_result);
         EXPECT_EQ(&n, &reference_returning::the_result);
     }
 
-    static_assert(
+    BOOST_MPL_ASSERT((
         std::is_same<
             decltype(evaluate(1_p, reference_returning::the_result)),
             reference_returning::number const &
-        >{}, "type failure"
-    );
+        >
+    ));
 }

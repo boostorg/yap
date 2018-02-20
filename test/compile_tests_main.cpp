@@ -5,7 +5,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 void compile_is_expr();
 void compile_const_term();
-void compile_copy_only_types();
 void compile_move_only_types();
 void compile_placeholders();
 void compile_term_plus_expr();
@@ -18,7 +17,6 @@ int main ()
 {
     compile_is_expr();
     compile_const_term();
-    compile_copy_only_types();
     compile_move_only_types();
     compile_placeholders();
     compile_term_plus_expr();

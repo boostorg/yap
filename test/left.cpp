@@ -5,6 +5,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
+#include <boost/mpl/assert.hpp>
+
 #include <gtest/gtest.h>
 
 
@@ -48,25 +50,25 @@ TEST(expression, test_left)
 
     {
         plus_expr_type plus_expr = unity + term<int>{{1}};
-        EXPECT_TRUE((
+        BOOST_MPL_ASSERT((
             std::is_same<decltype(yap::left(std::move(plus_expr))),
-            ref<term<double> &> &&>::value
+            ref<term<double> &> &&>
         ));
     }
 
     {
         plus_expr_type plus_expr = unity + term<int>{{1}};
-        EXPECT_TRUE((
+        BOOST_MPL_ASSERT((
             std::is_same<decltype(yap::left(plus_expr)),
-            ref<term<double> &> &>::value
+            ref<term<double> &> &>
         ));
     }
 
     {
         plus_expr_type const plus_expr = unity + term<int>{{1}};
-        EXPECT_TRUE((
+        BOOST_MPL_ASSERT((
             std::is_same<decltype(yap::left(plus_expr)),
-            ref<term<double> &> const &>::value
+            ref<term<double> &> const &>
         ));
     }
 
@@ -82,25 +84,25 @@ TEST(expression, test_left)
 
         {
             plus_expr_type plus_expr = unity + term<int>{{1}};
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(std::move(plus_expr))),
-                ref<term<double> const &> &&>::value
+                ref<term<double> const &> &&>
             ));
         }
 
         {
             plus_expr_type plus_expr = unity + term<int>{{1}};
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr)),
-                ref<term<double> const &> &>::value
+                ref<term<double> const &> &>
             ));
         }
 
         {
             plus_expr_type const plus_expr = unity + term<int>{{1}};
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr)),
-                ref<term<double> const &> const &>::value
+                ref<term<double> const &> const &>
             ));
         }
     }
@@ -127,9 +129,9 @@ TEST(expression, test_left)
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + term<int>{{1}};
             ref<plus_expr_type &> plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(std::move(plus_expr_ref))),
-                ref<term<double> &> &>::value
+                ref<term<double> &> &>
             ));
 
         }
@@ -137,18 +139,18 @@ TEST(expression, test_left)
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + term<int>{{1}};
             ref<plus_expr_type &> plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr_ref)),
-                ref<term<double> &> &>::value
+                ref<term<double> &> &>
             ));
         }
 
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + term<int>{{1}};
             ref<plus_expr_type &> const plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr_ref)),
-                ref<term<double> &> &>::value
+                ref<term<double> &> &>
             ));
         }
     }
@@ -175,9 +177,9 @@ TEST(expression, test_left)
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + term<int>{{1}};
             ref<plus_expr_type const &> plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(std::move(plus_expr_ref))),
-                ref<term<double> &> const &>::value
+                ref<term<double> &> const &>
             ));
 
         }
@@ -185,18 +187,18 @@ TEST(expression, test_left)
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + term<int>{{1}};
             ref<plus_expr_type const &> plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr_ref)),
-                ref<term<double> &> const &>::value
+                ref<term<double> &> const &>
             ));
         }
 
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + term<int>{{1}};
             ref<plus_expr_type const &> const plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr_ref)),
-                ref<term<double> &> const &>::value
+                ref<term<double> &> const &>
             ));
         }
     }
@@ -215,25 +217,25 @@ TEST(user_expr, test_left)
 
     {
         plus_expr_type plus_expr = unity + user_term<int>{{1}};
-        EXPECT_TRUE((
+        BOOST_MPL_ASSERT((
             std::is_same<decltype(yap::left(std::move(plus_expr))),
-            user_ref<user_term<double> &> &&>::value
+            user_ref<user_term<double> &> &&>
         ));
     }
 
     {
         plus_expr_type plus_expr = unity + user_term<int>{{1}};
-        EXPECT_TRUE((
+        BOOST_MPL_ASSERT((
             std::is_same<decltype(yap::left(plus_expr)),
-            user_ref<user_term<double> &> &>::value
+            user_ref<user_term<double> &> &>
         ));
     }
 
     {
         plus_expr_type const plus_expr = unity + user_term<int>{{1}};
-        EXPECT_TRUE((
+        BOOST_MPL_ASSERT((
             std::is_same<decltype(yap::left(plus_expr)),
-            user_ref<user_term<double> &> const &>::value
+            user_ref<user_term<double> &> const &>
         ));
     }
 
@@ -249,25 +251,25 @@ TEST(user_expr, test_left)
 
         {
             plus_expr_type plus_expr = unity + user_term<int>{{1}};
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(std::move(plus_expr))),
-                user_ref<user_term<double> const &> &&>::value
+                user_ref<user_term<double> const &> &&>
             ));
         }
 
         {
             plus_expr_type plus_expr = unity + user_term<int>{{1}};
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr)),
-                user_ref<user_term<double> const &> &>::value
+                user_ref<user_term<double> const &> &>
             ));
         }
 
         {
             plus_expr_type const plus_expr = unity + user_term<int>{{1}};
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr)),
-                user_ref<user_term<double> const &> const &>::value
+                user_ref<user_term<double> const &> const &>
             ));
         }
     }
@@ -294,9 +296,9 @@ TEST(user_expr, test_left)
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + user_term<int>{{1}};
             user_ref<plus_expr_type &> plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(std::move(plus_expr_ref))),
-                user_ref<user_term<double> &> &>::value
+                user_ref<user_term<double> &> &>
             ));
 
         }
@@ -304,18 +306,18 @@ TEST(user_expr, test_left)
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + user_term<int>{{1}};
             user_ref<plus_expr_type &> plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr_ref)),
-                user_ref<user_term<double> &> &>::value
+                user_ref<user_term<double> &> &>
             ));
         }
 
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + user_term<int>{{1}};
             user_ref<plus_expr_type &> const plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr_ref)),
-                user_ref<user_term<double> &> &>::value
+                user_ref<user_term<double> &> &>
             ));
         }
     }
@@ -342,9 +344,9 @@ TEST(user_expr, test_left)
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + user_term<int>{{1}};
             user_ref<plus_expr_type const &> plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(std::move(plus_expr_ref))),
-                user_ref<user_term<double> &> const &>::value
+                user_ref<user_term<double> &> const &>
             ));
 
         }
@@ -352,18 +354,18 @@ TEST(user_expr, test_left)
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + user_term<int>{{1}};
             user_ref<plus_expr_type const &> plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr_ref)),
-                user_ref<user_term<double> &> const &>::value
+                user_ref<user_term<double> &> const &>
             ));
         }
 
         {
             plus_plus_expr_type plus_plus_expr = plus_expr + user_term<int>{{1}};
             user_ref<plus_expr_type const &> const plus_expr_ref = bh::front(plus_plus_expr.elements);
-            EXPECT_TRUE((
+            BOOST_MPL_ASSERT((
                 std::is_same<decltype(yap::left(plus_expr_ref)),
-                user_ref<user_term<double> &> const &>::value
+                user_ref<user_term<double> &> const &>
             ));
         }
     }

@@ -268,9 +268,9 @@ struct is_vector : std::false_type {};
 template <typename T, typename A>
 struct is_vector<std::vector<T, A>> : std::true_type {};
 
-// Defines an overload of operator&&() that matches a string on either side,
-// and any type (possibly a string) on the other.
-BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(logical_and, ::user_expr, is_string)
+// Defines an overload of operator&&() that matches a vector on either side,
+// and any type (possibly a vector) on the other.
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(logical_and, ::user_expr, is_vector)
 /// [USER_UDT_ANY_BINARY_OPERATOR]
 
 struct lazy_vector_9 :

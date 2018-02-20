@@ -5,6 +5,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
+#include <boost/mpl/assert.hpp>
+
 #include <gtest/gtest.h>
 
 #include <sstream>
@@ -109,8 +111,7 @@ TEST(comma, void_expressions)
             (term<int_callable>{{&call_count, &int_called}}(),
              term<void_callable>{{&call_count, &void_called}}());
 
-        static_assert(
-            std::is_same<void, decltype(evaluate(int_void_expr))>::value);
+        BOOST_MPL_ASSERT((std::is_same<void, decltype(evaluate(int_void_expr))>));
 
         evaluate(int_void_expr);
         EXPECT_EQ(void_called, 1);

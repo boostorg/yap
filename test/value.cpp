@@ -5,6 +5,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
+#include <boost/mpl/assert.hpp>
+
 #include <gtest/gtest.h>
 
 
@@ -38,19 +40,19 @@ using user_ref = boost::yap::expression_ref<user_expr, T>;
 TEST(builtin, test_value)
 {
     {
-        EXPECT_TRUE((std::is_same<decltype(yap::value(1.0)), double &&>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(1.0)), double &&>));
         EXPECT_EQ(yap::value(1.0), 1.0);
     }
 
     {
         double d = 2.0;
-        EXPECT_TRUE((std::is_same<decltype(yap::value(d)), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(d)), double &>));
         EXPECT_EQ(yap::value(d), 2.0);
     }
 
     {
         double const d = 3.0;
-        EXPECT_TRUE((std::is_same<decltype(yap::value(d)), double const &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(d)), double const &>));
         EXPECT_EQ(yap::value(d), 3.0);
     }
 }
@@ -59,19 +61,19 @@ TEST(expression, test_value)
 {
     {
         term<double> td = {{1.0}};
-        EXPECT_TRUE((std::is_same<decltype(yap::value(std::move(td))), double &&>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(std::move(td))), double &&>));
         EXPECT_EQ(yap::value(std::move(td)), 1.0);
     }
 
     {
         term<double> td = {{2.0}};
-        EXPECT_TRUE((std::is_same<decltype(yap::value(td)), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(td)), double &>));
         EXPECT_EQ(yap::value(td), 2.0);
     }
 
     {
         term<double> const td = {{3.0}};
-        EXPECT_TRUE((std::is_same<decltype(yap::value(td)), double const &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(td)), double const &>));
         EXPECT_EQ(yap::value(td), 3.0);
     }
 
@@ -87,17 +89,17 @@ TEST(expression, test_value)
 
     {
         ref<term<double> &> ref = bh::front(plus_expr.elements);
-        EXPECT_TRUE((std::is_same<decltype(yap::value(std::move(ref))), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(std::move(ref))), double &>));
     }
 
     {
         ref<term<double> &> ref = bh::front(plus_expr.elements);
-        EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(ref)), double &>));
     }
 
     {
         ref<term<double> &> const ref = bh::front(plus_expr.elements);
-        EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(ref)), double &>));
     }
 
     {
@@ -112,17 +114,17 @@ TEST(expression, test_value)
 
         {
             ref<term<double> const &> ref = bh::front(plus_expr.elements);
-            EXPECT_TRUE((std::is_same<decltype(yap::value(std::move(ref))), double const &>::value));
+            BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(std::move(ref))), double const &>));
         }
 
         {
             ref<term<double> const &> ref = bh::front(plus_expr.elements);
-            EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double const &>::value));
+            BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(ref)), double const &>));
         }
 
         {
             ref<term<double> const &> const ref = bh::front(plus_expr.elements);
-            EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double const &>::value));
+            BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(ref)), double const &>));
         }
     }
 }
@@ -131,19 +133,19 @@ TEST(user_expr, test_value)
 {
     {
         user_term<double> td = {{1.0}};
-        EXPECT_TRUE((std::is_same<decltype(yap::value(std::move(td))), double &&>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(std::move(td))), double &&>));
         EXPECT_EQ(yap::value(std::move(td)), 1.0);
     }
 
     {
         user_term<double> td = {{2.0}};
-        EXPECT_TRUE((std::is_same<decltype(yap::value(td)), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(td)), double &>));
         EXPECT_EQ(yap::value(td), 2.0);
     }
 
     {
         user_term<double> const td = {{3.0}};
-        EXPECT_TRUE((std::is_same<decltype(yap::value(td)), double const &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(td)), double const &>));
         EXPECT_EQ(yap::value(td), 3.0);
     }
 
@@ -159,17 +161,17 @@ TEST(user_expr, test_value)
 
     {
         user_ref<user_term<double> &> ref = bh::front(plus_expr.elements);
-        EXPECT_TRUE((std::is_same<decltype(yap::value(std::move(ref))), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(std::move(ref))), double &>));
     }
 
     {
         user_ref<user_term<double> &> ref = bh::front(plus_expr.elements);
-        EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(ref)), double &>));
     }
 
     {
         user_ref<user_term<double> &> const ref = bh::front(plus_expr.elements);
-        EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double &>::value));
+        BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(ref)), double &>));
     }
 
     {
@@ -184,17 +186,17 @@ TEST(user_expr, test_value)
 
         {
             user_ref<user_term<double> const &> ref = bh::front(plus_expr.elements);
-            EXPECT_TRUE((std::is_same<decltype(yap::value(std::move(ref))), double const &>::value));
+            BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(std::move(ref))), double const &>));
         }
 
         {
             user_ref<user_term<double> const &> ref = bh::front(plus_expr.elements);
-            EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double const &>::value));
+            BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(ref)), double const &>));
         }
 
         {
             user_ref<user_term<double> const &> const ref = bh::front(plus_expr.elements);
-            EXPECT_TRUE((std::is_same<decltype(yap::value(ref)), double const &>::value));
+            BOOST_MPL_ASSERT((std::is_same<decltype(yap::value(ref)), double const &>));
         }
     }
 }
