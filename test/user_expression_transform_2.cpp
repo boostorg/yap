@@ -8,10 +8,10 @@
 #include <gtest/gtest.h>
 
 
-template <typename T>
+template<typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
 
-template <typename T>
+template<typename T>
 using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
@@ -27,32 +27,38 @@ namespace user {
 
     struct eval_xform
     {
-        auto operator() (yap::expr_tag<yap::expr_kind::terminal>, number const & n)
-        { return n; }
+        auto
+        operator()(yap::expr_tag<yap::expr_kind::terminal>, number const & n)
+        {
+            return n;
+        }
 
-        template <typename Expr>
-        decltype(auto) operator() (yap::expression<yap::expr_kind::negate, bh::tuple<Expr>> const & expr)
+        template<typename Expr>
+        decltype(auto) operator()(
+            yap::expression<yap::expr_kind::negate, bh::tuple<Expr>> const &
+                expr)
         {
             number const n = transform(yap::value(expr), *this);
             return number{-n.value};
         }
 
-        template <typename Expr1, typename Expr2>
-        decltype(auto) operator() (yap::expression<yap::expr_kind::plus, bh::tuple<Expr1, Expr2>> const & expr)
+        template<typename Expr1, typename Expr2>
+        decltype(auto) operator()(yap::expression<
+                                  yap::expr_kind::plus,
+                                  bh::tuple<Expr1, Expr2>> const & expr)
         {
             number const lhs = transform(yap::left(expr), *this);
             number const rhs = transform(yap::right(expr), *this);
             return number{lhs.value + rhs.value};
         }
     };
-
 }
 
-template <typename Expr>
-auto make_ref (Expr && expr)
+template<typename Expr>
+auto make_ref(Expr && expr)
 {
     using type = yap::detail::operand_type_t<yap::expression, Expr>;
-    //int i = yap::detail::make_operand<type>{};
+    // int i = yap::detail::make_operand<type>{};
     return yap::detail::make_operand<type>{}(static_cast<Expr &&>(expr));
 }
 
@@ -143,7 +149,8 @@ TEST(just_negate, test_user_expression_transform_4)
     }
 
     {
-        user::number result = transform(-term<user::number>{{1.0}}, user::eval_xform{});
+        user::number result =
+            transform(-term<user::number>{{1.0}}, user::eval_xform{});
         EXPECT_EQ(result.value, -1);
     }
 }
@@ -160,7 +167,8 @@ TEST(negate_in_plus, test_user_expression_transform_4)
 
 
     {
-        user::number result = transform(make_ref(a) + make_ref(x), user::eval_xform{});
+        user::number result =
+            transform(make_ref(a) + make_ref(x), user::eval_xform{});
         EXPECT_EQ(result.value, 42);
     }
 
@@ -181,7 +189,8 @@ TEST(negate_in_plus, test_user_expression_transform_4)
 
 
     {
-        user::number result = transform(-make_ref(a) + make_ref(x), user::eval_xform{});
+        user::number result =
+            transform(-make_ref(a) + make_ref(x), user::eval_xform{});
         EXPECT_EQ(result.value, 40);
     }
 
@@ -202,7 +211,8 @@ TEST(negate_in_plus, test_user_expression_transform_4)
 
 
     {
-        user::number result = transform(make_ref(a) + -make_ref(x), user::eval_xform{});
+        user::number result =
+            transform(make_ref(a) + -make_ref(x), user::eval_xform{});
         EXPECT_EQ(result.value, -40);
     }
 
@@ -223,7 +233,8 @@ TEST(negate_in_plus, test_user_expression_transform_4)
 
 
     {
-        user::number result = transform(-make_ref(a) + -make_ref(x), user::eval_xform{});
+        user::number result =
+            transform(-make_ref(a) + -make_ref(x), user::eval_xform{});
         EXPECT_EQ(result.value, -42);
     }
 

@@ -20,7 +20,7 @@ namespace boost { namespace yap {
         "ref" and "term" for the non-operator kinds
         <code>expr_kind::expr_ref</code> amd <code>expr_kind::terminal</code>,
         respectively.*/
-    inline char const * op_string (expr_kind kind)
+    inline char const * op_string(expr_kind kind)
     {
         switch (kind) {
         case expr_kind::expr_ref: return "ref";
@@ -81,38 +81,46 @@ namespace boost { namespace yap {
 
     namespace detail {
 
-        inline std::ostream & print_kind (std::ostream & os, expr_kind kind)
-        { return os << op_string(kind); }
+        inline std::ostream & print_kind(std::ostream & os, expr_kind kind)
+        {
+            return os << op_string(kind);
+        }
 
-        template <typename T, typename = void_t<>>
+        template<typename T, typename = void_t<>>
         struct printer
         {
-            std::ostream & operator() (std::ostream & os, T const &)
-            { return os << "<<unprintable-value>>"; }
+            std::ostream & operator()(std::ostream & os, T const &)
+            {
+                return os << "<<unprintable-value>>";
+            }
         };
 
-        template <typename T>
+        template<typename T>
         struct printer<
             T,
             void_t<decltype(
-                std::declval<std::ostream &>() << std::declval<T const &>()
-            )>
-        >
+                std::declval<std::ostream &>() << std::declval<T const &>())>>
         {
-            std::ostream & operator() (std::ostream & os, T const & x)
-            { return os << x; }
+            std::ostream & operator()(std::ostream & os, T const & x)
+            {
+                return os << x;
+            }
         };
 
-        template <typename T>
-        inline std::ostream & print_value (std::ostream & os, T const & x)
-        { return printer<T>{}(os, x); }
+        template<typename T>
+        inline std::ostream & print_value(std::ostream & os, T const & x)
+        {
+            return printer<T>{}(os, x);
+        }
 
-        template <long long I>
-        inline std::ostream & print_value (std::ostream & os, hana::llong<I>)
-        { return os << I << "_p"; }
+        template<long long I>
+        inline std::ostream & print_value(std::ostream & os, hana::llong<I>)
+        {
+            return os << I << "_p";
+        }
 
-        template <typename T>
-        std::ostream & print_type (std::ostream & os, hana::tuple<T> const &)
+        template<typename T>
+        std::ostream & print_type(std::ostream & os, hana::tuple<T> const &)
         {
             os << typeindex::type_id<T>().pretty_name();
             if (std::is_const<T>{})
@@ -126,19 +134,25 @@ namespace boost { namespace yap {
             return os;
         }
 
-        template <typename T>
-        bool is_const_expr_ref (T const &) { return false; }
-        template <typename T, template <expr_kind, class> class expr_template>
-        bool is_const_expr_ref (expr_template<expr_kind::expr_ref, hana::tuple<T const *>> const &)
-        { return true; }
+        template<typename T>
+        bool is_const_expr_ref(T const &)
+        {
+            return false;
+        }
+        template<typename T, template<expr_kind, class> class expr_template>
+        bool is_const_expr_ref(
+            expr_template<expr_kind::expr_ref, hana::tuple<T const *>> const &)
+        {
+            return true;
+        }
 
 #ifdef BOOST_NO_CONSTEXPR_IF
 
-        template <expr_kind Kind>
+        template<expr_kind Kind>
         struct print_impl
         {
-            template <typename Expr>
-            std::ostream & operator() (
+            template<typename Expr>
+            std::ostream & operator()(
                 std::ostream & os,
                 Expr const & expr,
                 int indent,
@@ -158,21 +172,24 @@ namespace boost { namespace yap {
                 else if (is_ref)
                     os << " &";
                 os << "\n";
-                hana::for_each(expr.elements, [&os, indent, indent_str](auto const & element) {
-                    using element_type = decltype(element);
-                    constexpr expr_kind kind = detail::remove_cv_ref_t<element_type>::kind;
-                    print_impl<kind>{}(os, element, indent + 1, indent_str);
-                });
+                hana::for_each(
+                    expr.elements,
+                    [&os, indent, indent_str](auto const & element) {
+                        using element_type = decltype(element);
+                        constexpr expr_kind kind =
+                            detail::remove_cv_ref_t<element_type>::kind;
+                        print_impl<kind>{}(os, element, indent + 1, indent_str);
+                    });
 
                 return os;
             }
         };
 
-        template <>
+        template<>
         struct print_impl<expr_kind::expr_ref>
         {
-            template <typename Expr>
-            std::ostream & operator() (
+            template<typename Expr>
+            std::ostream & operator()(
                 std::ostream & os,
                 Expr const & expr,
                 int indent,
@@ -181,24 +198,24 @@ namespace boost { namespace yap {
                 bool is_const_ref = false)
             {
                 using ref_type = decltype(::boost::yap::deref(expr));
-                constexpr expr_kind ref_kind = detail::remove_cv_ref_t<ref_type>::kind;
+                constexpr expr_kind ref_kind =
+                    detail::remove_cv_ref_t<ref_type>::kind;
                 print_impl<ref_kind>{}(
                     os,
                     ::boost::yap::deref(expr),
                     indent,
                     indent_str,
                     true,
-                    ::boost::yap::detail::is_const_expr_ref(expr)
-                );
+                    ::boost::yap::detail::is_const_expr_ref(expr));
                 return os;
             }
         };
 
-        template <>
+        template<>
         struct print_impl<expr_kind::terminal>
         {
-            template <typename Expr>
-            std::ostream & operator() (
+            template<typename Expr>
+            std::ostream & operator()(
                 std::ostream & os,
                 Expr const & expr,
                 int indent,
@@ -213,7 +230,8 @@ namespace boost { namespace yap {
                 os << "term<";
                 ::boost::yap::detail::print_type(os, expr.elements);
                 os << ">[=";
-                ::boost::yap::detail::print_value(os, ::boost::yap::value(expr));
+                ::boost::yap::detail::print_value(
+                    os, ::boost::yap::value(expr));
                 os << "]";
                 if (is_const_ref)
                     os << " const &";
@@ -227,8 +245,8 @@ namespace boost { namespace yap {
 
 #else
 
-        template <typename Expr>
-        std::ostream & print_impl (
+        template<typename Expr>
+        std::ostream & print_impl(
             std::ostream & os,
             Expr const & expr,
             int indent,
@@ -243,8 +261,7 @@ namespace boost { namespace yap {
                     indent,
                     indent_str,
                     true,
-                    ::boost::yap::detail::is_const_expr_ref(expr)
-                );
+                    ::boost::yap::detail::is_const_expr_ref(expr));
             } else {
                 for (int i = 0; i < indent; ++i) {
                     os << indent_str;
@@ -254,7 +271,8 @@ namespace boost { namespace yap {
                     os << "term<";
                     ::boost::yap::detail::print_type(os, expr.elements);
                     os << ">[=";
-                    ::boost::yap::detail::print_value(os, ::boost::yap::value(expr));
+                    ::boost::yap::detail::print_value(
+                        os, ::boost::yap::value(expr));
                     os << "]";
                     if (is_const_ref)
                         os << " const &";
@@ -270,9 +288,12 @@ namespace boost { namespace yap {
                     else if (is_ref)
                         os << " &";
                     os << "\n";
-                    hana::for_each(expr.elements, [&os, indent, indent_str](auto const & element) {
-                        ::boost::yap::detail::print_impl(os, element, indent + 1, indent_str);
-                    });
+                    hana::for_each(
+                        expr.elements,
+                        [&os, indent, indent_str](auto const & element) {
+                            ::boost::yap::detail::print_impl(
+                                os, element, indent + 1, indent_str);
+                        });
                 }
             }
 
@@ -280,20 +301,20 @@ namespace boost { namespace yap {
         }
 
 #endif // BOOST_NO_CONSTEXPR_IF
-
     }
 
     /** Prints expression \a expr to stream \a os.  Returns \a os. */
-    template <typename Expr>
-    std::ostream & print (std::ostream & os, Expr const & expr)
+    template<typename Expr>
+    std::ostream & print(std::ostream & os, Expr const & expr)
     {
 #ifdef BOOST_NO_CONSTEXPR_IF
-        return detail::print_impl<detail::remove_cv_ref_t<Expr>::kind>{}(os, expr, 0, "    ");
+        return detail::print_impl<detail::remove_cv_ref_t<Expr>::kind>{}(
+            os, expr, 0, "    ");
 #else
         return detail::print_impl(os, expr, 0, "    ");
 #endif
     }
 
-} }
+}}
 
 #endif

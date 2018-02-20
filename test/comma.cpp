@@ -12,14 +12,15 @@
 #include <sstream>
 
 
-template <typename T>
+template<typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
 
-template <typename T>
+template<typename T>
 using term_ref = boost::yap::expression_ref<boost::yap::expression, term<T> &>;
 
-template <typename T>
-using term_cref = boost::yap::expression_ref<boost::yap::expression, term<T> const &>;
+template<typename T>
+using term_cref =
+    boost::yap::expression_ref<boost::yap::expression, term<T> const &>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -111,7 +112,8 @@ TEST(comma, void_expressions)
             (term<int_callable>{{&call_count, &int_called}}(),
              term<void_callable>{{&call_count, &void_called}}());
 
-        BOOST_MPL_ASSERT((std::is_same<void, decltype(evaluate(int_void_expr))>));
+        BOOST_MPL_ASSERT(
+            (std::is_same<void, decltype(evaluate(int_void_expr))>));
 
         evaluate(int_void_expr);
         EXPECT_EQ(void_called, 1);

@@ -13,7 +13,7 @@ void compile_term_plus_x();
 void compile_term_plus_x_this_ref_overloads();
 void compile_x_plus_term();
 
-int main ()
+int main()
 {
     compile_is_expr();
     compile_const_term();

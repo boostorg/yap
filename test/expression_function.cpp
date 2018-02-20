@@ -8,10 +8,10 @@
 #include <gtest/gtest.h>
 
 
-template <typename T>
+template<typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
 
-template <typename T>
+template<typename T>
 using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;

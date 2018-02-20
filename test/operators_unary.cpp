@@ -10,14 +10,15 @@
 #include <sstream>
 
 
-template <typename T>
+template<typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
 
-template <typename T>
+template<typename T>
 using term_ref = boost::yap::expression_ref<boost::yap::expression, term<T> &>;
 
-template <typename T>
-using term_cref = boost::yap::expression_ref<boost::yap::expression, term<T> const &>;
+template<typename T>
+using term_cref =
+    boost::yap::expression_ref<boost::yap::expression, term<T> const &>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -29,18 +30,16 @@ TEST(numeric, operators_unary_test)
     term<uint32_t> const cx{{3u}};
 
     {
+        yap::expression<yap::expr_kind::unary_plus, bh::tuple<term<uint32_t>>>
+            term_expr = +term<uint32_t>{{1u}};
         yap::expression<
             yap::expr_kind::unary_plus,
-            bh::tuple<term<uint32_t>>
-        > term_expr = +term<uint32_t>{{1u}};
+            bh::tuple<term_ref<uint32_t>>>
+            term_ref_expr = +x;
         yap::expression<
             yap::expr_kind::unary_plus,
-            bh::tuple<term_ref<uint32_t>>
-        > term_ref_expr = +x;
-        yap::expression<
-            yap::expr_kind::unary_plus,
-            bh::tuple<term_cref<uint32_t>>
-        > term_const_ref_expr = +cx;
+            bh::tuple<term_cref<uint32_t>>>
+            term_const_ref_expr = +cx;
 
         EXPECT_EQ(evaluate(term_expr), 1u);
         EXPECT_EQ(evaluate(term_ref_expr), 2u);
@@ -48,18 +47,12 @@ TEST(numeric, operators_unary_test)
     }
 
     {
-        yap::expression<
-            yap::expr_kind::negate,
-            bh::tuple<term<uint32_t>>
-        > term_expr = -term<uint32_t>{{1u}};
-        yap::expression<
-            yap::expr_kind::negate,
-            bh::tuple<term_ref<uint32_t>>
-        > term_ref_expr = -x;
-        yap::expression<
-            yap::expr_kind::negate,
-            bh::tuple<term_cref<uint32_t>>
-        > term_const_ref_expr = -cx;
+        yap::expression<yap::expr_kind::negate, bh::tuple<term<uint32_t>>>
+            term_expr = -term<uint32_t>{{1u}};
+        yap::expression<yap::expr_kind::negate, bh::tuple<term_ref<uint32_t>>>
+            term_ref_expr = -x;
+        yap::expression<yap::expr_kind::negate, bh::tuple<term_cref<uint32_t>>>
+            term_const_ref_expr = -cx;
 
         EXPECT_EQ(evaluate(term_expr), 0u - 1u);
         EXPECT_EQ(evaluate(term_ref_expr), 0u - 2u);
@@ -67,18 +60,16 @@ TEST(numeric, operators_unary_test)
     }
 
     {
+        yap::expression<yap::expr_kind::complement, bh::tuple<term<uint32_t>>>
+            term_expr = ~term<uint32_t>{{1u}};
         yap::expression<
             yap::expr_kind::complement,
-            bh::tuple<term<uint32_t>>
-        > term_expr = ~term<uint32_t>{{1u}};
+            bh::tuple<term_ref<uint32_t>>>
+            term_ref_expr = ~x;
         yap::expression<
             yap::expr_kind::complement,
-            bh::tuple<term_ref<uint32_t>>
-        > term_ref_expr = ~x;
-        yap::expression<
-            yap::expr_kind::complement,
-            bh::tuple<term_cref<uint32_t>>
-        > term_const_ref_expr = ~cx;
+            bh::tuple<term_cref<uint32_t>>>
+            term_const_ref_expr = ~cx;
 
         EXPECT_EQ(evaluate(term_expr), 0xfffffffe);
         EXPECT_EQ(evaluate(term_ref_expr), 0xfffffffd);
@@ -86,18 +77,16 @@ TEST(numeric, operators_unary_test)
     }
 
     {
+        yap::expression<yap::expr_kind::logical_not, bh::tuple<term<uint32_t>>>
+            term_expr = !term<uint32_t>{{1u}};
         yap::expression<
             yap::expr_kind::logical_not,
-            bh::tuple<term<uint32_t>>
-        > term_expr = !term<uint32_t>{{1u}};
+            bh::tuple<term_ref<uint32_t>>>
+            term_ref_expr = !x;
         yap::expression<
             yap::expr_kind::logical_not,
-            bh::tuple<term_ref<uint32_t>>
-        > term_ref_expr = !x;
-        yap::expression<
-            yap::expr_kind::logical_not,
-            bh::tuple<term_cref<uint32_t>>
-        > term_const_ref_expr = !cx;
+            bh::tuple<term_cref<uint32_t>>>
+            term_const_ref_expr = !cx;
 
         EXPECT_EQ(evaluate(term_expr), false);
         EXPECT_EQ(evaluate(term_ref_expr), false);
@@ -105,18 +94,12 @@ TEST(numeric, operators_unary_test)
     }
 
     {
-        yap::expression<
-            yap::expr_kind::pre_inc,
-            bh::tuple<term<uint32_t>>
-        > term_expr = ++term<uint32_t>{{1u}};
-        yap::expression<
-            yap::expr_kind::pre_inc,
-            bh::tuple<term_ref<uint32_t>>
-        > term_ref_expr = ++x;
-        yap::expression<
-            yap::expr_kind::pre_inc,
-            bh::tuple<term_cref<uint32_t>>
-        > term_const_ref_expr = ++cx;
+        yap::expression<yap::expr_kind::pre_inc, bh::tuple<term<uint32_t>>>
+            term_expr = ++term<uint32_t>{{1u}};
+        yap::expression<yap::expr_kind::pre_inc, bh::tuple<term_ref<uint32_t>>>
+            term_ref_expr = ++x;
+        yap::expression<yap::expr_kind::pre_inc, bh::tuple<term_cref<uint32_t>>>
+            term_const_ref_expr = ++cx;
         (void)term_const_ref_expr;
 
         EXPECT_EQ(evaluate(term_expr), 2u);
@@ -131,18 +114,16 @@ TEST(address_dereference, operators_unary_test)
         term<uint32_t &> x{{j}};
         term<uint32_t &> const cx{{k}};
 
+        yap::expression<yap::expr_kind::address_of, bh::tuple<term<uint32_t &>>>
+            term_expr = &term<uint32_t &>{{i}};
         yap::expression<
             yap::expr_kind::address_of,
-            bh::tuple<term<uint32_t &>>
-        > term_expr = &term<uint32_t &>{{i}};
+            bh::tuple<term_ref<uint32_t &>>>
+            term_ref_expr = &x;
         yap::expression<
             yap::expr_kind::address_of,
-            bh::tuple<term_ref<uint32_t &>>
-        > term_ref_expr = &x;
-        yap::expression<
-            yap::expr_kind::address_of,
-            bh::tuple<term_cref<uint32_t &>>
-        > term_const_ref_expr = &cx;
+            bh::tuple<term_cref<uint32_t &>>>
+            term_const_ref_expr = &cx;
 
         EXPECT_EQ(evaluate(term_expr), &i);
         EXPECT_EQ(evaluate(term_ref_expr), &j);
@@ -154,18 +135,17 @@ TEST(address_dereference, operators_unary_test)
         term<uint32_t *> x{{&j}};
         term<uint32_t *> const cx{{&k}};
 
+        yap::
+            expression<yap::expr_kind::dereference, bh::tuple<term<uint32_t *>>>
+                term_expr = *term<uint32_t *>{{&i}};
         yap::expression<
             yap::expr_kind::dereference,
-            bh::tuple<term<uint32_t *>>
-        > term_expr = *term<uint32_t *>{{&i}};
+            bh::tuple<term_ref<uint32_t *>>>
+            term_ref_expr = *x;
         yap::expression<
             yap::expr_kind::dereference,
-            bh::tuple<term_ref<uint32_t *>>
-        > term_ref_expr = *x;
-        yap::expression<
-            yap::expr_kind::dereference,
-            bh::tuple<term_cref<uint32_t *>>
-        > term_const_ref_expr = *cx;
+            bh::tuple<term_cref<uint32_t *>>>
+            term_const_ref_expr = *cx;
 
         EXPECT_EQ(evaluate(term_expr), i);
         EXPECT_EQ(evaluate(term_ref_expr), j);

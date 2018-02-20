@@ -10,10 +10,10 @@
 #include <sstream>
 
 
-template <typename T>
+template<typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
 
-template <typename T>
+template<typename T>
 using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
@@ -24,79 +24,76 @@ namespace user {
 
     struct number
     {
-        explicit operator double () const { return value; }
+        explicit operator double() const { return value; }
 
         double value;
     };
 
-    number naxpy (number a, number x, number y)
-    { return number{a.value * x.value + y.value + 10.0}; }
+    number naxpy(number a, number x, number y)
+    {
+        return number{a.value * x.value + y.value + 10.0};
+    }
 
-    inline auto max (int a, int b)
-    { return a < b ? b : a; };
+    inline auto max(int a, int b) { return a < b ? b : a; };
 
-    struct tag_type {};
+    struct tag_type
+    {};
 
-    inline number tag_function (double a, double b)
-    { return number{a + b}; }
+    inline number tag_function(double a, double b) { return number{a + b}; }
 
     struct eval_xform_tag
     {
-        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::call>,
-                                   tag_type, number a, double b)
-        { return tag_function(a.value, b); }
+        decltype(auto) operator()(
+            yap::expr_tag<yap::expr_kind::call>, tag_type, number a, double b)
+        {
+            return tag_function(a.value, b);
+        }
 
-        int operator() (yap::expr_tag<yap::expr_kind::call>,
-                        tag_type, double a, double b)
-        { return 42; }
+        int operator()(
+            yap::expr_tag<yap::expr_kind::call>, tag_type, double a, double b)
+        {
+            return 42;
+        }
 
-        char const * operator() ()
-        { return "42"; }
+        char const * operator()() { return "42"; }
     };
 
-    struct empty_xform {};
+    struct empty_xform
+    {};
 
     struct eval_xform_expr
     {
-        decltype(auto) operator() (
-            yap::expression<
-                yap::expr_kind::call,
-                bh::tuple<
-                    ref<term<user::tag_type> >,
-                    term<user::number>,
-                    term<int>
-                >
-            > const & expr
-        ) {
+        decltype(auto) operator()(yap::expression<
+                                  yap::expr_kind::call,
+                                  bh::tuple<
+                                      ref<term<user::tag_type>>,
+                                      term<user::number>,
+                                      term<int>>> const & expr)
+        {
             using namespace boost::hana::literals;
             return tag_function(
                 (double)yap::value(expr.elements[1_c]).value,
-                (double)yap::value(expr.elements[2_c])
-            );
+                (double)yap::value(expr.elements[2_c]));
         }
 
-        decltype(auto) operator() (
-            yap::expression<
-                yap::expr_kind::call,
-                bh::tuple<
-                    ref<term<user::tag_type>>,
-                    ref<term<user::number>>,
-                    term<int>
-                >
-            > const & expr
-        ) {
+        decltype(auto) operator()(yap::expression<
+                                  yap::expr_kind::call,
+                                  bh::tuple<
+                                      ref<term<user::tag_type>>,
+                                      ref<term<user::number>>,
+                                      term<int>>> const & expr)
+        {
             using namespace boost::hana::literals;
             return tag_function(
                 (double)yap::value(expr.elements[1_c]).value,
-                (double)yap::value(expr.elements[2_c])
-            );
+                (double)yap::value(expr.elements[2_c]));
         }
     };
 
     struct eval_xform_both
     {
-        decltype(auto) operator() (yap::expr_tag<yap::expr_kind::call>,
-                                   tag_type, double a, double b)
+        decltype(auto) operator()(
+            yap::expr_tag<yap::expr_kind::call>, tag_type, double a, double b)
         {
             // TODO: Document that this differs from the behavior for
             // non-call_tag tagged overloads, which will always be preferred
@@ -106,41 +103,32 @@ namespace user {
             return tag_function(a, b);
         }
 
-        decltype(auto) operator() (
-            yap::expression<
-                yap::expr_kind::call,
-                bh::tuple<
-                    ref<term<user::tag_type> >,
-                    term<user::number>,
-                    term<int>
-                >
-            > const & expr
-        ) {
+        decltype(auto) operator()(yap::expression<
+                                  yap::expr_kind::call,
+                                  bh::tuple<
+                                      ref<term<user::tag_type>>,
+                                      term<user::number>,
+                                      term<int>>> const & expr)
+        {
             using namespace boost::hana::literals;
             return tag_function(
                 (double)yap::value(expr.elements[1_c]).value,
-                (double)yap::value(expr.elements[2_c])
-            );
+                (double)yap::value(expr.elements[2_c]));
         }
 
-        decltype(auto) operator() (
-            yap::expression<
-                yap::expr_kind::call,
-                bh::tuple<
-                    ref<term<user::tag_type> >,
-                    ref<term<user::number>>,
-                    term<int>
-                >
-            > const & expr
-        ) {
+        decltype(auto) operator()(yap::expression<
+                                  yap::expr_kind::call,
+                                  bh::tuple<
+                                      ref<term<user::tag_type>>,
+                                      ref<term<user::number>>,
+                                      term<int>>> const & expr)
+        {
             using namespace boost::hana::literals;
             return tag_function(
                 (double)yap::value(expr.elements[1_c]).value,
-                (double)yap::value(expr.elements[2_c])
-            );
+                (double)yap::value(expr.elements[2_c]));
         }
     };
-
 }
 
 
