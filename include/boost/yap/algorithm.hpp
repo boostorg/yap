@@ -72,6 +72,13 @@ namespace boost { namespace yap {
 
     namespace detail {
 
+        template<typename Tuple, long long I>
+        struct lvalue_ref_ith_element
+            : std::is_lvalue_reference<decltype(
+                  std::declval<Tuple>()[hana::llong<I>{}])>
+        {
+        };
+
 #ifdef BOOST_NO_CONSTEXPR_IF
 
         template<bool ValueOfTerminalsOnly, typename T>
@@ -145,7 +152,10 @@ namespace boost { namespace yap {
                        (ValueOfTerminalsOnly && kind == expr_kind::terminal) ||
                            (!ValueOfTerminalsOnly &&
                             arity == detail::expr_arity::one),
-                       std::is_lvalue_reference<T>{} > {}(static_cast<T &&>(x));
+                       std::is_lvalue_reference<T>{} ||
+                           detail::lvalue_ref_ith_element<
+                               decltype(x.elements),
+                               0>{} > {}(static_cast<T &&>(x));
             }
         };
 
@@ -178,7 +188,10 @@ namespace boost { namespace yap {
                 } else if constexpr (
                     kind == expr_kind::terminal ||
                     (!ValueOfTerminalsOnly && arity == expr_arity::one)) {
-                    if constexpr (std::is_lvalue_reference<T>{}) {
+                    if constexpr (
+                        std::is_lvalue_reference<T>{} ||
+                        detail::
+                            lvalue_ref_ith_element<decltype(x.elements), 0>{}) {
                         return x.elements[0_c];
                     } else {
                         return std::move(x.elements[0_c]);
