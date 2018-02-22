@@ -627,36 +627,15 @@ namespace boost { namespace yap {
             static_cast<Expr &&>(expr), static_cast<T &&>(t)...);
     }
 
-#ifdef BOOST_NO_CONSTEXPR_IF
-
     namespace detail {
 
-        template<typename Expr, typename Transform, bool IsExpr>
-        struct transform_impl
+        template <expr_kind Kind, typename Tuple>
+        struct as_expr_result
         {
-            decltype(auto) operator()(Expr && expr, Transform && transform)
-            {
-                constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-                return detail::default_transform_expression_tag<
-                    Expr,
-                    Transform,
-                    detail::arity_of<kind>()>{}(
-                    static_cast<Expr &&>(expr),
-                    static_cast<Transform &&>(transform));
-            }
-        };
-
-        template<typename Expr, typename Transform>
-        struct transform_impl<Expr, Transform, false>
-        {
-            decltype(auto) operator()(Expr && expr, Transform && transform)
-            {
-                return static_cast<Expr &&>(expr);
-            }
+            static expr_kind const kind = Kind;
+            Tuple elements;
         };
     }
-
-#endif
 
     /** Returns the result of transforming (all or part of) \a expr using
         whatever overloads of <code>Transform::operator()</code> match \a
@@ -667,24 +646,17 @@ namespace boost { namespace yap {
         combination of these.
     */
     template<typename Expr, typename Transform>
-    decltype(auto) transform(Expr && expr, Transform && transform)
+    decltype(auto) transform(Expr && expr_, Transform && transform)
     {
-#ifdef BOOST_NO_CONSTEXPR_IF
-        return detail::transform_impl<Expr, Transform, is_expr<Expr>::value>{}(
-            static_cast<Expr &&>(expr), static_cast<Transform &&>(transform));
-#else
-        if constexpr (is_expr<Expr>::value) {
-            constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-            return detail::default_transform_expression_tag<
-                Expr,
-                Transform,
-                detail::arity_of<kind>()>{}(
-                static_cast<Expr &&>(expr),
-                static_cast<Transform &&>(transform));
-        } else {
-            return static_cast<Expr &&>(expr);
-        }
-#endif
+        decltype(auto) expr = ::boost::yap::as_expr<detail::as_expr_result>(
+            static_cast<Expr &&>(expr_));
+        constexpr expr_kind kind =
+            detail::remove_cv_ref_t<decltype(expr)>::kind;
+        return detail::transform_impl<
+            decltype(expr),
+            Transform,
+            kind == expr_kind::expr_ref>{}(
+            static_cast<decltype(expr) &&>(expr), transform);
     }
 
 }}
