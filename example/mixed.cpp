@@ -156,23 +156,15 @@ BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_and, boost::yap::expression, is_m
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_or, boost::yap::expression, is_mixed); // |
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_xor, boost::yap::expression, is_mixed); // ^
 
-namespace user {
-
-    // Define a tag type we can use to create a function terminal in a
-    // function call expression.  Doing it this way instead of making a
-    // terminal from a function pointer allows us to avoid inlining
-    // difficulties that can come up when you use a function pointer.  This
-    // also allows us to handle overloaded functions gracefully.
-    struct sin_tag {};
-
-    // Define an override for the eval_call YAP customization point.  This
-    // results in an implicit transform of any matching call expression, but
-    // only applies during expression evaluation.
-    template <typename T>
-    inline auto eval_call (sin_tag, T && x)
-    { return std::sin(x); }
-
-}
+// Define a type that can resolve to any overload of std::sin().
+struct sin_t
+{
+    template<typename T>
+    T operator()(T x)
+    {
+        return std::sin(x);
+    }
+};
 
 int main()
 {
@@ -199,7 +191,7 @@ int main()
     assign(e, c);
     e += e - 4 / (c + 1);
 
-    auto sin = boost::yap::make_terminal(user::sin_tag{});
+    auto sin = boost::yap::make_terminal(sin_t{});
     f -= sin(0.1 * e * std::complex<double>(0.2, 1.2));
 
     std::list<double>::const_iterator ei = e.begin();
