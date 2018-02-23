@@ -19,16 +19,6 @@ struct iota_terminal_transform
         return boost::yap::make_terminal(index_++);
     }
 
-    // Recursive case: Match any non-terminal, non-call expression.
-    template<boost::yap::expr_kind Kind, typename... Args>
-    auto operator()(boost::yap::expr_tag<Kind>, Args &&... args)
-    {
-        // as_expr() is used here so we don't need to care about whether one
-        // or more of "args" is not an expression.
-        return boost::yap::make_expression<Kind>(
-            boost::yap::transform(boost::yap::as_expr(args), *this)...);
-    }
-
     // Recursive case: Match any call expression.
     template<typename CallableExpr, typename... Arg>
     auto operator()(boost::yap::expr_tag<boost::yap::expr_kind::call>,
