@@ -436,10 +436,11 @@ namespace boost { namespace yap { namespace detail {
 #endif // BOOST_NO_CONSTEXPR_IF
 
 
-    template<typename Expr, typename Transform, bool IsExprRef>
+    template<bool Strict, typename Expr, typename Transform, bool IsExprRef>
     struct transform_impl;
 
     template<
+        bool Strict,
         typename Expr,
         typename Transform,
         expr_arity Arity,
@@ -449,7 +450,7 @@ namespace boost { namespace yap { namespace detail {
 
     // Forward terminals/recurively transform noterminasl; attempted last.
 
-    template<bool IsLvalueRef, bool Terminal>
+    template<bool IsLvalueRef, bool IsTerminal, bool Strict>
     struct default_transform
     {
         template<typename Expr, typename Transform>
@@ -457,6 +458,19 @@ namespace boost { namespace yap { namespace detail {
         {
             return static_cast<Expr &&>(expr);
         }
+    };
+
+    template<bool IsLvalueRef, bool IsTerminal>
+    struct default_transform<IsLvalueRef, IsTerminal, true>
+    {
+        struct incomplete;
+
+        // If you're getting an error because this function is uncallable,
+        // that's by design.  You called yap::transform_strict(expr, xfrom)
+        // and one or more subexpression of 'expr' are not callable with any
+        // overload in 'xform'.
+        template<typename Expr, typename Transform>
+        incomplete operator()(Expr && expr, Transform & transform) const;
     };
 
     template<
@@ -479,6 +493,7 @@ namespace boost { namespace yap { namespace detail {
                 using element_t = decltype(element);
                 auto const kind = remove_cv_ref_t<element_t>::kind;
                 ::boost::yap::detail::transform_impl<
+                    false,
                     element_t,
                     Transform,
                     kind == expr_kind::expr_ref>
@@ -489,7 +504,7 @@ namespace boost { namespace yap { namespace detail {
     }
 
     template<>
-    struct default_transform<true, false>
+    struct default_transform<true, false, false>
     {
         template<typename Expr, typename Transform>
         decltype(auto) operator()(Expr && expr, Transform & transform) const
@@ -499,7 +514,7 @@ namespace boost { namespace yap { namespace detail {
     };
 
     template<>
-    struct default_transform<false, false>
+    struct default_transform<false, false, false>
     {
         template<typename Expr, typename Transform>
         decltype(auto) operator()(Expr && expr, Transform & transform) const
@@ -511,7 +526,11 @@ namespace boost { namespace yap { namespace detail {
 
     // Expression-matching; attempted second.
 
-    template<typename Expr, typename Transform, typename = detail::void_t<>>
+    template<
+        bool Strict,
+        typename Expr,
+        typename Transform,
+        typename = detail::void_t<>>
     struct transform_expression_expr
     {
         decltype(auto) operator()(Expr && expr, Transform & transform)
@@ -520,13 +539,14 @@ namespace boost { namespace yap { namespace detail {
             constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
             return default_transform<
                 std::is_lvalue_reference<Expr>{},
-                kind == expr_kind::terminal>{}(
-                static_cast<Expr &&>(expr), transform);
+                kind == expr_kind::terminal,
+                Strict>{}(static_cast<Expr &&>(expr), transform);
         }
     };
 
-    template<typename Expr, typename Transform>
+    template<bool Strict, typename Expr, typename Transform>
     struct transform_expression_expr<
+        Strict,
         Expr,
         Transform,
         void_t<decltype(std::declval<Transform &>()(std::declval<Expr>()))>>
@@ -540,13 +560,18 @@ namespace boost { namespace yap { namespace detail {
 
     // Tag-matching; attempted first.
 
-    template<typename Expr, typename Transform, expr_arity Arity, typename>
+    template<
+        bool Strict,
+        typename Expr,
+        typename Transform,
+        expr_arity Arity,
+        typename>
     struct transform_expression_tag
     {
         decltype(auto) operator()(Expr && expr, Transform & transform)
         {
             // No tag-matching succeeded; try expr-matching.
-            return transform_expression_expr<Expr, Transform>{}(
+            return transform_expression_expr<Strict, Expr, Transform>{}(
                 static_cast<Expr &&>(expr), transform);
         }
     };
@@ -558,8 +583,9 @@ namespace boost { namespace yap { namespace detail {
     }
 
 
-    template<typename Expr, typename Transform>
+    template<bool Strict, typename Expr, typename Transform>
     struct transform_expression_tag<
+        Strict,
         Expr,
         Transform,
         expr_arity::one,
@@ -576,8 +602,9 @@ namespace boost { namespace yap { namespace detail {
         }
     };
 
-    template<typename Expr, typename Transform>
+    template<bool Strict, typename Expr, typename Transform>
     struct transform_expression_tag<
+        Strict,
         Expr,
         Transform,
         expr_arity::two,
@@ -596,8 +623,9 @@ namespace boost { namespace yap { namespace detail {
         }
     };
 
-    template<typename Expr, typename Transform>
+    template<bool Strict, typename Expr, typename Transform>
     struct transform_expression_tag<
+        Strict,
         Expr,
         Transform,
         expr_arity::three,
@@ -645,8 +673,9 @@ namespace boost { namespace yap { namespace detail {
         return std::make_integer_sequence<long long, size>();
     }
 
-    template<typename Expr, typename Transform>
+    template<bool Strict, typename Expr, typename Transform>
     struct transform_expression_tag<
+        Strict,
         Expr,
         Transform,
         expr_arity::n,
@@ -662,14 +691,23 @@ namespace boost { namespace yap { namespace detail {
         }
     };
 
-    template<typename Expr, typename Transform, bool IsExprRef>
+    template<bool Strict, typename Expr, typename Transform, bool IsExprRef>
     struct transform_impl
     {
-        decltype(auto) operator()(Expr && expr, Transform & transform);
+        decltype(auto) operator()(Expr && expr, Transform & transform)
+        {
+            constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
+            return detail::transform_expression_tag<
+                Strict,
+                Expr,
+                Transform,
+                detail::arity_of<kind>()>{}(
+                static_cast<Expr &&>(expr), transform);
+        }
     };
 
-    template<typename Expr, typename Transform>
-    struct transform_impl<Expr, Transform, true>
+    template<bool Strict, typename Expr, typename Transform>
+    struct transform_impl<Strict, Expr, Transform, true>
     {
         decltype(auto) operator()(Expr && expr_, Transform & transform)
         {
@@ -677,23 +715,13 @@ namespace boost { namespace yap { namespace detail {
             constexpr expr_kind kind =
                 detail::remove_cv_ref_t<decltype(expr)>::kind;
             return detail::transform_impl<
+                Strict,
                 decltype(expr),
                 Transform,
                 kind == expr_kind::expr_ref>{}(
                 static_cast<decltype(expr) &&>(expr), transform);
         }
     };
-
-    template<typename Expr, typename Transform, bool IsExprRef>
-    decltype(auto) transform_impl<Expr, Transform, IsExprRef>::
-    operator()(Expr && expr, Transform & transform)
-    {
-        constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
-        return detail::transform_expression_tag<
-            Expr,
-            Transform,
-            detail::arity_of<kind>()>{}(static_cast<Expr &&>(expr), transform);
-    }
 
 }}}
 

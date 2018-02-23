@@ -653,6 +653,31 @@ namespace boost { namespace yap {
         constexpr expr_kind kind =
             detail::remove_cv_ref_t<decltype(expr)>::kind;
         return detail::transform_impl<
+            false,
+            decltype(expr),
+            Transform,
+            kind == expr_kind::expr_ref>{}(
+            static_cast<decltype(expr) &&>(expr), transform);
+    }
+
+    /** Returns the result of transforming \a expr using whichever overload of
+        <code>Transform::operator()</code> best matches \a expr.  If no
+        overload of <code>Transform::operator()</code> matches, a compile-time
+        error results.
+
+        \note Transformations can do anything: they may have side effects;
+        they may mutate values; they may mutate types; and they may do any
+        combination of these.
+    */
+    template<typename Expr, typename Transform>
+    decltype(auto) transform_strict(Expr && expr_, Transform && transform)
+    {
+        decltype(auto) expr = ::boost::yap::as_expr<detail::as_expr_result>(
+            static_cast<Expr &&>(expr_));
+        constexpr expr_kind kind =
+            detail::remove_cv_ref_t<decltype(expr)>::kind;
+        return detail::transform_impl<
+            true,
             decltype(expr),
             Transform,
             kind == expr_kind::expr_ref>{}(
