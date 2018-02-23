@@ -635,6 +635,12 @@ namespace boost { namespace yap {
             static expr_kind const kind = Kind;
             Tuple elements;
         };
+
+        template<typename... Transforms>
+        auto make_transform_tuple(Transforms &... transforms)
+        {
+            return hana::tuple<Transforms *...>{&transforms...};
+        }
     }
 
     /** Returns the result of transforming (all or part of) \a expr using
@@ -645,19 +651,23 @@ namespace boost { namespace yap {
         they may mutate values; they may mutate types; and they may do any
         combination of these.
     */
-    template<typename Expr, typename Transform>
-    decltype(auto) transform(Expr && expr_, Transform && transform)
+    template<typename Expr, typename Transform, typename... Transforms>
+    decltype(auto)
+    transform(Expr && expr, Transform && transform, Transforms &&... transforms)
     {
-        decltype(auto) expr = ::boost::yap::as_expr<detail::as_expr_result>(
-            static_cast<Expr &&>(expr_));
+        auto transform_tuple =
+            detail::make_transform_tuple(transform, transforms...);
+        decltype(auto) expr_ = ::boost::yap::as_expr<detail::as_expr_result>(
+            static_cast<Expr &&>(expr));
         constexpr expr_kind kind =
-            detail::remove_cv_ref_t<decltype(expr)>::kind;
+            detail::remove_cv_ref_t<decltype(expr_)>::kind;
         return detail::transform_impl<
             false,
-            decltype(expr),
-            Transform,
+            decltype(expr_),
+            decltype(transform_tuple),
+            0,
             kind == expr_kind::expr_ref>{}(
-            static_cast<decltype(expr) &&>(expr), transform);
+            static_cast<decltype(expr_) &&>(expr_), transform_tuple);
     }
 
     /** Returns the result of transforming \a expr using whichever overload of
@@ -669,19 +679,23 @@ namespace boost { namespace yap {
         they may mutate values; they may mutate types; and they may do any
         combination of these.
     */
-    template<typename Expr, typename Transform>
-    decltype(auto) transform_strict(Expr && expr_, Transform && transform)
+    template<typename Expr, typename Transform, typename... Transforms>
+    decltype(auto) transform_strict(
+        Expr && expr, Transform && transform, Transforms &&... transforms)
     {
-        decltype(auto) expr = ::boost::yap::as_expr<detail::as_expr_result>(
-            static_cast<Expr &&>(expr_));
+        auto transform_tuple =
+            detail::make_transform_tuple(transform, transforms...);
+        decltype(auto) expr_ = ::boost::yap::as_expr<detail::as_expr_result>(
+            static_cast<Expr &&>(expr));
         constexpr expr_kind kind =
-            detail::remove_cv_ref_t<decltype(expr)>::kind;
+            detail::remove_cv_ref_t<decltype(expr_)>::kind;
         return detail::transform_impl<
             true,
-            decltype(expr),
-            Transform,
+            decltype(expr_),
+            decltype(transform_tuple),
+            0,
             kind == expr_kind::expr_ref>{}(
-            static_cast<decltype(expr) &&>(expr), transform);
+            static_cast<decltype(expr_) &&>(expr_), transform_tuple);
     }
 
 }}
