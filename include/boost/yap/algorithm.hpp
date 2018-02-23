@@ -606,6 +606,16 @@ namespace boost { namespace yap {
 
 namespace boost { namespace yap {
 
+    /** Returns a transform object that evaluates an expression using the
+        built-in semantics.  Any arguments will be used to provide values for
+        placeholders in the expression.
+    */
+    template<typename... T>
+    auto evaluation(T &&... t)
+    {
+        return detail::evaluation_transform<T...>(static_cast<T &&>(t)...);
+    }
+
     /** Evaluates \a expr, substituting the subsequent parameters (if any)
         into \a expr's placeholder terminals.
 
@@ -623,8 +633,8 @@ namespace boost { namespace yap {
         static_assert(
             is_expr<Expr>::value,
             "evaluate() is only defined for expressions.");
-        return detail::default_eval_expr(
-            static_cast<Expr &&>(expr), static_cast<T &&>(t)...);
+        return transform(
+            static_cast<Expr &&>(expr), evaluation(static_cast<T &&>(t)...));
     }
 
     namespace detail {

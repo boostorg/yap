@@ -436,6 +436,195 @@ namespace boost { namespace yap { namespace detail {
 #endif // BOOST_NO_CONSTEXPR_IF
 
 
+    template<int I, typename T, typename... Ts>
+    struct nth_element_impl
+    {
+        using type = typename nth_element_impl<I - 1, Ts...>::type;
+    };
+
+    template<typename T, typename... Ts>
+    struct nth_element_impl<0, T, Ts...>
+    {
+        using type = T;
+    };
+
+    template<int I, typename... Ts>
+    using nth_element = typename nth_element_impl<I, Ts...>::type;
+
+    template<bool IsRvalueRef>
+    struct rvalue_mover
+    {
+        template<typename T>
+        decltype(auto) operator()(T && t)
+        {
+            return static_cast<T &&>(t);
+        }
+    };
+
+    template<>
+    struct rvalue_mover<true>
+    {
+        template<typename T>
+        decltype(auto) operator()(T && t)
+        {
+            return std::move(t);
+        }
+    };
+
+    template<typename T, bool RemoveRefs = std::is_rvalue_reference<T>{}>
+    struct rvalue_ref_to_value;
+
+    template<typename T>
+    struct rvalue_ref_to_value<T, true>
+    {
+        using type = typename std::remove_reference<T>::type;
+    };
+
+    template<typename T>
+    struct rvalue_ref_to_value<T, false>
+    {
+        using type = T;
+    };
+
+    template<typename T>
+    using rvalue_ref_to_value_t = typename rvalue_ref_to_value<T>::type;
+
+    template<typename... PlaceholderArgs>
+    struct evaluation_transform
+    {
+        using tuple_t = hana::tuple<rvalue_ref_to_value_t<PlaceholderArgs>...>;
+
+        evaluation_transform(PlaceholderArgs &&... args) :
+            placeholder_args_(static_cast<PlaceholderArgs &&>(args)...)
+        {}
+
+        template<long long I>
+        decltype(auto)
+        operator()(expr_tag<expr_kind::terminal>, boost::yap::placeholder<I>)
+        {
+            static_assert(
+                I <= decltype(hana::size(std::declval<tuple_t>()))::value);
+            using nth_type = nth_element<I - 1, PlaceholderArgs...>;
+            return rvalue_mover<
+                std::is_rvalue_reference<nth_type>::value &&
+                !std::is_const<nth_type>::value
+            >{}(placeholder_args_[hana::llong<I - 1>{}]);
+        }
+
+        template<typename T>
+        decltype(auto) operator()(expr_tag<expr_kind::terminal>, T && t)
+        {
+            return static_cast<T &&>(t);
+        }
+
+#define BOOST_YAP_UNARY_OPERATOR_CASE(op, op_name)                             \
+    template<typename T>                                                       \
+    decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t)            \
+    {                                                                          \
+        return op transform(static_cast<T &&>(t), *this);                      \
+    }
+
+        BOOST_YAP_UNARY_OPERATOR_CASE(+, unary_plus)
+        BOOST_YAP_UNARY_OPERATOR_CASE(-, negate)
+        BOOST_YAP_UNARY_OPERATOR_CASE(*, dereference)
+        BOOST_YAP_UNARY_OPERATOR_CASE(~, complement)
+        BOOST_YAP_UNARY_OPERATOR_CASE(&, address_of)
+        BOOST_YAP_UNARY_OPERATOR_CASE(!, logical_not)
+        BOOST_YAP_UNARY_OPERATOR_CASE(++, pre_inc)
+        BOOST_YAP_UNARY_OPERATOR_CASE(--, pre_dec)
+
+        template<typename T>
+        decltype(auto) operator()(expr_tag<expr_kind::post_inc>, T && t)
+        {
+            return transform(static_cast<T &&>(t), *this)++;
+        }
+        template<typename T>
+        decltype(auto) operator()(expr_tag<expr_kind::post_dec>, T && t)
+        {
+            return transform(static_cast<T &&>(t), *this)--;
+        }
+
+#undef BOOST_YAP_UNARY_OPERATOR_CASE
+
+#define BOOST_YAP_BINARY_OPERATOR_CASE(op, op_name)                            \
+    template<typename T, typename U>                                           \
+    decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t, U && u)    \
+    {                                                                          \
+        return transform(static_cast<T &&>(t), *this) op transform(            \
+            static_cast<U &&>(u), *this);                                      \
+    }
+
+        BOOST_YAP_BINARY_OPERATOR_CASE(<<, shift_left)
+        BOOST_YAP_BINARY_OPERATOR_CASE(>>, shift_right)
+        BOOST_YAP_BINARY_OPERATOR_CASE(*, multiplies)
+        BOOST_YAP_BINARY_OPERATOR_CASE(/, divides)
+        BOOST_YAP_BINARY_OPERATOR_CASE(%, modulus)
+        BOOST_YAP_BINARY_OPERATOR_CASE(+, plus)
+        BOOST_YAP_BINARY_OPERATOR_CASE(-, minus)
+        BOOST_YAP_BINARY_OPERATOR_CASE(<, less)
+        BOOST_YAP_BINARY_OPERATOR_CASE(>, greater)
+        BOOST_YAP_BINARY_OPERATOR_CASE(<=, less_equal)
+        BOOST_YAP_BINARY_OPERATOR_CASE(>=, greater_equal)
+        BOOST_YAP_BINARY_OPERATOR_CASE(==, equal_to)
+        BOOST_YAP_BINARY_OPERATOR_CASE(!=, not_equal_to)
+        BOOST_YAP_BINARY_OPERATOR_CASE(||, logical_or)
+        BOOST_YAP_BINARY_OPERATOR_CASE(&&, logical_and)
+        BOOST_YAP_BINARY_OPERATOR_CASE(&, bitwise_and)
+        BOOST_YAP_BINARY_OPERATOR_CASE(|, bitwise_or)
+        BOOST_YAP_BINARY_OPERATOR_CASE (^, bitwise_xor)
+
+        template<typename T, typename U>
+        decltype(auto) operator()(expr_tag<expr_kind::comma>, T && t, U && u)
+        {
+            return transform(static_cast<T &&>(t), *this),
+                   transform(static_cast<U &&>(u), *this);
+        }
+
+        BOOST_YAP_BINARY_OPERATOR_CASE(->*, mem_ptr)
+        BOOST_YAP_BINARY_OPERATOR_CASE(=, assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(<<=, shift_left_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(>>=, shift_right_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(*=, multiplies_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(/=, divides_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(%=, modulus_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(+=, plus_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(-=, minus_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(&=, bitwise_and_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(|=, bitwise_or_assign)
+        BOOST_YAP_BINARY_OPERATOR_CASE(^=, bitwise_xor_assign)
+
+        template<typename T, typename U>
+        decltype(auto)
+        operator()(expr_tag<expr_kind::subscript>, T && t, U && u)
+        {
+            return transform(
+                static_cast<T &&>(t),
+                *this)[transform(static_cast<U &&>(u), *this)];
+        }
+
+#undef BOOST_YAP_BINARY_OPERATOR_CASE
+
+        template<typename T, typename U, typename V>
+        decltype(auto)
+        operator()(expr_tag<expr_kind::if_else>, T && t, U && u, V && v)
+        {
+            return transform(static_cast<T &&>(t), *this)
+                       ? transform(static_cast<U &&>(u), *this)
+                       : transform(static_cast<V &&>(v), *this);
+        }
+
+        template<typename Callable, typename... Args>
+        decltype(auto) operator()(
+            expr_tag<expr_kind::call>, Callable && callable, Args &&... args)
+        {
+            return transform(static_cast<Callable &&>(callable), *this)(
+                transform(static_cast<Args &&>(args), *this)...);
+        }
+
+        tuple_t placeholder_args_;
+    };
+
+
     template<
         bool Strict,
         typename Expr,
