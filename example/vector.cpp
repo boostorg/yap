@@ -16,7 +16,7 @@ struct take_nth
     template <typename T>
     auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
                      std::vector<T> const & vec)
-    { return boost::yap::make_terminal(std::move(vec[n])); }
+    { return boost::yap::make_terminal(vec[n]); }
 
     std::size_t n;
 };
