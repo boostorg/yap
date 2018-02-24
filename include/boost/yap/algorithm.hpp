@@ -615,7 +615,8 @@ namespace boost { namespace yap {
         return detail::placeholder_transform_t<T...>(static_cast<T &&>(t)...);
     }
 
-    /** Returns \a expr with the placeholders replaced by the given values.
+    /** Returns \a expr with the placeholders replaced by YAP terminals
+        containing the given values.
 
         \note <code>replace_placeholders(expr, t...)</code> is only valid if
         \a expr is an expression, and <code>max_p <= sizeof...(t)</code>,
@@ -658,13 +659,6 @@ namespace boost { namespace yap {
     }
 
     namespace detail {
-
-        template <expr_kind Kind, typename Tuple>
-        struct as_expr_result
-        {
-            static expr_kind const kind = Kind;
-            Tuple elements;
-        };
 
         template<typename... Transforms>
         auto make_transform_tuple(Transforms &... transforms)

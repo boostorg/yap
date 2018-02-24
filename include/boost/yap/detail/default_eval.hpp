@@ -68,6 +68,13 @@ namespace boost { namespace yap { namespace detail {
         }
     };
 
+    template<expr_kind Kind, typename Tuple>
+    struct as_expr_result
+    {
+        static expr_kind const kind = Kind;
+        Tuple elements;
+    };
+
     template<typename... PlaceholderArgs>
     struct placeholder_transform_t
     {
@@ -84,10 +91,10 @@ namespace boost { namespace yap { namespace detail {
             static_assert(
                 I <= decltype(hana::size(std::declval<tuple_t>()))::value);
             using nth_type = nth_element<I - 1, PlaceholderArgs...>;
-            return rvalue_mover<
-                std::is_rvalue_reference<nth_type>::value &&
-                !std::is_const<nth_type>::value
-            >{}(placeholder_args_[hana::llong<I - 1>{}]);
+            return as_expr<as_expr_result>(
+                rvalue_mover < std::is_rvalue_reference<nth_type>::value &&
+                !std::is_const<nth_type>::value >
+                    {}(placeholder_args_[hana::llong<I - 1>{}]));
         }
 
         tuple_t placeholder_args_;
