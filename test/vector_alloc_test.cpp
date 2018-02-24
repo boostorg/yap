@@ -16,7 +16,10 @@ int allocations = 0;
 void * operator new(std::size_t size)
 {
     ++allocations;
-    return malloc(size);
+    void * retval = malloc(size);
+    if (!retval)
+        throw std::bad_alloc();
+    return retval;
 }
 
 void operator delete(void * ptr) noexcept { free(ptr); }
@@ -131,15 +134,13 @@ BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(
 
 TEST(allocations, vector_alloc_text)
 {
-    // GTest apparently allocates a ton of strings.  We need to hit "reset"
-    // here to measure the allocations in the part of the code we really care
-    // about.
-    allocations = 0;
-
     int i;
     int const n = 10;
     std::vector<int> a(n), b(n), c(n), d(n);
     std::vector<double> e(n);
+
+    // Reset allocation count.  There should be none from this point on.
+    allocations = 0;
 
     for (i = 0; i < n; ++i) {
         a[i] = i;
@@ -164,5 +165,5 @@ TEST(allocations, vector_alloc_text)
                   << std::endl;
     }
 
-    EXPECT_EQ(allocations, 5);
+    EXPECT_EQ(allocations, 0);
 }
