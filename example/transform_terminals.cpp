@@ -28,8 +28,7 @@ struct iota_terminal_transform
         // terminal, it doesn't make a lot of sense to replace it with an int,
         // so we'll only transform the argument subexpressions.
         return boost::yap::make_expression<boost::yap::expr_kind::call>(
-            boost::yap::as_expr(callable),
-            boost::yap::transform(boost::yap::as_expr(arg), *this)...);
+            callable, boost::yap::transform(arg, *this)...);
     }
 
     int index_;
@@ -51,7 +50,7 @@ int main()
 
     {
         // This expression is handled by multiple applications of the terminal
-        // and non-call recursive cases of iota_terminal_transform.
+        // case of iota_terminal_transform.
         auto expr = -(boost::yap::make_terminal(8) + 8);
         assert(evaluate(expr) == -16);
 
@@ -60,11 +59,7 @@ int main()
     }
 
     {
-        // This expression requires all three overloads of
-        // iota_terminal_transform.  Note that the arguments to the sum() call
-        // expression are mixed -- one is a non-terminal subexpression and one
-        // is a terminal.  The call overload of iota_terminal_transform can
-        // treat those arguments uniformly though because we used as_expr().
+        // This expression requires both overloads of iota_terminal_transform.
         auto expr = boost::yap::make_terminal(sum)(-(boost::yap::make_terminal(8) + 8), 0);
         assert(evaluate(expr) == -16);
 

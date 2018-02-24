@@ -55,10 +55,9 @@ struct vec3 : vec3_terminal
     int const & operator[] (std::ptrdiff_t i) const
     { return boost::yap::value(*this)[i]; }
 
-    template <typename T>
-    vec3 & operator= (T const & t)
+    template <typename Expr>
+    vec3 & operator= (Expr const & expr)
     {
-        decltype(auto) expr = boost::yap::as_expr(t);
         (*this)[0] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{0}));
         (*this)[1] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{1}));
         (*this)[2] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{2}));

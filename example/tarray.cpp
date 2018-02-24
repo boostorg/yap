@@ -137,8 +137,8 @@ struct tarray :
     tarray & operator= (T const & t)
     {
         // We use as_expr() here to make sure that the value passed to
-        // assign() is an expression.  as_expr() simply forwards expressions
-        // through, and wraps non-expressions as terminals.
+        // assign() is a tarray_expr expression.  as_expr() simply forwards
+        // expressions through, and wraps non-expressions as terminals.
         return assign(boost::yap::as_expr< ::tarray_expr>(t));
     }
 

@@ -47,7 +47,7 @@ struct let_terminal_transform
     auto operator()(boost::yap::expr_tag<Kind>, Args &&... args)
     {
         return boost::yap::make_expression<Kind>(
-            boost::yap::transform(boost::yap::as_expr(args), *this)...);
+            boost::yap::transform(args, *this)...);
     }
 
     template<typename CallableExpr, typename... Arg>
@@ -57,8 +57,7 @@ struct let_terminal_transform
         Arg &&... arg)
     {
         return boost::yap::make_expression<boost::yap::expr_kind::call>(
-            boost::yap::as_expr(callable),
-            boost::yap::transform(boost::yap::as_expr(arg), *this)...);
+            callable, boost::yap::transform(arg, *this)...);
     }
 
     ExprMap map_;

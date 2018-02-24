@@ -70,9 +70,8 @@ template <
     typename Expr,
     typename Op
 >
-Cont<T, A> & op_assign (Cont<T, A> & cont, Expr const & e, Op && op)
+Cont<T, A> & op_assign (Cont<T, A> & cont, Expr const & expr, Op && op)
 {
-    decltype(auto) expr = boost::yap::as_expr(e);
     // Transform the expression of sequences into an expression of
     // begin-iterators.
     auto expr2 = boost::yap::transform(expr, begin{});

@@ -112,11 +112,8 @@ in `expr` are visited.  Otherwise, `N` is used, and visitation of nodes in
 
 [note The code you write with _yap_ is likely going to be very generic,
 especially when you're writing a transform.  To make transforms play nicer
-with generic code, _xform_ `std::forward`s-through anything you give it that
-is not a _yap_ expression.  In other words, it returns any non-_yap_ argument
-completely unchanged.  In situations when you want to make sure that a
-parameter you pass to _xform_ is always a _yap_ expression, use the _as_expr_
-function.]
+with generic code, _xform_ calls _as_expr_ in its first argument, ensuring
+that anything you give can be treated as a _yap_ expression.]
 
 One common result of calling _xform_ is that you create a copy of `expr`, with
 a few matching nodes transformed.  Note the use of "common"; transforms don't

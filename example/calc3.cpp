@@ -39,10 +39,7 @@ struct get_arity
     {
         return boost::hana::maximum(
             boost::hana::make_tuple(
-                boost::yap::transform(
-                    boost::yap::as_expr(std::forward<Arg>(arg)),
-                    get_arity{}
-                )...
+                boost::yap::transform(std::forward<Arg>(arg), get_arity{})...
             )
         );
     }

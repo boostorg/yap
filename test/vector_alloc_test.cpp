@@ -65,9 +65,8 @@ bool equal_sizes(std::size_t size, Expr const & expr)
 
 
 template<typename T, typename Expr>
-std::vector<T> & assign(std::vector<T> & vec, Expr const & e)
+std::vector<T> & assign(std::vector<T> & vec, Expr const & expr)
 {
-    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
         vec[i] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));
@@ -76,9 +75,8 @@ std::vector<T> & assign(std::vector<T> & vec, Expr const & e)
 }
 
 template<typename T, typename Expr>
-std::vector<T> & operator+=(std::vector<T> & vec, Expr const & e)
+std::vector<T> & operator+=(std::vector<T> & vec, Expr const & expr)
 {
-    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
         vec[i] +=

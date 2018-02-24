@@ -95,20 +95,14 @@ struct xform
     Node * operator() (boost::yap::expr_tag<boost::yap::expr_kind::call>,
                        OPCODE opcode, Expr const & expr)
     {
-        return create_uary_op_node(
-            opcode,
-            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr), *this)
-        );
+        return create_uary_op_node(opcode, boost::yap::transform(expr, *this));
     }
 
     template <typename Expr>
     Node * operator() (boost::yap::expr_tag<boost::yap::expr_kind::negate>,
                        Expr const & expr)
     {
-        return create_uary_op_node(
-            OP_NEG,
-            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr), *this)
-        );
+        return create_uary_op_node(OP_NEG, boost::yap::transform(expr, *this));
     }
 
     // Define a mapping from binary arithmetic expr_kind to OPCODE...
@@ -131,8 +125,8 @@ struct xform
     {
         return create_binary_op_node(
             op_for_kind(Kind),
-            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr1), *this),
-            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr2), *this)
+            boost::yap::transform(expr1, *this),
+            boost::yap::transform(expr2, *this)
         );
     }
 
