@@ -606,26 +606,46 @@ namespace boost { namespace yap {
 
 namespace boost { namespace yap {
 
-    /** Returns a transform object that evaluates an expression using the
-        built-in semantics.  Any arguments will be used to provide values for
-        placeholders in the expression.
+    /** Returns a transform object that replaces placeholders within an
+        expression with the given values.
     */
     template<typename... T>
-    auto evaluation(T &&... t)
+    auto replacements(T &&... t)
     {
-        return detail::evaluation_transform<T...>(static_cast<T &&>(t)...);
+        return detail::placeholder_transform_t<T...>(static_cast<T &&>(t)...);
     }
 
-    /** Evaluates \a expr, substituting the subsequent parameters (if any)
-        into \a expr's placeholder terminals.
+    /** Returns \a expr with the placeholders replaced by the given values.
 
-        All customization points for the evaluation of expressions \b except
-        <code>eval_expression_as()</code> are used to evaluate the \a expr.
-        If you've overridden any, that will be reflected in the result.
+        \note <code>replace_placeholders(expr, t...)</code> is only valid if
+        \a expr is an expression, and <code>max_p <= sizeof...(t)</code>,
+        where <code>max_p</code> is the maximum placeholder index in \a expr.
+    */
+    template<typename Expr, typename... T>
+    decltype(auto) replace_placeholders(Expr && expr, T &&... t)
+    {
+        static_assert(
+            is_expr<Expr>::value,
+            "evaluate() is only defined for expressions.");
+        return transform(
+            static_cast<Expr &&>(expr), replacements(static_cast<T &&>(t)...));
+    }
 
-        \note <code>evaluate()</code> is only valid if \a Expr is an
-        expression, and <code>max_p <= sizeof...(T)</code>, where
-        <code>max_p</code> is the maximum placeholder index in \a expr.
+    /** Returns a transform object that evaluates an expression using the
+        built-in semantics.  The transform replaces any placeholders with the
+        given values.
+    */
+    template<typename... T>
+    inline auto evaluation(T &&... t)
+    {
+        return detail::evaluation_transform_t<T...>(static_cast<T &&>(t)...);
+    }
+
+    /** Evaluates \a expr using the built-in semantics, replacing any
+        placeholders with the given values.
+
+        \note <code>evaluate(expr)</code> is only valid if \a expr is an
+        expression.
     */
     template<typename Expr, typename... T>
     decltype(auto) evaluate(Expr && expr, T &&... t)

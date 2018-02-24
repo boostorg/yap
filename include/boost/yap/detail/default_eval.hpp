@@ -30,6 +30,24 @@ namespace boost { namespace yap { namespace detail {
     template<int I, typename... Ts>
     using nth_element = typename nth_element_impl<I, Ts...>::type;
 
+    template<typename T, bool RemoveRefs = std::is_rvalue_reference<T>{}>
+    struct rvalue_ref_to_value;
+
+    template<typename T>
+    struct rvalue_ref_to_value<T, true>
+    {
+        using type = typename std::remove_reference<T>::type;
+    };
+
+    template<typename T>
+    struct rvalue_ref_to_value<T, false>
+    {
+        using type = T;
+    };
+
+    template<typename T>
+    using rvalue_ref_to_value_t = typename rvalue_ref_to_value<T>::type;
+
     template<bool IsRvalueRef>
     struct rvalue_mover
     {
@@ -50,30 +68,37 @@ namespace boost { namespace yap { namespace detail {
         }
     };
 
-    template<typename T, bool RemoveRefs = std::is_rvalue_reference<T>{}>
-    struct rvalue_ref_to_value;
-
-    template<typename T>
-    struct rvalue_ref_to_value<T, true>
-    {
-        using type = typename std::remove_reference<T>::type;
-    };
-
-    template<typename T>
-    struct rvalue_ref_to_value<T, false>
-    {
-        using type = T;
-    };
-
-    template<typename T>
-    using rvalue_ref_to_value_t = typename rvalue_ref_to_value<T>::type;
-
     template<typename... PlaceholderArgs>
-    struct evaluation_transform
+    struct placeholder_transform_t
     {
         using tuple_t = hana::tuple<rvalue_ref_to_value_t<PlaceholderArgs>...>;
 
-        evaluation_transform(PlaceholderArgs &&... args) :
+        placeholder_transform_t(PlaceholderArgs &&... args) :
+            placeholder_args_(static_cast<PlaceholderArgs &&>(args)...)
+        {}
+
+        template<long long I>
+        decltype(auto)
+        operator()(expr_tag<expr_kind::terminal>, boost::yap::placeholder<I>)
+        {
+            static_assert(
+                I <= decltype(hana::size(std::declval<tuple_t>()))::value);
+            using nth_type = nth_element<I - 1, PlaceholderArgs...>;
+            return rvalue_mover<
+                std::is_rvalue_reference<nth_type>::value &&
+                !std::is_const<nth_type>::value
+            >{}(placeholder_args_[hana::llong<I - 1>{}]);
+        }
+
+        tuple_t placeholder_args_;
+    };
+
+    template<typename... PlaceholderArgs>
+    struct evaluation_transform_t
+    {
+        using tuple_t = hana::tuple<rvalue_ref_to_value_t<PlaceholderArgs>...>;
+
+        evaluation_transform_t(PlaceholderArgs &&... args) :
             placeholder_args_(static_cast<PlaceholderArgs &&>(args)...)
         {}
 
