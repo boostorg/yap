@@ -68,13 +68,6 @@ namespace boost { namespace yap { namespace detail {
         }
     };
 
-    template<expr_kind Kind, typename Tuple>
-    struct as_expr_result
-    {
-        static expr_kind const kind = Kind;
-        Tuple elements;
-    };
-
     template<typename... PlaceholderArgs>
     struct placeholder_transform_t
     {
@@ -91,7 +84,7 @@ namespace boost { namespace yap { namespace detail {
             static_assert(
                 I <= decltype(hana::size(std::declval<tuple_t>()))::value);
             using nth_type = nth_element<I - 1, PlaceholderArgs...>;
-            return as_expr<as_expr_result>(
+            return as_expr<minimal_expr>(
                 rvalue_mover < std::is_rvalue_reference<nth_type>::value &&
                 !std::is_const<nth_type>::value >
                     {}(placeholder_args_[hana::llong<I - 1>{}]));
@@ -280,14 +273,20 @@ namespace boost { namespace yap { namespace detail {
     };
 
     template<
-        template<expr_kind, class> class ExprTemplate,
         expr_kind Kind,
+        template<expr_kind, class> class ExprTemplate,
         typename OldTuple,
         typename NewTuple>
     auto make_expr_from_tuple(
         ExprTemplate<Kind, OldTuple> const & expr, NewTuple && tuple)
     {
         return ExprTemplate<Kind, NewTuple>{std::move(tuple)};
+    }
+
+    template<expr_kind Kind, typename Expr, typename NewTuple>
+    auto make_expr_from_tuple(Expr const & expr, NewTuple && tuple)
+    {
+        return minimal_expr<Kind, NewTuple>{std::move(tuple)};
     }
 
     template<typename Expr, typename Tuple, typename TransformTuple>
@@ -307,7 +306,8 @@ namespace boost { namespace yap { namespace detail {
                     xform;
                 return xform(static_cast<element_t &&>(element), transforms);
             });
-        return make_expr_from_tuple(expr, std::move(transformed_tuple));
+        auto const kind = remove_cv_ref_t<Expr>::kind;
+        return make_expr_from_tuple<kind>(expr, std::move(transformed_tuple));
     }
 
     template<>

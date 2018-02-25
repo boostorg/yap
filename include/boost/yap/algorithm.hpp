@@ -681,8 +681,8 @@ namespace boost { namespace yap {
     {
         auto transform_tuple =
             detail::make_transform_tuple(transform, transforms...);
-        decltype(auto) expr_ = ::boost::yap::as_expr<detail::as_expr_result>(
-            static_cast<Expr &&>(expr));
+        decltype(auto) expr_ =
+            ::boost::yap::as_expr<minimal_expr>(static_cast<Expr &&>(expr));
         constexpr expr_kind kind =
             detail::remove_cv_ref_t<decltype(expr_)>::kind;
         return detail::transform_impl<
@@ -709,8 +709,8 @@ namespace boost { namespace yap {
     {
         auto transform_tuple =
             detail::make_transform_tuple(transform, transforms...);
-        decltype(auto) expr_ = ::boost::yap::as_expr<detail::as_expr_result>(
-            static_cast<Expr &&>(expr));
+        decltype(auto) expr_ =
+            ::boost::yap::as_expr<minimal_expr>(static_cast<Expr &&>(expr));
         constexpr expr_kind kind =
             detail::remove_cv_ref_t<decltype(expr_)>::kind;
         return detail::transform_impl<

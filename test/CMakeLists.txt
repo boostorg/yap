@@ -34,6 +34,7 @@ add_test_executable(operators_unary)
 add_test_executable(comma)
 add_test_executable(if_else)
 add_test_executable(expression_function)
+add_test_executable(transform)
 
 add_executable(
     compile_tests

@@ -195,6 +195,20 @@ namespace boost { namespace yap {
         static const expr_kind kind = Kind;
     };
 
+    /** Used as the expression template returned by some operations inside YAP
+        when YAP does not have an expression template it was told to use.  For
+        instance, if transform() creates a new expression by transforming an
+        existing expression's elements, it will attempt to create the new
+        expression using the existing one's expression template.  If no such
+        template exists because the existing expression was not made from an
+        expression template, minimal_expr is used. */
+    template<expr_kind Kind, typename Tuple>
+    struct minimal_expr
+    {
+        static expr_kind const kind = Kind;
+        Tuple elements;
+    };
+
 }}
 
 #endif
