@@ -283,13 +283,49 @@ other words, in the call `boost::yap::transform(expr, a, b)`, _xform_ tries to
 match any _TagXForm_ from `a` to an expression first, then any _ExprXForm_
 from `a`, then any _TagXForm_ from `b`, and finally any _ExprXForm_ from `b`.
 
+[heading YAP-Supplied Transforms]
+
+_yap_ comes with a couple of functions that return ready-made transforms,
+_replacements_ and _evaluation_.
+
+The transforms returned by _replacements_ replace only placeholder terminals.
+Placeholder `I` is replaced by the `I-1`-th argument passed to _replacements_.
+Placeholders are `1`-based for consistency with other Boost and `std`
+placeholders.
+
+There are also a couple of specialty transform functions,
+_replace_placeholders_ and _eval_.  These are convenience functions that just
+call _xform_ on an expression using _replacements_ or _evaluation_ as the
+transform, respectively.
+
+The behavior of _evaluation_ is covered in the next section, [link
+boost_yap__proposed_.manual.evaluating_expressions Evaluating Expressions].
+
 [endsect]
 
 
 [section Evaluating Expressions]
 
-_yap_ expressions are evaluated explicitly _emdash_ _yap_ expressions are
-explicitly evaluated by calling the _eval_ function.
+_yap_ expressions are evaluated explicitly, by calling the _eval_ function or
+calling _xform_ using a transform object returned from _evaluation_.  The
+former is a convenince function that does the latter.
+
+_eval_ simply removes all the _yap_ machinery from an expression and evaluates
+it exactly as it would have been if _yap_ were not used.  This means that
+functions are called, operators evaluated, etc. all as normal.  To illustrate
+this, take a look at the implementation of `operator,()` used in _eval_:
+
+[evaluation_transform_comma]
+
+What this transformation does is transforms the left and right expressions,
+and then use the built-in `operator,()` on the result.  The other operator
+evaluation transformations do the same thing _emdash_ evaluate the operands,
+then return the result of applying the built-in operator to the operands.
+
+Function calls are done in a similar way, except that the callable is also a
+subexpression that needs to be evaluated before being called:
+
+[evaluation_transform_call]
 
 [endsect]
 

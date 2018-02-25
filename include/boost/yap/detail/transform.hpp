@@ -177,12 +177,14 @@ namespace boost { namespace yap { namespace detail {
         BOOST_YAP_BINARY_OPERATOR_CASE(|, bitwise_or)
         BOOST_YAP_BINARY_OPERATOR_CASE (^, bitwise_xor)
 
+//[ evaluation_transform_comma
         template<typename T, typename U>
         decltype(auto) operator()(expr_tag<expr_kind::comma>, T && t, U && u)
         {
             return transform(static_cast<T &&>(t), *this),
                    transform(static_cast<U &&>(u), *this);
         }
+//]
 
         BOOST_YAP_BINARY_OPERATOR_CASE(->*, mem_ptr)
         BOOST_YAP_BINARY_OPERATOR_CASE(=, assign)
@@ -217,6 +219,7 @@ namespace boost { namespace yap { namespace detail {
                        : transform(static_cast<V &&>(v), *this);
         }
 
+//[ evaluation_transform_call
         template<typename Callable, typename... Args>
         decltype(auto) operator()(
             expr_tag<expr_kind::call>, Callable && callable, Args &&... args)
@@ -224,6 +227,7 @@ namespace boost { namespace yap { namespace detail {
             return transform(static_cast<Callable &&>(callable), *this)(
                 transform(static_cast<Args &&>(args), *this)...);
         }
+//]
 
         tuple_t placeholder_args_;
     };
