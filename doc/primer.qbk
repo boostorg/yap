@@ -18,13 +18,22 @@ expression is a plus operation whose left side is a call to `std::sqrt(3.0)`
 and whose right side is `8.0f`.  The call to `std::sqrt(3.0)` is its own
 expression subtree consisting of a call node and its argument node.
 
-A _yap_ version of this same tree might be:
+A _yap_ version of this same tree is:
+
+[$../../doc/expr.png]
+
+The `operator+()` is represented by a _yap_ expression whose kind is
+`yap::expr_kind::plus` and the call is represented by a _yap_ expression whose
+kind is `yap::expr_kind::call`.  Notice that the call expression has two
+terminals, one for the callable, and one for its single argument.
+
+The type that holds this expression is:
 
 [plus_sqrt_yap_type]
 
 That looks like a big mess; let's unpack it.  You might notice that the
-overall shape is similar to an AST, in that we have this tree-like nesting of
-`boost::yap::expression` template instantiations.
+overall shape is the same as the expression tree diagram above.  We have
+tree-like nesting of `boost::yap::expression` template instantiations.
 
 Here's the top-level `boost::yap::expression` again with
 its noisy guts removed:

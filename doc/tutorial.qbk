@@ -135,7 +135,7 @@ Transformations in _yap_ are done using the _xform_ function.
 
 Let's take another look at the example expression from the intro:
 
-[$../../doc/ast.png]
+[$../../doc/expr.png]
 
 Consider a call to _xform_, operatnig on that expression:
 
