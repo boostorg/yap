@@ -227,9 +227,6 @@ namespace boost { namespace yap {
 
 #undef BOOST_YAP_UNARY_MEMBER_OPERATOR
 
-        // TODO: Add test coverage for all the operators (with all three qual
-        // types), for expression and terminal.  Don't forget the free
-        // operators.
 #define BOOST_YAP_BINARY_MEMBER_OPERATOR(op_name)                              \
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
 

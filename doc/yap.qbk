@@ -86,6 +86,7 @@
 [def _if_else_             [link boost.yap.expr_kind.if_else `expr_kind::if_else`]]
 [def _expr_ref_            [link boost.yap.expr_kind.expr_ref `expr_kind::expr_ref`]]
 [def _xform_               [funcref boost::yap::transform `transform()`]]
+[def _xform_strict_        [funcref boost::yap::transform_strict `transform_strict()`]]
 [def _eval_                [funcref boost::yap::evaluate `evaluate()`]]
 [def _tuple_               `boost::hana::tuple<>`]
 

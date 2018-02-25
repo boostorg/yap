@@ -82,8 +82,8 @@ I can transform this expression however I like, and do not have to worry about
 the fact that it contains expressions instantiated from different templates.
 
 If _yap_ required an expression to be instantiated from a single expression
-template `expr`, `expr` would have both operators.  This means that all of a
-sudden `s * s` and `m[0]` would be well-formed expressions within a _yap_
+template `expr<>`, `expr<>` would have both operators.  This means that all of
+a sudden `s * s` and `m[0]` would be well-formed expressions within a _yap_
 expression, but *not* for the real types `S` and `M` respectively.  That would
 be super weird.
 
@@ -152,6 +152,17 @@ The overall effect of this is that _xform_ effectively copies an `expr` node
 that does not match `xform`, and returns a transformed node for an `expr` node
 that does not match `xform`.
 
+_xform_ can also take multiple transform objects.  If you call it with N
+transform objects, it will attempt to match each of the N transforms to a
+given expression, one at a time and in their given order.  Only if no
+transform matches an expression does the copy-and-recurse behavior kick in.
+
+[note There's another form of _xform_, _xform_strict_.  _xform_strict_ is
+identical to _xform_ except that it does not copy or recurse into an unmatched
+expression.  Instead, a failed match is a hard error.  This is useful when you
+have written a transform that you expect to completely match an expression,
+and you want the compiler to tell you if you've made a mistake.]
+
 One common result of calling _xform_ is that you create a copy of `expr`, with
 a few matching nodes transformed.  But this does not hav to be the result of
 calling _xform_, because a _yap_ transformation is free-form; it must return a
@@ -174,6 +185,15 @@ _emdash_ in each context.  _eval_ is wrong for this task, since it only takes
 values for substitution into placeholders.  In these situations, you should
 instead use multiple transforms that evaluate your expression in different
 ways.]
+
+[heading When _xform_ Recurses]
+
+As described above, _xform_ only recurses when it *does not* find a match.
+This means that if you want to transform a nonterminal, say an
+`expr_kind::call` expression we'll call `C`, and *also* `C`'s subexpressions,
+you must explicitly call _xform_ yourself in your transform that matches `C`.
+You can see this kind of explicit _xform_ call in the recursive case of
+`get_arity` in the example code above.
 
 [heading Transform Matching]
 
@@ -246,14 +266,22 @@ negation of a reference to such a terminal.
 
 You can have two overloads in your transform that match an expression, one an
 _ExprXForm_ and one a _TagXForm_, and there will not be any ambiguity.  The
-_TagXForm_ is preferred, except in the case of a call expression, in which case
-the _ExprXForm_ is preferred.  I know, I know.  You don't have to worry about
-ambiguity, but save yourself some confusion and mix the two kinds of overloads
-as little as possible.
+_TagXForm_ is matched first, and the _ExprXForm_ is matched only if the
+_TagXForm_ did not.  You don't have to worry about ambiguity, but save
+yourself some confusion and mix the two kinds of overloads as little as
+possible.
 
 [note The above only applies when you have an _ExprXForm_ and a _TagXForm_
-that match *the same expression type*.  Having unrelated _ExprXForms_ and
+that match *the same kind of expression*.  Having unrelated _ExprXForms_ and
 _TagXForms_ within the same transform object is often quite useful.]
+
+[heading Multiple Transform Objects]
+
+In the case that multiple transform objects are being used in _xform_, the
+above logic applies to each one independently before the next one is used.  In
+other words, in the call `boost::yap::transform(expr, a, b)`, _xform_ tries to
+match any _TagXForm_ from `a` to an expression first, then any _ExprXForm_
+from `a`, then any _TagXForm_ from `b`, and finally any _ExprXForm_ from `b`.
 
 [endsect]
 

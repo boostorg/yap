@@ -93,14 +93,9 @@ namespace user {
     struct eval_xform_both
     {
         decltype(auto) operator()(
-            yap::expr_tag<yap::expr_kind::call>, tag_type, double a, double b)
+            yap::expr_tag<yap::expr_kind::call>, tag_type, user::number a, double b)
         {
-            // TODO: Document that this differs from the behavior for
-            // non-call_tag tagged overloads, which will always be preferred
-            // to expr-overloads.  Moreover, document that mixing expr- and
-            // tag-based overloads is usually a bad idea.
-            throw std::logic_error("Oops!  Picked the wrong overload!");
-            return tag_function(a, b);
+            return tag_function(a.value, b);
         }
 
         decltype(auto) operator()(yap::expression<
@@ -111,6 +106,7 @@ namespace user {
                                       term<int>>> const & expr)
         {
             using namespace boost::hana::literals;
+            throw std::logic_error("Oops!  Picked the wrong overload!");
             return tag_function(
                 (double)yap::value(expr.elements[1_c]).value,
                 (double)yap::value(expr.elements[2_c]));
@@ -124,6 +120,7 @@ namespace user {
                                       term<int>>> const & expr)
         {
             using namespace boost::hana::literals;
+            throw std::logic_error("Oops!  Picked the wrong overload!");
             return tag_function(
                 (double)yap::value(expr.elements[1_c]).value,
                 (double)yap::value(expr.elements[2_c]));
