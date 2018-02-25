@@ -280,4 +280,21 @@ how you might implement it.
 
 [endsect]
 
+[section Boost.Phoenix-style `let()`]
+
+Boost.Phoenix has a thing called _let_.  It introduces named reusable values
+are reused in subsequent expressions.  This is something simliar, though not
+exactly like Phoenix's version.  In Phoenix, a let placeholder is only
+evaluated once, whereas the example below does something more like macro
+substitution; each let-placeholder is replaced with its initializing
+expression everywhere it is used.
+
+This example uses C++17's `if constexpr ()`, simply because it makes the
+example shorter and easier to digest.  The `if constexpr ()` bits are not
+strictly necessary.
+
+[let]
+
+[endsect]
+
 [endsect]
