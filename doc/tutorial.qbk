@@ -1,8 +1,7 @@
 [section Expressions]
 
-_yap_ consists of expressions and functions that operate on them.  Any type
-that models the _Expr_ concept will work with any of the functions in _yap_
-that takes an expression.
+_yap_ consists of expressions and functions that operate on them.  A function
+that takes an expression will accept any type that models the _Expr_ concept.
 
 For a type `T` to model the _Expr_ concept, `T` must contain at least an
 _kind_ (terminal, plus-operation, etc.) and a _tuple_ of values.  That's it.
@@ -19,9 +18,9 @@ Here's an example:
 That's a template that models _ExprTmpl_.  Instantiated with the proper
 template parameters, it produces _Exprs_.
 
-Ok, so it's not that interesting by itself _emdash_ it has no operators.  But
-we can still use it with the _yap_ functions that take an _Expr_.  Let's make
-a plus-expression manually:
+Ok, so it's not that interesting by itself _emdash_ `minimal_expr` has no
+operations defined for it.  But we can still use it with the _yap_ functions
+that take an _Expr_.  Let's make a _yap_ plus-expression manually:
 
 [minimal_template_manual_construction]
 
@@ -37,13 +36,6 @@ _expr_ is great for prototyping, and for quick-and-dirty uses of _ets_, but
 its use of every single operator makes it a suboptimal choice for most use
 cases.]
 
-[note Because _yap_ operates on _Exprs_, it is possible to mix and match
-_Exprs_ that are instantiations of different templates.  Let's say we have a
-_yap_ expression `E` that contains an _expr_ subexpression `s0` and
-subexpressions instantiated from N other _ExprTmpls_ `s1`..`sN`.  `E` can be
-passed as an argument to any _yap_ function that accepts a _Expr_ parameter
-(this last _Expr_ is the concept, not the template).]
-
 One more thing.  It is important to remember that _yap_ expressions are
 all-lazy, all the time.  There is no auto-evaluation of a _yap_ expression
 like there is with normal C++ expressions.  If you want your expressions to be
@@ -55,12 +47,55 @@ section.  In particular, checkout the _lazy_vector_ and _tarray_ examples.
 [endsect]
 
 
-[section Kinds of Expressions]
+[section Mix-and-Match Expression Templates]
 
-There are three special kinds of expressions.
+Because _yap_ operates on _Exprs_, it is possible to mix and match _Exprs_
+that are instantiations of different templates.
+
+Here's why that's important.  Say we have two types in a library.  `S` is a
+string type, and `M` is a matrix type.  In the code here, `s` and `m` are
+objects of types `S` and `M` respectively.  Say we also have typical operator
+overloads for these types, so `m * m` and `s[0]` are well-formed expressions,
+but `m[0]` and `s * s` are not.
+
+To use these with _yap_ I might write an expression template for each:
+
+    template <...>
+    struct m_expr
+    {
+        // ...
+        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(times, ::m_expr)
+    };
+
+    template <...>
+    struct s_expr
+    {
+        // ...
+        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(subscript, ::s_expr)
+    };
+
+With this, I might write a _yap_ expression like:
+
+    lookup_matrix(S("my_matrix")) * some_matrix
+
+I can transform this expression however I like, and do not have to worry about
+the fact that it contains expressions instantiated from different templates.
+
+If _yap_ required an expression to be instantiated from a single expression
+template `expr`, `expr` would have both operators.  This means that all of a
+sudden `s * s` and `m[0]` would be well-formed expressions within a _yap_
+expression, but *not* for the real types `S` and `M` respectively.  That would
+be super weird.
+
+[endsect]
+
+
+[section Kinds of Expressions]
 
 Most of the expression kinds are the overloadable operators (`operator+()`,
 operator<<=()`, etc.), See _kind_ for the full list.
+
+There are three special kinds of expressions.
 
 [variablelist Special Expression Kinds
     [[_terminal_] [A terminal contains a non-Expression value, and represents a leaf-node in an

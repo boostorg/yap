@@ -129,8 +129,8 @@ I.  Apparently, that's just what GCC prints for that.  Weird.)
 [heading Doing Something Useful With It]
 
 Now we've seen a simple expression both described as a C++ AST and captured as
-a _yap_ expression.  This just introduces the _et_ mechanism.  Consider one of
-the examples from the intro:
+a _yap_ expression.  This just introduces the _et_ mechanism; what do we do
+with it once we have an _et_?  Consider one of the examples from the intro:
 
     std::vector<int> v1 = {/* ... */};
     std::vector<int> v2 = sort(v) | unique;
