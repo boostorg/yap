@@ -60,6 +60,7 @@ struct future_transform
         return term.elements;
     }
 
+//[ expr_xform
     // Transform left || right -> transform(left).
     template <typename T, typename U>
     auto operator() (
@@ -73,6 +74,7 @@ struct future_transform
         // insead of a tuple.
         return boost::yap::transform(boost::yap::left(or_expr), *this);
     }
+//]
 
     // Transform left && right -> concat(transform(left), transform(right)).
     template <typename T, typename U>

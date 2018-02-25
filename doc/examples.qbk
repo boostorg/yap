@@ -161,8 +161,7 @@ operator macros.]
 [section Mixed]
 
 This is a lot like the previous Vector example, except that it operates on
-`std::vector<>`s and `std::list<>`s in the same expression.  It also shows how
-to override one of the operator-evaluation customization points.
+`std::vector<>`s and `std::list<>`s in the same expression.
 
 [mixed]
 

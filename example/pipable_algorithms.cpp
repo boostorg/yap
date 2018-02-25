@@ -65,6 +65,7 @@ struct algorithm_eval
     // is taken as an lvalue reference, to prevent binding to a temporary and
     // taking dangling references to its begin and end.  We let the compiler
     // deduce whether the lvalue reference is const.
+//[ tag_xform
     template<typename Range>
     auto operator()(
         boost::yap::expr_tag<boost::yap::expr_kind::call>,
@@ -73,6 +74,7 @@ struct algorithm_eval
     {
         return call_algorithm(a, r);
     }
+//]
 };
 
 // This is the expression template we use for the general case of a pipable

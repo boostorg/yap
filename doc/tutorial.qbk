@@ -131,42 +131,37 @@ Detailed documentation can be found later in the _operator_macros_ section.
 
 [section Transforming Expressions]
 
-Explicit transformations are the preferred way to work in _yap_.  They are
-done using the _xform_ function.  See _calc3_ for an extended example.
+Transformations in _yap_ are done using the _xform_ function.
 
-Here's how _xform_ works.  Consider this call to _xform_:
+Let's take another look at the example expression from the intro:
 
-    auto result = transform(expr, xform);
+[$../../doc/ast.png]
 
-`result` is created by visiting each node in `expr`, in top-down,
-depth-first order.  For one such node `N`, we compute a value that will be
-placed into `result` at the corresponding place in `result`.  If `xform(N)` is
-a well-formed C++ expression, that `xform(N)` is used, and no nodes under `N`
-in `expr` are visited.  Otherwise, `N` is used, and visitation of nodes in
-`expr` continues below `N`.
+Consider a call to _xform_, operatnig on that expression:
 
-[note The code you write with _yap_ is likely going to be very generic,
-especially when you're writing a transform.  To make transforms play nicer
-with generic code, _xform_ calls _as_expr_ in its first argument, ensuring
-that anything you give can be treated as a _yap_ expression.]
+    auto result = boost::yap::transform(expr, xform);
+
+_yap_'s _xform_ first looks at the top level expression, which is a `+`
+expression.  If `xform` matches the `+` expression, _xform_ is done; it just
+returns `xform(expr)`.  If `xform` does not match the `+` expression, _xform_
+transforms all its operands (which for `operator+()` is just the left and
+right operands), and returns a new `+` expression with those transformed
+operands.  What I mean by "match" is covered in detail below.
+
+The overall effect of this is that _xform_ effectively copies an `expr` node
+that does not match `xform`, and returns a transformed node for an `expr` node
+that does not match `xform`.
 
 One common result of calling _xform_ is that you create a copy of `expr`, with
-a few matching nodes transformed.  Note the use of "common"; transforms don't
-always work out that way.
-
-A _yap_ transformation is free-form; it must return a value, but may do just
-about anything else.  It can transform an expression into anything _emdash_ a
-new expression of any kind, or even a non-expression value (effectively
-evaluating the expression).  For example, here is the `get_arity` transform
-from the _calc3_ example:
+a few matching nodes transformed.  But this does not hav to be the result of
+calling _xform_, because a _yap_ transformation is free-form; it must return a
+value, but may do just about anything else.  It can transform an expression
+into anything _emdash_ a new expression of any kind, or even a non-expression
+value (effectively evaluating the expression).  As before, here is the
+`get_arity` transform from the _calc3_ example.  It returns a value, not an
+_Expr_:
 
 [calc3_get_arity_xform]
-
-Note there are a couple of different forms that _yap_ accepts for function
-signatures on a transform.  In the example above, we use both the tag form and
-the expression form.  There's a fuller explanation of how _yap_ matches
-expressions to transform calls in [link
-boost_yap__proposed_.manual.transform_matching Transform Matching].
 
 Also, note that in this case the transform is stateless, but you could also
 give your transforms data members containing contextual state:
@@ -177,7 +172,88 @@ give your transforms data members containing contextual state:
 different contexts, changing its evaluation _emdash_ or even entire meaning
 _emdash_ in each context.  _eval_ is wrong for this task, since it only takes
 values for substitution into placeholders.  In these situations, you should
-instead use an explicit transform that evaluates your expression.]
+instead use multiple transforms that evaluate your expression in different
+ways.]
+
+[heading Transform Matching]
+
+In _yap_ a _XForm_ is a _Callable_ that has *zero or more* overloads that
+model the _ExprXForm_ or _TagXForm_ concepts.
+
+An _ExprXForm_ overload takes the expression to be transformed.  Here's one
+from a transform object in the _future_group_ example:
+
+[expr_xform]
+
+_ExprXForms_ are most useful when you want to transform a narrow set of
+expression types (perhaps only one).  In particular, you can distinguish
+between `const` and non-`const`, reference and non-reference, etc., in the
+expression and its operands in a way that you have less control over with the
+other kind of transform.
+
+A _TagXForm_ overload takes a tag that indicates the _kind_ of the expression
+to be transformed, and then (loosely) the value of each operand of the
+expression to be transformed.  Here's one from the _pipable_algorithms_
+example:
+
+[tag_xform]
+
+_TagXForms_ are most useful when the transform needs to match an expression
+without regard to whether its operands are _expr_ref_ expressions, or _emdash_
+if they are terminals _emdash_ whether they contain or refer to their values.
+_TagXForms_ tend to be far more concise.
+
+[heading A More Rigorous Description of TagTransform Parameters]
+
+That "(loosely)" before probably bothered you, right?  Me too.  Each non-tag
+parameter is passed to a _TagXForm_ by calling an operand accessor appropriate
+to `expr`'s kind, and then calling a terminal-specific version of _value_
+(`terminal_value()`) on the result.  For example, consider a plus expression
+`expr`.  The _TagXForm_ on a transform object `xform` would be called like
+this:
+
+    xform(plus_tag, terminal_value(left(expr)), terminal_value(right(expr)))
+
+The operand accessors (_left_ and _right_ in this example) all dereference
+_expr_ref_ expressions before operating on them, and `terminal_value()` does
+the same.
+
+`terminal_value()` works much like _value_, except that it does not take the
+value of a *nonterminal* unary expression; it just forwards a nonterminal
+through.  It still takes values out of terminals and unwraps _expr_ref_
+expressions, though.
+
+The auto-unwrapping of terminals means that you can effectively ignore the
+presence of _expr_ref_ expressions when writing a _TagXForm_.  You can also
+just deal with the values inside terminals, and not the terminals
+themselves. Also, you can match all terminal value qualifiers (`const` or not,
+lvalue or rvalue) uniformly with a `T const &` parameter.  Finally, you can
+write _TagXForm_ parameter types that can catch conversions; for instance, you
+can match any negation expression containing a terminal, *or a reference to
+one*, containing a value convertible to `double` like this:
+
+     struct xform
+     {
+         auto operator() (boost::yap::negate_tag, double x)
+         { return /* ... */; }
+     }
+
+That will match a negation of a terminal containing an `unsigned int`,
+`unsigned int &`, `int const &`, `float &&`, etc.  It will also match a
+negation of a reference to such a terminal.
+
+[heading Mixing the Two Kinds of Transforms]
+
+You can have two overloads in your transform that match an expression, one an
+_ExprXForm_ and one a _TagXForm_, and there will not be any ambiguity.  The
+_TagXForm_ is preferred, except in the case of a call expression, in which case
+the _ExprXForm_ is preferred.  I know, I know.  You don't have to worry about
+ambiguity, but save yourself some confusion and mix the two kinds of overloads
+as little as possible.
+
+[note The above only applies when you have an _ExprXForm_ and a _TagXForm_
+that match *the same expression type*.  Having unrelated _ExprXForms_ and
+_TagXForms_ within the same transform object is often quite useful.]
 
 [endsect]
 
@@ -314,120 +390,6 @@ such a partial decay of `T`.
 The partial decay of non-_Expr_ operands is another example of how _yap_
 attempts to create expression trees that are as semantically close to builtin
 expressions as possible.
-
-[endsect]
-
-
-[section Transform Matching]
-
-In _yap_ a _XForm_ is a _Callable_ that has *zero or more* overloads that
-model the _ExprXForm_ or _TagXForm_ concepts.
-
-An _ExprXForm_ overload takes the expression to be transformed:
-
-[expr_xform]
-
-_ExprXForms_ are most useful when you want to transform a narrow set of
-expression types (perhaps only one).  In particular, you can distinguish
-between `const` and non-`const`, reference and non-reference, etc., in the
-expression and its operands in a way that you have less control over with the
-other kind of transform.
-
-A _TagXForm_ overload takes a tag that indicates the _kind_ of the expression
-to be transformed, and then (loosely) the value of each operand of the
-expression to be transformed:
-
-[tag_xform]
-
-_TagXForms_ are most useful when the transform needs to match an expression
-without regard to whether its operands are _expr_ref_ expressions, or _emdash_
-if they are terminals _emdash_ whether they contain or refer to their values.
-_TagXForms_ tend to be far more concise.
-
-[heading A More Rigorous Description of TagTransform Parameters]
-
-That "(loosely)" before probably bothered you, right?  Me too.  Each non-tag
-parameter is passed to a _TagXForm_ by calling an operand accessor appropriate
-to `expr`'s kind, and then calling a terminal-specific version of _value_
-(`terminal_value()`) on the result.  For example, consider a plus expression
-`expr`.  The _TagXForm_ on a transform object `xform` would be called like
-this:
-
-    xform(plus_tag, terminal_value(left(expr)), terminal_value(right(expr)))
-
-The operand accessors (_left_ and _right_ in this example) all dereference
-_expr_ref_ expressions before operating on them, and `terminal_value()` does
-the same.
-
-`terminal_value()` works much like _value_, except that it does not take the
-value of a *nonterminal* unary expression; it just forwards a nonterminal
-through.  It still takes values out of terminals and unwraps _expr_ref_
-expressions, though.
-
-`terminal_value()` differs from _value_ in one important way, though.  If it
-simply extracted values out of terminal expressions, there would be no way to
-apply `terminal_tag` transforms uniformly.  Consider this evaluating
-transform:
-
-    struct xform
-    {
-        // This transform negates terminals.
-        auto operator() (boost::yap::terminal_tag, double x)
-        { return -x; }
-
-        // This transform removes negations.
-        auto operator() (boost::yap::negate_tag, double x)
-        { return x; }
-    }
-
-Now consider what happens when we use the transform like this:
-
-    auto expr = -boost::yap::make_terminal(9);
-    std::cout << boost::yap::transform(expr, xform{}); // Applies both transforms; prints -9.
-
-If `terminal_value()` did *not* automatically apply terminal transforms, this
-would be the result:
-
-    // Thankfully, TagTransforms do *not* work like this!
-    auto term = boost::yap::make_terminal(9);
-    std::cout << boost::yap::transform(term, xform{}); // Only applies the terminal_tag transform; prints -9.
-    std::cout << boost::yap::transform(-term, xform{}); // Only applies the negate_tag transform; prints 9.
-
-[tip _TagXForm_ is intended to be the more terse and automatic form.  If you
-don't want auto-application of terminal transforms for a certain transform's
-arguments, use an _ExprXForm_.]
-
-All of this means that you can effectively ignore the presence of _expr_ref_
-expressions when writing a _TagXForm_.  You can also just deal with the values
-inside terminals, and not the terminals themselves. Also, you can match all
-terminal value qualifiers (`const` or not, lvalue or rvalue) uniformly with a
-`T const &` parameter.  Finally, you can write _TagXForm_ parameter types that
-can catch conversions; for instance, you can match any negation expression
-containing a terminal, *or a reference to one*, containing a value convertible
-to `double` like this:
-
-     struct xform
-     {
-         auto operator() (boost::yap::negate_tag, double x)
-         { return /* ... */; }
-     }
-
-That will match a negation of a terminal containing an `unsigned int`,
-`unsigned int &`, `int const &`, `float &&`, etc.  It will also match a
-negation of a reference to such a terminal.
-
-[heading Mixing the Two Kinds of Transforms]
-
-You can have two overloads in your transform that match an expression, one an
-_ExprXForm_ and one a _TagXForm_, and there will not be any ambiguity.  The
-_TagXForm_ is preferred, except in the case of a call expression, in which case
-the _ExprXForm_ is preferred.  I know, I know.  You don't have to worry about
-ambiguity, but save yourself some confusion and mix the two kinds of overloads
-as little as possible.
-
-[note The above only applies when you have an _ExprXForm_ and a _TagXForm_
-that match *the same expression type*.  Having unrelated _ExprXForms_ and
-_TagXForms_ within the same transform object is often quite useful.]
 
 [endsect]
 
