@@ -164,7 +164,7 @@ have written a transform that you expect to completely match an expression,
 and you want the compiler to tell you if you've made a mistake.]
 
 One common result of calling _xform_ is that you create a copy of `expr`, with
-a few matching nodes transformed.  But this does not hav to be the result of
+a few matching nodes transformed.  But this does not have to be the result of
 calling _xform_, because a _yap_ transformation is free-form; it must return a
 value, but may do just about anything else.  It can transform an expression
 into anything _emdash_ a new expression of any kind, or even a non-expression
