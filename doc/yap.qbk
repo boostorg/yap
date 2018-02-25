@@ -42,6 +42,7 @@
 [import ../example/autodiff_example.cpp]
 [import ../example/transform_terminals.cpp]
 [import ../example/pipable_algorithms.cpp]
+[import ../example/let.cpp]
 [import ../test/user_expression_transform_2.cpp]
 [import ../perf/arithmetic_perf.cpp]
 
@@ -75,6 +76,7 @@
 [def _Callables_           [@http://en.cppreference.com/w/cpp/concept/Callable Callables]]
 [def _range_v3_            [@https://github.com/ericniebler/range-v3 Range-v3]]
 [def _ast_                 [@https://en.wikipedia.org/wiki/Abstract_syntax_tree abstract syntax tree]]
+[def _let_                 [@http://www.boost.org/doc/libs/1_66_0/libs/phoenix/doc/html/phoenix/modules/scope/let.html `let()`]]
 
 [def _expr_                [classref boost::yap::expression `expression<>`]]
 [def _exprs_               [classref boost::yap::expression `expression<>`s]]
@@ -86,6 +88,9 @@
 [def _xform_               [funcref boost::yap::transform `transform()`]]
 [def _eval_                [funcref boost::yap::evaluate `evaluate()`]]
 [def _tuple_               `boost::hana::tuple<>`]
+
+[def _eval_xform_          `evaluate(transform())`]
+[def _xform_as_eval_       `transform()`-as-evaluate]
 
 [def _alg_header_          `<boost/yap/algorithm.hpp>` header]
 [def _yap_header_          `<boost/yap/yap.hpp>` header]

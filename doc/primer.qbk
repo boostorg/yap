@@ -11,7 +11,6 @@ The compiler sees this and creates some representation of that expression
 inside the compiler.  This is typically an _ast_ (AST).  The AST for the
 expression above might be:
 
-
 [$../../doc/ast.png]
 
 This tree structure captures all the elements of the original C++ code.  The
