@@ -39,8 +39,8 @@ int sum(int a, int b) { return a + b; }
 int main()
 {
     {
-        // This simple sum(8, 8) expression is handled by the call and
-        // terminal overloads of iota_terminal_transform.
+        // This simple sum(8, 8) expression requires both overloads of
+        // iota_terminal_transform.
         auto expr = boost::yap::make_terminal(sum)(8, 8);
         assert(evaluate(expr) == 16);
 
@@ -49,8 +49,8 @@ int main()
     }
 
     {
-        // This expression is handled by multiple applications of the terminal
-        // case of iota_terminal_transform.
+        // This expression requires only the terminal case of
+        // iota_terminal_transform.
         auto expr = -(boost::yap::make_terminal(8) + 8);
         assert(evaluate(expr) == -16);
 
@@ -59,7 +59,8 @@ int main()
     }
 
     {
-        // This expression requires both overloads of iota_terminal_transform.
+        // Like the first expression above, this expression requires both
+        // overloads of iota_terminal_transform.
         auto expr = boost::yap::make_terminal(sum)(-(boost::yap::make_terminal(8) + 8), 0);
         assert(evaluate(expr) == -16);
 
