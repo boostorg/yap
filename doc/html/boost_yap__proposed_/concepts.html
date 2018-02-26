@@ -7,11 +7,11 @@
 <link rel="home" href="../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
 <link rel="up" href="../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
 <link rel="prev" href="manual/object_code.html" title="Object Code">
-<link rel="next" href="../reference.html" title="Reference">
+<link rel="next" href="compiler_support.html" title="Compiler Support">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="manual/object_code.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../reference.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="manual/object_code.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="compiler_support.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -108,6 +108,26 @@
               <p>
                 The types of the elements must be appropriate to the kind of the
                 expression.
+              </p>
+            </td>
+</tr>
+<tr>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">E</span> <span class="identifier">e</span><span class="special">{</span><span class="identifier">t</span><span class="special">}</span></code>
+              </p>
+            </td>
+<td>
+            </td>
+<td>
+              <p>
+                Construction/initialization of <code class="computeroutput"><span class="identifier">e</span></code>.
+              </p>
+            </td>
+<td>
+              <p>
+                <code class="computeroutput"><span class="identifier">t</span></code> must be stored
+                in <code class="computeroutput"><span class="identifier">e</span><span class="special">.</span><span class="identifier">elements</span></code>.
               </p>
             </td>
 </tr>
@@ -324,11 +344,11 @@
     </p>
 <pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr1</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Expr2</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Expr3</span><span class="special">&gt;</span>
 <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="identifier">xform</span> <span class="special">(</span>
-    <span class="identifier">bost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expression</span><span class="special">&lt;</span>
-        <span class="identifier">bost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">plus</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expression</span><span class="special">&lt;</span>
+        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">plus</span><span class="special">,</span>
         <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span>
-            <span class="identifier">bost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expression</span><span class="special">&lt;</span>
-                <span class="identifier">bost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">multiplies</span><span class="special">,</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expression</span><span class="special">&lt;</span>
+                <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">multiplies</span><span class="special">,</span>
                 <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span>
                     <span class="identifier">Expr1</span><span class="special">,</span>
                     <span class="identifier">Expr2</span>
@@ -412,7 +432,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>
@@ -420,7 +440,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="manual/object_code.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../reference.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="manual/object_code.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="compiler_support.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

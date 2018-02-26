@@ -6,12 +6,12 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
 <link rel="up" href="../manual.html" title="Manual">
-<link rel="prev" href="../manual.html" title="Manual">
-<link rel="next" href="tutorial.html" title="Tutorial">
+<link rel="prev" href="examples/boost_phoenix_style__let___.html" title="Boost.Phoenix-style let()">
+<link rel="next" href="configuration.html" title="Configuration">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="spirit-nav">
-<a accesskey="p" href="../manual.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="tutorial.html"><img src="../../images/next.png" alt="Next"></a>
+<a accesskey="p" href="examples/boost_phoenix_style__let___.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="configuration.html"><img src="../../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -19,31 +19,29 @@
       Organization</a>
 </h3></div></div></div>
 <p>
-        The main header you will always need to use Boost.YAP is the <code class="computeroutput"><a class="link" href="../../header/boost/yap/algorithm_hpp.html" title="Header &lt;boost/yap/algorithm.hpp&gt;">algorithm header</a></code>. If you want
-        to ensure that you don't accidentally use <code class="computeroutput"><a class="link" href="../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;</a></code>
-        (which I recommend), just include this header and nothing else.
+        The main header you will always need to use Boost.YAP is the <code class="computeroutput"><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">algorithm</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span></code>
+        header. If you want to ensure that you don't accidentally use <code class="computeroutput"><a class="link" href="../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;</a></code> (which I recommend),
+        just include this header and nothing else.
       </p>
 <p>
         If you want to use the <code class="computeroutput"><a class="link" href="../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;</a></code>
         reference expression template (great for prototyping, but not recommended
-        for production work), include the <code class="computeroutput"><a class="link" href="../../header/boost/yap/expression_hpp.html" title="Header &lt;boost/yap/expression.hpp&gt;">expression
-        header</a></code>. This does not include its free binary operators, or
-        <code class="computeroutput"><span class="identifier">if_else</span><span class="special">()</span></code>
-        overload; to get those include the <code class="computeroutput"><a class="link" href="../../header/boost/yap/expression_free_operators_hpp.html" title="Header &lt;boost/yap/expression_free_operators.hpp&gt;">expression&lt;&gt; free binary operators
-        header</a></code> and the <code class="computeroutput"><a class="link" href="../../header/boost/yap/expression_if_else_hpp.html" title="Header &lt;boost/yap/expression_if_else.hpp&gt;">expression&lt;&gt; if_else() header</a></code>, respectively.
+        for production work), include the <code class="computeroutput"><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">expression</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span></code>
+        header.
       </p>
 <p>
         If you want to include all of the above, use the <code class="computeroutput"><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">yap</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span></code>
         header.
       </p>
 <p>
-        If you want to use <code class="computeroutput"><a class="link" href="../../boost/yap/print.html" title="Function template print">print()</a></code>, include the <code class="computeroutput"><a class="link" href="../../header/boost/yap/print_hpp.html" title="Header &lt;boost/yap/print.hpp&gt;">print header</a></code>; this header is not included
-        in the <code class="computeroutput"><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">yap</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span></code> header.
+        If you want to use <code class="computeroutput"><a class="link" href="../../boost/yap/print.html" title="Function template print">print()</a></code>, include the <code class="computeroutput"><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">print</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span></code>
+        header; this header is not included in the <code class="computeroutput"><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">yap</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span></code>
+        header.
       </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>
@@ -51,7 +49,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="../manual.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="tutorial.html"><img src="../../images/next.png" alt="Next"></a>
+<a accesskey="p" href="examples/boost_phoenix_style__let___.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="configuration.html"><img src="../../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

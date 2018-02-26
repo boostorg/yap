@@ -23,10 +23,10 @@
 <div xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" class="refsynopsisdiv"><pre class="synopsis"><span class="comment">// In header: &lt;<a class="link" href="../../header/boost/yap/algorithm_hpp.html" title="Header &lt;boost/yap/algorithm.hpp&gt;">boost/yap/algorithm.hpp</a>&gt;
 
 </span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">long</span> <span class="keyword">long</span> I<span class="special">,</span> <span class="keyword">typename</span> Expr<span class="special">&gt;</span> 
-  <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="identifier">get</span><span class="special">(</span><span class="identifier">Expr</span> <span class="special">&amp;&amp;</span> expr<span class="special">,</span> <span class="identifier">hana</span><span class="special">::</span><span class="identifier">llong</span><span class="special">&lt;</span> <span class="identifier">I</span> <span class="special">&gt;</span> i<span class="special">)</span><span class="special">;</span></pre></div>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> Expr<span class="special">,</span> <span class="keyword">typename</span> I<span class="special">&gt;</span> 
+  <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="identifier">get</span><span class="special">(</span><span class="identifier">Expr</span> <span class="special">&amp;&amp;</span> expr<span class="special">,</span> <span class="identifier">I</span> <span class="keyword">const</span> <span class="special">&amp;</span> i<span class="special">)</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp140687736935064"></a><h2>Description</h2>
+<a name="idm14604"></a><h2>Description</h2>
 <p>Forwards the <span class="emphasis"><em>i</em></span>-th element of <span class="emphasis"><em>expr</em></span> to the caller. If <span class="emphasis"><em>expr</em></span> is a reference expression, the result is <code class="computeroutput">get(deref(expr), i)</code>.</p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -41,7 +41,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

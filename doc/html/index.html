@@ -16,7 +16,7 @@
 <div><div class="author"><h3 class="author">
 <span class="firstname">Zach</span> <span class="surname">Laine</span>
 </h3></div></div>
-<div><p class="copyright">Copyright &#169; 2016 T. Zachary Laine</p></div>
+<div><p class="copyright">Copyright &#169; 2018 T. Zachary Laine</p></div>
 <div><div class="legalnotice">
 <a name="yap.legal"></a><p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -28,38 +28,26 @@
 <p><b>Table of Contents</b></p>
 <dl class="toc">
 <dt><span class="section"><a href="boost_yap__proposed_/introduction.html">Introduction</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/compiler_support.html">Compiler Support</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/dependencies.html">Dependencies</a></span></dt>
 <dt><span class="section"><a href="boost_yap__proposed_/manual.html">Manual</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/header_organization.html">Header
-      Organization</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial.html">Tutorial</a></span></dt>
-<dd><dl>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/expressions.html">Expressions</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/kinds_of_expressions.html">Kinds
-        of Expressions</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/operators.html">Operators</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/transforming_expressions.html">Transforming
-        Expressions</a></span></dt>
-<dd><dl>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/transforming_expressions/explicit_transformations.html">Explicit
-          Transformations</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/transforming_expressions/implicit_transformations.html">Implicit
-          Transformations</a></span></dt>
-</dl></dd>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/evaluating_expressions.html">Evaluating
-        Expressions</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/printing.html">Printing</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/operator_macros.html">Operator
-        Macros</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/how_expression_operands_are_treated.html">How
-        Expression Operands Are Treated</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/customization_points.html">Customization
-        Points</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/tutorial/transform_matching.html">Transform
-        Matching</a></span></dt>
-</dl></dd>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/an_expression_template_primer.html">An
+      Expression Template Primer</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/the_yap_way.html">The YAP Way</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/expressions.html">Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/mix_and_match_expression_templates.html">Mix-and-Match
+      Expression Templates</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/kinds_of_expressions.html">Kinds
+      of Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/operators.html">Operators</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/transforming_expressions.html">Transforming
+      Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/evaluating_expressions.html">Evaluating
+      Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/operator_macros.html">Operator
+      Macros</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/how_expression_operands_are_treated.html">How
+      Expression Operands Are Treated</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/printing.html">Printing</a></span></dt>
 <dt><span class="section"><a href="boost_yap__proposed_/manual/examples.html">Examples</a></span></dt>
 <dd><dl>
 <dt><span class="section"><a href="boost_yap__proposed_/manual/examples/hello_world.html">Hello
@@ -81,11 +69,21 @@
 <dt><span class="section"><a href="boost_yap__proposed_/manual/examples/future_group.html">Future
         Group</a></span></dt>
 <dt><span class="section"><a href="boost_yap__proposed_/manual/examples/autodiff.html">Autodiff</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/transforming_terminals_only.html">Transforming
+        Terminals Only</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/pipable_algorithms.html">Pipable
+        Algorithms</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/boost_phoenix_style__let___.html">Boost.Phoenix-style
+        <code class="computeroutput"><span class="identifier">let</span><span class="special">()</span></code></a></span></dt>
 </dl></dd>
+<dt><span class="section"><a href="boost_yap__proposed_/manual/header_organization.html">Header
+      Organization</a></span></dt>
 <dt><span class="section"><a href="boost_yap__proposed_/manual/configuration.html">Configuration</a></span></dt>
 <dt><span class="section"><a href="boost_yap__proposed_/manual/object_code.html">Object Code</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="boost_yap__proposed_/concepts.html">Concepts</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/compiler_support.html">Compiler Support</a></span></dt>
+<dt><span class="section"><a href="boost_yap__proposed_/dependencies.html">Dependencies</a></span></dt>
 <dt><span class="section"><a href="reference.html">Reference</a></span></dt>
 <dd><dl>
 <dt><span class="section"><a href="header/boost/yap/algorithm_hpp.html">Header &lt;boost/yap/algorithm.hpp&gt;</a></span></dt>
@@ -96,11 +94,6 @@
 <dd><dl></dl></dd>
 <dt><span class="section"><a href="header/boost/yap/expression_hpp.html">Header &lt;boost/yap/expression.hpp&gt;</a></span></dt>
 <dd><dl></dl></dd>
-<dt><span class="section"><a href="header/boost/yap/expression_free_operators_hpp.html">Header &lt;boost/yap/expression_free_operators.hpp&gt;</a></span></dt>
-<dd><dl></dl></dd>
-<dt><span class="section"><a href="header/boost/yap/expression_if_else_hpp.html">Header &lt;boost/yap/expression_if_else.hpp&gt;</a></span></dt>
-<dd><dl></dl></dd>
-<dt><span class="section"><a href="header/boost/yap/operators_hpp.html">Header &lt;boost/yap/operators.hpp&gt;</a></span></dt>
 <dt><span class="section"><a href="header/boost/yap/print_hpp.html">Header &lt;boost/yap/print.hpp&gt;</a></span></dt>
 <dd><dl></dl></dd>
 <dt><span class="section"><a href="header/boost/yap/user_macros_hpp.html">Header &lt;boost/yap/user_macros.hpp&gt;</a></span></dt>
@@ -114,7 +107,7 @@
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: February 09, 2018 at 01:44:04 GMT</small></p></td>
+<td align="left"><p><small>Last revised: February 26, 2018 at 05:05:54 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

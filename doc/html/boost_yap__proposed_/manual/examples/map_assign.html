@@ -36,7 +36,8 @@
 <span class="keyword">struct</span> <span class="identifier">map_list_of_transform</span>
 <span class="special">{</span>
     <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Fn</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Key2</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Value2</span><span class="special">&gt;</span>
-    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">call_tag</span><span class="special">,</span> <span class="identifier">Fn</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">fn</span><span class="special">,</span> <span class="identifier">Key2</span> <span class="special">&amp;&amp;</span> <span class="identifier">key</span><span class="special">,</span> <span class="identifier">Value2</span> <span class="special">&amp;&amp;</span> <span class="identifier">value</span><span class="special">)</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">call</span><span class="special">&gt;,</span>
+                     <span class="identifier">Fn</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">fn</span><span class="special">,</span> <span class="identifier">Key2</span> <span class="special">&amp;&amp;</span> <span class="identifier">key</span><span class="special">,</span> <span class="identifier">Value2</span> <span class="special">&amp;&amp;</span> <span class="identifier">value</span><span class="special">)</span>
     <span class="special">{</span>
         <span class="comment">// Recurse into the function subexpression.  Remember, transform()</span>
         <span class="comment">// walks the nodes in an expression tree looking for matches.  Once it</span>
@@ -45,15 +46,15 @@
         <span class="comment">// matched by transform().</span>
         <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">fn</span><span class="special">,</span> <span class="special">*</span><span class="keyword">this</span><span class="special">);</span>
         <span class="identifier">map</span><span class="special">.</span><span class="identifier">emplace</span><span class="special">(</span>
-            <span class="identifier">Key</span><span class="special">{</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Key2</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">key</span><span class="special">)},</span>
-            <span class="identifier">Value</span><span class="special">{</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Value2</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">value</span><span class="special">)}</span>
+            <span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Key2</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">key</span><span class="special">),</span>
+            <span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Value2</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">value</span><span class="special">)</span>
         <span class="special">);</span>
         <span class="comment">// All we care about are the side effects of this transform, so we can</span>
         <span class="comment">// return any old thing here.</span>
         <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
     <span class="special">}</span>
 
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">map</span><span class="special">&lt;</span><span class="identifier">Key</span><span class="special">,</span> <span class="identifier">Value</span><span class="special">,</span> <span class="identifier">Allocator</span><span class="special">&gt;</span> <span class="identifier">map</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">map</span><span class="special">&lt;</span><span class="identifier">Key</span><span class="special">,</span> <span class="identifier">Value</span><span class="special">,</span> <span class="identifier">Allocator</span><span class="special">&gt;</span> <span class="special">&amp;</span> <span class="identifier">map</span><span class="special">;</span>
 <span class="special">};</span>
 
 
@@ -70,9 +71,10 @@
     <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Key</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Value</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Allocator</span><span class="special">&gt;</span>
     <span class="keyword">operator</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">map</span><span class="special">&lt;</span><span class="identifier">Key</span><span class="special">,</span> <span class="identifier">Value</span><span class="special">,</span> <span class="identifier">Allocator</span><span class="special">&gt;</span> <span class="special">()</span> <span class="keyword">const</span>
     <span class="special">{</span>
-        <span class="identifier">map_list_of_transform</span><span class="special">&lt;</span><span class="identifier">Key</span><span class="special">,</span> <span class="identifier">Value</span><span class="special">,</span> <span class="identifier">Allocator</span><span class="special">&gt;</span> <span class="identifier">transform</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">map</span><span class="special">&lt;</span><span class="identifier">Key</span><span class="special">,</span> <span class="identifier">Value</span><span class="special">,</span> <span class="identifier">Allocator</span><span class="special">&gt;</span> <span class="identifier">retval</span><span class="special">;</span>
+        <span class="identifier">map_list_of_transform</span><span class="special">&lt;</span><span class="identifier">Key</span><span class="special">,</span> <span class="identifier">Value</span><span class="special">,</span> <span class="identifier">Allocator</span><span class="special">&gt;</span> <span class="identifier">transform</span><span class="special">{</span><span class="identifier">retval</span><span class="special">};</span>
         <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(*</span><span class="keyword">this</span><span class="special">,</span> <span class="identifier">transform</span><span class="special">);</span>
-        <span class="keyword">return</span> <span class="identifier">transform</span><span class="special">.</span><span class="identifier">map</span><span class="special">;</span>
+        <span class="keyword">return</span> <span class="identifier">retval</span><span class="special">;</span>
     <span class="special">}</span>
 
     <span class="identifier">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</span><span class="special">(::</span><span class="identifier">map_list_of_expr</span><span class="special">)</span>
@@ -126,7 +128,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

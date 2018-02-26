@@ -38,7 +38,6 @@
 </p>
 <pre class="programlisting"><span class="comment">// Defining this allows the assignment below of an expression to a double</span>
 <span class="comment">// without writing any specific code to do so.</span>
-<span class="preprocessor">#define</span> <span class="identifier">BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE</span> <span class="number">1</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">expression</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">algorithm</span><span class="special">&gt;</span>
@@ -87,10 +86,11 @@
 <span class="identifier">take_nth</span><span class="special">::</span><span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">&lt;</span><span class="identifier">lazy_vector_expr</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">double</span><span class="special">&gt;&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
 <span class="special">{</span>
     <span class="keyword">double</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">value</span><span class="special">(</span><span class="identifier">expr</span><span class="special">)[</span><span class="identifier">n</span><span class="special">];</span>
-    <span class="comment">// This move is something of a hack.  The move indicates that the terminal</span>
-    <span class="comment">// should keep the value of x (since, being an rvalue, it may be a</span>
-    <span class="comment">// temporary), rather than a reference to x.  See the "How Expression</span>
-    <span class="comment">// Operands Are Treated" section of the tutorial for details.</span>
+    <span class="comment">// This move is something of a hack; we're forcing Yap to take a copy of x</span>
+    <span class="comment">// by using std::move().  The move indicates that the terminal should keep</span>
+    <span class="comment">// the value of x (since, being an rvalue, it may be a temporary), rather</span>
+    <span class="comment">// than a reference to x.  See the "How Expression Operands Are Treated"</span>
+    <span class="comment">// section of the tutorial for details.</span>
     <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">&lt;</span><span class="identifier">lazy_vector_expr</span><span class="special">,</span> <span class="keyword">double</span><span class="special">&gt;(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">move</span><span class="special">(</span><span class="identifier">x</span><span class="special">));</span>
 <span class="special">}</span>
 
@@ -147,7 +147,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

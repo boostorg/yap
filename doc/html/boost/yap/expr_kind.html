@@ -24,23 +24,30 @@
 
 </span>
 
-<span class="keyword">enum</span> <span class="identifier">expr_kind</span> <span class="special">{</span> <a class="link" href="expr_kind.html#boost.yap.expr_kind.expr_ref">expr_ref</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.terminal">terminal</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.unary_plus">unary_plus</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.negate">negate</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.dereference">dereference</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.complement">complement</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.address_of">address_of</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.logical_not">logical_not</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.pre_inc">pre_inc</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.pre_dec">pre_dec</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.post_inc">post_inc</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.post_dec">post_dec</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.shift_left">shift_left</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.shift_right">shift_right</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.multiplies">multiplies</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.divides">divides</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.modulus">modulus</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.plus">plus</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.minus">minus</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.less">less</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.greater">greater</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.less_equal">less_equal</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.greater_equal">greater_equal</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.equal_to">equal_to</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.not_equal_to">not_equal_to</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.logical_or">logical_or</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.logical_and">logical_and</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_and">bitwise_and</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_or">bitwise_or</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_xor">bitwise_xor</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.comma">comma</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.mem_ptr">mem_ptr</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.assign">assign</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.shift_left_assign">shift_left_assign</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.shift_right_assign">shift_right_assign</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.multiplies_assign">multiplies_assign</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.divides_assign">divides_assign</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.modulus_assign">modulus_assign</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.plus_assign">plus_assign</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.minus_assign">minus_assign</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_and_assign">bitwise_and_assign</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_or_assign">bitwise_or_assign</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_xor_assign">bitwise_xor_assign</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.subscript">subscript</a>, <a class="link" href="expr_kind.html#boost.yap.expr_kind.if_else">if_else</a>, 
-                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.call">call</a> <span class="special">}</span><span class="special">;</span></pre></div>
+<span class="keyword">enum</span> <span class="identifier">expr_kind</span> <span class="special">{</span> <a class="link" href="expr_kind.html#boost.yap.expr_kind.expr_ref">expr_ref</a> = =
+            0, <a class="link" href="expr_kind.html#boost.yap.expr_kind.terminal">terminal</a> = = 1, <a class="link" href="expr_kind.html#boost.yap.expr_kind.unary_plus">unary_plus</a> = = 2, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.negate">negate</a> = = 3, <a class="link" href="expr_kind.html#boost.yap.expr_kind.dereference">dereference</a> = = 4, <a class="link" href="expr_kind.html#boost.yap.expr_kind.complement">complement</a> = = 5, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.address_of">address_of</a> = = 6, <a class="link" href="expr_kind.html#boost.yap.expr_kind.logical_not">logical_not</a> = = 7, <a class="link" href="expr_kind.html#boost.yap.expr_kind.pre_inc">pre_inc</a> = = 8, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.pre_dec">pre_dec</a> = = 9, <a class="link" href="expr_kind.html#boost.yap.expr_kind.post_inc">post_inc</a> = = 10, <a class="link" href="expr_kind.html#boost.yap.expr_kind.post_dec">post_dec</a> = = 11, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.shift_left">shift_left</a> = = 12, <a class="link" href="expr_kind.html#boost.yap.expr_kind.shift_right">shift_right</a> = = 13, <a class="link" href="expr_kind.html#boost.yap.expr_kind.multiplies">multiplies</a> = = 14, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.divides">divides</a> = = 15, <a class="link" href="expr_kind.html#boost.yap.expr_kind.modulus">modulus</a> = = 16, <a class="link" href="expr_kind.html#boost.yap.expr_kind.plus">plus</a> = = 17, <a class="link" href="expr_kind.html#boost.yap.expr_kind.minus">minus</a> = = 18, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.less">less</a> = = 19, <a class="link" href="expr_kind.html#boost.yap.expr_kind.greater">greater</a> = = 20, <a class="link" href="expr_kind.html#boost.yap.expr_kind.less_equal">less_equal</a> = = 21, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.greater_equal">greater_equal</a> = = 22, <a class="link" href="expr_kind.html#boost.yap.expr_kind.equal_to">equal_to</a> = = 23, <a class="link" href="expr_kind.html#boost.yap.expr_kind.not_equal_to">not_equal_to</a> = = 24, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.logical_or">logical_or</a> = = 25, <a class="link" href="expr_kind.html#boost.yap.expr_kind.logical_and">logical_and</a> = = 26, <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_and">bitwise_and</a> = = 27, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_or">bitwise_or</a> = = 28, <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_xor">bitwise_xor</a> = = 29, <a class="link" href="expr_kind.html#boost.yap.expr_kind.comma">comma</a> = = 30, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.mem_ptr">mem_ptr</a> = = 31, <a class="link" href="expr_kind.html#boost.yap.expr_kind.assign">assign</a> = = 32, <a class="link" href="expr_kind.html#boost.yap.expr_kind.shift_left_assign">shift_left_assign</a> = = 33, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.shift_right_assign">shift_right_assign</a> = = 34, <a class="link" href="expr_kind.html#boost.yap.expr_kind.multiplies_assign">multiplies_assign</a> = = 35, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.divides_assign">divides_assign</a> = = 36, <a class="link" href="expr_kind.html#boost.yap.expr_kind.modulus_assign">modulus_assign</a> = = 37, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.plus_assign">plus_assign</a> = = 38, <a class="link" href="expr_kind.html#boost.yap.expr_kind.minus_assign">minus_assign</a> = = 39, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_and_assign">bitwise_and_assign</a> = = 40, <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_or_assign">bitwise_or_assign</a> = = 41, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.bitwise_xor_assign">bitwise_xor_assign</a> = = 42, <a class="link" href="expr_kind.html#boost.yap.expr_kind.subscript">subscript</a> = = 43, <a class="link" href="expr_kind.html#boost.yap.expr_kind.if_else">if_else</a> = = 44, 
+                 <a class="link" href="expr_kind.html#boost.yap.expr_kind.call">call</a> = = 45 <span class="special">}</span><span class="special">;</span></pre></div>
 <div class="refsect1">
-<a name="idp140687737349608"></a><h2>Description</h2>
+<a name="idm15623"></a><h2>Description</h2>
 <p>The enumeration representing all the kinds of expressions supported in YAP. </p>
 <div class="variablelist"><dl class="variablelist compact">
 <dt><span class="term"><code class="computeroutput">expr_ref</code><a name="boost.yap.expr_kind.expr_ref"></a></span></dt>
-<dd>An (possibly <code class="computeroutput">const</code>) reference to another expression. </dd>
+<dd>A (possibly <code class="computeroutput">const</code>) reference to another expression. </dd>
 <dt><span class="term"><code class="computeroutput">terminal</code><a name="boost.yap.expr_kind.terminal"></a></span></dt>
 <dd>A terminal expression. </dd>
 <dt><span class="term"><code class="computeroutput">unary_plus</code><a name="boost.yap.expr_kind.unary_plus"></a></span></dt>
@@ -143,7 +150,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

@@ -87,16 +87,6 @@
             <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">,</span> <span class="identifier">U</span><span class="special">&gt;</span>
         <span class="special">&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">or_expr</span>
     <span class="special">)</span> <span class="special">{</span>
-        <span class="comment">// Assertion that left and right are compatible types.  We use value()</span>
-        <span class="comment">// here on the results of left() and right() because that makes the</span>
-        <span class="comment">// resulting expressions comparable if one is an expr_ref and the</span>
-        <span class="comment">// other is not.</span>
-        <span class="keyword">static_assert</span><span class="special">(</span>
-            <span class="identifier">std</span><span class="special">::</span><span class="identifier">is_same</span><span class="special">&lt;</span>
-                <span class="keyword">decltype</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">value</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">left</span><span class="special">(</span><span class="identifier">or_expr</span><span class="special">))),</span>
-                <span class="keyword">decltype</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">value</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">right</span><span class="special">(</span><span class="identifier">or_expr</span><span class="special">)))</span>
-            <span class="special">&gt;{}</span>
-        <span class="special">);</span>
         <span class="comment">// Recursively transform the left side, and return the result.</span>
         <span class="comment">// Without the recursion, we might return a terminal expression here</span>
         <span class="comment">// insead of a tuple.</span>
@@ -159,7 +149,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>

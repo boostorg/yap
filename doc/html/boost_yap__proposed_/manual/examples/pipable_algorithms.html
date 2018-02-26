@@ -1,0 +1,176 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Pipable Algorithms</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
+<link rel="up" href="../examples.html" title="Examples">
+<link rel="prev" href="transforming_terminals_only.html" title="Transforming Terminals Only">
+<link rel="next" href="boost_phoenix_style__let___.html" title="Boost.Phoenix-style let()">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="transforming_terminals_only.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="boost_phoenix_style__let___.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_yap__proposed_.manual.examples.pipable_algorithms"></a><a class="link" href="pipable_algorithms.html" title="Pipable Algorithms">Pipable
+        Algorithms</a>
+</h4></div></div></div>
+<p>
+          Let's revisit the pipable standard algorithm example from the intro. Here's
+          how you might implement it.
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">algorithm</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">algorithm</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">vector</span><span class="special">&gt;</span>
+
+
+<span class="comment">// An enum to represent all the standard algorithms we want to adapt.  In this</span>
+<span class="comment">// example, we only care about std::sort() and std::unique().</span>
+<span class="keyword">enum</span> <span class="keyword">class</span> <span class="identifier">algorithm_t</span> <span class="special">{</span> <span class="identifier">sort</span><span class="special">,</span> <span class="identifier">unique</span> <span class="special">};</span>
+
+<span class="comment">// Just about the simplest range template you could construct.  Nothing fancy.</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Iter</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">simple_range</span>
+<span class="special">{</span>
+    <span class="identifier">Iter</span> <span class="identifier">begin</span><span class="special">()</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">first_</span><span class="special">;</span> <span class="special">}</span>
+    <span class="identifier">Iter</span> <span class="identifier">end</span><span class="special">()</span> <span class="keyword">const</span> <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">last_</span><span class="special">;</span> <span class="special">}</span>
+
+    <span class="identifier">Iter</span> <span class="identifier">first_</span><span class="special">;</span>
+    <span class="identifier">Iter</span> <span class="identifier">last_</span><span class="special">;</span>
+<span class="special">};</span>
+
+<span class="comment">// This simply calls the standard algorithm that corresponds to "a".  This</span>
+<span class="comment">// certainly won't work for all the algorithms, but it works for many of them</span>
+<span class="comment">// that just take a begin/end pair.</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Range</span><span class="special">&gt;</span>
+<span class="keyword">auto</span> <span class="identifier">call_algorithm</span><span class="special">(</span><span class="identifier">algorithm_t</span> <span class="identifier">a</span><span class="special">,</span> <span class="identifier">Range</span> <span class="special">&amp;</span> <span class="identifier">r</span><span class="special">)</span>
+<span class="special">{</span>
+    <span class="identifier">simple_range</span><span class="special">&lt;</span><span class="keyword">decltype</span><span class="special">(</span><span class="identifier">r</span><span class="special">.</span><span class="identifier">begin</span><span class="special">())&gt;</span> <span class="identifier">retval</span><span class="special">{</span><span class="identifier">r</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">r</span><span class="special">.</span><span class="identifier">end</span><span class="special">()};</span>
+    <span class="keyword">if</span> <span class="special">(</span><span class="identifier">a</span> <span class="special">==</span> <span class="identifier">algorithm_t</span><span class="special">::</span><span class="identifier">sort</span><span class="special">)</span> <span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">sort</span><span class="special">(</span><span class="identifier">r</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">r</span><span class="special">.</span><span class="identifier">end</span><span class="special">());</span>
+    <span class="special">}</span> <span class="keyword">else</span> <span class="keyword">if</span> <span class="special">(</span><span class="identifier">a</span> <span class="special">==</span> <span class="identifier">algorithm_t</span><span class="special">::</span><span class="identifier">unique</span><span class="special">)</span> <span class="special">{</span>
+        <span class="identifier">retval</span><span class="special">.</span><span class="identifier">last_</span> <span class="special">=</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">unique</span><span class="special">(</span><span class="identifier">r</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">r</span><span class="special">.</span><span class="identifier">end</span><span class="special">());</span>
+    <span class="special">}</span>
+    <span class="keyword">return</span> <span class="identifier">retval</span><span class="special">;</span>
+<span class="special">}</span>
+
+<span class="comment">// This is the transform that evaluates our piped expressions.  It returns a</span>
+<span class="comment">// simple_range&lt;&gt;, not a Yap expression.</span>
+<span class="keyword">struct</span> <span class="identifier">algorithm_eval</span>
+<span class="special">{</span>
+    <span class="comment">// A pipe should always have a Yap expression on the left and an</span>
+    <span class="comment">// algorithm_t terminal on the right.</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">LExpr</span><span class="special">&gt;</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()(</span>
+        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">bitwise_or</span><span class="special">&gt;,</span>
+        <span class="identifier">LExpr</span> <span class="special">&amp;&amp;</span> <span class="identifier">left</span><span class="special">,</span>
+        <span class="identifier">algorithm_t</span> <span class="identifier">right</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="comment">// Recursively evaluate the left ...</span>
+        <span class="keyword">auto</span> <span class="keyword">const</span> <span class="identifier">left_result</span> <span class="special">=</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">LExpr</span><span class="special">&gt;(</span><span class="identifier">left</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">);</span>
+        <span class="comment">// ... and use the result to call teh function on the right.</span>
+        <span class="keyword">return</span> <span class="identifier">call_algorithm</span><span class="special">(</span><span class="identifier">right</span><span class="special">,</span> <span class="identifier">left_result</span><span class="special">);</span>
+    <span class="special">}</span>
+
+    <span class="comment">// A call operation is evaluated directly.  Note that the range parameter</span>
+    <span class="comment">// is taken as an lvalue reference, to prevent binding to a temporary and</span>
+    <span class="comment">// taking dangling references to its begin and end.  We let the compiler</span>
+    <span class="comment">// deduce whether the lvalue reference is const.</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Range</span><span class="special">&gt;</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()(</span>
+        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">call</span><span class="special">&gt;,</span>
+        <span class="identifier">algorithm_t</span> <span class="identifier">a</span><span class="special">,</span>
+        <span class="identifier">Range</span> <span class="special">&amp;</span> <span class="identifier">r</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="keyword">return</span> <span class="identifier">call_algorithm</span><span class="special">(</span><span class="identifier">a</span><span class="special">,</span> <span class="identifier">r</span><span class="special">);</span>
+    <span class="special">}</span>
+<span class="special">};</span>
+
+<span class="comment">// This is the expression template we use for the general case of a pipable</span>
+<span class="comment">// algorithm expression.  Terminals are handled separately.</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">algorithm_expr</span>
+<span class="special">{</span>
+    <span class="keyword">static</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="keyword">const</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
+
+    <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
+
+    <span class="comment">// This is how we get the nice initializer semantics we see in the example</span>
+    <span class="comment">// usage below.  This is a bit limited though, because we always create a</span>
+    <span class="comment">// temporary.  It might therefore be better just to create algorithm_expr</span>
+    <span class="comment">// expressions, call yap::evaluate(), and then use the sequence containers</span>
+    <span class="comment">// assign() member function to do the actual assignment.</span>
+    <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Assignee</span><span class="special">&gt;</span>
+    <span class="keyword">operator</span> <span class="identifier">Assignee</span><span class="special">()</span> <span class="keyword">const</span>
+    <span class="special">{</span>
+        <span class="comment">// Exercise left for the reader: static_assert() that Assignee is some</span>
+        <span class="comment">// sort of container type.</span>
+        <span class="keyword">auto</span> <span class="keyword">const</span> <span class="identifier">range</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(*</span><span class="keyword">this</span><span class="special">,</span> <span class="identifier">algorithm_eval</span><span class="special">{});</span>
+        <span class="keyword">return</span> <span class="identifier">Assignee</span><span class="special">(</span><span class="identifier">range</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">range</span><span class="special">.</span><span class="identifier">end</span><span class="special">());</span>
+    <span class="special">}</span>
+
+    <span class="comment">// This is a bit loose, because it allows us to write "sort(v) |</span>
+    <span class="comment">// unique(u)" or similar.  It works fine for this example, but in</span>
+    <span class="comment">// production code you may want to write out the three member functions</span>
+    <span class="comment">// generated by this macro, and add SFINAE or concepts constraints on the</span>
+    <span class="comment">// right template parameter.</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">bitwise_or</span><span class="special">,</span> <span class="special">::</span><span class="identifier">algorithm_expr</span><span class="special">)</span>
+<span class="special">};</span>
+
+<span class="comment">// It's useful to specially handle terminals, because we want a different set</span>
+<span class="comment">// of operations to apply to them.  We don't want "sort(x)(y)" to be</span>
+<span class="comment">// well-formed, for instance, or "sort | unique" either.</span>
+<span class="keyword">struct</span> <span class="identifier">algorithm</span>
+<span class="special">{</span>
+    <span class="keyword">static</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="keyword">const</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">;</span>
+
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span><span class="identifier">algorithm_t</span><span class="special">&gt;</span> <span class="identifier">elements</span><span class="special">;</span>
+
+    <span class="identifier">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</span><span class="special">(::</span><span class="identifier">algorithm_expr</span><span class="special">)</span>
+<span class="special">};</span>
+
+<span class="comment">// Here are ready-made Yap terminals, one for each algorithm enumerated in</span>
+<span class="comment">// algorithm_t.</span>
+<span class="keyword">constexpr</span> <span class="identifier">algorithm</span> <span class="identifier">sort</span><span class="special">{{</span><span class="identifier">algorithm_t</span><span class="special">::</span><span class="identifier">sort</span><span class="special">}};</span>
+<span class="keyword">constexpr</span> <span class="identifier">algorithm</span> <span class="identifier">unique</span><span class="special">{{</span><span class="identifier">algorithm_t</span><span class="special">::</span><span class="identifier">unique</span><span class="special">}};</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">()</span>
+<span class="special">{</span>
+    <span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">v1</span> <span class="special">=</span> <span class="special">{</span><span class="number">0</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">7</span><span class="special">,</span> <span class="number">1</span><span class="special">,</span> <span class="number">3</span><span class="special">,</span> <span class="number">8</span><span class="special">};</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">sort</span><span class="special">(</span><span class="identifier">v1</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">v1</span><span class="special">.</span><span class="identifier">end</span><span class="special">());</span>
+        <span class="keyword">auto</span> <span class="identifier">it</span> <span class="special">=</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">unique</span><span class="special">(</span><span class="identifier">v1</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">v1</span><span class="special">.</span><span class="identifier">end</span><span class="special">());</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="identifier">v2</span><span class="special">(</span><span class="identifier">v1</span><span class="special">.</span><span class="identifier">begin</span><span class="special">(),</span> <span class="identifier">it</span><span class="special">);</span>
+        <span class="identifier">assert</span><span class="special">(</span><span class="identifier">v2</span> <span class="special">==</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;({</span><span class="number">0</span><span class="special">,</span> <span class="number">1</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">3</span><span class="special">,</span> <span class="number">7</span><span class="special">,</span> <span class="number">8</span><span class="special">}));</span>
+    <span class="special">}</span>
+    <span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">v1</span> <span class="special">=</span> <span class="special">{</span><span class="number">0</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">7</span><span class="special">,</span> <span class="number">1</span><span class="special">,</span> <span class="number">3</span><span class="special">,</span> <span class="number">8</span><span class="special">};</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="keyword">const</span> <span class="identifier">v2</span> <span class="special">=</span> <span class="identifier">sort</span><span class="special">(</span><span class="identifier">v1</span><span class="special">)</span> <span class="special">|</span> <span class="identifier">unique</span><span class="special">;</span>
+        <span class="identifier">assert</span><span class="special">(</span><span class="identifier">v2</span> <span class="special">==</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;({</span><span class="number">0</span><span class="special">,</span> <span class="number">1</span><span class="special">,</span> <span class="number">2</span><span class="special">,</span> <span class="number">3</span><span class="special">,</span> <span class="number">7</span><span class="special">,</span> <span class="number">8</span><span class="special">}));</span>
+    <span class="special">}</span>
+<span class="special">}</span>
+</pre>
+<p>
+        </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="transforming_terminals_only.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="boost_phoenix_style__let___.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

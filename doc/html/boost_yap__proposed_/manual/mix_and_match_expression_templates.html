@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Mix-and-Match Expression Templates</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
+<link rel="up" href="../manual.html" title="Manual">
+<link rel="prev" href="expressions.html" title="Expressions">
+<link rel="next" href="kinds_of_expressions.html" title="Kinds of Expressions">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="expressions.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="kinds_of_expressions.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_yap__proposed_.manual.mix_and_match_expression_templates"></a><a class="link" href="mix_and_match_expression_templates.html" title="Mix-and-Match Expression Templates">Mix-and-Match
+      Expression Templates</a>
+</h3></div></div></div>
+<p>
+        Because Boost.YAP operates on <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expressions</a>,
+        it is possible to mix and match <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expressions</a>
+        that are instantiations of different templates.
+      </p>
+<p>
+        Here's why that's important. Say we have two types in a library. <code class="computeroutput"><span class="identifier">S</span></code> is a string type, and <code class="computeroutput"><span class="identifier">M</span></code>
+        is a matrix type. In the code here, <code class="computeroutput"><span class="identifier">s</span></code>
+        and <code class="computeroutput"><span class="identifier">m</span></code> are objects of types
+        <code class="computeroutput"><span class="identifier">S</span></code> and <code class="computeroutput"><span class="identifier">M</span></code>
+        respectively. Say we also have typical operator overloads for these types,
+        so <code class="computeroutput"><span class="identifier">m</span> <span class="special">*</span>
+        <span class="identifier">m</span></code> and <code class="computeroutput"><span class="identifier">s</span><span class="special">[</span><span class="number">0</span><span class="special">]</span></code>
+        are well-formed expressions, but <code class="computeroutput"><span class="identifier">m</span><span class="special">[</span><span class="number">0</span><span class="special">]</span></code>
+        and <code class="computeroutput"><span class="identifier">s</span> <span class="special">*</span>
+        <span class="identifier">s</span></code> are not.
+      </p>
+<p>
+        To use these with Boost.YAP I might write an expression template for each:
+      </p>
+<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;...&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">m_expr</span>
+<span class="special">{</span>
+    <span class="comment">// ...</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">times</span><span class="special">,</span> <span class="special">::</span><span class="identifier">m_expr</span><span class="special">)</span>
+<span class="special">};</span>
+
+<span class="keyword">template</span> <span class="special">&lt;...&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">s_expr</span>
+<span class="special">{</span>
+    <span class="comment">// ...</span>
+    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">subscript</span><span class="special">,</span> <span class="special">::</span><span class="identifier">s_expr</span><span class="special">)</span>
+<span class="special">};</span>
+</pre>
+<p>
+        With this, I might write a Boost.YAP expression like:
+      </p>
+<pre class="programlisting"><span class="identifier">lookup_matrix</span><span class="special">(</span><span class="identifier">S</span><span class="special">(</span><span class="string">"my_matrix"</span><span class="special">))</span> <span class="special">*</span> <span class="identifier">some_matrix</span>
+</pre>
+<p>
+        I can transform this expression however I like, and do not have to worry
+        about the fact that it contains expressions instantiated from different templates.
+      </p>
+<p>
+        If Boost.YAP required an expression to be instantiated from a single expression
+        template <code class="computeroutput"><span class="identifier">expr</span><span class="special">&lt;&gt;</span></code>,
+        <code class="computeroutput"><span class="identifier">expr</span><span class="special">&lt;&gt;</span></code>
+        would have both operators. This means that all of a sudden <code class="computeroutput"><span class="identifier">s</span> <span class="special">*</span> <span class="identifier">s</span></code>
+        and <code class="computeroutput"><span class="identifier">m</span><span class="special">[</span><span class="number">0</span><span class="special">]</span></code> would be
+        well-formed expressions within a Boost.YAP expression, but <span class="bold"><strong>not</strong></span>
+        for the real types <code class="computeroutput"><span class="identifier">S</span></code> and
+        <code class="computeroutput"><span class="identifier">M</span></code> respectively. That would
+        be super weird.
+      </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="expressions.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="kinds_of_expressions.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

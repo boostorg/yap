@@ -24,9 +24,9 @@
 
 </span>BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(op_name, expr_template, udt_trait)</pre></div>
 <div class="refsect1">
-<a name="idp140687734933352"></a><h2>Description</h2>
+<a name="idm21276"></a><h2>Description</h2>
 <p>Defines a free/non-member operator overload for binary operator <span class="emphasis"><em>op_name</em></span> that produces an expression instantiated from the <span class="emphasis"><em>expr_template</em></span> expression template.</p>
-<p>The <span class="emphasis"><em>lhs</em></span> and <span class="emphasis"><em>rhs</em></span> parameters to the defined operator overload may be any types that is <span class="bold"><strong>not</strong></span> expressions. Each parameter is wrapped in a terminal expression.</p>
+<p>The <span class="emphasis"><em>lhs</em></span> and <span class="emphasis"><em>rhs</em></span> parameters to the defined operator overload may be any types that are <span class="bold"><strong>not</strong></span> expressions. Each parameter is wrapped in a terminal expression.</p>
 <p>At least one of the parameters to the defined operator overload must be a type <code class="computeroutput">T</code> for which</p>
 <pre class="programlisting"><span class="identifier">udt_trait</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_cv_t</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">remove_reference_t</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;&gt;</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span> 
 </pre>
@@ -46,9 +46,9 @@
 <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">A</span><span class="special">&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">is_vector</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">vector</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">,</span> <span class="identifier">A</span><span class="special">&gt;&gt;</span> <span class="special">:</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">true_type</span> <span class="special">{</span><span class="special">}</span><span class="special">;</span>
 
-<span class="comment">// Defines an overload of operator&amp;&amp;() that matches a string on either side,</span>
-<span class="comment">// and any type (possibly a string) on the other.</span>
-<span class="identifier">BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">logical_and</span><span class="special">,</span> <span class="special">::</span><span class="identifier">user_expr</span><span class="special">,</span> <span class="identifier">is_string</span><span class="special">)</span>
+<span class="comment">// Defines an overload of operator&amp;&amp;() that matches a vector on either side,</span>
+<span class="comment">// and any type (possibly a vector) on the other.</span>
+<span class="identifier">BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">logical_and</span><span class="special">,</span> <span class="special">::</span><span class="identifier">user_expr</span><span class="special">,</span> <span class="identifier">is_vector</span><span class="special">)</span>
 </pre>
 <p> 
 </p>
@@ -85,7 +85,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2016 T. Zachary Laine<p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
         Distributed under the Boost Software License, Version 1.0. (See accompanying
         file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
       </p>
