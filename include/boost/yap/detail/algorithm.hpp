@@ -498,6 +498,29 @@ namespace boost { namespace yap { namespace detail {
         UdtTrait>::type;
 
 
+    // not_copy_or_move
+
+    template<typename LeftT, typename RightT>
+    struct copy_or_move : std::false_type
+    {
+    };
+
+    template<typename T>
+    struct copy_or_move<T, T const &> : std::true_type
+    {
+    };
+
+    template<typename T>
+    struct copy_or_move<T, T &> : std::true_type
+    {
+    };
+
+    template<typename T>
+    struct copy_or_move<T, T &&> : std::true_type
+    {
+    };
+
+
     // expr_arity
 
     enum class expr_arity { invalid, one, two, three, n };

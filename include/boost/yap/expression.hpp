@@ -250,7 +250,10 @@ namespace boost { namespace yap {
         BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_xor)        // ^
         BOOST_YAP_BINARY_MEMBER_OPERATOR(comma)              // ,
         BOOST_YAP_BINARY_MEMBER_OPERATOR(mem_ptr)            // ->*
-        BOOST_YAP_BINARY_MEMBER_OPERATOR(assign)             // =
+
+        BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER(
+            expression, ::boost::yap::expression) // =
+
         BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_left_assign)  // <<=
         BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_right_assign) // >>=
         BOOST_YAP_BINARY_MEMBER_OPERATOR(multiplies_assign)  // *=
@@ -482,7 +485,10 @@ namespace boost { namespace yap {
         BOOST_YAP_BINARY_MEMBER_OPERATOR(bitwise_xor)        // ^
         BOOST_YAP_BINARY_MEMBER_OPERATOR(comma)              // ,
         BOOST_YAP_BINARY_MEMBER_OPERATOR(mem_ptr)            // ->*
-        BOOST_YAP_BINARY_MEMBER_OPERATOR(assign)             // =
+
+        BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER(
+            expression, ::boost::yap::expression) // =
+
         BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_left_assign)  // <<=
         BOOST_YAP_BINARY_MEMBER_OPERATOR(shift_right_assign) // >>=
         BOOST_YAP_BINARY_MEMBER_OPERATOR(multiplies_assign)  // *=

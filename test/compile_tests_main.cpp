@@ -12,6 +12,7 @@ void compile_term_plus_term();
 void compile_term_plus_x();
 void compile_term_plus_x_this_ref_overloads();
 void compile_x_plus_term();
+void compile_user_macros();
 
 int main()
 {
@@ -24,4 +25,5 @@ int main()
     compile_term_plus_x();
     compile_term_plus_x_this_ref_overloads();
     compile_x_plus_term();
+    compile_user_macros();
 }

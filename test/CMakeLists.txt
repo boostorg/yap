@@ -49,6 +49,7 @@ add_executable(
     compile_term_plus_x_this_ref_overloads.cpp
     compile_const_term.cpp
     compile_move_only_types.cpp
+    compile_user_macros.cpp
 )
 target_link_libraries(compile_tests yap)
 if (clang_on_linux)
