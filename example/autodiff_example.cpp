@@ -35,10 +35,10 @@ struct autodiff_expr
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, ::autodiff_expr)
 };
 
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(plus, ::autodiff_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(minus, ::autodiff_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(multiplies, ::autodiff_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(divides, ::autodiff_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(plus, ::autodiff_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(minus, ::autodiff_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(multiplies, ::autodiff_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(divides, ::autodiff_expr)
 //]
 
 //[ autodiff_expr_literals_decl

@@ -58,10 +58,10 @@ struct tarray_expr
 
 // Define operators +, -, *, and / for any non-expression on the left, and an
 // expression on the right.
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(plus, ::tarray_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(minus, ::tarray_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(multiplies, ::tarray_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(divides, ::tarray_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(plus, ::tarray_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(minus, ::tarray_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(multiplies, ::tarray_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(divides, ::tarray_expr)
 
 
 boost::yap::terminal<tarray_expr, int>

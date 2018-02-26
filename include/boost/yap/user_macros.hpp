@@ -346,7 +346,7 @@
     expression.
 
     Example:
-    \snippet user_macros_snippets.cpp USER_FREE_BINARY_OPERATOR
+    \snippet user_macros_snippets.cpp USER_NONMEMBER_BINARY_OPERATOR
 
     \param op_name The operator to be overloaded; this must be one of the
     \binary enumerators in <code>expr_kind</code>, without the
@@ -356,7 +356,7 @@
     result expression.  \a expr_template must be an \ref
     ExpressionTemplate.
 */
-#define BOOST_YAP_USER_FREE_BINARY_OPERATOR(op_name, expr_template)            \
+#define BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(op_name, expr_template)       \
     template<                                                                  \
         typename T,                                                            \
         template<::boost::yap::expr_kind, class> class ExprTemplate,           \

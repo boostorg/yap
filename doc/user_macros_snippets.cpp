@@ -46,7 +46,7 @@ struct user_expr
     // Member operator overloads for operator&&().  These will match any value
     // on the right-hand side, even another expression.  Left as-is, there is
     // no matching overload for x && y, where x is not an expression and y is.
-    // BOOST_YAP_USER_FREE_BINARY_OPERATOR can help with that.
+    // BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR can help with that.
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, ::user_expr)
 };
 /// [USER_BINARY_OPERATOR_MEMBER]
@@ -88,7 +88,7 @@ struct lazy_vector_3 :
 
 #define user_expr user_expr_4
 
-/// [USER_FREE_BINARY_OPERATOR]
+/// [USER_NONMEMBER_BINARY_OPERATOR]
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
@@ -104,8 +104,8 @@ struct user_expr
 // Free operator overloads for operator&&().  These will match any value on
 // the left-hand side, *except* an expression; the right-hand side must be an
 // expression.
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(logical_and, ::user_expr)
-/// [USER_FREE_BINARY_OPERATOR]
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(logical_and, ::user_expr)
+/// [USER_NONMEMBER_BINARY_OPERATOR]
 
 struct lazy_vector_4 :
     user_expr<

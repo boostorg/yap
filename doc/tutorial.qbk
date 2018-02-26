@@ -346,7 +346,7 @@ macros and their uses:
 
     [[_unary_member_m_] [Unary member operators.] [`decltype(*this)`, an _Expr_.] [--] []]
     [[_binary_member_m_] [Binary member operators.] [`decltype(*this)`, an _Expr_.] [Any type.] []]
-    [[_binary_free_m_] [Binary free operators.] [Any non-_Expr_.] [Any _Expr_.] []]
+    [[_binary_nonmember_m_] [Binary free operators to compliment member operators defined with _binary_nonmember_m_.] [Any non-_Expr_.] [Any _Expr_.] []]
     [[_udt_unary_m_] [Free operators defined over non-_Expr_ types constrained by a type trait (e.g. all `std::map<>`s).] [Any non-_Expr_ that satisfies the given type trait.] [--] []]
     [[_udt_udt_binary_m_] [Free operators defined over non-_Expr_ types constrained by a pair of type traits (e.g. a `std::map<>` on the left, and a `std::vector<>` on the right).  Useful for type-asymmetric operators.] [Any non-_Expr_ that satisfies the left-hand type trait.] [Any non-_Expr_ that satisfies the right-hand type trait.] []]
     [[_udt_any_binary_m_] [Free operators defined over pairs of non-_Expr_ types, one constrained by a type trait and one not (e.g. a `std::list<>` on either side, and anything on the other).] [Any non-_Expr_.] [--] [At least one parameter must satisfy the given type trait.]]
@@ -355,6 +355,7 @@ macros and their uses:
 [table The Other Operator-Defining Macros
     [[Macro] [Use] [Operands] [Notes]]
 
+    [[_member_assign_m_] [Member assignment operator.] [Any type except `decltype(*this)`.] [Does not conflict with the assignment or move assignment operators.]]
     [[_member_call_m_] [Member call operator.] [Any type.] []]
     [[_expr_if_else_m_] [Free `if_else()` function that requires at least one parameter to be an expression.] [Any type.] [At least one parameter must be an _Expr_.]]
     [[_udt_any_if_else_m_] [Free `if_else()` function for non-_Expr_ types that requires at least one parameter to satisfy the given type trait.] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
