@@ -209,7 +209,7 @@
     expression.
 
     Example:
-    \snippet user_macros_snippets.cpp USER_BINARY_OPERATOR_MEMBER
+    \snippet user_macros_snippets.cpp USER_ASSIGN_OPERATOR_MEMBER
 
     \param this_type The type of the class the operator is a member of; this
     is required to avoid clashing with the assignment and move assignement
@@ -266,6 +266,7 @@
                        ::boost::yap::detail::make_operand<rhs_type>{}(         \
                            static_cast<Expr &&>(rhs))}};                       \
     }
+
 
 /** Defines operator overloads for the call operator ("operator()") that each
     produce an expression instantiated from the \a expr_template expression

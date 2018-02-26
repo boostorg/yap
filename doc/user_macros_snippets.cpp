@@ -312,6 +312,32 @@ struct lazy_vector_10 :
 
 #undef user_expr
 
+#define user_expr user_expr_11
+
+/// [USER_ASSIGN_OPERATOR_MEMBER]
+template <boost::yap::expr_kind Kind, typename Tuple>
+struct user_expr
+{
+    static const boost::yap::expr_kind kind = Kind;
+
+    Tuple elements;
+
+    // Member operator overloads for operator=().  These will match any value
+    // on the right-hand side, even another expression, except that it will
+    // not conflict with the asignment or move assignment operators.
+    BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER(user_expr, ::user_expr)
+};
+/// [USER_ASSIGN_OPERATOR_MEMBER]
+
+struct lazy_vector_11 :
+    user_expr<
+        boost::yap::expr_kind::terminal,
+        boost::hana::tuple<std::vector<double>>
+    >
+{};
+
+#undef user_expr
+
 
 int main ()
 {
@@ -325,6 +351,7 @@ int main ()
     lazy_vector_8 v8;
     lazy_vector_9 v9;
     lazy_vector_10 v10;
+    lazy_vector_11 v11;
 
     return 0;
 }
