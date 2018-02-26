@@ -1,3 +1,8 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //[ vector
 #include <boost/yap/yap.hpp>
 
@@ -9,8 +14,9 @@
 struct take_nth
 {
     template <typename T>
-    auto operator() (boost::yap::terminal_tag, std::vector<T> const & vec)
-    { return boost::yap::make_terminal(std::move(vec[n])); }
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     std::vector<T> const & vec)
+    { return boost::yap::make_terminal(vec[n]); }
 
     std::size_t n;
 };
@@ -21,7 +27,8 @@ struct take_nth
 struct equal_sizes_impl
 {
     template <typename T>
-    auto operator() (boost::yap::terminal_tag, std::vector<T> const & vec)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     std::vector<T> const & vec)
     {
         auto const expr_size = vec.size();
         if (expr_size != size)
@@ -45,9 +52,8 @@ bool equal_sizes (std::size_t size, Expr const & expr)
 // Assigns some expression e to the given vector by evaluating e elementwise,
 // to avoid temporaries and allocations.
 template <typename T, typename Expr>
-std::vector<T> & assign (std::vector<T> & vec, Expr const & e)
+std::vector<T> & assign (std::vector<T> & vec, Expr const & expr)
 {
-    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
         vec[i] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));
@@ -57,9 +63,8 @@ std::vector<T> & assign (std::vector<T> & vec, Expr const & e)
 
 // As assign() above, just using +=.
 template <typename T, typename Expr>
-std::vector<T> & operator+= (std::vector<T> & vec, Expr const & e)
+std::vector<T> & operator+= (std::vector<T> & vec, Expr const & expr)
 {
-    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
         vec[i] += boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));

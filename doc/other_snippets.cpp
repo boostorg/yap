@@ -1,8 +1,61 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/yap.hpp>
 #include <boost/yap/print.hpp>
 
 #include <iostream>
 
+#include <cmath>
+
+
+//[ plus_sqrt_term_alias
+    template <typename T>
+    using term = boost::yap::terminal<boost::yap::expression, T>;
+//]
+void primer()
+{
+//[ plus_sqrt_yap_value
+//[ plus_sqrt_yap_type
+//[ plus_sqrt_yap_top_level_1
+    boost::yap::expression<
+        boost::yap::expr_kind::plus,
+        boost::hana::tuple<
+//]
+//[ plus_sqrt_yap_lhs
+            boost::yap::expression<
+                boost::yap::expr_kind::call,
+                boost::hana::tuple<
+                    boost::yap::expression<
+                        boost::yap::expr_kind::terminal,
+                        boost::hana::tuple<double (*)(double)>
+                    >,
+                    boost::yap::expression<
+                        boost::yap::expr_kind::terminal,
+                        boost::hana::tuple<double>
+                    >
+                >
+            >,
+//]
+//[ plus_sqrt_yap_rhs
+            boost::yap::expression<
+                boost::yap::expr_kind::terminal,
+                boost::hana::tuple<float>
+            >
+//]
+//[ plus_sqrt_yap_top_level_2
+        >
+    >
+//]
+//]
+    yap_expr = term<double (*)(double)>{{std::sqrt}}(3.0) + 8.0f;
+//]
+//[ print_plus_sqrt_yap_value
+    print(std::cout, yap_expr);
+//]
+}
 
 void foo ()
 {
@@ -13,33 +66,6 @@ void foo ()
     std::cout << i << "\n"; // Prints 42.
 //]
 }
-
-//[ eval_plus_example_decls
-namespace user {
-
-    struct number
-    {
-        double value;
-    };
-
-    number eval_plus (number lhs, number rhs)
-    { return number{lhs.value + rhs.value}; }
-
-}
-//]
-
-//[ transform_expression_example_decls
-// A convenient alias; nothing to see here.
-template <typename T>
-using term = boost::yap::terminal<boost::yap::expression, T>;
-
-namespace user {
-
-    auto transform_expression (decltype(term<number>{{0.0}} * number{}) const & expr)
-    { return "Yay."; }
-
-}
-//]
 
 //[ print_decl
 struct thing {};
@@ -68,28 +94,9 @@ boost::yap::print(std::cout, expr) << "\n";
 
 int main ()
 {
+    primer();
+
     foo();
-
-    {
-//[ eval_plus_example_use
-    auto plus_expr = boost::yap::make_terminal(user::number{2.0}) + user::number{1.0};
-    auto minus_expr = boost::yap::make_terminal(user::number{2.0}) - user::number{1.0};
-
-    user::number plus_result = evaluate(plus_expr);
-    std::cout << plus_result.value << "\n"; // Prints 1.
-
-    // Does not compile; there is no operator- defined over user::number.
-    //user::number minus_result = evaluate(minus_expr);
-//]
-    (void)minus_expr;
-    }
-
-    {
-//[ transform_expression_example_use
-    auto expr = term<user::number>{{1.0e6}} * user::number{1.0e6};
-    std::cout << evaluate(expr) << "\n"; // Prints "Yay."  Wierd!
-//]
-    }
 
     print_expr();
 

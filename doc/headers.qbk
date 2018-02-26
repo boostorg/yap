@@ -6,9 +6,7 @@ just include this header and nothing else.
 
 If you want to use the _expr_ reference expression template (great for
 prototyping, but not recommended for production work), include the
-_expr_header_.  This does not include its free binary operators, or
-`if_else()` overload; to get those include the _free_expr_header_ and the
-_if_else_expr_header_, respectively.
+_expr_header_.
 
 If you want to include all of the above, use the _yap_header_.
 

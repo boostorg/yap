@@ -1,7 +1,11 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //[ lazy_vector
 // Defining this allows the assignment below of an expression to a double
 // without writing any specific code to do so.
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
 #include <boost/yap/expression.hpp>
 
 #include <algorithm>
@@ -52,10 +56,11 @@ boost::yap::terminal<lazy_vector_expr, double>
 take_nth::operator() (boost::yap::terminal<lazy_vector_expr, std::vector<double>> const & expr)
 {
     double x = boost::yap::value(expr)[n];
-    // This move is something of a hack.  The move indicates that the terminal
-    // should keep the value of x (since, being an rvalue, it may be a
-    // temporary), rather than a reference to x.  See the "How Expression
-    // Operands Are Treated" section of the tutorial for details.
+    // This move is something of a hack; we're forcing Yap to take a copy of x
+    // by using std::move().  The move indicates that the terminal should keep
+    // the value of x (since, being an rvalue, it may be a temporary), rather
+    // than a reference to x.  See the "How Expression Operands Are Treated"
+    // section of the tutorial for details.
     return boost::yap::make_terminal<lazy_vector_expr, double>(std::move(x));
 }
 

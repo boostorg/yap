@@ -1,3 +1,8 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //[ mixed
 #include <boost/yap/yap.hpp>
 
@@ -24,7 +29,8 @@ auto make_iter_wrapper (Iter it)
 struct begin
 {
     template <typename Cont>
-    auto operator() (boost::yap::terminal_tag, Cont const & cont)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     Cont const & cont)
         -> decltype(boost::yap::make_terminal(make_iter_wrapper(cont.begin())))
     { return boost::yap::make_terminal(make_iter_wrapper(cont.begin())); }
 };
@@ -33,7 +39,8 @@ struct begin
 struct deref
 {
     template <typename Iter>
-    auto operator() (boost::yap::terminal_tag, iter_wrapper<Iter> wrapper)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     iter_wrapper<Iter> wrapper)
         -> decltype(boost::yap::make_terminal(*wrapper.it))
     { return boost::yap::make_terminal(*wrapper.it); }
 };
@@ -42,7 +49,8 @@ struct deref
 struct incr
 {
     template <typename Iter>
-    auto operator() (boost::yap::terminal_tag, iter_wrapper<Iter> & wrapper)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                     iter_wrapper<Iter> & wrapper)
         -> decltype(++wrapper.it, boost::yap::make_terminal(wrapper.it))
     {
         ++wrapper.it;
@@ -62,9 +70,8 @@ template <
     typename Expr,
     typename Op
 >
-Cont<T, A> & op_assign (Cont<T, A> & cont, Expr const & e, Op && op)
+Cont<T, A> & op_assign (Cont<T, A> & cont, Expr const & expr, Op && op)
 {
-    decltype(auto) expr = boost::yap::as_expr(e);
     // Transform the expression of sequences into an expression of
     // begin-iterators.
     auto expr2 = boost::yap::transform(expr, begin{});
@@ -148,23 +155,15 @@ BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_and, boost::yap::expression, is_m
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_or, boost::yap::expression, is_mixed); // |
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(bitwise_xor, boost::yap::expression, is_mixed); // ^
 
-namespace user {
-
-    // Define a tag type we can use to create a function terminal in a
-    // function call expression.  Doing it this way instead of making a
-    // terminal from a function pointer allows us to avoid inlining
-    // difficulties that can come up when you use a function pointer.  This
-    // also allows us to handle overloaded functions gracefully.
-    struct sin_tag {};
-
-    // Define an override for the eval_call YAP customization point.  This
-    // results in an implicit transform of any matching call expression, but
-    // only applies during expression evaluation.
-    template <typename T>
-    inline auto eval_call (sin_tag, T && x)
-    { return std::sin(x); }
-
-}
+// Define a type that can resolve to any overload of std::sin().
+struct sin_t
+{
+    template<typename T>
+    T operator()(T x)
+    {
+        return std::sin(x);
+    }
+};
 
 int main()
 {
@@ -191,7 +190,7 @@ int main()
     assign(e, c);
     e += e - 4 / (c + 1);
 
-    auto sin = boost::yap::make_terminal(user::sin_tag{});
+    auto sin = boost::yap::make_terminal(sin_t{});
     f -= sin(0.1 * e * std::complex<double>(0.2, 1.2));
 
     std::list<double>::const_iterator ei = e.begin();

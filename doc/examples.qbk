@@ -10,12 +10,9 @@ that in the original Proto example.
 
 [section Hello World]
 
-Welp.  Remember how I mentioned earlier that _yap_ does things in a completely
-lazy way?  There's no easy way to get the same line of code that you saw in
-`main()` in the Proto version of this example, because _yap_ doesn't know that
-it should evaluate your expression eagerly in this case.  It can be done, but
-it's a bit of code.  This is one case in which Proto's eager evaluation can
-prove easier to use than _yap_'s lazy evaluation.
+Remember how I mentioned earlier that _yap_ does things in a completely lazy
+way?  _yap_ doesn't ever evaluate your expression eagerly.  Eager evaluation
+can be done, but it's a bit of code.
 
 [hello_world]
 
@@ -64,7 +61,7 @@ _yap_-compatible template.]
 This is the first of several calculator-building examples derived from Proto.
 This first one just builds lazy expressions with placeholders, and evaluates
 them.  Here we can first see how much C++14-and-later language features help
-the end user -- the Proto version is much, much longer.
+the end user _emdash_ the Proto version is much, much longer.
 
 [calc1]
 
@@ -164,8 +161,7 @@ operator macros.]
 [section Mixed]
 
 This is a lot like the previous Vector example, except that it operates on
-`std::vector<>`s and `std::list<>`s in the same expression.  It also shows how
-to override one of the operator-evaluation customization points.
+`std::vector<>`s and `std::list<>`s in the same expression.
 
 [mixed]
 
@@ -215,8 +211,8 @@ verifying that the expression written in the comment is actually what the code
 produces.  Let's see if we can do better.
 
 First, we start with a custom expression template, `autodiff_expr`.  It
-supports simple arithmetic, but notice it has no call operator -- we don't
-want `(a + b)()` to be a valid expression.
+supports simple arithmetic, but notice it has no call operator _emdash_ we
+don't want `(a + b)()` to be a valid expression.
 
 [autodiff_expr_template_decl]
 
@@ -258,5 +254,46 @@ Finally, here is the _yap_ version of the function we started with:
 
 [endsect]
 
+[section Transforming Terminals Only]
+
+Sometimes it can be useful only to transform the terminals in an expression.
+For instance, if you have some type you use for SIMD operations called
+`simd<double>`, you may want to replace all the `double` terminals with
+`simd<double>`.  Perhaps you just want to change out `double` for `float`, or
+`int` for `std::size_t`.  You get the idea.
+
+In this example, we're replacing all the terminals with something essentially
+arbitrary, the sequence of integer terminals `N, N + 1, N + 2, ...`.  This
+makes it easier to observe the result of the replacement in a simple example.
+
+[transform_terminals]
+
+[endsect]
+
+[section Pipable Algorithms]
+
+Let's revisit the pipable standard algorithm example from the intro.  Here's
+how you might implement it.
+
+[pipable_algorithms]
+
+[endsect]
+
+[section Boost.Phoenix-style `let()`]
+
+Boost.Phoenix has a thing called _let_.  It introduces named reusable values
+are reused in subsequent expressions.  This is something simliar, though not
+exactly like Phoenix's version.  In Phoenix, a let placeholder is only
+evaluated once, whereas the example below does something more like macro
+substitution; each let-placeholder is replaced with its initializing
+expression everywhere it is used.
+
+This example uses C++17's `if constexpr ()`, simply because it makes the
+example shorter and easier to digest.  The `if constexpr ()` bits are not
+strictly necessary.
+
+[let]
+
+[endsect]
 
 [endsect]

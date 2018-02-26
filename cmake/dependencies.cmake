@@ -6,7 +6,7 @@
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost 1.64.0 EXACT)
+find_package(Boost 1.64.0)
 if (Boost_INCLUDE_DIRS)
   add_library(boost INTERFACE)
   target_include_directories(boost INTERFACE ${Boost_INCLUDE_DIRS})

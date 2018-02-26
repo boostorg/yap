@@ -1,3 +1,8 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 #include <boost/yap/print.hpp>
 
@@ -6,17 +11,17 @@
 #include <sstream>
 
 
-template <typename T>
+template<typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
 
-template <typename T>
+template<typename T>
 using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
-template <boost::yap::expr_kind Kind, typename Tuple>
+template<boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
     static boost::yap::expr_kind const kind = Kind;
@@ -26,13 +31,14 @@ struct user_expr
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::user_expr)
 };
 
-template <typename T>
+template<typename T>
 using user_term = boost::yap::terminal<user_expr, T>;
 
-template <typename T>
+template<typename T>
 using user_ref = boost::yap::expression_ref<user_expr, T>;
 
-struct thing {};
+struct thing
+{};
 
 TEST(expression, test_print)
 {
@@ -41,24 +47,16 @@ TEST(expression, test_print)
     term<int &&> i{std::move(i_)};
     yap::expression<
         yap::expr_kind::plus,
-        bh::tuple<
-            ref<term<double> &>,
-            term<int &&>
-        >
-    > expr = unity + std::move(i);
+        bh::tuple<ref<term<double> &>, term<int &&>>>
+        expr = unity + std::move(i);
     yap::expression<
         yap::expr_kind::plus,
         bh::tuple<
             ref<term<double> &>,
             yap::expression<
                 yap::expr_kind::plus,
-                bh::tuple<
-                    ref<term<double> &>,
-                    term<int &&>
-                >
-            >
-        >
-    > unevaluated_expr = unity + std::move(expr);
+                bh::tuple<ref<term<double> &>, term<int &&>>>>>
+        unevaluated_expr = unity + std::move(expr);
 
     {
         std::ostringstream oss;
@@ -99,11 +97,8 @@ TEST(expression, test_print)
     term<double> const const_unity{1.0};
     yap::expression<
         yap::expr_kind::plus,
-        bh::tuple<
-            ref<term<double> &>,
-            ref<term<double> const &>
-        >
-    > nonconst_plus_const = unity + const_unity;
+        bh::tuple<ref<term<double> &>, ref<term<double> const &>>>
+        nonconst_plus_const = unity + const_unity;
 
     {
         std::ostringstream oss;
@@ -130,24 +125,16 @@ TEST(user_expr, test_print)
     user_term<int &&> i{std::move(i_)};
     user_expr<
         yap::expr_kind::plus,
-        bh::tuple<
-            user_ref<user_term<double> &>,
-            user_term<int &&>
-        >
-    > expr = unity + std::move(i);
+        bh::tuple<user_ref<user_term<double> &>, user_term<int &&>>>
+        expr = unity + std::move(i);
     user_expr<
         yap::expr_kind::plus,
         bh::tuple<
             user_ref<user_term<double> &>,
             user_expr<
                 yap::expr_kind::plus,
-                bh::tuple<
-                    user_ref<user_term<double> &>,
-                    user_term<int &&>
-                >
-            >
-        >
-    > unevaluated_expr = unity + std::move(expr);
+                bh::tuple<user_ref<user_term<double> &>, user_term<int &&>>>>>
+        unevaluated_expr = unity + std::move(expr);
 
     {
         std::ostringstream oss;
@@ -190,9 +177,8 @@ TEST(user_expr, test_print)
         yap::expr_kind::plus,
         bh::tuple<
             user_ref<user_term<double> &>,
-            user_ref<user_term<double> const &>
-        >
-    > nonconst_plus_const = unity + const_unity;
+            user_ref<user_term<double> const &>>>
+        nonconst_plus_const = unity + const_unity;
 
     {
         std::ostringstream oss;

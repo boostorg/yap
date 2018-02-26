@@ -1,5 +1,11 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //[ tarray
 #include <boost/yap/algorithm.hpp>
+#include <boost/yap/print.hpp>
 
 #include <array>
 #include <iostream>
@@ -52,10 +58,10 @@ struct tarray_expr
 
 // Define operators +, -, *, and / for any non-expression on the left, and an
 // expression on the right.
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(plus, ::tarray_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(minus, ::tarray_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(multiplies, ::tarray_expr)
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(divides, ::tarray_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(plus, ::tarray_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(minus, ::tarray_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(multiplies, ::tarray_expr)
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(divides, ::tarray_expr)
 
 
 boost::yap::terminal<tarray_expr, int>
@@ -131,8 +137,8 @@ struct tarray :
     tarray & operator= (T const & t)
     {
         // We use as_expr() here to make sure that the value passed to
-        // assign() is an expression.  as_expr() simply forwards expressions
-        // through, and wraps non-expressions as terminals.
+        // assign() is a tarray_expr expression.  as_expr() simply forwards
+        // expressions through, and wraps non-expressions as terminals.
         return assign(boost::yap::as_expr< ::tarray_expr>(t));
     }
 

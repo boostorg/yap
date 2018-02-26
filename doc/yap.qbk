@@ -6,7 +6,7 @@
 [library Boost.YAP (Proposed)
     [quickbook 1.3]
     [authors [Laine, Zach]]
-    [copyright 2016 T. Zachary Laine]
+    [copyright 2018 T. Zachary Laine]
     [category template]
     [id yap]
     [dirname yap]
@@ -40,9 +40,12 @@
 [import ../example/map_assign.cpp]
 [import ../example/future_group.cpp]
 [import ../example/autodiff_example.cpp]
+[import ../example/transform_terminals.cpp]
+[import ../example/pipable_algorithms.cpp]
+[import ../example/let.cpp]
 [import ../test/user_expression_transform_2.cpp]
-[import ../test/user_expression_transform_3.cpp]
 [import ../perf/arithmetic_perf.cpp]
+[import ../include/boost/yap/detail/transform.hpp]
 
 
 [/ Images ]
@@ -57,6 +60,9 @@
 
 [def _yap_                 Boost.YAP]
 
+[def _operators_           [link boost_yap__proposed_.manual.operators Operators]]
+[def _operator_macros_     [link boost_yap__proposed_.manual.operator_macros Operator Macros]]
+
 [def _Expr_                [link boost_yap__proposed_.concepts.expression Expression]]
 [def _Exprs_               [link boost_yap__proposed_.concepts.expression Expressions]]
 [def _ExprTmpl_            [link boost_yap__proposed_.concepts.expressiontemplate ExpressionTemplate]]
@@ -69,6 +75,9 @@
 [def _TagXForms_           [link boost_yap__proposed_.concepts.tagtransform TagTransforms]]
 [def _Callable_            [@http://en.cppreference.com/w/cpp/concept/Callable Callable]]
 [def _Callables_           [@http://en.cppreference.com/w/cpp/concept/Callable Callables]]
+[def _range_v3_            [@https://github.com/ericniebler/range-v3 Range-v3]]
+[def _ast_                 [@https://en.wikipedia.org/wiki/Abstract_syntax_tree abstract syntax tree]]
+[def _let_                 [@http://www.boost.org/doc/libs/1_66_0/libs/phoenix/doc/html/phoenix/modules/scope/let.html `let()`]]
 
 [def _expr_                [classref boost::yap::expression `expression<>`]]
 [def _exprs_               [classref boost::yap::expression `expression<>`s]]
@@ -78,17 +87,20 @@
 [def _if_else_             [link boost.yap.expr_kind.if_else `expr_kind::if_else`]]
 [def _expr_ref_            [link boost.yap.expr_kind.expr_ref `expr_kind::expr_ref`]]
 [def _xform_               [funcref boost::yap::transform `transform()`]]
+[def _xform_strict_        [funcref boost::yap::transform_strict `transform_strict()`]]
+[def _evaluation_          [funcref boost::yap::evaluation `evaluation()`]]
 [def _eval_                [funcref boost::yap::evaluate `evaluate()`]]
-[def _eval_as_             [funcref boost::yap::evaluate_as `evaluate_as()`]]
+[def _replacements_        [funcref boost::yap::replacements `replacements()`]]
+[def _replace_placeholders_ [funcref boost::yap::replace_placeholders `replace_placeholders()`]]
 [def _tuple_               `boost::hana::tuple<>`]
 
-[def _alg_header_          [headerref boost/yap/algorithm.hpp algorithm header]]
+[def _eval_xform_          `evaluate(transform())`]
+[def _xform_as_eval_       `transform()`-as-evaluate]
+
+[def _alg_header_          `<boost/yap/algorithm.hpp>` header]
 [def _yap_header_          `<boost/yap/yap.hpp>` header]
-[def _expr_header_         [headerref boost/yap/expression.hpp expression header]]
-[def _free_expr_header_    [headerref boost/yap/expression_free_operators.hpp _expr_ free binary operators header]]
-[def _if_else_expr_header_ [headerref boost/yap/expression_if_else.hpp _expr_ `if_else()` header]]
-[def _ops_header_          [headerref boost/yap/operators.hpp operators header]]
-[def _print_header_        [headerref boost/yap/print.hpp print header]]
+[def _expr_header_         `<boost/yap/expression.hpp>` header]
+[def _print_header_        `<boost/yap/print.hpp>` header]
 
 [def _make_term_           [funcref boost::yap::make_terminal `make_terminal()`]]
 [def _make_expr_           [funcref boost::yap::make_expression `make_expression()`]]
@@ -102,13 +114,13 @@
 [def _unary_member_m_      [macroref BOOST_YAP_USER_UNARY_OPERATOR_MEMBER]]
 [def _binary_member_m_     [macroref BOOST_YAP_USER_BINARY_OPERATOR_MEMBER]]
 [def _member_call_m_       [macroref BOOST_YAP_USER_MEMBER_CALL_OPERATOR]]
-[def _binary_free_m_       [macroref BOOST_YAP_USER_FREE_BINARY_OPERATOR]]
+[def _member_assign_m_     [macroref BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER]]
+[def _binary_nonmember_m_  [macroref BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR]]
 [def _expr_if_else_m_      [macroref BOOST_YAP_USER_EXPR_IF_ELSE]]
 [def _udt_any_if_else_m_   [macroref BOOST_YAP_USER_UDT_ANY_IF_ELSE]]
 [def _udt_unary_m_         [macroref BOOST_YAP_USER_UDT_UNARY_OPERATOR]]
 [def _udt_udt_binary_m_    [macroref BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR]]
 [def _udt_any_binary_m_    [macroref BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR]]
-[def _conv_op_m_           [macroref BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE]]
 [def _no_constexpr_if_m_   [macroref BOOST_NO_CONSTEXPR_IF]]
 [def _literal_op_m_        [macroref BOOST_YAP_USER_LITERAL_PLACEHOLDER_OPERATOR]]
 
@@ -120,20 +132,25 @@
 [def _Ets_                 Expression templates]
 [def _et_                  expression template]
 [def _ets_                 expression templates]
-[def _cp_                  customization point]
-[def _cps_                 customization points]
 
-[def _how_treated_         [link boost_yap__proposed_.manual.tutorial.how_expression_operands_are_treated How Expression Operands Are Treated]]
+[def _emdash_              \u2014]
 
+[def _how_treated_         [link boost_yap__proposed_.manual.how_expression_operands_are_treated How Expression Operands Are Treated]]
+
+[def _examples_            [link boost_yap__proposed_.manual.examples Examples]]
 [def _calc3_               [link boost_yap__proposed_.manual.examples.calc3 Calc3]]
 [def _mixed_               [link boost_yap__proposed_.manual.examples.mixed Mixed]]
 [def _lazy_vector_         [link boost_yap__proposed_.manual.examples.lazy_vector Lazy Vector]]
+[def _tarray_              [link boost_yap__proposed_.manual.examples.tarray TArray]]
+
+[def _future_group_        [link boost_yap__proposed_.manual.examples.future_group Future Group]]
+[def _pipable_algorithms_  [link boost_yap__proposed_.manual.examples.pipable_algorithms Pipable Algorithms]]
 
 [include intro.qbk]
-[include compiler_support.qbk]
-[include dependencies.qbk]
 [include manual.qbk]
 [include concepts.qbk]
+[include compiler_support.qbk]
+[include dependencies.qbk]
 
 [xinclude yap_reference.xml]
 

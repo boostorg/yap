@@ -1,3 +1,8 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //[ vec3
 #include <boost/yap/yap.hpp>
 
@@ -50,10 +55,9 @@ struct vec3 : vec3_terminal
     int const & operator[] (std::ptrdiff_t i) const
     { return boost::yap::value(*this)[i]; }
 
-    template <typename T>
-    vec3 & operator= (T const & t)
+    template <typename Expr>
+    vec3 & operator= (Expr const & expr)
     {
-        decltype(auto) expr = boost::yap::as_expr(t);
         (*this)[0] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{0}));
         (*this)[1] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{1}));
         (*this)[2] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{2}));
@@ -113,9 +117,6 @@ int main()
     int num = count_leaves(expr1);
     std::cout << num << std::endl;
 
-    // We're able to write this more simply than the equivalent Proto code;
-    // since YAP is always lazy, we can just use the expressions below
-    // directly.
     num = count_leaves(b + 3 * c);
     std::cout << num << std::endl;
 

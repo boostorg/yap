@@ -21,23 +21,20 @@ add_test_executable(left)
 add_test_executable(right)
 add_test_executable(print)
 add_test_executable(default_eval)
-add_test_executable(user_operator_eval)
-add_test_executable(user_eval_expression_as)
-add_test_executable(user_operator_and_eval_expression_as)
-add_test_executable(user_expression_transform)
+add_test_executable(user_expression_transform_1)
 add_test_executable(user_expression_transform_2)
-add_test_executable(user_expression_transform_3)
-add_test_executable(user_expression_transform_4)
 add_test_executable(placeholder_eval)
 add_test_executable(call_expr)
-add_test_executable(call_expr_implicit)
 add_test_executable(reference_returns)
 add_test_executable(depth_stress_test_left)
 add_test_executable(depth_stress_test_right)
 add_test_executable(lazy_vector_alloc_test)
 add_test_executable(vector_alloc_test)
 add_test_executable(operators_unary)
+add_test_executable(comma)
+add_test_executable(if_else)
 add_test_executable(expression_function)
+add_test_executable(transform)
 
 add_executable(
     compile_tests
@@ -52,7 +49,7 @@ add_executable(
     compile_term_plus_x_this_ref_overloads.cpp
     compile_const_term.cpp
     compile_move_only_types.cpp
-    compile_copy_only_types.cpp
+    compile_user_macros.cpp
 )
 target_link_libraries(compile_tests yap)
 if (clang_on_linux)

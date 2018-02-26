@@ -1,3 +1,8 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
 #include <string>
@@ -41,7 +46,7 @@ struct user_expr
     // Member operator overloads for operator&&().  These will match any value
     // on the right-hand side, even another expression.  Left as-is, there is
     // no matching overload for x && y, where x is not an expression and y is.
-    // BOOST_YAP_USER_FREE_BINARY_OPERATOR can help with that.
+    // BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR can help with that.
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, ::user_expr)
 };
 /// [USER_BINARY_OPERATOR_MEMBER]
@@ -83,7 +88,7 @@ struct lazy_vector_3 :
 
 #define user_expr user_expr_4
 
-/// [USER_FREE_BINARY_OPERATOR]
+/// [USER_NONMEMBER_BINARY_OPERATOR]
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
@@ -99,8 +104,8 @@ struct user_expr
 // Free operator overloads for operator&&().  These will match any value on
 // the left-hand side, *except* an expression; the right-hand side must be an
 // expression.
-BOOST_YAP_USER_FREE_BINARY_OPERATOR(logical_and, ::user_expr)
-/// [USER_FREE_BINARY_OPERATOR]
+BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(logical_and, ::user_expr)
+/// [USER_NONMEMBER_BINARY_OPERATOR]
 
 struct lazy_vector_4 :
     user_expr<
@@ -263,9 +268,9 @@ struct is_vector : std::false_type {};
 template <typename T, typename A>
 struct is_vector<std::vector<T, A>> : std::true_type {};
 
-// Defines an overload of operator&&() that matches a string on either side,
-// and any type (possibly a string) on the other.
-BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(logical_and, ::user_expr, is_string)
+// Defines an overload of operator&&() that matches a vector on either side,
+// and any type (possibly a vector) on the other.
+BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(logical_and, ::user_expr, is_vector)
 /// [USER_UDT_ANY_BINARY_OPERATOR]
 
 struct lazy_vector_9 :
@@ -307,6 +312,32 @@ struct lazy_vector_10 :
 
 #undef user_expr
 
+#define user_expr user_expr_11
+
+/// [USER_ASSIGN_OPERATOR_MEMBER]
+template <boost::yap::expr_kind Kind, typename Tuple>
+struct user_expr
+{
+    static const boost::yap::expr_kind kind = Kind;
+
+    Tuple elements;
+
+    // Member operator overloads for operator=().  These will match any value
+    // on the right-hand side, even another expression, except that it will
+    // not conflict with the asignment or move assignment operators.
+    BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER(user_expr, ::user_expr)
+};
+/// [USER_ASSIGN_OPERATOR_MEMBER]
+
+struct lazy_vector_11 :
+    user_expr<
+        boost::yap::expr_kind::terminal,
+        boost::hana::tuple<std::vector<double>>
+    >
+{};
+
+#undef user_expr
+
 
 int main ()
 {
@@ -320,6 +351,7 @@ int main ()
     lazy_vector_8 v8;
     lazy_vector_9 v9;
     lazy_vector_10 v10;
+    lazy_vector_11 v11;
 
     return 0;
 }

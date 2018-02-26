@@ -1,13 +1,18 @@
-#define BOOST_YAP_CONVERSION_OPERATOR_TEMPLATE 1
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
 #include <gtest/gtest.h>
 
-#include <sstream>
 
-
-template <typename T>
+template<typename T>
 using term = boost::yap::terminal<boost::yap::expression, T>;
+
+template<typename T>
+using ref = boost::yap::expression_ref<boost::yap::expression, T>;
 
 namespace yap = boost::yap;
 namespace bh = boost::hana;
@@ -18,59 +23,233 @@ namespace user {
     struct number
     {
         double value;
-
-        friend number operator+ (number lhs, number rhs)
-        { return number{lhs.value + rhs.value}; }
-
-        friend number operator* (number lhs, number rhs)
-        { return number{lhs.value * rhs.value}; }
     };
 
-    number naxpy (number a, number x, number y)
-    { return number{a.value * x.value + y.value + 10.0}; }
+    struct eval_xform
+    {
+        auto
+        operator()(yap::expr_tag<yap::expr_kind::terminal>, number const & n)
+        {
+            return n;
+        }
 
-//[ naxpy_transform_decl
-    template <typename Expr1, typename Expr2, typename Expr3>
-    decltype(auto) transform_expression (
-        boost::yap::expression<
-            boost::yap::expr_kind::plus,
-            boost::hana::tuple<
-                boost::yap::expression<
-                    boost::yap::expr_kind::multiplies,
-                    boost::hana::tuple<
-                        Expr1,
-                        Expr2
-                    >
-                >,
-                Expr3
-            >
-        > const & expr
-    ) {
-        return naxpy(
-            evaluate(expr.left().left()),
-            evaluate(expr.left().right()),
-            evaluate(expr.right())
-        );
-    }
-//]
+        template<typename Expr>
+        decltype(auto) operator()(
+            yap::expression<yap::expr_kind::negate, bh::tuple<Expr>> const &
+                expr)
+        {
+            number const n = transform(yap::value(expr), *this);
+            return number{-n.value};
+        }
 
+        template<typename Expr1, typename Expr2>
+        decltype(auto) operator()(yap::expression<
+                                  yap::expr_kind::plus,
+                                  bh::tuple<Expr1, Expr2>> const & expr)
+        {
+            number const lhs = transform(yap::left(expr), *this);
+            number const rhs = transform(yap::right(expr), *this);
+            return number{lhs.value + rhs.value};
+        }
+    };
 }
 
-TEST(user_expression_transform_2, test_user_expression_transform_2)
+template<typename Expr>
+auto make_ref(Expr && expr)
 {
-    term<user::number> k{{2.0}};
+    using type = yap::detail::operand_type_t<yap::expression, Expr>;
+    // int i = yap::detail::make_operand<type>{};
+    return yap::detail::make_operand<type>{}(static_cast<Expr &&>(expr));
+}
 
-    term<user::number> a{{1.0}};
-    term<user::number> x{{42.0}};
-    term<user::number> y{{3.0}};
+TEST(just_negate, test_user_expression_transform_4)
+{
+    {
+        term<user::number> a{{1.0}};
+
+        {
+            user::number result = transform(a, user::eval_xform{});
+            EXPECT_EQ(result.value, 1);
+        }
+
+        {
+            user::number result = transform(make_ref(a), user::eval_xform{});
+            EXPECT_EQ(result.value, 1);
+        }
+
+        {
+            user::number result = transform(-a, user::eval_xform{});
+            EXPECT_EQ(result.value, -1);
+        }
+
+        {
+            auto expr = make_ref(a);
+            user::number result = transform(-expr, user::eval_xform{});
+            EXPECT_EQ(result.value, -1);
+        }
+
+        {
+            auto expr = -a;
+            user::number result = transform(expr, user::eval_xform{});
+            EXPECT_EQ(result.value, -1);
+        }
+
+        {
+            auto expr1 = make_ref(a);
+            auto expr2 = make_ref(expr1);
+            user::number result = transform(expr2, user::eval_xform{});
+            EXPECT_EQ(result.value, 1);
+        }
+
+        {
+            auto expr1 = -a;
+            auto expr2 = make_ref(expr1);
+            user::number result = transform(expr2, user::eval_xform{});
+            EXPECT_EQ(result.value, -1);
+        }
+
+        {
+            auto expr1 = make_ref(a);
+            auto expr2 = -expr1;
+            user::number result = transform(expr2, user::eval_xform{});
+            EXPECT_EQ(result.value, -1);
+        }
+
+        {
+            auto expr1 = a;
+            auto expr2 = make_ref(expr1);
+            auto expr3 = make_ref(expr2);
+            user::number result = transform(expr3, user::eval_xform{});
+            EXPECT_EQ(result.value, 1);
+        }
+
+        {
+            auto expr1 = -a;
+            auto expr2 = make_ref(expr1);
+            auto expr3 = make_ref(expr2);
+            user::number result = transform(expr3, user::eval_xform{});
+            EXPECT_EQ(result.value, -1);
+        }
+
+        {
+            auto expr1 = make_ref(a);
+            auto expr2 = -expr1;
+            auto expr3 = make_ref(expr2);
+            user::number result = transform(expr3, user::eval_xform{});
+            EXPECT_EQ(result.value, -1);
+        }
+
+        {
+            auto expr1 = make_ref(a);
+            auto expr2 = make_ref(expr1);
+            auto expr3 = -expr2;
+            user::number result = transform(expr3, user::eval_xform{});
+            EXPECT_EQ(result.value, -1);
+        }
+    }
 
     {
-//[ naxpy_transform_use
-        auto expr = (a * x + y) * (a * x + y) + (a * x + y);
+        user::number result =
+            transform(-term<user::number>{{1.0}}, user::eval_xform{});
+        EXPECT_EQ(result.value, -1);
+    }
+}
 
-        user::number result = expr;
-//]
+TEST(negate_in_plus, test_user_expression_transform_4)
+{
+    term<user::number> a{{1.0}};
+    term<user::number> x{{41.0}};
 
-        EXPECT_EQ(result.value, 55 * 55 + 55 + 10);
+    {
+        user::number result = transform(a + x, user::eval_xform{});
+        EXPECT_EQ(result.value, 42);
+    }
+
+
+    {
+        user::number result =
+            transform(make_ref(a) + make_ref(x), user::eval_xform{});
+        EXPECT_EQ(result.value, 42);
+    }
+
+    {
+        user::number result = transform(make_ref(a) + x, user::eval_xform{});
+        EXPECT_EQ(result.value, 42);
+    }
+
+    {
+        user::number result = transform(a + make_ref(x), user::eval_xform{});
+        EXPECT_EQ(result.value, 42);
+    }
+
+    {
+        user::number result = transform(a + x, user::eval_xform{});
+        EXPECT_EQ(result.value, 42);
+    }
+
+
+    {
+        user::number result =
+            transform(-make_ref(a) + make_ref(x), user::eval_xform{});
+        EXPECT_EQ(result.value, 40);
+    }
+
+    {
+        user::number result = transform(-make_ref(a) + x, user::eval_xform{});
+        EXPECT_EQ(result.value, 40);
+    }
+
+    {
+        user::number result = transform(-a + make_ref(x), user::eval_xform{});
+        EXPECT_EQ(result.value, 40);
+    }
+
+    {
+        user::number result = transform(-a + x, user::eval_xform{});
+        EXPECT_EQ(result.value, 40);
+    }
+
+
+    {
+        user::number result =
+            transform(make_ref(a) + -make_ref(x), user::eval_xform{});
+        EXPECT_EQ(result.value, -40);
+    }
+
+    {
+        user::number result = transform(make_ref(a) + -x, user::eval_xform{});
+        EXPECT_EQ(result.value, -40);
+    }
+
+    {
+        user::number result = transform(a + -make_ref(x), user::eval_xform{});
+        EXPECT_EQ(result.value, -40);
+    }
+
+    {
+        user::number result = transform(a + -x, user::eval_xform{});
+        EXPECT_EQ(result.value, -40);
+    }
+
+
+    {
+        user::number result =
+            transform(-make_ref(a) + -make_ref(x), user::eval_xform{});
+        EXPECT_EQ(result.value, -42);
+    }
+
+    {
+        user::number result = transform(-make_ref(a) + -x, user::eval_xform{});
+        EXPECT_EQ(result.value, -42);
+    }
+
+    {
+        user::number result = transform(-a + -make_ref(x), user::eval_xform{});
+        EXPECT_EQ(result.value, -42);
+    }
+
+    {
+        user::number result = transform(-a + -x, user::eval_xform{});
+        EXPECT_EQ(result.value, -42);
     }
 }

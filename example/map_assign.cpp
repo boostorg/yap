@@ -1,3 +1,8 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //[ map_assign
 #include <boost/yap/algorithm.hpp>
 
@@ -12,7 +17,8 @@ template <typename Key, typename Value, typename Allocator>
 struct map_list_of_transform
 {
     template <typename Fn, typename Key2, typename Value2>
-    auto operator() (boost::yap::call_tag, Fn const & fn, Key2 && key, Value2 && value)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::call>,
+                     Fn const & fn, Key2 && key, Value2 && value)
     {
         // Recurse into the function subexpression.  Remember, transform()
         // walks the nodes in an expression tree looking for matches.  Once it
@@ -21,15 +27,15 @@ struct map_list_of_transform
         // matched by transform().
         boost::yap::transform(fn, *this);
         map.emplace(
-            Key{std::forward<Key2 &&>(key)},
-            Value{std::forward<Value2 &&>(value)}
+            std::forward<Key2 &&>(key),
+            std::forward<Value2 &&>(value)
         );
         // All we care about are the side effects of this transform, so we can
         // return any old thing here.
         return 0;
     }
 
-    std::map<Key, Value, Allocator> map;
+    std::map<Key, Value, Allocator> & map;
 };
 
 
@@ -46,9 +52,10 @@ struct map_list_of_expr
     template <typename Key, typename Value, typename Allocator>
     operator std::map<Key, Value, Allocator> () const
     {
-        map_list_of_transform<Key, Value, Allocator> transform;
+        std::map<Key, Value, Allocator> retval;
+        map_list_of_transform<Key, Value, Allocator> transform{retval};
         boost::yap::transform(*this, transform);
-        return transform.map;
+        return retval;
     }
 
     BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::map_list_of_expr)

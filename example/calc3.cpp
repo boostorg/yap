@@ -1,3 +1,8 @@
+// Copyright (C) 2016-2018 T. Zachary Laine
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 //[ calc3
 #include <boost/yap/expression.hpp>
 
@@ -14,13 +19,14 @@ struct get_arity
     // Base case 1: Match a placeholder terminal, and return its arity as the
     // result.
     template <long long I>
-    boost::hana::llong<I> operator() (boost::yap::terminal_tag, boost::yap::placeholder<I>)
+    boost::hana::llong<I> operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
+                                      boost::yap::placeholder<I>)
     { return boost::hana::llong_c<I>; }
 
     // Base case 2: Match any other terminal.  Return 0; non-placeholders to
     // not contribute to arity.
     template <typename T>
-    auto operator() (boost::yap::terminal_tag, T &&)
+    auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>, T &&)
     {
         using namespace boost::hana::literals;
         return 0_c;
@@ -28,15 +34,12 @@ struct get_arity
 
     // Recursive case: Match any expression not covered above, and return the
     // maximum of its children's arities.
-    template <typename Expr>
-    auto operator() (Expr const & expr)
+    template <boost::yap::expr_kind Kind, typename... Arg>
+    auto operator() (boost::yap::expr_tag<Kind>, Arg &&... arg)
     {
         return boost::hana::maximum(
-            boost::hana::transform(
-                expr.elements,
-                [](auto const & element) {
-                    return boost::yap::transform(element, get_arity{});
-                }
+            boost::hana::make_tuple(
+                boost::yap::transform(std::forward<Arg>(arg), get_arity{})...
             )
         );
     }

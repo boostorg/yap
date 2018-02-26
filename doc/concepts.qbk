@@ -10,9 +10,10 @@ a type that models _Expr_; `e` is an object of type `E`; and `Tuple` is an
 instantiation of _tuple_.
 
 [table Expression Requirements
-    [[Expression]    [Type]     [Description]                      [Notes]]
-    [[`E::kind`]     [_kind_]   [ The kind of expression `E` is. ]  [ Must be a compile-time constant. ]]
-    [[`e.elements`]  [`Tuple`]  [ The child expressions of `e`. ]     [ The types of the elements must be appropriate to the kind of the expression. ]]
+    [[Expression]    [Type]     [Description]                           [Notes]]
+    [[`E::kind`]     [_kind_]   [ The kind of expression `E` is. ]      [ Must be a compile-time constant. ]]
+    [[`e.elements`]  [`Tuple`]  [ The child expressions of `e`. ]       [ The types of the elements must be appropriate to the kind of the expression. ]]
+    [[`E e{t}`]      []         [ Construction/initialization of `e`. ] [ `t` must be stored in `e.elements`. ]]
 ]
 
 As stated above, the `elements` data member must match the kind of the expression:
@@ -61,11 +62,11 @@ its template parameters:
 
     template <typename Expr1, typename Expr2, typename Expr3>
     decltype(auto) xform (
-        bost::yap::expression<
-            bost::yap::expr_kind::plus,
+        boost::yap::expression<
+            boost::yap::expr_kind::plus,
             boost::hana::tuple<
-                bost::yap::expression<
-                    bost::yap::expr_kind::multiplies,
+                boost::yap::expression<
+                    boost::yap::expr_kind::multiplies,
                     boost::hana::tuple<
                         Expr1,
                         Expr2

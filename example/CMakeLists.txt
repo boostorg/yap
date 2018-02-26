@@ -22,6 +22,11 @@ add_sample(vector)
 add_sample(mixed)
 add_sample(map_assign)
 add_sample(future_group)
+add_sample(transform_terminals)
+add_sample(pipable_algorithms)
+if (have_constexpr_if) # TODO
+    add_sample(let)
+endif ()
 
 add_executable(autodiff autodiff_example.cpp)
 target_link_libraries(autodiff yap boost autodiff_library)
