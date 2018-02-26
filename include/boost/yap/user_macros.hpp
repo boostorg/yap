@@ -149,7 +149,8 @@
     {                                                                          \
         static_assert(                                                         \
             ::boost::yap::expr_kind::op_name !=                                \
-            ::boost::yap::expr_kind::assign);                                  \
+                ::boost::yap::expr_kind::assign,                               \
+            "Please use BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER instead.");      \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
         using rhs_type =                                                       \
@@ -163,9 +164,6 @@
     template<typename Expr>                                                    \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(Expr && rhs) &            \
     {                                                                          \
-        static_assert(                                                         \
-            ::boost::yap::expr_kind::op_name !=                                \
-            ::boost::yap::expr_kind::assign);                                  \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
         using rhs_type =                                                       \
@@ -179,9 +177,6 @@
     template<typename Expr>                                                    \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(Expr && rhs) &&           \
     {                                                                          \
-        static_assert(                                                         \
-            ::boost::yap::expr_kind::op_name !=                                \
-            ::boost::yap::expr_kind::assign);                                  \
         using this_type =                                                      \
             ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>;            \
         using rhs_type =                                                       \
