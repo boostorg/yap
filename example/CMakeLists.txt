@@ -1,8 +1,15 @@
 include_directories(${CMAKE_HOME_DIRECTORY})
 
+include(CTest)
+
+enable_testing()
+
+add_custom_target(run_examples COMMAND ${CMAKE_CTEST_COMMAND} -VV -C ${CMAKE_CFG_INTDIR})
+
 macro(add_sample name)
     add_executable(${name} ${name}.cpp)
     target_link_libraries(${name} yap)
+    add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name})
     if (clang_on_linux)
         target_link_libraries(${name} c++)
     endif ()
@@ -24,7 +31,7 @@ add_sample(map_assign)
 add_sample(future_group)
 add_sample(transform_terminals)
 add_sample(pipable_algorithms)
-if (have_constexpr_if) # TODO
+if (constexpr_if_define STREQUAL "-DBOOST_NO_CONSTEXPR_IF=0")
     add_sample(let)
 endif ()
 
