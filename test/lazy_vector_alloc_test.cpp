@@ -102,5 +102,5 @@ TEST(allocations, lazy_vector_alloc_text)
     std::cout << '{' << v1[0] << ',' << v1[1] << ',' << v1[2] << ',' << v1[3]
               << '}' << "\n";
 
-    EXPECT_EQ(allocations, 3);
+    EXPECT_EQ(allocations, 0);
 }
