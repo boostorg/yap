@@ -77,7 +77,7 @@ script:
         mkdir $build_dir
         cd $build_dir
         cmake $ASANFLAG -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$build_type ..
-        VERBOSE=1 make -j4 && CTEST_OUTPUT_ON_FAILURE=1 CTEST_PARALLEL_LEVEL=4 make check && make run_examples
+        VERBOSE=1 make -j4 && CTEST_OUTPUT_ON_FAILURE=1 CTEST_PARALLEL_LEVEL=4 ASAN_OPTIONS=alloc_dealloc_mismatch=0 make check && ASAN_OPTIONS=alloc_dealloc_mismatch=0 make run_examples
         if [ $? -ne 0 ]; then exit 1; fi
         cd ..
         rm -rf $build_dir
