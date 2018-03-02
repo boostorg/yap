@@ -26,11 +26,11 @@ struct expr
 };
 
 
-static_assert(yap::detail::copy_or_move<int, int const &>::value);
-static_assert(yap::detail::copy_or_move<int, int &>::value);
-static_assert(yap::detail::copy_or_move<int, int &&>::value);
-static_assert(!yap::detail::copy_or_move<int, int const &&>::value);
-static_assert(!yap::detail::copy_or_move<int, int>::value);
+static_assert(yap::detail::copy_or_move<int, int const &>::value, "");
+static_assert(yap::detail::copy_or_move<int, int &>::value, "");
+static_assert(yap::detail::copy_or_move<int, int &&>::value, "");
+static_assert(!yap::detail::copy_or_move<int, int const &&>::value, "");
+static_assert(!yap::detail::copy_or_move<int, int>::value, "");
 
 
 void compile_user_macros()
