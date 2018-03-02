@@ -188,10 +188,10 @@ namespace boost { namespace yap {
                 } else if constexpr (
                     kind == expr_kind::terminal ||
                     (!ValueOfTerminalsOnly && arity == expr_arity::one)) {
-                    if constexpr (
-                        std::is_lvalue_reference<T>{} ||
-                        detail::
-                            lvalue_ref_ith_element<decltype(x.elements), 0>{}) {
+                    if constexpr (is_ref_t<remove_cv_ref_t<decltype(
+                                      x.elements[0_c])>>{}) {
+                        return *x.elements[0_c].value_;
+                    } else if constexpr (std::is_lvalue_reference<T>{}) {
                         return x.elements[0_c];
                     } else {
                         return std::move(x.elements[0_c]);
@@ -504,8 +504,7 @@ namespace boost { namespace yap {
             !is_expr<T>::value,
             "make_terminal() is only defined for non expressions.");
         using result_type = detail::operand_type_t<ExprTemplate, T>;
-        using tuple_type = decltype(std::declval<result_type>().elements);
-        return result_type{tuple_type{static_cast<T &&>(t)}};
+        return detail::make_operand<result_type>{}(static_cast<T &&>(t));
     }
 
 #ifdef BOOST_NO_CONSTEXPR_IF

@@ -34,12 +34,15 @@ struct tarray_expr
     // int & as well as int.
     static_assert(
         Kind != boost::yap::expr_kind::terminal ||
-        std::is_same<Tuple, boost::hana::tuple<int const &>>{} ||
-        std::is_same<Tuple, boost::hana::tuple<int &>>{} ||
-        std::is_same<Tuple, boost::hana::tuple<int>>{} ||
-        std::is_same<Tuple, boost::hana::tuple<std::array<int, 3>>>{},
-        "tarray_expr instantiated with an unsupported terminal type."
-    );
+            std::is_same<
+                Tuple,
+                boost::hana::tuple<boost::yap::detail::ref_t<int const>>>{} ||
+            std::is_same<
+                Tuple,
+                boost::hana::tuple<boost::yap::detail::ref_t<int>>>{} ||
+            std::is_same<Tuple, boost::hana::tuple<int>>{} ||
+            std::is_same<Tuple, boost::hana::tuple<std::array<int, 3>>>{},
+        "tarray_expr instantiated with an unsupported terminal type.");
 
     static const boost::yap::expr_kind kind = Kind;
 

@@ -111,11 +111,11 @@ TEST(address_dereference, operators_unary_test)
 {
     {
         uint32_t i = 1, j = 2, k = 3;
-        term<uint32_t &> x{{j}};
-        term<uint32_t &> const cx{{k}};
+        term<uint32_t &> x{{&j}};
+        term<uint32_t &> const cx{{&k}};
 
         yap::expression<yap::expr_kind::address_of, bh::tuple<term<uint32_t &>>>
-            term_expr = &term<uint32_t &>{{i}};
+            term_expr = &term<uint32_t &>{{&i}};
         yap::expression<
             yap::expr_kind::address_of,
             bh::tuple<term_ref<uint32_t &>>>

@@ -162,15 +162,17 @@ namespace boost { namespace yap { namespace detail {
         typename U = typename operand_value_type_phase_1<T>::type,
         bool RemoveRefs = std::is_rvalue_reference<U>{},
         bool IsExpr = is_expr<T>::value,
-        bool IsLRef = std::is_lvalue_reference<T>{}>
+        bool IsLRefT = std::is_lvalue_reference<T>{},
+        bool IsLRefU = std::is_lvalue_reference<U>{}>
     struct operand_type;
 
     template<
         template<expr_kind, class> class ExprTemplate,
         typename T,
         typename U,
-        bool RemoveRefs>
-    struct operand_type<ExprTemplate, T, U, RemoveRefs, true, false>
+        bool RemoveRefs,
+        bool IsLRefU>
+    struct operand_type<ExprTemplate, T, U, RemoveRefs, true, false, IsLRefU>
     {
         using type = remove_cv_ref_t<T>;
     };
@@ -179,8 +181,9 @@ namespace boost { namespace yap { namespace detail {
         template<expr_kind, class> class ExprTemplate,
         typename T,
         typename U,
-        bool RemoveRefs>
-    struct operand_type<ExprTemplate, T, U, RemoveRefs, true, true>
+        bool RemoveRefs,
+        bool IsLRefU>
+    struct operand_type<ExprTemplate, T, U, RemoveRefs, true, true, IsLRefU>
     {
         using type = expr_ref_t<ExprTemplate, T>;
     };
@@ -189,19 +192,9 @@ namespace boost { namespace yap { namespace detail {
         template<expr_kind, class> class ExprTemplate,
         typename T,
         typename U,
-        bool RemoveRefs,
-        bool IsLRef>
-    struct operand_type<ExprTemplate, T, U, RemoveRefs, true, IsLRef>
-    {
-        using type = remove_cv_ref_t<T>;
-    };
-
-    template<
-        template<expr_kind, class> class ExprTemplate,
-        typename T,
-        typename U,
-        bool IsLRef>
-    struct operand_type<ExprTemplate, T, U, true, false, IsLRef>
+        bool IsLRefT,
+        bool IsLRefU>
+    struct operand_type<ExprTemplate, T, U, true, false, IsLRefT, IsLRefU>
     {
         using type = terminal<ExprTemplate, std::remove_reference_t<U>>;
     };
@@ -210,10 +203,22 @@ namespace boost { namespace yap { namespace detail {
         template<expr_kind, class> class ExprTemplate,
         typename T,
         typename U,
-        bool IsLRef>
-    struct operand_type<ExprTemplate, T, U, false, false, IsLRef>
+        bool IsLRefT,
+        bool IsLRefU>
+    struct operand_type<ExprTemplate, T, U, false, false, IsLRefT, IsLRefU>
     {
         using type = terminal<ExprTemplate, U>;
+    };
+
+    template<
+        template<expr_kind, class> class ExprTemplate,
+        typename T,
+        typename U,
+        bool IsLRefT>
+    struct operand_type<ExprTemplate, T, U, false, false, IsLRefT, true>
+    {
+        using type =
+            terminal<ExprTemplate, ref_t<std::remove_reference_t<U>>>;
     };
 
     template<template<expr_kind, class> class ExprTemplate, typename T>
@@ -229,6 +234,24 @@ namespace boost { namespace yap { namespace detail {
         auto operator()(U && u)
         {
             return T{static_cast<U &&>(u)};
+        }
+    };
+
+    template<template<expr_kind, class> class ExprTemplate, typename T>
+    struct make_operand<
+        ExprTemplate<expr_kind::terminal, hana::tuple<ref_t<T>>>>
+    {
+        auto operator()(
+            ExprTemplate<expr_kind::terminal, hana::tuple<ref_t<T>>> expr)
+        {
+            return expr;
+        }
+
+        template<typename U>
+        auto operator()(U && u)
+        {
+            return ExprTemplate<expr_kind::terminal, hana::tuple<ref_t<T>>>{
+                hana::tuple<ref_t<T>>{ref_t<T>{std::addressof(u)}}};
         }
     };
 
@@ -498,7 +521,7 @@ namespace boost { namespace yap { namespace detail {
         UdtTrait>::type;
 
 
-    // not_copy_or_move
+    // copy_or_move
 
     template<typename LeftT, typename RightT>
     struct copy_or_move : std::false_type

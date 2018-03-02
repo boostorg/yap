@@ -373,7 +373,9 @@
         using lhs_type = typename result_types::lhs_type;                      \
         using rhs_type = typename result_types::rhs_type;                      \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
-        return {tuple_type{lhs_type{static_cast<T &&>(lhs)}, std::move(rhs)}}; \
+        return {tuple_type{::boost::yap::detail::make_operand<lhs_type>{}(     \
+                               static_cast<T &&>(lhs)),                        \
+                           std::move(rhs)}};                                   \
     }                                                                          \
     template<typename T, typename Expr>                                        \
     auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(T && lhs, Expr & rhs)     \
@@ -392,7 +394,8 @@
         using rhs_type = typename result_types::rhs_type;                      \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
         using rhs_tuple_type = typename result_types::rhs_tuple_type;          \
-        return {tuple_type{lhs_type{static_cast<T &&>(lhs)},                   \
+        return {tuple_type{::boost::yap::detail::make_operand<lhs_type>{}(     \
+                               static_cast<T &&>(lhs)),                        \
                            rhs_type{rhs_tuple_type{std::addressof(rhs)}}}};    \
     }
 
@@ -526,7 +529,8 @@
             udt_trait>;                                                        \
         using x_type = typename result_types::x_type;                          \
         using tuple_type = ::boost::hana::tuple<x_type>;                       \
-        return {tuple_type{x_type{static_cast<T &&>(x)}}};                     \
+        return {tuple_type{::boost::yap::detail::make_operand<x_type>{}(       \
+            static_cast<T &&>(x))}};                                           \
     }
 
 
@@ -584,8 +588,10 @@
         using rhs_type = typename result_types::rhs_type;                      \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
         return {tuple_type{                                                    \
-            lhs_type{static_cast<T &&>(lhs)},                                  \
-            rhs_type{static_cast<U &&>(rhs)},                                  \
+            ::boost::yap::detail::make_operand<lhs_type>{}(                    \
+                static_cast<T &&>(lhs)),                                       \
+            ::boost::yap::detail::make_operand<rhs_type>{}(                    \
+                static_cast<U &&>(rhs)),                                       \
         }};                                                                    \
     }
 
@@ -637,8 +643,10 @@
         using lhs_type = typename result_types::lhs_type;                      \
         using rhs_type = typename result_types::rhs_type;                      \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
-        return {tuple_type{lhs_type{static_cast<T &&>(lhs)},                   \
-                           rhs_type{static_cast<U &&>(rhs)}}};                 \
+        return {tuple_type{::boost::yap::detail::make_operand<lhs_type>{}(     \
+                               static_cast<T &&>(lhs)),                        \
+                           ::boost::yap::detail::make_operand<rhs_type>{}(     \
+                               static_cast<U &&>(rhs))}};                      \
     }
 
 

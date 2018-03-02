@@ -111,6 +111,61 @@ namespace boost { namespace yap {
 
         template<typename T>
         using remove_cv_ref_t = typename remove_cv_ref<T>::type;
+
+
+        // ref_t
+
+        template<typename T>
+        struct ref_t
+        {
+            T * value_;
+        };
+
+        template<typename T>
+        struct is_ref_t : std::false_type
+        {
+        };
+
+        template<typename T>
+        struct is_ref_t<ref_t<T>> : std::true_type
+        {
+        };
+
+
+        // term_tuple_elem
+
+        template<typename T>
+        struct term_tuple_elem
+        {
+            using type = T;
+        };
+
+        template<typename T>
+        struct term_tuple_elem<T &>
+        {
+            using type = ref_t<T>;
+        };
+
+        template<
+            template<expr_kind, class> class ExprTemplate,
+            expr_kind Kind,
+            typename Tuple>
+        struct term_tuple_elem<ExprTemplate<Kind, Tuple> &>
+        {
+            using type = ExprTemplate<Kind, Tuple> &;
+        };
+
+        template<
+            template<expr_kind, class> class ExprTemplate,
+            expr_kind Kind,
+            typename Tuple>
+        struct term_tuple_elem<ExprTemplate<Kind, Tuple> const &>
+        {
+            using type = ExprTemplate<Kind, Tuple> const &;
+        };
+
+        template<typename T>
+        using term_tuple_elem_t = typename term_tuple_elem<T>::type;
     }
 
     template<
@@ -142,13 +197,15 @@ namespace boost { namespace yap {
 
     /** A convenience alias for a terminal expression holding a \a T,
         instantiated from expression template \a expr_template. */
-    template<template<expr_kind, class> class expr_template, typename T>
-    using terminal = expr_template<expr_kind::terminal, hana::tuple<T>>;
+    template<template<expr_kind, class> class ExprTemplate, typename T>
+    using terminal = ExprTemplate<
+        expr_kind::terminal,
+        hana::tuple<detail::term_tuple_elem_t<T>>>;
 
     /** A convenience alias for a reference expression holding an expression
         \a T, instantiated from expression template \a expr_template. */
-    template<template<expr_kind, class> class expr_template, typename T>
-    using expression_ref = expr_template<
+    template<template<expr_kind, class> class ExprTemplate, typename T>
+    using expression_ref = ExprTemplate<
         expr_kind::expr_ref,
         hana::tuple<std::remove_reference_t<T> *>>;
 

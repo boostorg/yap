@@ -59,7 +59,7 @@ void compile_const_term()
     {
         term<double> unity{1.0};
         int i_ = 42;
-        term<int const &> i{i_};
+        term<int const &> i{{&i_}};
         yap::expression<
             yap::expr_kind::plus,
             bh::tuple<ref<term<double> &>, term<int const &>>> const expr =
