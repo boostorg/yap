@@ -665,6 +665,38 @@ namespace boost { namespace yap {
         {
             return hana::tuple<Transforms *...>{&transforms...};
         }
+
+        template<bool Strict, bool IsExpr>
+        struct transform_
+        {
+            template<typename Expr, typename Transform, typename... Transforms>
+            decltype(auto) operator()(
+                Expr && expr, Transform & transform, Transforms &... transforms)
+            {
+                auto transform_tuple =
+                    detail::make_transform_tuple(transform, transforms...);
+                constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
+                return detail::
+                    transform_impl<Strict, 0, kind == expr_kind::expr_ref>{}(
+                        static_cast<Expr &&>(expr), transform_tuple);
+            }
+        };
+
+        template<bool Strict>
+        struct transform_<Strict, false>
+        {
+            template<typename Expr, typename Transform, typename... Transforms>
+            decltype(auto) operator()(
+                Expr && expr, Transform & transform, Transforms &... transforms)
+            {
+                auto transform_tuple =
+                    detail::make_transform_tuple(transform, transforms...);
+                return detail::transform_impl<Strict, 0, false>{}(
+                    ::boost::yap::as_expr<minimal_expr>(
+                        static_cast<Expr &&>(expr)),
+                    transform_tuple);
+            }
+        };
     }
 
     /** Returns the result of transforming (all or part of) \a expr using
@@ -679,19 +711,8 @@ namespace boost { namespace yap {
     decltype(auto)
     transform(Expr && expr, Transform && transform, Transforms &&... transforms)
     {
-        auto transform_tuple =
-            detail::make_transform_tuple(transform, transforms...);
-        decltype(auto) expr_ =
-            ::boost::yap::as_expr<minimal_expr>(static_cast<Expr &&>(expr));
-        constexpr expr_kind kind =
-            detail::remove_cv_ref_t<decltype(expr_)>::kind;
-        return detail::transform_impl<
-            false,
-            decltype(expr_),
-            decltype(transform_tuple),
-            0,
-            kind == expr_kind::expr_ref>{}(
-            static_cast<decltype(expr_) &&>(expr_), transform_tuple);
+        return detail::transform_<false, is_expr<Expr>::value>{}(
+            static_cast<Expr &&>(expr), transform, transforms...);
     }
 
     /** Returns the result of transforming \a expr using whichever overload of
@@ -707,19 +728,8 @@ namespace boost { namespace yap {
     decltype(auto) transform_strict(
         Expr && expr, Transform && transform, Transforms &&... transforms)
     {
-        auto transform_tuple =
-            detail::make_transform_tuple(transform, transforms...);
-        decltype(auto) expr_ =
-            ::boost::yap::as_expr<minimal_expr>(static_cast<Expr &&>(expr));
-        constexpr expr_kind kind =
-            detail::remove_cv_ref_t<decltype(expr_)>::kind;
-        return detail::transform_impl<
-            true,
-            decltype(expr_),
-            decltype(transform_tuple),
-            0,
-            kind == expr_kind::expr_ref>{}(
-            static_cast<decltype(expr_) &&>(expr_), transform_tuple);
+        return detail::transform_<true, is_expr<Expr>::value>{}(
+            static_cast<Expr &&>(expr), transform, transforms...);
     }
 
 }}
