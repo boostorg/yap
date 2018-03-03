@@ -76,15 +76,15 @@ script:
     - export ASANVARIANT="off"
     - if [[ "$ASAN" == "on" ]]; then export ASANVARIANT="${ASANVARIANT} on"; fi
     - |
-      for build_type in debug release; do
+      for build_type in Debug Release; do
         for asan_type in $ASANVARIANT; do
           build_dir="build-$build_type-asan-$asan_type"
           mkdir $build_dir
           cd $build_dir
           if [[ "$asan_type" == "on" ]]; then 
-            CXXFLAGS="$CXXFLAGS $ASANFLAGS" cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+            CXXFLAGS="$CXXFLAGS $ASANFLAGS" cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$build_type ..
           else
-            cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+            cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$build_type ..
           fi
           VERBOSE=1 make -j4 && CTEST_OUTPUT_ON_FAILURE=1 CTEST_PARALLEL_LEVEL=4 make check
           if [ $? -ne 0 ]
