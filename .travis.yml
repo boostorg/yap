@@ -80,7 +80,7 @@ script:
           build_dir="build-$build_type-asan-$asan_type"
           mkdir $build_dir
           cd $build_dir
-          if [[ "$asan_type" == "on" ]]; then 
+          if [[ "$asan_type" == "true" ]]; then 
             CXXFLAGS="$CXXFLAGS" cmake -DUSE_ASAN=true -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$build_type ..
           else
             cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$build_type ..
