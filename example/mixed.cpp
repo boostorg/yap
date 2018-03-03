@@ -75,7 +75,7 @@ Cont<T, A> & op_assign (Cont<T, A> & cont, Expr const & e, Op && op)
     decltype(auto) expr = boost::yap::as_expr(e);
     // Transform the expression of sequences into an expression of
     // begin-iterators.
-    auto expr2 = boost::yap::transform(expr, begin{});
+    auto expr2 = boost::yap::transform(boost::yap::as_expr(expr), begin{});
     for (auto && x : cont) {
         // Transform the expression of iterators into an expression of
         // pointed-to-values, evaluate the resulting expression, and call op()

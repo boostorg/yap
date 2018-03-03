@@ -91,7 +91,7 @@ template <typename Expr>
 int count_leaves (Expr const & expr)
 {
     count_leaves_impl impl;
-    boost::yap::transform(expr, impl);
+    boost::yap::transform(boost::yap::as_expr(expr), impl);
     return impl.value;
 }
 

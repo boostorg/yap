@@ -25,7 +25,8 @@ struct map_list_of_transform
         // finds a match, it is finished with that matching subtree.  So
         // without this recursive call, only the top-level call expression is
         // matched by transform().
-        boost::yap::transform(fn, *this);
+        boost::yap::transform(
+            boost::yap::as_expr<boost::yap::minimal_expr>(fn), *this);
         map.emplace(
             std::forward<Key2 &&>(key),
             std::forward<Value2 &&>(value)

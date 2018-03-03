@@ -23,7 +23,8 @@ struct map_list_of_transform
         Key2 && key,
         Value2 && value)
     {
-        boost::yap::transform(fn, *this);
+        boost::yap::transform(
+            boost::yap::as_expr<boost::yap::minimal_expr>(fn), *this);
         map.emplace(
             Key{std::forward<Key2 &&>(key)},
             Value{std::forward<Value2 &&>(value)});

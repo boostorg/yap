@@ -86,10 +86,8 @@ namespace boost { namespace yap { namespace detail {
                 "Out of range placeholder index,");
             using nth_type = nth_element<I - 1, PlaceholderArgs...>;
             return as_expr<minimal_expr>(
-                rvalue_mover<
-                    !std::is_lvalue_reference<nth_type>::value
-                >{}(placeholder_args_[hana::llong<I - 1>{}])
-            );
+                rvalue_mover<!std::is_lvalue_reference<nth_type>::value>{}(
+                    placeholder_args_[hana::llong<I - 1>{}]));
         }
 
         tuple_t placeholder_args_;
@@ -112,9 +110,8 @@ namespace boost { namespace yap { namespace detail {
                 I <= decltype(hana::size(std::declval<tuple_t>()))::value,
                 "Out of range placeholder index,");
             using nth_type = nth_element<I - 1, PlaceholderArgs...>;
-            return rvalue_mover<
-                !std::is_lvalue_reference<nth_type>::value
-            >{}(placeholder_args_[hana::llong<I - 1>{}]);
+            return rvalue_mover<!std::is_lvalue_reference<nth_type>::value>{}(
+                placeholder_args_[hana::llong<I - 1>{}]);
         }
 
         template<typename T>
@@ -127,7 +124,8 @@ namespace boost { namespace yap { namespace detail {
     template<typename T>                                                       \
     decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t)            \
     {                                                                          \
-        return op transform(static_cast<T &&>(t), *this);                      \
+        return op transform(                                                   \
+            as_expr<minimal_expr>(static_cast<T &&>(t)), *this);               \
     }
 
         BOOST_YAP_UNARY_OPERATOR_CASE(+, unary_plus)
@@ -142,12 +140,14 @@ namespace boost { namespace yap { namespace detail {
         template<typename T>
         decltype(auto) operator()(expr_tag<expr_kind::post_inc>, T && t)
         {
-            return transform(static_cast<T &&>(t), *this)++;
+            return transform(
+                as_expr<minimal_expr>(static_cast<T &&>(t)), *this)++;
         }
         template<typename T>
         decltype(auto) operator()(expr_tag<expr_kind::post_dec>, T && t)
         {
-            return transform(static_cast<T &&>(t), *this)--;
+            return transform(
+                as_expr<minimal_expr>(static_cast<T &&>(t)), *this)--;
         }
 
 #undef BOOST_YAP_UNARY_OPERATOR_CASE
@@ -156,8 +156,8 @@ namespace boost { namespace yap { namespace detail {
     template<typename T, typename U>                                           \
     decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t, U && u)    \
     {                                                                          \
-        return transform(static_cast<T &&>(t), *this) op transform(            \
-            static_cast<U &&>(u), *this);                                      \
+        return transform(as_expr<minimal_expr>(static_cast<T &&>(t)), *this)   \
+            op transform(as_expr<minimal_expr>(static_cast<U &&>(u)), *this);  \
     }
 
         BOOST_YAP_BINARY_OPERATOR_CASE(<<, shift_left)
@@ -183,8 +183,10 @@ namespace boost { namespace yap { namespace detail {
         template<typename T, typename U>
         decltype(auto) operator()(expr_tag<expr_kind::comma>, T && t, U && u)
         {
-            return transform(static_cast<T &&>(t), *this),
-                   transform(static_cast<U &&>(u), *this);
+            return transform(
+                       as_expr<minimal_expr>(static_cast<T &&>(t)), *this),
+                   transform(
+                       as_expr<minimal_expr>(static_cast<U &&>(u)), *this);
         }
 //]
 
@@ -206,8 +208,8 @@ namespace boost { namespace yap { namespace detail {
         operator()(expr_tag<expr_kind::subscript>, T && t, U && u)
         {
             return transform(
-                static_cast<T &&>(t),
-                *this)[transform(static_cast<U &&>(u), *this)];
+                as_expr<minimal_expr>(static_cast<T &&>(t)), *this)[transform(
+                as_expr<minimal_expr>(static_cast<U &&>(u)), *this)];
         }
 
 #undef BOOST_YAP_BINARY_OPERATOR_CASE
@@ -216,9 +218,12 @@ namespace boost { namespace yap { namespace detail {
         decltype(auto)
         operator()(expr_tag<expr_kind::if_else>, T && t, U && u, V && v)
         {
-            return transform(static_cast<T &&>(t), *this)
-                       ? transform(static_cast<U &&>(u), *this)
-                       : transform(static_cast<V &&>(v), *this);
+            return transform(as_expr<minimal_expr>(static_cast<T &&>(t)), *this)
+                       ? transform(
+                             as_expr<minimal_expr>(static_cast<U &&>(u)), *this)
+                       : transform(
+                             as_expr<minimal_expr>(static_cast<V &&>(v)),
+                             *this);
         }
 
 //[ evaluation_transform_call
@@ -226,8 +231,10 @@ namespace boost { namespace yap { namespace detail {
         decltype(auto) operator()(
             expr_tag<expr_kind::call>, Callable && callable, Args &&... args)
         {
-            return transform(static_cast<Callable &&>(callable), *this)(
-                transform(static_cast<Args &&>(args), *this)...);
+            return transform(
+                as_expr<minimal_expr>(static_cast<Callable &&>(callable)),
+                *this)(transform(
+                as_expr<minimal_expr>(static_cast<Args &&>(args)), *this)...);
         }
 //]
 

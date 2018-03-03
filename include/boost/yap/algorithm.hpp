@@ -666,7 +666,7 @@ namespace boost { namespace yap {
             return hana::tuple<Transforms *...>{&transforms...};
         }
 
-        template<bool Strict, bool IsExpr>
+        template<bool Strict>
         struct transform_
         {
             template<typename Expr, typename Transform, typename... Transforms>
@@ -679,22 +679,6 @@ namespace boost { namespace yap {
                 return detail::
                     transform_impl<Strict, 0, kind == expr_kind::expr_ref>{}(
                         static_cast<Expr &&>(expr), transform_tuple);
-            }
-        };
-
-        template<bool Strict>
-        struct transform_<Strict, false>
-        {
-            template<typename Expr, typename Transform, typename... Transforms>
-            decltype(auto) operator()(
-                Expr && expr, Transform & transform, Transforms &... transforms)
-            {
-                auto transform_tuple =
-                    detail::make_transform_tuple(transform, transforms...);
-                return detail::transform_impl<Strict, 0, false>{}(
-                    ::boost::yap::as_expr<minimal_expr>(
-                        static_cast<Expr &&>(expr)),
-                    transform_tuple);
             }
         };
     }
@@ -711,7 +695,10 @@ namespace boost { namespace yap {
     decltype(auto)
     transform(Expr && expr, Transform && transform, Transforms &&... transforms)
     {
-        return detail::transform_<false, is_expr<Expr>::value>{}(
+        static_assert(
+            is_expr<Expr>::value,
+            "transfrm() is only defined for expressions.");
+        return detail::transform_<false>{}(
             static_cast<Expr &&>(expr), transform, transforms...);
     }
 
@@ -728,7 +715,10 @@ namespace boost { namespace yap {
     decltype(auto) transform_strict(
         Expr && expr, Transform && transform, Transforms &&... transforms)
     {
-        return detail::transform_<true, is_expr<Expr>::value>{}(
+        static_assert(
+            is_expr<Expr>::value,
+            "transfrm() is only defined for expressions.");
+        return detail::transform_<true>{}(
             static_cast<Expr &&>(expr), transform, transforms...);
     }
 
