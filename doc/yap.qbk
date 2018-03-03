@@ -111,7 +111,7 @@
 [def _value_               [funcref boost::yap::value `value()`]]
 [def _print_               [funcref boost::yap::print `print()`]]
 
-[def _unary_member_m_      [macroref BOOST_YAP_USER_UNARY_OPERATOR_MEMBER]]
+[def _unary_m_             [macroref BOOST_YAP_USER_UNARY_OPERATOR]]
 [def _binary_member_m_     [macroref BOOST_YAP_USER_BINARY_OPERATOR_MEMBER]]
 [def _member_call_m_       [macroref BOOST_YAP_USER_MEMBER_CALL_OPERATOR]]
 [def _member_assign_m_     [macroref BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER]]

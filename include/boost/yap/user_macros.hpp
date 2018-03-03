@@ -19,16 +19,16 @@
 #define BOOST_YAP_CAT_2(dummy, x) x
 
 // unary
-#define BOOST_YAP_OPERATOR_unary_plus(param_list) +param_list
-#define BOOST_YAP_OPERATOR_negate(param_list) -param_list
-#define BOOST_YAP_OPERATOR_dereference(param_list) *param_list
-#define BOOST_YAP_OPERATOR_complement(param_list) ~param_list
-#define BOOST_YAP_OPERATOR_address_of(param_list) &param_list
-#define BOOST_YAP_OPERATOR_logical_not(param_list) !param_list
-#define BOOST_YAP_OPERATOR_pre_inc(param_list) ++param_list
-#define BOOST_YAP_OPERATOR_pre_dec(param_list) --param_list
-#define BOOST_YAP_OPERATOR_post_inc(param_list) ++(int)
-#define BOOST_YAP_OPERATOR_post_dec(param_list) --(int)
+#define BOOST_YAP_OPERATOR_unary_plus(...) +(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_negate(...) -(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_dereference(...) *(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_complement(...) ~(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_address_of(...) &(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_logical_not(...) !(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_pre_inc(...) ++(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_pre_dec(...) --(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_post_inc(...) ++(__VA_ARGS__, int)
+#define BOOST_YAP_OPERATOR_post_dec(...) --(__VA_ARGS__, int)
 
 // binary
 #define BOOST_YAP_OPERATOR_shift_left() <<
@@ -69,51 +69,65 @@
 #endif // BOOST_YAP_DOXYGEN
 
 
-/** Defines operator overloads for unary operator \a op_name that each produce
-    an expression instantiated from the \a expr_template expression template.
-    One overload is defined for each of the qualifiers <code>const &</code>,
+/** Defines operator overloads for unary operator \a op_name that each take an
+    expression instantiated from \a expr_template and return an expression
+    instantiated from the \a result_expr_template expression template.  One
+    overload is defined for each of the qualifiers <code>const &</code>,
     <code>&</code>, and <code>&&</code>.  For the lvalue reference overloads,
-    <code>*this</code> is captured by reference into the resulting expression.
-    For the rvalue reference overload, <code>*this</code> is moved into the
-    resulting expression.
+    the argument is captured by reference into the resulting expression.  For
+    the rvalue reference overload, the argument is moved into the resulting
+    expression.
 
     Example:
-    \snippet user_macros_snippets.cpp USER_UNARY_OPERATOR_MEMBER
+    \snippet user_macros_snippets.cpp USER_UNARY_OPERATOR
 
     \param op_name The operator to be overloaded; this must be one of the \b
     unary enumerators in <code>expr_kind</code>, without the
     <code>expr_kind::</code> qualification.
 
-    \param expr_template The expression template to use to instantiate the
-    result expression.  \a expr_template must be an \ref
+    \param expr_template The expression template to which the overloads apply.
+    \a expr_template must be an \ref ExpressionTemplate.
+
+    \param result_expr_template The expression template to use to instantiate
+    the result expression.  \a result_expr_template must be an \ref
     ExpressionTemplate.
 */
-#define BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, expr_template)           \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) const &                 \
+#define BOOST_YAP_USER_UNARY_OPERATOR(                                         \
+    op_name, expr_template, result_expr_template)                              \
+    template<::boost::yap::expr_kind Kind, typename Tuple>                     \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                            \
+        expr_template<Kind, Tuple> const & x)                                  \
     {                                                                          \
-        using lhs_type = ::boost::yap::detail::                                \
-            operand_type_t<expr_template, decltype(*this)>;                    \
+        using lhs_type = ::boost::yap::detail::operand_type_t<                 \
+            result_expr_template,                                              \
+            expr_template<Kind, Tuple> const &>;                               \
         using tuple_type = ::boost::hana::tuple<lhs_type>;                     \
-        return expr_template<::boost::yap::expr_kind::op_name, tuple_type>{    \
-            tuple_type{                                                        \
-                ::boost::yap::detail::make_operand<lhs_type>{}(*this)}};       \
+        return result_expr_template<                                           \
+            ::boost::yap::expr_kind::op_name,                                  \
+            tuple_type>{                                                       \
+            tuple_type{::boost::yap::detail::make_operand<lhs_type>{}(x)}};    \
     }                                                                          \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) &                       \
+    template<::boost::yap::expr_kind Kind, typename Tuple>                     \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                            \
+        expr_template<Kind, Tuple> & x)                                        \
     {                                                                          \
-        using lhs_type = ::boost::yap::detail::                                \
-            operand_type_t<expr_template, decltype(*this)>;                    \
+        using lhs_type = ::boost::yap::detail::operand_type_t<                 \
+            result_expr_template,                                              \
+            expr_template<Kind, Tuple> &>;                                     \
         using tuple_type = ::boost::hana::tuple<lhs_type>;                     \
-        return expr_template<::boost::yap::expr_kind::op_name, tuple_type>{    \
-            tuple_type{                                                        \
-                ::boost::yap::detail::make_operand<lhs_type>{}(*this)}};       \
+        return result_expr_template<                                           \
+            ::boost::yap::expr_kind::op_name,                                  \
+            tuple_type>{                                                       \
+            tuple_type{::boost::yap::detail::make_operand<lhs_type>{}(x)}};    \
     }                                                                          \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(()) &&                      \
+    template<::boost::yap::expr_kind Kind, typename Tuple>                     \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                            \
+        expr_template<Kind, Tuple> && x)                                       \
     {                                                                          \
-        using this_type =                                                      \
-            ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>;            \
-        using tuple_type = ::boost::hana::tuple<this_type>;                    \
-        return expr_template<::boost::yap::expr_kind::op_name, tuple_type>{    \
-            tuple_type{std::move(*this)}};                                     \
+        using tuple_type = ::boost::hana::tuple<expr_template<Kind, Tuple>>;   \
+        return result_expr_template<                                           \
+            ::boost::yap::expr_kind::op_name,                                  \
+            tuple_type>{tuple_type{std::move(x)}};                             \
     }
 
 
@@ -512,7 +526,7 @@
 */
 #define BOOST_YAP_USER_UDT_UNARY_OPERATOR(op_name, expr_template, udt_trait)   \
     template<typename T>                                                       \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)((T && x))                   \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && x)                     \
         ->::boost::yap::detail::udt_unary_op_result_t<                         \
             expr_template,                                                     \
             ::boost::yap::expr_kind::op_name,                                  \

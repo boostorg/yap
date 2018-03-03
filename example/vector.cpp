@@ -86,7 +86,7 @@ struct is_vector<std::vector<T, A>> : std::true_type {};
 // Define all the expression-returning numeric operators we need.  Each will
 // accept any std::vector<> as any of its arguments, and then any value in the
 // remaining argument, if any -- some of the operators below are unary.
-BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(negate, boost::yap::expression, is_vector); // -
+BOOST_YAP_USER_UDT_UNARY_OPERATOR(negate, boost::yap::expression, is_vector); // -
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(multiplies, boost::yap::expression, is_vector); // *
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(divides, boost::yap::expression, is_vector); // /
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(modulus, boost::yap::expression, is_vector); // %

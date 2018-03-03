@@ -98,7 +98,7 @@ struct is_vector<std::vector<T, A>> : std::true_type
 {
 };
 
-BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(
+BOOST_YAP_USER_UDT_UNARY_OPERATOR(
     negate, boost::yap::expression, is_vector); // -
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(
     multiplies, boost::yap::expression, is_vector); // *

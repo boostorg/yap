@@ -11,18 +11,18 @@
 
 #define user_expr user_expr_1
 
-/// [USER_UNARY_OPERATOR_MEMBER]
+/// [USER_UNARY_OPERATOR]
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
-
-    // Member operator overloads for operator!().
-    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(logical_not, ::user_expr)
 };
-/// [USER_UNARY_OPERATOR_MEMBER]
+
+// Member operator overloads for operator!().
+BOOST_YAP_USER_UNARY_OPERATOR(logical_not, user_expr, user_expr)
+/// [USER_UNARY_OPERATOR]
 
 struct lazy_vector_1 :
     user_expr<

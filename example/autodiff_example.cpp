@@ -28,12 +28,13 @@ struct autodiff_expr
 
     Tuple elements;
 
-    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(negate, ::autodiff_expr)
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::autodiff_expr)
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::autodiff_expr)
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, ::autodiff_expr)
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, ::autodiff_expr)
 };
+
+BOOST_YAP_USER_UNARY_OPERATOR(negate, autodiff_expr, autodiff_expr)
 
 BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(plus, ::autodiff_expr)
 BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(minus, ::autodiff_expr)

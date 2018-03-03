@@ -87,27 +87,6 @@ namespace boost { namespace yap {
 
 #ifdef BOOST_YAP_DOXYGEN
 
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator+();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator-();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator*();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator~();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator&();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator!();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator++();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator--();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator++(int);
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator--(int);
-
         /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
         template<typename T>
         auto operator<<(T && t);
@@ -210,22 +189,6 @@ namespace boost { namespace yap {
         auto operator()(T &&... t);
 
 #else
-
-#define BOOST_YAP_UNARY_MEMBER_OPERATOR(op_name)                               \
-    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
-
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(unary_plus)  // +
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(negate)      // -
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(dereference) // *
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(complement)  // ~
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(address_of)  // &
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(logical_not) // !
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(pre_inc)     // ++
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(pre_dec)     // --
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(post_inc)    // ++(int)
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(post_dec)    // --(int)
-
-#undef BOOST_YAP_UNARY_MEMBER_OPERATOR
 
 #define BOOST_YAP_BINARY_MEMBER_OPERATOR(op_name)                              \
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
@@ -322,27 +285,6 @@ namespace boost { namespace yap {
 
 #ifdef BOOST_YAP_DOXYGEN
 
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator+();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator-();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator*();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator~();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator&();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator!();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator++();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator--();
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator++(int);
-        /** \see BOOST_YAP_USER_UNARY_OPERATOR_MEMBER for full semantics. */
-        auto operator--(int);
-
         /** \see BOOST_YAP_USER_BINARY_OPERATOR_MEMBER for full semantics. */
         template<typename T>
         auto operator<<(T && t);
@@ -446,22 +388,6 @@ namespace boost { namespace yap {
 
 #else
 
-#define BOOST_YAP_UNARY_MEMBER_OPERATOR(op_name)                               \
-    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
-
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(unary_plus)  // +
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(negate)      // -
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(dereference) // *
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(complement)  // ~
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(address_of)  // &
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(logical_not) // !
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(pre_inc)     // ++
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(pre_dec)     // --
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(post_inc)    // ++(int)
-        BOOST_YAP_UNARY_MEMBER_OPERATOR(post_dec)    // --(int)
-
-#undef BOOST_YAP_UNARY_MEMBER_OPERATOR
-
 #define BOOST_YAP_BINARY_MEMBER_OPERATOR(op_name)                              \
     BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, ::boost::yap::expression)
 
@@ -510,7 +436,18 @@ namespace boost { namespace yap {
 
 #ifndef BOOST_YAP_DOXYGEN
 
-#define BOOST_YAP_BINARY_NONMEMBER_OPERATOR(op_name)                           \
+    BOOST_YAP_USER_UNARY_OPERATOR(unary_plus, expression, expression)  // +
+    BOOST_YAP_USER_UNARY_OPERATOR(negate, expression, expression)      // -
+    BOOST_YAP_USER_UNARY_OPERATOR(dereference, expression, expression) // *
+    BOOST_YAP_USER_UNARY_OPERATOR(complement, expression, expression)  // ~
+    BOOST_YAP_USER_UNARY_OPERATOR(address_of, expression, expression)  // &
+    BOOST_YAP_USER_UNARY_OPERATOR(logical_not, expression, expression) // !
+    BOOST_YAP_USER_UNARY_OPERATOR(pre_inc, expression, expression)     // ++
+    BOOST_YAP_USER_UNARY_OPERATOR(pre_dec, expression, expression)     // --
+    BOOST_YAP_USER_UNARY_OPERATOR(post_inc, expression, expression)    // ++(int)
+    BOOST_YAP_USER_UNARY_OPERATOR(post_dec, expression, expression)    // --(int)
+
+#define BOOST_YAP_BINARY_NONMEMBER_OPERATOR(op_name)                    \
     BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(op_name, expression)
 
     BOOST_YAP_BINARY_NONMEMBER_OPERATOR(shift_left)    // <<
@@ -537,6 +474,37 @@ namespace boost { namespace yap {
     BOOST_YAP_USER_EXPR_IF_ELSE(::boost::yap::expression)
 
 #else
+
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator+(expr_template<Kind, Tuple>);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator-(expr_template<Kind, Tuple>);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator*(expr_template<Kind, Tuple>);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator~(expr_template<Kind, Tuple>);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator&(expr_template<Kind, Tuple>);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator!(expr_template<Kind, Tuple>);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator++(expr_template<Kind, Tuple>);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator--(expr_template<Kind, Tuple>);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator++(expr_template<Kind, Tuple>, int);
+    /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
+    template<expr_kind Kind, typename Tuple>
+    auto operator--(expr_template<Kind, Tuple>, int);
 
     /** \see BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR for full semantics. */
     template<typename T, typename Expr>

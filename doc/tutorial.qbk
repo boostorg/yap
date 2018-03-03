@@ -351,7 +351,7 @@ macros and their uses:
 [table Unary and Binary Operator-Defining Macros
     [[Macro] [Use] [First/Left Operand Type] [Right Operand Type] [Notes]]
 
-    [[_unary_member_m_] [Unary member operators.] [`decltype(*this)`, an _Expr_.] [--] []]
+    [[_unary_m_] [Unary free operators.] [An _Expr_ instantiated from _ExprTmpl_ macro parameter `expr_template`.] [--] []]
     [[_binary_member_m_] [Binary member operators.] [`decltype(*this)`, an _Expr_.] [Any type.] []]
     [[_binary_nonmember_m_] [Binary free operators to compliment member operators defined with _binary_nonmember_m_.] [Any non-_Expr_.] [Any _Expr_.] []]
     [[_udt_unary_m_] [Free operators defined over non-_Expr_ types constrained by a type trait (e.g. all `std::map<>`s).] [Any non-_Expr_ that satisfies the given type trait.] [--] []]

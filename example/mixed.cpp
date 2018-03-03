@@ -138,7 +138,7 @@ template <typename T, typename A>
 struct is_mixed<std::list<T, A>> : std::true_type {};
 
 // Define expression-producing operators over std::vectors and std::lists.
-BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(negate, boost::yap::expression, is_mixed); // -
+BOOST_YAP_USER_UDT_UNARY_OPERATOR(negate, boost::yap::expression, is_mixed); // -
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(multiplies, boost::yap::expression, is_mixed); // *
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(divides, boost::yap::expression, is_mixed); // /
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(modulus, boost::yap::expression, is_mixed); // %
