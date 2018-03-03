@@ -195,6 +195,15 @@ you must explicitly call _xform_ yourself in your transform that matches `C`.
 You can see this kind of explicit _xform_ call in the recursive case of
 `get_arity` in the example code above.
 
+[note The code you write with _yap_ is likely going to be very generic,
+especially when you're writing a transform.  To make transforms play nicer
+with generic code, _xform_ `std::forward`s-through anything you give it that
+is not a _yap_ expression.  In other words, it returns any non-_yap_ argument
+completely unchanged.  In situations when you want to make sure that a
+parameter you pass to _xform_ is always a _yap_ expression, use the _as_expr_
+function.  This is commonly needed when writing a transform in which you
+manually recurse by calling _xform_ inside one of your transform overloads.]
+
 [heading Transform Matching]
 
 In _yap_ a _XForm_ is a _Callable_ that has *zero or more* overloads that

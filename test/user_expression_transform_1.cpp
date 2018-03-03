@@ -225,8 +225,8 @@ namespace user {
             Expr1 const & lhs,
             Expr2 const & rhs)
         {
-            return boost::yap::transform(lhs, *this) -
-                   boost::yap::transform(rhs, *this);
+            return boost::yap::transform(::boost::yap::as_expr(lhs), *this) -
+                   boost::yap::transform(::boost::yap::as_expr(rhs), *this);
         }
     };
 
@@ -266,8 +266,8 @@ namespace user {
             Expr1 const & lhs,
             Expr2 const & rhs)
         {
-            return boost::yap::transform(lhs, *this) -
-                   boost::yap::transform(rhs, *this);
+            return boost::yap::transform(::boost::yap::as_expr(lhs), *this) -
+                   boost::yap::transform(::boost::yap::as_expr(rhs), *this);
         }
 
         template<typename Expr1, typename Expr2>
