@@ -31,38 +31,38 @@
 #define BOOST_YAP_OPERATOR_post_dec(...) --(__VA_ARGS__, int)
 
 // binary
-#define BOOST_YAP_OPERATOR_shift_left() <<
-#define BOOST_YAP_OPERATOR_shift_right() >>
-#define BOOST_YAP_OPERATOR_multiplies() *
-#define BOOST_YAP_OPERATOR_divides() /
-#define BOOST_YAP_OPERATOR_modulus() %
-#define BOOST_YAP_OPERATOR_plus() +
-#define BOOST_YAP_OPERATOR_minus() -
-#define BOOST_YAP_OPERATOR_less() <
-#define BOOST_YAP_OPERATOR_greater() >
-#define BOOST_YAP_OPERATOR_less_equal() <=
-#define BOOST_YAP_OPERATOR_greater_equal() >=
-#define BOOST_YAP_OPERATOR_equal_to() ==
-#define BOOST_YAP_OPERATOR_not_equal_to() !=
-#define BOOST_YAP_OPERATOR_logical_or() ||
-#define BOOST_YAP_OPERATOR_logical_and() &&
-#define BOOST_YAP_OPERATOR_bitwise_and() &
-#define BOOST_YAP_OPERATOR_bitwise_or() |
-#define BOOST_YAP_OPERATOR_bitwise_xor() ^
-#define BOOST_YAP_OPERATOR_comma() ,
-#define BOOST_YAP_OPERATOR_mem_ptr() ->*
-#define BOOST_YAP_OPERATOR_assign() =
-#define BOOST_YAP_OPERATOR_shift_left_assign() <<=
-#define BOOST_YAP_OPERATOR_shift_right_assign() >>=
-#define BOOST_YAP_OPERATOR_multiplies_assign() *=
-#define BOOST_YAP_OPERATOR_divides_assign() /=
-#define BOOST_YAP_OPERATOR_modulus_assign() %=
-#define BOOST_YAP_OPERATOR_plus_assign() +=
-#define BOOST_YAP_OPERATOR_minus_assign() -=
-#define BOOST_YAP_OPERATOR_bitwise_and_assign() &=
-#define BOOST_YAP_OPERATOR_bitwise_or_assign() |=
-#define BOOST_YAP_OPERATOR_bitwise_xor_assign() ^=
-#define BOOST_YAP_OPERATOR_subscript() []
+#define BOOST_YAP_OPERATOR_shift_left(...) <<(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_shift_right(...) >>(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_multiplies(...) *(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_divides(...) /(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_modulus(...) %(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_plus(...) +(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_minus(...) -(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_less(...) <(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_greater(...) >(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_less_equal(...) <=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_greater_equal(...) >=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_equal_to(...) ==(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_not_equal_to(...) !=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_logical_or(...) ||(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_logical_and(...) &&(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_bitwise_and(...) &(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_bitwise_or(...) |(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_bitwise_xor(...) ^(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_comma(...) ,(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_mem_ptr(...) ->*(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_assign(...) =(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_shift_left_assign(...) <<=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_shift_right_assign(...) >>=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_multiplies_assign(...) *=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_divides_assign(...) /=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_modulus_assign(...) %=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_plus_assign(...) +=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_minus_assign(...) -=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_bitwise_and_assign(...) &=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_bitwise_or_assign(...) |=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_bitwise_xor_assign(...) ^=(__VA_ARGS__)
+#define BOOST_YAP_OPERATOR_subscript(...) [](__VA_ARGS__)
 
 #define BOOST_YAP_INDIRECT_CALL(macro) BOOST_YAP_CAT(BOOST_YAP_OPERATOR_, macro)
 
@@ -159,7 +159,7 @@
 */
 #define BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(op_name, expr_template)          \
     template<typename Expr>                                                    \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(Expr && rhs) const &      \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(Expr && rhs) const &        \
     {                                                                          \
         static_assert(                                                         \
             ::boost::yap::expr_kind::op_name !=                                \
@@ -176,7 +176,7 @@
                            static_cast<Expr &&>(rhs))}};                       \
     }                                                                          \
     template<typename Expr>                                                    \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(Expr && rhs) &            \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(Expr && rhs) &              \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
@@ -189,7 +189,7 @@
                            static_cast<Expr &&>(rhs))}};                       \
     }                                                                          \
     template<typename Expr>                                                    \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(Expr && rhs) &&           \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(Expr && rhs) &&             \
     {                                                                          \
         using this_type =                                                      \
             ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>;            \
@@ -371,7 +371,7 @@
         template<::boost::yap::expr_kind, class> class ExprTemplate,           \
         ::boost::yap::expr_kind Kind,                                          \
         typename Tuple>                                                        \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(                          \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                            \
         T && lhs, ExprTemplate<Kind, Tuple> && rhs)                            \
         ->::boost::yap::detail::free_binary_op_result_t<                       \
             expr_template,                                                     \
@@ -390,7 +390,7 @@
         return {tuple_type{lhs_type{static_cast<T &&>(lhs)}, std::move(rhs)}}; \
     }                                                                          \
     template<typename T, typename Expr>                                        \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(T && lhs, Expr & rhs)     \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, Expr & rhs)       \
         ->::boost::yap::detail::free_binary_op_result_t<                       \
             expr_template,                                                     \
             ::boost::yap::expr_kind::op_name,                                  \
@@ -578,7 +578,7 @@
 #define BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR(                                \
     op_name, expr_template, t_udt_trait, u_udt_trait)                          \
     template<typename T, typename U>                                           \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(T && lhs, U && rhs)       \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, U && rhs)         \
         ->::boost::yap::detail::udt_udt_binary_op_result_t<                    \
             expr_template,                                                     \
             ::boost::yap::expr_kind::op_name,                                  \
@@ -634,7 +634,7 @@
 #define BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(                                \
     op_name, expr_template, udt_trait)                                         \
     template<typename T, typename U>                                           \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)()(T && lhs, U && rhs)       \
+    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, U && rhs)         \
         ->::boost::yap::detail::udt_any_binary_op_result_t<                    \
             expr_template,                                                     \
             ::boost::yap::expr_kind::op_name,                                  \
