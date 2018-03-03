@@ -27,7 +27,7 @@ matrix:
           compiler: clang
 
         # Gcc
-        - env: GCC_VERSION=6 ASAN=on
+        - env: GCC_VERSION=6 ASAN=off
           os: linux
           compiler: gcc-6
           addons: &gcc6
