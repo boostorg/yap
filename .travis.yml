@@ -6,28 +6,28 @@ script: cmake
 matrix:
     include:
         # OSX
-        - env: ASAN=off MAC_OSX=true
+        - env: ASAN=on MAC_OSX=true
           os: osx
           osx_image: xcode7.3
           compiler: clang
 
-        - env: ASAN=off MAC_OSX=true
+        - env: ASAN=on MAC_OSX=true
           os: osx
           osx_image: xcode8
           compiler: clang
 
-        - env: ASAN=off MAC_OSX=true
+        - env: ASAN=on MAC_OSX=true
           os: osx
           osx_image: xcode8.1
           compiler: clang
 
-        - env: ASAN=off MAC_OSX=true
+        - env: ASAN=on MAC_OSX=true
           os: osx
           osx_image: xcode8.2
           compiler: clang
 
         # Gcc
-        - env: GCC_VERSION=6 ASAN=off
+        - env: GCC_VERSION=6 ASAN=on
           os: linux
           compiler: gcc-6
           addons: &gcc6
@@ -72,9 +72,8 @@ install:
 
 script:
     - cd $CHECKOUT_PATH
-    - export ASANFLAGS="-fsanitize=address,undefined,integer -fno-omit-frame-pointer -fno-sanitize=unsigned-integer-overflow"
-    - export ASANVARIANT="off"
-    - if [[ "$ASAN" == "on" ]]; then export ASANVARIANT="${ASANVARIANT} on"; fi
+    - export ASANVARIANT="false"
+    - if [[ "$ASAN" == "on" ]]; then export ASANVARIANT="true"; fi
     - |
       for build_type in Debug Release; do
         for asan_type in $ASANVARIANT; do
@@ -82,11 +81,11 @@ script:
           mkdir $build_dir
           cd $build_dir
           if [[ "$asan_type" == "on" ]]; then 
-            CXXFLAGS="$CXXFLAGS $ASANFLAGS" cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$build_type ..
+            CXXFLAGS="$CXXFLAGS" cmake -DUSE_ASAN=true -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$build_type ..
           else
             cmake -DBOOST_ROOT=${DEPS_DIR}/boost_1_64_0 -DCMAKE_BUILD_TYPE=$build_type ..
           fi
-          VERBOSE=1 make -j4 && CTEST_OUTPUT_ON_FAILURE=1 CTEST_PARALLEL_LEVEL=4 make check
+          VERBOSE=1 make -j4 && CTEST_OUTPUT_ON_FAILURE=1 CTEST_PARALLEL_LEVEL=4 ASAN_OPTIONS=alloc_dealloc_mismatch=0 make check
           if [ $? -ne 0 ]
           then
             exit 1
