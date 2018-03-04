@@ -64,6 +64,25 @@ elseif (USE_UBSAN)
 endif()
 
 ##################################################
+# Code coverage
+##################################################
+if (UNIX)
+    set(BUILD_COVERAGE false CACHE BOOL "Set to true to enable code coverage when building tests.  Only Linux and Mac are supported.")
+    if (BUILD_COVERAGE)
+        message("-- Building for code coverage; disabling any sanitizers")
+        if (APPLE)
+            set(compile_flags -fprofile-arcs -ftest-coverage)
+            set(CMAKE_BUILD_TYPE RelWithDebInfo)
+            set(link_flags --coverage)
+        else ()
+            set(compile_flags --coverage)
+            set(CMAKE_BUILD_TYPE RelWithDebInfo)
+            set(link_flags --coverage)
+        endif ()
+    endif ()
+endif ()
+
+##################################################
 # Clang+Linux support
 ##################################################
 set(clang_on_linux false)
