@@ -5,8 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#define BOOST_TEST_MODULE
-#include <boost/test/unit_test.hpp>
+#include <boost/test/minimal.hpp>
 
 #include <sstream>
 
@@ -30,66 +29,86 @@ struct callable
     int operator()() { return 42; }
 };
 
-struct exception_1
-{};
-struct exception_2
-{};
-
-struct throwing_callable_1
+struct side_effect_callable_1
 {
     int operator()()
     {
-        throw exception_1{};
+        *value_ = 1;
         return 0;
     }
+
+    int * value_;
 };
 
-struct throwing_callable_2
+struct side_effect_callable_2
 {
     int operator()()
     {
-        throw exception_2{};
+        *value_ = 2;
         return 0;
     }
+
+    int * value_;
 };
 
 
-BOOST_AUTO_TEST_CASE(test_if_else)
+int test_main(int, char * [])
 {
     {
+        int one = 0;
+        int two = 0;
+
         auto true_nothrow_throw_expr = if_else(
             term<bool>{{true}},
             term<callable>{}(),
-            term<throwing_callable_1>{}());
+            term<side_effect_callable_1>{{&one}}());
 
-        BOOST_CHECK_NO_THROW(yap::evaluate(true_nothrow_throw_expr));
         BOOST_CHECK(yap::evaluate(true_nothrow_throw_expr) == 42);
+        BOOST_CHECK(one == 0);
+        BOOST_CHECK(two == 0);
     }
 
     {
+        int one = 0;
+        int two = 0;
+
         auto false_nothrow_throw_expr = if_else(
             term<bool>{{false}},
             term<callable>{}(),
-            term<throwing_callable_1>{}());
+            term<side_effect_callable_1>{{&one}}());
 
-        BOOST_CHECK_THROW(yap::evaluate(false_nothrow_throw_expr), exception_1);
+        BOOST_CHECK(yap::evaluate(false_nothrow_throw_expr) == 0);
+        BOOST_CHECK(one == 1);
+        BOOST_CHECK(two == 0);
     }
 
     {
+        int one = 0;
+        int two = 0;
+
         auto true_throw1_throw2_expr = if_else(
             term<bool>{{true}},
-            term<throwing_callable_1>{}(),
-            term<throwing_callable_2>{}());
+            term<side_effect_callable_1>{{&one}}(),
+            term<side_effect_callable_2>{{&two}}());
 
-        BOOST_CHECK_THROW(yap::evaluate(true_throw1_throw2_expr), exception_1);
+        BOOST_CHECK(yap::evaluate(true_throw1_throw2_expr) == 0);
+        BOOST_CHECK(one == 1);
+        BOOST_CHECK(two == 0);
     }
 
     {
+        int one = 0;
+        int two = 0;
+
         auto false_throw1_throw2_expr = if_else(
             term<bool>{{false}},
-            term<throwing_callable_1>{}(),
-            term<throwing_callable_2>{}());
+            term<side_effect_callable_1>{{&one}}(),
+            term<side_effect_callable_2>{{&two}}());
 
-        BOOST_CHECK_THROW(yap::evaluate(false_throw1_throw2_expr), exception_2);
+        BOOST_CHECK(yap::evaluate(false_throw1_throw2_expr) == 0);
+        BOOST_CHECK(one == 0);
+        BOOST_CHECK(two == 2);
     }
+
+    return 0;
 }

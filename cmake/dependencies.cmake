@@ -6,7 +6,7 @@
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost COMPONENTS unit_test_framework)
+find_package(Boost COMPONENTS)
 if (Boost_INCLUDE_DIRS)
   add_library(boost INTERFACE)
   target_include_directories(boost INTERFACE ${Boost_INCLUDE_DIRS})

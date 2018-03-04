@@ -24,7 +24,7 @@ run lazy_vector_alloc_test.cpp ;
 run vector_alloc_test.cpp ;
 run operators_unary.cpp ;
 run comma.cpp ;
-run if_else.cpp /boost//unit_test_framework ;
+run if_else.cpp ;
 run expression_function.cpp ;
 run transform.cpp ;
 
