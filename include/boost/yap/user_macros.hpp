@@ -135,10 +135,6 @@
     expression.  For the rvalue reference overload, <code>*this</code> is
     moved into the resulting expression.
 
-    The \a rhs parameter to each of the defined overloads may be any type,
-    including an expression.  If \a rhs is a non-expression, it is wrapped in
-    a terminal expression.
-
     Note that this does not work for yap::expr_kinds assign, subscript, or
     call.  Use BOOST_YAP_USER_ASSIGN_OPERATOR,
     BOOST_YAP_USER_SUBSCRIPT_OPERATOR, or BOOST_YAP_USER_CALL_OPERATOR for
@@ -456,6 +452,8 @@
     }
 
 
+#ifndef BOOST_YAP_DOXYGEN
+
 #define BOOST_YAP_USER_CALL_OPERATOR_OPERAND_T(z, n, expr_template)            \
     ::boost::yap::detail::operand_type_t<expr_template, BOOST_PP_CAT(U, n)>
 #define BOOST_YAP_USER_CALL_OPERATOR_MAKE_OPERAND(z, n, expr_template)         \
@@ -463,6 +461,8 @@
         expr_template,                                                         \
         BOOST_PP_CAT(U, n)>>{}(                                                \
         static_cast<BOOST_PP_CAT(U, n) &&>(BOOST_PP_CAT(u, n)))
+
+#endif
 
 /** Defines operator overloads for the call operator taking N parameters
     ("operator()(t0, t1, ... tn-1)") that each produce an expression

@@ -29,7 +29,7 @@ If we evaluate it using _eval_, it does what you would expect:
 [minimal_template_evaluation]
 
 [note There is a reference model of the _ExprTmpl_ concept that comes with
-_yap_: _expr_.  It has all the member and free operators defined.
+_yap_: _expr_.  It has all the overloadable operators defined for it.
 
 _expr_ is great for prototyping, and for quick-and-dirty uses of _ets_, but
 its use of every single operator makes it a suboptimal choice for most use
@@ -92,16 +92,15 @@ be super weird.
 
 [section Kinds of Expressions]
 
-Most of the expression kinds are the overloadable operators (`operator+()`,
-operator<<=()`, etc.), See _kind_ for the full list.
+Most of the expression kinds are the overloadable operators (`operator!()`,
+`operator<<=()`, etc.), See _kind_ for the full list.
 
-There are three special kinds of expressions.
+There are three special kinds of expressions:
 
-[variablelist Special Expression Kinds
+[variablelist
     [[_terminal_] [A terminal contains a non-Expression value, and represents a leaf-node in an
 expression tree.  A terminal may have a _placeholder_ value, in which case it acts as a placeholder. ]]
-    [[_if_else_] [An `if_else` expression is analogous to the C++ ternary operator (`?:`), but
-without the common-type conversion logic.  `if_else` doesn't check that the alternatives are compatible or interconvertible; that's up to you.]]
+    [[_if_else_] [An `if_else` expression is analogous to the C++ ternary operator (`?:`).  It's up to you to make sure that the conditional expression given to `if_else` can be converted to `bool`; _yap_ does not check this.]]
     [[_expr_ref_] [An `expr_ref` expression is one that acts as a (possibly `const`) lvalue reference to another expression.  It exists to prevent unnecessary copies of expressions.]]
 ]
 
@@ -115,7 +114,8 @@ Let's see an expression template type with some operators:
 [lazy_vector_decl]
 
 Those macros are used to define operator overloads that return _Exprs_.  As
-shown here, that sort of operator can be mixed with normal, non-lazy ones.
+shown here, that sort of operator can be mixed with normal, non-lazy ones
+_emdash_ the `operator[]` is a normal eager function.
 
 Use of the macros is not necessary (you can write your own operators that
 return _Exprs_ if you like), but it is suitable 99% of the time.
@@ -124,7 +124,8 @@ Making the operators easy to define like this allows you to define custom
 expression templates that have only the operators defined that are appropriate
 for your use case.
 
-Detailed documentation can be found later in the _operator_macros_ section.
+Detailed documentation on all the available macros can be found later in the
+_operator_macros_ section.
 
 [endsect]
 
@@ -137,16 +138,17 @@ Let's take another look at the example expression from the intro:
 
 [$../../doc/expr.png]
 
-Consider a call to _xform_, operatnig on that expression:
+Consider a call to _xform_, operating on that expression:
 
     auto result = boost::yap::transform(expr, xform);
 
-_yap_'s _xform_ first looks at the top level expression, which is a `+`
-expression.  If `xform` matches the `+` expression, _xform_ is done; it just
-returns `xform(expr)`.  If `xform` does not match the `+` expression, _xform_
-transforms all its operands (which for `operator+()` is just the left and
-right operands), and returns a new `+` expression with those transformed
-operands.  What I mean by "match" is covered in detail below.
+_yap_'s _xform_ first looks at the top level expression, which in this case is
+a `+` expression.  If the transform object `xform` matches the `+` expression,
+_xform_ is done; it just returns `xform(expr)`.  If `xform` does not match the
+`+` expression, _xform_ transforms all its operands (which for `operator+()`
+is just the left and right operands), and returns a new `+` expression with
+those transformed operands.  What I mean by "match" is covered in detail
+below.
 
 The overall effect of this is that _xform_ effectively copies an `expr` node
 that does not match `xform`, and returns a transformed node for an `expr` node
@@ -160,8 +162,8 @@ transform matches an expression does the copy-and-recurse behavior kick in.
 [note There's another form of _xform_, _xform_strict_.  _xform_strict_ is
 identical to _xform_ except that it does not copy or recurse into an unmatched
 expression.  Instead, a failed match is a hard error.  This is useful when you
-have written a transform that you expect to completely match an expression,
-and you want the compiler to tell you if you've made a mistake.]
+have written a transform that you expect to completely transform an
+expression, and you want the compiler to tell you if you've made a mistake.]
 
 One common result of calling _xform_ is that you create a copy of `expr`, with
 a few matching nodes transformed.  But this does not have to be the result of
@@ -175,7 +177,7 @@ _Expr_:
 [calc3_get_arity_xform]
 
 Also, note that in this case the transform is stateless, but you could also
-give your transforms data members containing contextual state:
+give your transform objects data members containing contextual state:
 
 [vector_take_nth_xform]
 
@@ -207,8 +209,9 @@ manually recurse by calling _xform_ inside one of your transform overloads.]
 In _yap_ a _XForm_ is a _Callable_ that has *zero or more* overloads that
 model the _ExprXForm_ or _TagXForm_ concepts.
 
-An _ExprXForm_ overload takes the expression to be transformed.  Here's one
-from a transform object in the _future_group_ example:
+An _ExprXForm_ overload takes a single parameter whose type is the expression
+to be transformed.  Here's one from a transform object in the _future_group_
+example:
 
 [expr_xform]
 
@@ -220,8 +223,9 @@ other kind of transform.
 
 A _TagXForm_ overload takes a tag that indicates the _kind_ of the expression
 to be transformed, and then (loosely) the value of each operand of the
-expression to be transformed.  Here's one from the _pipable_algorithms_
-example:
+expression to be transformed.  This looseness prevents you from needing to
+write out the full type of the matched expression.  Here's one from the
+_pipable_algorithms_ example:
 
 [tag_xform]
 
@@ -324,10 +328,11 @@ this, take a look at the implementation of `operator,()` used in _eval_:
 
 [evaluation_transform_comma]
 
-What this transformation does is transforms the left and right expressions,
-and then use the built-in `operator,()` on the result.  The other operator
-evaluation transformations do the same thing _emdash_ evaluate the operands,
-then return the result of applying the built-in operator to the operands.
+What this transformation does is transform the left and right expressions, and
+then use the built-in `operator,()` on the result.  The evaluation
+transformations for the other operators do the same thing _emdash_ evaluate
+the operands, then return the result of applying the built-in operator to the
+operands.
 
 Function calls are done in a similar way, except that the callable is also a
 subexpression that needs to be evaluated before being called:
@@ -345,20 +350,28 @@ Here are the operator macros and their uses:
 [table Unary and Binary Operator-Defining Macros
     [[Macro] [Use] [First/Left Operand Type] [Right Operand Type] [Notes]]
 
-    [[_unary_m_] [Unary free operators.] [An _Expr_ instantiated from _ExprTmpl_ macro parameter `expr_template`.] [--] []]
-    [[_binary_m_] [Binary free operators.] [Any type.] [Any type.] [At least one parameter must be an _Expr_ instantiated from _ExprTmpl_ macro parameter `expr_template`.]]
+    [[_unary_m_] [Unary operators.] [An _Expr_ instantiated from _ExprTmpl_ macro parameter `expr_template`.] [--] []]
+    [[_binary_m_] [Binary operators.] [Any type.] [Any type.] [At least one parameter must be an _Expr_ instantiated from _ExprTmpl_ macro parameter `expr_template`.]]
     [[_udt_unary_m_] [Free operators defined over non-_Expr_ types constrained by a type trait (e.g. all `std::map<>`s).] [Any non-_Expr_ that satisfies the given type trait.] [--] []]
     [[_udt_udt_binary_m_] [Free operators defined over non-_Expr_ types constrained by a pair of type traits (e.g. a `std::map<>` on the left, and a `std::vector<>` on the right).  Useful for type-asymmetric operators.] [Any non-_Expr_ that satisfies the left-hand type trait.] [Any non-_Expr_ that satisfies the right-hand type trait.] []]
     [[_udt_any_binary_m_] [Free operators defined over pairs of non-_Expr_ types, one constrained by a type trait and one not (e.g. a `std::list<>` on either side, and anything on the other).] [Any non-_Expr_.] [--] [At least one parameter must satisfy the given type trait.]]
 ]
 
-[table The Other Operator-Defining Macros
+Some operators may only be defines as member functions, and so are not covered
+by general-purpose the unary and binary operator macros above:
+
+[table The Member-Only Operator Macros
     [[Macro] [Use] [Operands] [Notes]]
 
-    [[_member_assign_m_] [Member assignment operator.] [Any type except `decltype(*this)`.] [Does not conflict with the assignment or move assignment operators.]]
+    [[_member_assign_m_] [Assignment operator.] [Any type except `decltype(*this)`.] [Does not conflict with the assignment or move assignment operators.]]
     [[_member_subscript_m_] [Subscript operator.] [Any type.] []]
-    [[_member_call_m_] [Member call operator taking any number of parameters.] [Any type.] []]
-    [[_member_call_n_m_] [Member call operator taking exactly N parameters.] [Any type.] []]
+    [[_member_call_m_] [Call operator taking any number of parameters.] [Any type.] []]
+    [[_member_call_n_m_] [Call operator taking exactly N parameters.] [Any type.] []]
+]
+
+[table if_else Psuedo-Operator Macros
+    [[Macro] [Use] [Operands] [Notes]]
+
     [[_expr_if_else_m_] [Free `if_else()` function that requires at least one parameter to be an expression.] [Any type.] [At least one parameter must be an _Expr_.]]
     [[_udt_any_if_else_m_] [Free `if_else()` function for non-_Expr_ types that requires at least one parameter to satisfy the given type trait.] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
 ]
@@ -386,7 +399,7 @@ For example, if you see
     auto expr = a + 1;
 
 you should expect that `a` will be an lvalue reference to some object of type
-`decltype(a)`, regardless of whether `a` is an _Expr_ or a builtin type.
+`decltype(a)`, regardless of whether `a` is a _yap_ _Expr_ or a builtin type.
 Similarly, you should expect the `1` to be an rvalue, whether wrapped in a
 terminal or not.
 

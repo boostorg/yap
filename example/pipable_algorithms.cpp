@@ -57,7 +57,7 @@ struct algorithm_eval
         // Recursively evaluate the left ...
         auto const left_result =
             boost::yap::transform(std::forward<LExpr>(left), *this);
-        // ... and use the result to call teh function on the right.
+        // ... and use the result to call the function on the right.
         return call_algorithm(right, left_result);
     }
 

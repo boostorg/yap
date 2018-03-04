@@ -20,7 +20,7 @@ struct user_expr
     Tuple elements;
 };
 
-// Member operator overloads for operator!().
+// Operator overloads for operator!().
 BOOST_YAP_USER_UNARY_OPERATOR(logical_not, user_expr, user_expr)
 /// [USER_UNARY_OPERATOR]
 
