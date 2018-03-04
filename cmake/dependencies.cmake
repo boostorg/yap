@@ -33,8 +33,17 @@ endif ()
 ###############################################################################
 # Google Benchmark
 ###############################################################################
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark-v1.1.0)
-target_include_directories(benchmark INTERFACE ${CMAKE_HOME_DIRECTORY}/benchmark-v1.1.0/include)
+execute_process(
+    COMMAND git clone https://github.com/google/benchmark.git
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+execute_process(
+    COMMAND git checkout v1.1.0
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/benchmark
+)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
+target_include_directories(benchmark INTERFACE ${CMAKE_HOME_DIRECTORY}/benchmark/include)
 
 
 ###############################################################################
