@@ -59,6 +59,33 @@ if (clang_on_linux)
     target_link_libraries(compile_tests c++)
 endif ()
 
+function(add_compile_fail_test name)
+    try_compile(
+        compiles
+        ${CMAKE_BINARY_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp
+        COMPILE_DEFINITIONS
+            ${std_flag} -I${Boost_INCLUDE_DIRS} -I${CMAKE_SOURCE_DIR}/include
+        OUTPUT_VARIABLE foo
+    )
+    #message("foo=${foo}")
+    if (compiles)
+        message(FATAL_ERROR "Compile-fail test ${name} does not fail to compile.")
+    endif ()
+endfunction()
+
+add_compile_fail_test(fail_transform)
+add_compile_fail_test(fail_get)
+add_compile_fail_test(fail_left)
+add_compile_fail_test(fail_right)
+add_compile_fail_test(fail_cond)
+add_compile_fail_test(fail_then)
+add_compile_fail_test(fail_else)
+add_compile_fail_test(fail_callable)
+add_compile_fail_test(fail_argument)
+add_compile_fail_test(fail_make_expression)
+add_compile_fail_test(fail_make_terminal)
+
 if (BUILD_COVERAGE AND UNIX)
     if (APPLE)
         add_custom_target(
