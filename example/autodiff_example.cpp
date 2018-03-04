@@ -27,19 +27,14 @@ struct autodiff_expr
     static boost::yap::expr_kind const kind = Kind;
 
     Tuple elements;
-
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::autodiff_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::autodiff_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, ::autodiff_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, ::autodiff_expr)
 };
 
 BOOST_YAP_USER_UNARY_OPERATOR(negate, autodiff_expr, autodiff_expr)
 
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(plus, ::autodiff_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(minus, ::autodiff_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(multiplies, ::autodiff_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(divides, ::autodiff_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(plus, autodiff_expr, autodiff_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(minus, autodiff_expr, autodiff_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(multiplies, autodiff_expr, autodiff_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(divides, autodiff_expr, autodiff_expr)
 //]
 
 //[ autodiff_expr_literals_decl
@@ -61,7 +56,7 @@ struct autodiff_fn_expr :
         autodiff_expr {boost::hana::tuple<OPCODE>{Opcode}}
     {}
 
-    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::autodiff_expr);
+    BOOST_YAP_USER_CALL_OPERATOR(::autodiff_expr);
 };
 
 // Someone included <math.h>, so we have to add trailing underscores.

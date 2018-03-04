@@ -50,7 +50,7 @@ struct map_list_of_expr
         return transform.map;
     }
 
-    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::map_list_of_expr)
+    BOOST_YAP_USER_CALL_OPERATOR(::map_list_of_expr)
 };
 
 struct map_list_of_tag

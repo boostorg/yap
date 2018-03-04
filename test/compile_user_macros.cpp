@@ -22,7 +22,7 @@ struct expr
     static yap::expr_kind const kind = Kind;
     Tuple elements;
 
-    BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER(expr, ::expr);
+    BOOST_YAP_USER_ASSIGN_OPERATOR(expr, ::expr);
 };
 
 
@@ -52,7 +52,7 @@ void compile_user_macros()
     negation2 = std::move(negation1);
     assert(negation2.elements[0_c] == 1);
 
-    // Produce a new expression via BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER.
+    // Produce a new expression via BOOST_YAP_USER_ASSIGN_OPERATOR.
     auto expr = negation1 = 2;
     (void)expr;
 }

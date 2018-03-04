@@ -28,9 +28,8 @@ If we evaluate it using _eval_, it does what you would expect:
 
 [minimal_template_evaluation]
 
-[note There is a reference model of the _ExprTmpl_ concept that comes with _yap_:
-_expr_.  It has all the member operators defined, and the nonmember operators
-and the `if_else` pseudo-operator are defined in their respective headers.
+[note There is a reference model of the _ExprTmpl_ concept that comes with
+_yap_: _expr_.  It has all the member and free operators defined.
 
 _expr_ is great for prototyping, and for quick-and-dirty uses of _ets_, but
 its use of every single operator makes it a suboptimal choice for most use
@@ -64,14 +63,15 @@ To use these with _yap_ I might write an expression template for each:
     struct m_expr
     {
         // ...
-        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(times, ::m_expr)
     };
+
+    BOOST_YAP_USER_BINARY_OPERATOR(times, m_expr, m_expr)
 
     template <...>
     struct s_expr
     {
         // ...
-        BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(subscript, ::s_expr)
+        BOOST_YAP_USER_SUBSCRIPT_OPERATOR(::s_expr)
     };
 
 With this, I might write a _yap_ expression like:
@@ -339,21 +339,14 @@ subexpression that needs to be evaluated before being called:
 
 [section Operator Macros]
 
-There are macros that define binary operators as members and macros that
-define them as nonmembers.  (If you got here without reading the _operators_
-section, go read that first.)  For a given operator, the member-defining macro
-will define an operator that accepts anything on the right (making a terminal
-out of a non-_Expr_ operand); the nonmember-defining macro will define an
-operator that will only accept a non-_Expr_ on the left and an _Expr_ on the
-right.  This is to avoid creating ambiguous overload sets.  Here are the
-macros and their uses:
+If you got here without reading the _operators_ section, go read that first.
+Here are the operator macros and their uses:
 
 [table Unary and Binary Operator-Defining Macros
     [[Macro] [Use] [First/Left Operand Type] [Right Operand Type] [Notes]]
 
     [[_unary_m_] [Unary free operators.] [An _Expr_ instantiated from _ExprTmpl_ macro parameter `expr_template`.] [--] []]
-    [[_binary_member_m_] [Binary member operators.] [`decltype(*this)`, an _Expr_.] [Any type.] []]
-    [[_binary_nonmember_m_] [Binary free operators to compliment member operators defined with _binary_nonmember_m_.] [Any non-_Expr_.] [Any _Expr_.] []]
+    [[_binary_m_] [Binary free operators.] [Any type.] [Any type.] [At least one parameter must be an _Expr_ instantiated from _ExprTmpl_ macro parameter `expr_template`.]]
     [[_udt_unary_m_] [Free operators defined over non-_Expr_ types constrained by a type trait (e.g. all `std::map<>`s).] [Any non-_Expr_ that satisfies the given type trait.] [--] []]
     [[_udt_udt_binary_m_] [Free operators defined over non-_Expr_ types constrained by a pair of type traits (e.g. a `std::map<>` on the left, and a `std::vector<>` on the right).  Useful for type-asymmetric operators.] [Any non-_Expr_ that satisfies the left-hand type trait.] [Any non-_Expr_ that satisfies the right-hand type trait.] []]
     [[_udt_any_binary_m_] [Free operators defined over pairs of non-_Expr_ types, one constrained by a type trait and one not (e.g. a `std::list<>` on either side, and anything on the other).] [Any non-_Expr_.] [--] [At least one parameter must satisfy the given type trait.]]

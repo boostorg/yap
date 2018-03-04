@@ -51,7 +51,7 @@ struct incr
     template <typename Iter>
     auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
                      iter_wrapper<Iter> & wrapper)
-        -> decltype(++wrapper.it, boost::yap::make_terminal(wrapper.it))
+        -> decltype(boost::yap::make_terminal(wrapper.it))
     {
         ++wrapper.it;
         // Since this transform is valuable for its side effects, and thus the

@@ -27,9 +27,9 @@ struct user_expr
     static boost::yap::expr_kind const kind = Kind;
 
     Tuple elements;
-
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::user_expr)
 };
+
+BOOST_YAP_USER_BINARY_OPERATOR(plus, user_expr, user_expr)
 
 template<typename T>
 using user_term = boost::yap::terminal<user_expr, T>;

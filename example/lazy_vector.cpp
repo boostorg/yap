@@ -40,13 +40,13 @@ struct lazy_vector_expr
 
     Tuple elements;
 
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::lazy_vector_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::lazy_vector_expr)
-
     // Note that this does not return an expression; it is greedily evaluated.
     auto operator[] (std::size_t n) const;
 };
 //]
+
+BOOST_YAP_USER_BINARY_OPERATOR(plus, lazy_vector_expr, lazy_vector_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(minus, lazy_vector_expr, lazy_vector_expr)
 
 template <boost::yap::expr_kind Kind, typename Tuple>
 auto lazy_vector_expr<Kind, Tuple>::operator[] (std::size_t n) const

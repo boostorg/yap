@@ -47,14 +47,14 @@ struct lazy_vector_expr
 
     Tuple elements;
 
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::lazy_vector_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::lazy_vector_expr)
-
     auto operator[](std::size_t n) const
     {
         return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n}));
     }
 };
+
+BOOST_YAP_USER_BINARY_OPERATOR(plus, lazy_vector_expr, lazy_vector_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(minus, lazy_vector_expr, lazy_vector_expr)
 
 boost::yap::terminal<lazy_vector_expr, double> take_nth::operator()(
     boost::yap::terminal<lazy_vector_expr, std::vector<double>> const & expr)
