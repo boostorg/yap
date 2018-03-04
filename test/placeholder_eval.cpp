@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <gtest/gtest.h>
+#include <boost/test/minimal.hpp>
 
 #include <sstream>
 
@@ -24,38 +24,42 @@ namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
-TEST(placeholder_eval, test_placeholder_eval)
+int test_main(int, char * [])
 {
-    using namespace boost::yap::literals;
-
-    place_term<3> p3 = 3_p;
-    int i_ = 42;
-    term<int> i{std::move(i_)};
-    yap::expression<
-        yap::expr_kind::plus,
-        bh::tuple<ref<place_term<3> &>, term<int>>>
-        expr = p3 + std::move(i);
-    yap::expression<
-        yap::expr_kind::plus,
-        bh::tuple<
-            ref<place_term<3> &>,
-            yap::expression<
-                yap::expr_kind::plus,
-                bh::tuple<ref<place_term<3> &>, term<int>>>>>
-        unevaluated_expr = p3 + std::move(expr);
-
     {
-        double result = evaluate(p3, 5, 6, 7);
-        EXPECT_EQ(result, 7);
+        using namespace boost::yap::literals;
+
+        place_term<3> p3 = 3_p;
+        int i_ = 42;
+        term<int> i{std::move(i_)};
+        yap::expression<
+            yap::expr_kind::plus,
+            bh::tuple<ref<place_term<3> &>, term<int>>>
+            expr = p3 + std::move(i);
+        yap::expression<
+            yap::expr_kind::plus,
+            bh::tuple<
+                ref<place_term<3> &>,
+                yap::expression<
+                    yap::expr_kind::plus,
+                    bh::tuple<ref<place_term<3> &>, term<int>>>>>
+            unevaluated_expr = p3 + std::move(expr);
+
+        {
+            double result = evaluate(p3, 5, 6, 7);
+            BOOST_CHECK(result == 7);
+        }
+
+        {
+            double result = evaluate(expr, std::string("15"), 3, 1);
+            BOOST_CHECK(result == 43);
+        }
+
+        {
+            double result = evaluate(unevaluated_expr, std::string("15"), 2, 3);
+            BOOST_CHECK(result == 48);
+        }
     }
 
-    {
-        double result = evaluate(expr, std::string("15"), 3, 1);
-        EXPECT_EQ(result, 43);
-    }
-
-    {
-        double result = evaluate(unevaluated_expr, std::string("15"), 2, 3);
-        EXPECT_EQ(result, 48);
-    }
+    return 0;
 }

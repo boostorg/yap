@@ -8,7 +8,7 @@
 #include <vector>
 #include <iostream>
 
-#include <gtest/gtest.h>
+#include <boost/test/minimal.hpp>
 
 
 int allocations = 0;
@@ -133,7 +133,7 @@ BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(
     bitwise_xor, boost::yap::expression, is_vector); // ^
 
-TEST(allocations, vector_alloc_text)
+int test_main(int, char * [])
 {
     int i;
     int const n = 10;
@@ -166,5 +166,7 @@ TEST(allocations, vector_alloc_text)
                   << std::endl;
     }
 
-    EXPECT_EQ(allocations, 0);
+    BOOST_CHECK(allocations == 0);
+
+    return 0;
 }

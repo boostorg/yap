@@ -5,7 +5,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <gtest/gtest.h>
+#define BOOST_TEST_MAIN
+#include <boost/test/unit_test.hpp>
 
 #include <sstream>
 
@@ -53,7 +54,7 @@ struct throwing_callable_2
 };
 
 
-TEST(if_else, test)
+BOOST_AUTO_TEST_CASE(test_if_else)
 {
     {
         auto true_nothrow_throw_expr = if_else(
@@ -61,8 +62,8 @@ TEST(if_else, test)
             term<callable>{}(),
             term<throwing_callable_1>{}());
 
-        EXPECT_NO_THROW(yap::evaluate(true_nothrow_throw_expr));
-        EXPECT_EQ(yap::evaluate(true_nothrow_throw_expr), 42);
+        BOOST_CHECK_NO_THROW(yap::evaluate(true_nothrow_throw_expr));
+        BOOST_CHECK(yap::evaluate(true_nothrow_throw_expr) == 42);
     }
 
     {
@@ -71,7 +72,7 @@ TEST(if_else, test)
             term<callable>{}(),
             term<throwing_callable_1>{}());
 
-        EXPECT_THROW(yap::evaluate(false_nothrow_throw_expr), exception_1);
+        BOOST_CHECK_THROW(yap::evaluate(false_nothrow_throw_expr), exception_1);
     }
 
     {
@@ -80,7 +81,7 @@ TEST(if_else, test)
             term<throwing_callable_1>{}(),
             term<throwing_callable_2>{}());
 
-        EXPECT_THROW(yap::evaluate(true_throw1_throw2_expr), exception_1);
+        BOOST_CHECK_THROW(yap::evaluate(true_throw1_throw2_expr), exception_1);
     }
 
     {
@@ -89,6 +90,6 @@ TEST(if_else, test)
             term<throwing_callable_1>{}(),
             term<throwing_callable_2>{}());
 
-        EXPECT_THROW(yap::evaluate(false_throw1_throw2_expr), exception_2);
+        BOOST_CHECK_THROW(yap::evaluate(false_throw1_throw2_expr), exception_2);
     }
 }

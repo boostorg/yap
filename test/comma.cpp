@@ -7,7 +7,7 @@
 
 #include <boost/mpl/assert.hpp>
 
-#include <gtest/gtest.h>
+#include <boost/test/minimal.hpp>
 
 #include <sstream>
 
@@ -56,7 +56,8 @@ struct double_callable
 };
 
 
-TEST(comma, order_of_eval)
+int test_main(int, char * [])
+{
 {
     {
         int call_count = 0;
@@ -67,9 +68,9 @@ TEST(comma, order_of_eval)
             (term<int_callable>{{&call_count, &int_called}}(),
              term<double_callable>{{&call_count, &double_called}}());
 
-        EXPECT_EQ(evaluate(int_double_expr), 13.0);
-        EXPECT_EQ(int_called, 0);
-        EXPECT_EQ(double_called, 1);
+        BOOST_CHECK(evaluate(int_double_expr) == 13.0);
+        BOOST_CHECK(int_called == 0);
+        BOOST_CHECK(double_called == 1);
     }
 
     {
@@ -81,13 +82,12 @@ TEST(comma, order_of_eval)
             (term<double_callable>{{&call_count, &double_called}}(),
              term<int_callable>{{&call_count, &int_called}}());
 
-        EXPECT_EQ(evaluate(double_int_expr), 42);
-        EXPECT_EQ(int_called, 1);
-        EXPECT_EQ(double_called, 0);
+        BOOST_CHECK(evaluate(double_int_expr) == 42);
+        BOOST_CHECK(int_called == 1);
+        BOOST_CHECK(double_called == 0);
     }
 }
 
-TEST(comma, void_expressions)
 {
     {
         int call_count = 0;
@@ -98,9 +98,9 @@ TEST(comma, void_expressions)
             (term<void_callable>{{&call_count, &void_called}}(),
              term<int_callable>{{&call_count, &int_called}}());
 
-        EXPECT_EQ(evaluate(void_int_expr), 42);
-        EXPECT_EQ(void_called, 0);
-        EXPECT_EQ(int_called, 1);
+        BOOST_CHECK(evaluate(void_int_expr) == 42);
+        BOOST_CHECK(void_called == 0);
+        BOOST_CHECK(int_called == 1);
     }
 
     {
@@ -116,7 +116,10 @@ TEST(comma, void_expressions)
             (std::is_same<void, decltype(evaluate(int_void_expr))>));
 
         evaluate(int_void_expr);
-        EXPECT_EQ(void_called, 1);
-        EXPECT_EQ(int_called, 0);
+        BOOST_CHECK(void_called == 1);
+        BOOST_CHECK(int_called == 0);
     }
+}
+
+return 0;
 }

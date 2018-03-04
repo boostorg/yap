@@ -7,7 +7,7 @@
 
 #include <boost/mpl/assert.hpp>
 
-#include <gtest/gtest.h>
+#include <boost/test/minimal.hpp>
 
 #include <sstream>
 
@@ -45,18 +45,17 @@ struct plus_expr_t
     bh::tuple<term<int>, term<int>> elements;
 };
 
-TEST(transform, transform_terminals)
+int test_main(int, char * [])
 {
     // Each node instantiated from from yap::expression.
     {
         auto plus_expr = yap::terminal<yap::expression, int>{{5}} + 6;
 
-        EXPECT_EQ(yap::evaluate(plus_expr), 11);
+        BOOST_CHECK(yap::evaluate(plus_expr) == 11);
 
-        EXPECT_EQ(
+        BOOST_CHECK(
             yap::evaluate(
-                yap::transform(plus_expr, iota_terminal_transform{0})),
-            1);
+                yap::transform(plus_expr, iota_terminal_transform{0})) == 1);
     }
 
     // Each node instantiated from from yap::minimal_expr.
@@ -74,4 +73,6 @@ TEST(transform, transform_terminals)
 
         yap::evaluate(yap::transform(plus_expr, iota_terminal_transform{0}), 1);
     }
+
+    return 0;
 }
