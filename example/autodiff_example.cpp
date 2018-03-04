@@ -56,7 +56,7 @@ struct autodiff_fn_expr :
         autodiff_expr {boost::hana::tuple<OPCODE>{Opcode}}
     {}
 
-    BOOST_YAP_USER_CALL_OPERATOR(::autodiff_expr);
+    BOOST_YAP_USER_CALL_OPERATOR_N(::autodiff_expr, 1);
 };
 
 // Someone included <math.h>, so we have to add trailing underscores.

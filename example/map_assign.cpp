@@ -59,7 +59,7 @@ struct map_list_of_expr
         return retval;
     }
 
-    BOOST_YAP_USER_CALL_OPERATOR(::map_list_of_expr)
+    BOOST_YAP_USER_CALL_OPERATOR_N(::map_list_of_expr, 2)
 };
 
 // A tag type for creating the map_list_of function terminal.

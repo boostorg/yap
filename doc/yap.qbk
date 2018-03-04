@@ -114,6 +114,7 @@
 [def _unary_m_             [macroref BOOST_YAP_USER_UNARY_OPERATOR]]
 [def _binary_m_            [macroref BOOST_YAP_USER_BINARY_OPERATOR]]
 [def _member_call_m_       [macroref BOOST_YAP_USER_CALL_OPERATOR]]
+[def _member_call_n_m_     [macroref BOOST_YAP_USER_CALL_OPERATOR_N]]
 [def _member_assign_m_     [macroref BOOST_YAP_USER_ASSIGN_OPERATOR]]
 [def _member_subscript_m_  [macroref BOOST_YAP_USER_SUBSCRIPT_OPERATOR]]
 [def _expr_if_else_m_      [macroref BOOST_YAP_USER_EXPR_IF_ELSE]]

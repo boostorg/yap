@@ -6,17 +6,13 @@
 #ifndef BOOST_YAP_USER_MACROS_HPP_INCLUDED
 #define BOOST_YAP_USER_MACROS_HPP_INCLUDED
 
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/repetition/enum_params.hpp>
+#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/preprocessor/repetition/enum.hpp>
+
 
 #ifndef BOOST_YAP_DOXYGEN
-
-#if defined(__MWERKS__)
-#define BOOST_YAP_CAT(lhs, rhs) BOOST_YAP_CAT_O((lhs, rhs))
-#define BOOST_YAP_CAT_0(x) BOOST_YAP_CAT_1##x
-#else
-#define BOOST_YAP_CAT(lhs, rhs) BOOST_YAP_CAT_1(lhs, rhs)
-#endif
-#define BOOST_YAP_CAT_1(lhs, rhs) BOOST_YAP_CAT_2(dummy, lhs##rhs)
-#define BOOST_YAP_CAT_2(dummy, x) x
 
 // unary
 #define BOOST_YAP_OPERATOR_unary_plus(...) +(__VA_ARGS__)
@@ -64,7 +60,7 @@
 #define BOOST_YAP_OPERATOR_bitwise_xor_assign(...) ^=(__VA_ARGS__)
 #define BOOST_YAP_OPERATOR_subscript(...) [](__VA_ARGS__)
 
-#define BOOST_YAP_INDIRECT_CALL(macro) BOOST_YAP_CAT(BOOST_YAP_OPERATOR_, macro)
+#define BOOST_YAP_INDIRECT_CALL(macro) BOOST_PP_CAT(BOOST_YAP_OPERATOR_, macro)
 
 #endif // BOOST_YAP_DOXYGEN
 
@@ -392,13 +388,14 @@
     }
 
 
-/** Defines operator overloads for the call operator ("operator()") that each
-    produce an expression instantiated from the \a expr_template expression
-    template.  One overload is defined for each of the qualifiers <code>const
-    &</code>, <code>&</code>, and <code>&&</code>.  For the lvalue reference
-    overloads, <code>*this</code> is captured by reference into the resulting
-    expression.  For the rvalue reference overload, <code>*this</code> is
-    moved into the resulting expression.
+/** Defines operator overloads for the call operator taking any number of
+    parameters ("operator()") that each produce an expression instantiated
+    from the \a expr_template expression template.  One overload is defined
+    for each of the qualifiers <code>const &</code>, <code>&</code>, and
+    <code>&&</code>.  For the lvalue reference overloads, <code>*this</code>
+    is captured by reference into the resulting expression.  For the rvalue
+    reference overload, <code>*this</code> is moved into the resulting
+    expression.
 
     The \a u parameters to each of the defined overloads may be any type,
     including an expression.  Each non-expression is wrapped in a terminal
@@ -456,6 +453,88 @@
                 ::boost::yap::detail::make_operand<                            \
                     ::boost::yap::detail::operand_type_t<expr_template, U>>{}( \
                     static_cast<U &&>(u))...}};                                \
+    }
+
+
+#define BOOST_YAP_USER_CALL_OPERATOR_OPERAND_T(z, n, expr_template)            \
+    ::boost::yap::detail::operand_type_t<expr_template, BOOST_PP_CAT(U, n)>
+#define BOOST_YAP_USER_CALL_OPERATOR_MAKE_OPERAND(z, n, expr_template)         \
+    ::boost::yap::detail::make_operand<::boost::yap::detail::operand_type_t<   \
+        expr_template,                                                         \
+        BOOST_PP_CAT(U, n)>>{}(                                                \
+        static_cast<BOOST_PP_CAT(U, n) &&>(BOOST_PP_CAT(u, n)))
+
+/** Defines operator overloads for the call operator taking N parameters
+    ("operator()(t0, t1, ... tn-1)") that each produce an expression
+    instantiated from the \a expr_template expression template.  One overload
+    is defined for each of the qualifiers <code>const &</code>,
+    <code>&</code>, and <code>&&</code>.  For the lvalue reference overloads,
+    <code>*this</code> is captured by reference into the resulting expression.
+    For the rvalue reference overload, <code>*this</code> is moved into the
+    resulting expression.
+
+    The \a u parameters to each of the defined overloads may be any type,
+    including an expression.  Each non-expression is wrapped in a terminal
+    expression.
+
+    Example:
+    \snippet user_macros_snippets.cpp USER_CALL_OPERATOR
+
+    \param expr_template The expression template to use to instantiate the
+    result expression.  \a expr_template must be an \ref
+    ExpressionTemplate.
+
+    \param n The number of parameters accepted by the operator() overloads.  n
+    must be <= BOOST_PP_LIMIT_REPEAT.
+*/
+#define BOOST_YAP_USER_CALL_OPERATOR_N(expr_template, n)                       \
+    template<BOOST_PP_ENUM_PARAMS(n, typename U)>                              \
+    auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) const &            \
+    {                                                                          \
+        using lhs_type = ::boost::yap::detail::                                \
+            operand_type_t<expr_template, decltype(*this)>;                    \
+        using tuple_type = ::boost::hana::tuple<                               \
+            lhs_type,                                                          \
+            BOOST_PP_ENUM(                                                     \
+                n, BOOST_YAP_USER_CALL_OPERATOR_OPERAND_T, expr_template)>;    \
+        return expr_template<::boost::yap::expr_kind::call, tuple_type>{       \
+            tuple_type{::boost::yap::detail::make_operand<lhs_type>{}(*this),  \
+                       BOOST_PP_ENUM(                                          \
+                           n,                                                  \
+                           BOOST_YAP_USER_CALL_OPERATOR_MAKE_OPERAND,          \
+                           expr_template)}};                                   \
+    }                                                                          \
+    template<BOOST_PP_ENUM_PARAMS(n, typename U)>                              \
+    auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) &                  \
+    {                                                                          \
+        using lhs_type = ::boost::yap::detail::                                \
+            operand_type_t<expr_template, decltype(*this)>;                    \
+        using tuple_type = ::boost::hana::tuple<                               \
+            lhs_type,                                                          \
+            BOOST_PP_ENUM(                                                     \
+                n, BOOST_YAP_USER_CALL_OPERATOR_OPERAND_T, expr_template)>;    \
+        return expr_template<::boost::yap::expr_kind::call, tuple_type>{       \
+            tuple_type{::boost::yap::detail::make_operand<lhs_type>{}(*this),  \
+                       BOOST_PP_ENUM(                                          \
+                           n,                                                  \
+                           BOOST_YAP_USER_CALL_OPERATOR_MAKE_OPERAND,          \
+                           expr_template)}};                                   \
+    }                                                                          \
+    template<BOOST_PP_ENUM_PARAMS(n, typename U)>                              \
+    auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) &&                 \
+    {                                                                          \
+        using this_type =                                                      \
+            ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>;            \
+        using tuple_type = ::boost::hana::tuple<                               \
+            this_type,                                                         \
+            BOOST_PP_ENUM(                                                     \
+                n, BOOST_YAP_USER_CALL_OPERATOR_OPERAND_T, expr_template)>;    \
+        return expr_template<::boost::yap::expr_kind::call, tuple_type>{       \
+            tuple_type{std::move(*this),                                       \
+                       BOOST_PP_ENUM(                                          \
+                           n,                                                  \
+                           BOOST_YAP_USER_CALL_OPERATOR_MAKE_OPERAND,          \
+                           expr_template)}};                                   \
     }
 
 

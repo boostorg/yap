@@ -331,6 +331,31 @@ struct lazy_vector_11 :
 
 #undef user_expr
 
+#undef user_expr
+
+#define user_expr user_expr_12
+
+/// [USER_CALL_OPERATOR]
+template <boost::yap::expr_kind Kind, typename Tuple>
+struct user_expr
+{
+    static const boost::yap::expr_kind kind = Kind;
+
+    Tuple elements;
+
+    // Member operator overloads for operator()().  These will take exactly N
+    // parameters.  Each one can be any type, even another expression.
+    BOOST_YAP_USER_CALL_OPERATOR(::user_expr)
+};
+/// [USER_CALL_OPERATOR]
+
+struct lazy_vector_12 :
+    user_expr<
+        boost::yap::expr_kind::terminal,
+        boost::hana::tuple<std::vector<double>>
+    >
+{};
+
 
 int main ()
 {
@@ -345,6 +370,7 @@ int main ()
     lazy_vector_9 v9;
     lazy_vector_10 v10;
     lazy_vector_11 v11;
+    lazy_vector_12 v12;
 
     return 0;
 }

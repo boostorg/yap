@@ -356,7 +356,9 @@ Here are the operator macros and their uses:
     [[Macro] [Use] [Operands] [Notes]]
 
     [[_member_assign_m_] [Member assignment operator.] [Any type except `decltype(*this)`.] [Does not conflict with the assignment or move assignment operators.]]
-    [[_member_call_m_] [Member call operator.] [Any type.] []]
+    [[_member_subscript_m_] [Subscript operator.] [Any type.] []]
+    [[_member_call_m_] [Member call operator taking any number of parameters.] [Any type.] []]
+    [[_member_call_n_m_] [Member call operator taking exactly N parameters.] [Any type.] []]
     [[_expr_if_else_m_] [Free `if_else()` function that requires at least one parameter to be an expression.] [Any type.] [At least one parameter must be an _Expr_.]]
     [[_udt_any_if_else_m_] [Free `if_else()` function for non-_Expr_ types that requires at least one parameter to satisfy the given type trait.] [Any non-_Expr_.] [At least one parameter must satisfy the given type trait.]]
 ]
