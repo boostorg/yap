@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#define BOOST_TEST_MAIN
+#define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 
 #include <sstream>
