@@ -19,14 +19,16 @@
       of Expressions</a>
 </h3></div></div></div>
 <p>
-        Most of the expression kinds are the overloadable operators (<code class="computeroutput"><span class="keyword">operator</span><span class="special">+()</span></code>,
-        operator&lt;&lt;=()`, etc.), See <code class="computeroutput"><a class="link" href="../../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code> for the full list.
+        Most of the expression kinds are the overloadable operators (<code class="computeroutput"><span class="keyword">operator</span><span class="special">!()</span></code>,
+        <code class="computeroutput"><span class="keyword">operator</span><span class="special">&lt;&lt;=()</span></code>,
+        etc.), See <code class="computeroutput"><a class="link" href="../../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code>
+        for the full list.
       </p>
 <p>
-        There are three special kinds of expressions.
+        There are three special kinds of expressions:
       </p>
 <div class="variablelist">
-<p class="title"><b>Special Expression Kinds</b></p>
+<p class="title"><b></b></p>
 <dl class="variablelist">
 <dt><span class="term"><a class="link" href="../../boost/yap/expr_kind.html#boost.yap.expr_kind.terminal"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span></code></a></span></dt>
 <dd><p>
@@ -37,10 +39,11 @@
 <dt><span class="term"><a class="link" href="../../boost/yap/expr_kind.html#boost.yap.expr_kind.if_else"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">if_else</span></code></a></span></dt>
 <dd><p>
               An <code class="computeroutput"><span class="identifier">if_else</span></code> expression
-              is analogous to the C++ ternary operator (<code class="computeroutput"><span class="special">?:</span></code>),
-              but without the common-type conversion logic. <code class="computeroutput"><span class="identifier">if_else</span></code>
-              doesn't check that the alternatives are compatible or interconvertible;
-              that's up to you.
+              is analogous to the C++ ternary operator (<code class="computeroutput"><span class="special">?:</span></code>).
+              It's up to you to make sure that the conditional expression given to
+              <code class="computeroutput"><span class="identifier">if_else</span></code> can be converted
+              to <code class="computeroutput"><span class="keyword">bool</span></code>; Boost.YAP does
+              not check this.
             </p></dd>
 <dt><span class="term"><a class="link" href="../../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a></span></dt>
 <dd><p>

@@ -19,16 +19,8 @@
       Macros</a>
 </h3></div></div></div>
 <p>
-        There are macros that define binary operators as members and macros that
-        define them as nonmembers. (If you got here without reading the <a class="link" href="operators.html" title="Operators">Operators</a>
-        section, go read that first.) For a given operator, the member-defining macro
-        will define an operator that accepts anything on the right (making a terminal
-        out of a non-<a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
-        operand); the nonmember-defining macro will define an operator that will
-        only accept a non-<a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
-        on the left and an <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
-        on the right. This is to avoid creating ambiguous overload sets. Here are
-        the macros and their uses:
+        If you got here without reading the <a class="link" href="operators.html" title="Operators">Operators</a>
+        section, go read that first. Here are the operator macros and their uses:
       </p>
 <div class="table">
 <a name="boost_yap__proposed_.manual.operator_macros.t0"></a><p class="title"><b>Table&#160;1.1.&#160;Unary and Binary Operator-Defining Macros</b></p>
@@ -71,18 +63,19 @@
 <tr>
 <td>
                 <p>
-                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_UNARY_OPERATOR_MEMBER.html" title="Macro BOOST_YAP_USER_UNARY_OPERATOR_MEMBER">BOOST_YAP_USER_UNARY_OPERATOR_MEMBER</a></code>
+                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_UNARY_OPERATOR.html" title="Macro BOOST_YAP_USER_UNARY_OPERATOR">BOOST_YAP_USER_UNARY_OPERATOR</a></code>
                 </p>
               </td>
 <td>
                 <p>
-                  Unary member operators.
+                  Unary operators.
                 </p>
               </td>
 <td>
                 <p>
-                  <code class="computeroutput"><span class="keyword">decltype</span><span class="special">(*</span><span class="keyword">this</span><span class="special">)</span></code>,
-                  an <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>.
+                  An <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+                  instantiated from <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>
+                  macro parameter <code class="computeroutput"><span class="identifier">expr_template</span></code>.
                 </p>
               </td>
 <td>
@@ -96,18 +89,12 @@
 <tr>
 <td>
                 <p>
-                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_BINARY_OPERATOR_MEMBER.html" title="Macro BOOST_YAP_USER_BINARY_OPERATOR_MEMBER">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</a></code>
+                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_BINARY_OPERATOR.html" title="Macro BOOST_YAP_USER_BINARY_OPERATOR">BOOST_YAP_USER_BINARY_OPERATOR</a></code>
                 </p>
               </td>
 <td>
                 <p>
-                  Binary member operators.
-                </p>
-              </td>
-<td>
-                <p>
-                  <code class="computeroutput"><span class="keyword">decltype</span><span class="special">(*</span><span class="keyword">this</span><span class="special">)</span></code>,
-                  an <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>.
+                  Binary operators.
                 </p>
               </td>
 <td>
@@ -116,31 +103,16 @@
                 </p>
               </td>
 <td>
-              </td>
-</tr>
-<tr>
-<td>
                 <p>
-                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR.html" title="Macro BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR">BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR</a></code>
+                  Any type.
                 </p>
               </td>
 <td>
                 <p>
-                  Binary free operators to compliment member operators defined with
-                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR.html" title="Macro BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR">BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR</a></code>.
+                  At least one parameter must be an <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+                  instantiated from <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>
+                  macro parameter <code class="computeroutput"><span class="identifier">expr_template</span></code>.
                 </p>
-              </td>
-<td>
-                <p>
-                  Any non-<a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>.
-                </p>
-              </td>
-<td>
-                <p>
-                  Any <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>.
-                </p>
-              </td>
-<td>
               </td>
 </tr>
 <tr>
@@ -230,9 +202,13 @@
 </tbody>
 </table></div>
 </div>
-<br class="table-break"><div class="table">
-<a name="boost_yap__proposed_.manual.operator_macros.t1"></a><p class="title"><b>Table&#160;1.2.&#160;The Other Operator-Defining Macros</b></p>
-<div class="table-contents"><table class="table" summary="The Other Operator-Defining Macros">
+<br class="table-break"><p>
+        Some operators may only be defines as member functions, and so are not covered
+        by general-purpose the unary and binary operator macros above:
+      </p>
+<div class="table">
+<a name="boost_yap__proposed_.manual.operator_macros.t1"></a><p class="title"><b>Table&#160;1.2.&#160;The Member-Only Operator Macros</b></p>
+<div class="table-contents"><table class="table" summary="The Member-Only Operator Macros">
 <colgroup>
 <col>
 <col>
@@ -265,12 +241,12 @@
 <tr>
 <td>
                 <p>
-                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER.html" title="Macro BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER">BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER</a></code>
+                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_ASSIGN_OPERATOR.html" title="Macro BOOST_YAP_USER_ASSIGN_OPERATOR">BOOST_YAP_USER_ASSIGN_OPERATOR</a></code>
                 </p>
               </td>
 <td>
                 <p>
-                  Member assignment operator.
+                  Assignment operator.
                 </p>
               </td>
 <td>
@@ -287,12 +263,12 @@
 <tr>
 <td>
                 <p>
-                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_MEMBER_CALL_OPERATOR.html" title="Macro BOOST_YAP_USER_MEMBER_CALL_OPERATOR">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</a></code>
+                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_SUBSCRIPT_OPERATOR.html" title="Macro BOOST_YAP_USER_SUBSCRIPT_OPERATOR">BOOST_YAP_USER_SUBSCRIPT_OPERATOR</a></code>
                 </p>
               </td>
 <td>
                 <p>
-                  Member call operator.
+                  Subscript operator.
                 </p>
               </td>
 <td>
@@ -303,6 +279,79 @@
 <td>
               </td>
 </tr>
+<tr>
+<td>
+                <p>
+                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_CALL_OPERATOR.html" title="Macro BOOST_YAP_USER_CALL_OPERATOR">BOOST_YAP_USER_CALL_OPERATOR</a></code>
+                </p>
+              </td>
+<td>
+                <p>
+                  Call operator taking any number of parameters.
+                </p>
+              </td>
+<td>
+                <p>
+                  Any type.
+                </p>
+              </td>
+<td>
+              </td>
+</tr>
+<tr>
+<td>
+                <p>
+                  <code class="computeroutput"><a class="link" href="../../BOOST_YAP_USER_CALL_OPERATOR_N.html" title="Macro BOOST_YAP_USER_CALL_OPERATOR_N">BOOST_YAP_USER_CALL_OPERATOR_N</a></code>
+                </p>
+              </td>
+<td>
+                <p>
+                  Call operator taking exactly N parameters.
+                </p>
+              </td>
+<td>
+                <p>
+                  Any type.
+                </p>
+              </td>
+<td>
+              </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><div class="table">
+<a name="boost_yap__proposed_.manual.operator_macros.t2"></a><p class="title"><b>Table&#160;1.3.&#160;if_else Psuedo-Operator Macros</b></p>
+<div class="table-contents"><table class="table" summary="if_else Psuedo-Operator Macros">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+                <p>
+                  Macro
+                </p>
+              </th>
+<th>
+                <p>
+                  Use
+                </p>
+              </th>
+<th>
+                <p>
+                  Operands
+                </p>
+              </th>
+<th>
+                <p>
+                  Notes
+                </p>
+              </th>
+</tr></thead>
+<tbody>
 <tr>
 <td>
                 <p>

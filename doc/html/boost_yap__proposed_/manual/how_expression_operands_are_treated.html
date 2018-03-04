@@ -40,12 +40,12 @@
         you should expect that <code class="computeroutput"><span class="identifier">a</span></code>
         will be an lvalue reference to some object of type <code class="computeroutput"><span class="keyword">decltype</span><span class="special">(</span><span class="identifier">a</span><span class="special">)</span></code>,
         regardless of whether <code class="computeroutput"><span class="identifier">a</span></code> is
-        an <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+        a Boost.YAP <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
         or a builtin type. Similarly, you should expect the <code class="computeroutput"><span class="number">1</span></code>
         to be an rvalue, whether wrapped in a terminal or not.
       </p>
 <p>
-        Let's take a quick look at <code class="computeroutput"><a class="link" href="../../boost/yap/make_terminal_idm14393.html" title="Function template make_terminal">make_terminal()</a></code>.
+        Let's take a quick look at <code class="computeroutput"><a class="link" href="../../boost/yap/make_terminal_idm14574.html" title="Function template make_terminal">make_terminal()</a></code>.
         If you call it with a <code class="computeroutput"><span class="identifier">T</span></code> rvalue,
         the terminal's value type is a <code class="computeroutput"><span class="identifier">T</span></code>,
         and the rvalue gets moved into it. If you call it with a <code class="computeroutput"><span class="identifier">T</span>
@@ -85,7 +85,7 @@
 <p>
         Ok, so since you can build these lazy Boost.YAP expressions up from subexpressions,
         how do we treat the subexpressions? We treat them in exactly the same way
-        as <code class="computeroutput"><a class="link" href="../../boost/yap/make_terminal_idm14393.html" title="Function template make_terminal">make_terminal()</a></code> treats its parameter. Rvalues
+        as <code class="computeroutput"><a class="link" href="../../boost/yap/make_terminal_idm14574.html" title="Function template make_terminal">make_terminal()</a></code> treats its parameter. Rvalues
         are moved in, and lvalues are captured by (possibly <code class="computeroutput"><span class="keyword">const</span></code>)
         reference.
       </p>
@@ -123,7 +123,7 @@
         indicates such a partial decay of <code class="computeroutput"><span class="identifier">T</span></code>.
       </p>
 <div class="table">
-<a name="boost_yap__proposed_.manual.how_expression_operands_are_treated.t0"></a><p class="title"><b>Table&#160;1.3.&#160;Operand Handling</b></p>
+<a name="boost_yap__proposed_.manual.how_expression_operands_are_treated.t0"></a><p class="title"><b>Table&#160;1.4.&#160;Operand Handling</b></p>
 <div class="table-contents"><table class="table" summary="Operand Handling">
 <colgroup>
 <col>

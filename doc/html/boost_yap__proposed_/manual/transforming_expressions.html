@@ -30,15 +30,16 @@
       </p>
 <p>
         Consider a call to <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>,
-        operatnig on that expression:
+        operating on that expression:
       </p>
 <pre class="programlisting"><span class="keyword">auto</span> <span class="identifier">result</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">,</span> <span class="identifier">xform</span><span class="special">);</span>
 </pre>
 <p>
         Boost.YAP's <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code> first looks at the top level
-        expression, which is a <code class="computeroutput"><span class="special">+</span></code> expression.
-        If <code class="computeroutput"><span class="identifier">xform</span></code> matches the <code class="computeroutput"><span class="special">+</span></code> expression, <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
-        is done; it just returns <code class="computeroutput"><span class="identifier">xform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">)</span></code>.
+        expression, which in this case is a <code class="computeroutput"><span class="special">+</span></code>
+        expression. If the transform object <code class="computeroutput"><span class="identifier">xform</span></code>
+        matches the <code class="computeroutput"><span class="special">+</span></code> expression, <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code> is done; it just returns
+        <code class="computeroutput"><span class="identifier">xform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">)</span></code>.
         If <code class="computeroutput"><span class="identifier">xform</span></code> does not match the
         <code class="computeroutput"><span class="special">+</span></code> expression, <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code> transforms all its operands
         (which for <code class="computeroutput"><span class="keyword">operator</span><span class="special">+()</span></code>
@@ -71,14 +72,14 @@
           is identical to <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
           except that it does not copy or recurse into an unmatched expression. Instead,
           a failed match is a hard error. This is useful when you have written a
-          transform that you expect to completely match an expression, and you want
-          the compiler to tell you if you've made a mistake.
+          transform that you expect to completely transform an expression, and you
+          want the compiler to tell you if you've made a mistake.
         </p></td></tr>
 </table></div>
 <p>
         One common result of calling <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
         is that you create a copy of <code class="computeroutput"><span class="identifier">expr</span></code>,
-        with a few matching nodes transformed. But this does not hav to be the result
+        with a few matching nodes transformed. But this does not have to be the result
         of calling <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>, because a Boost.YAP transformation
         is free-form; it must return a value, but may do just about anything else.
         It can transform an expression into anything &#8212; a new expression of
@@ -98,7 +99,7 @@
                                       <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">placeholder</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;)</span>
     <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">llong_c</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;;</span> <span class="special">}</span>
 
-    <span class="comment">// Base case 2: Match any other terminal.  Return 0; non-placeholders to</span>
+    <span class="comment">// Base case 2: Match any other terminal.  Return 0; non-placeholders do</span>
     <span class="comment">// not contribute to arity.</span>
     <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">&gt;</span>
     <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">&gt;,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;)</span>
@@ -114,7 +115,10 @@
     <span class="special">{</span>
         <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">maximum</span><span class="special">(</span>
             <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">make_tuple</span><span class="special">(</span>
-                <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Arg</span><span class="special">&gt;(</span><span class="identifier">arg</span><span class="special">),</span> <span class="identifier">get_arity</span><span class="special">{})...</span>
+                <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span>
+                    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Arg</span><span class="special">&gt;(</span><span class="identifier">arg</span><span class="special">)),</span>
+                    <span class="identifier">get_arity</span><span class="special">{}</span>
+                <span class="special">)...</span>
             <span class="special">)</span>
         <span class="special">);</span>
     <span class="special">}</span>
@@ -124,7 +128,7 @@
       </p>
 <p>
         Also, note that in this case the transform is stateless, but you could also
-        give your transforms data members containing contextual state:
+        give your transform objects data members containing contextual state:
       </p>
 <p>
 </p>
@@ -170,6 +174,23 @@
         call in the recursive case of <code class="computeroutput"><span class="identifier">get_arity</span></code>
         in the example code above.
       </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+          The code you write with Boost.YAP is likely going to be very generic, especially
+          when you're writing a transform. <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
+          requires an <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+          as its first parameter. In situations when you want to make sure that the
+          first parameter you pass to <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
+          is always a Boost.YAP expression, use the <code class="computeroutput"><a class="link" href="../../boost/yap/as_expr_idm14591.html" title="Function template as_expr">as_expr()</a></code>
+          function. This is commonly needed when writing a transform in which you
+          manually recurse by calling <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
+          inside one of your transform overloads.
+        </p></td></tr>
+</table></div>
 <h5>
 <a name="boost_yap__proposed_.manual.transforming_expressions.h1"></a>
         <span class="phrase"><a name="boost_yap__proposed_.manual.transforming_expressions.transform_matching"></a></span><a class="link" href="transforming_expressions.html#boost_yap__proposed_.manual.transforming_expressions.transform_matching">Transform
@@ -185,8 +206,8 @@
       </p>
 <p>
         An <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expressiontransform">ExpressionTransform</a>
-        overload takes the expression to be transformed. Here's one from a transform
-        object in the <a class="link" href="examples/future_group.html" title="Future Group">Future
+        overload takes a single parameter whose type is the expression to be transformed.
+        Here's one from a transform object in the <a class="link" href="examples/future_group.html" title="Future Group">Future
         Group</a> example:
       </p>
 <p>
@@ -218,7 +239,8 @@
         A <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.tagtransform">TagTransform</a>
         overload takes a tag that indicates the <code class="computeroutput"><a class="link" href="../../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code> of the expression
         to be transformed, and then (loosely) the value of each operand of the expression
-        to be transformed. Here's one from the <a class="link" href="examples/pipable_algorithms.html" title="Pipable Algorithms">Pipable
+        to be transformed. This looseness prevents you from needing to write out
+        the full type of the matched expression. Here's one from the <a class="link" href="examples/pipable_algorithms.html" title="Pipable Algorithms">Pipable
         Algorithms</a> example:
       </p>
 <p>

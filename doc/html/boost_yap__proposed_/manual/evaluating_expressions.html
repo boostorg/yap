@@ -36,17 +36,19 @@
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">U</span><span class="special">&gt;</span>
 <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="keyword">operator</span><span class="special">()(</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">comma</span><span class="special">&gt;,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="identifier">U</span> <span class="special">&amp;&amp;</span> <span class="identifier">u</span><span class="special">)</span>
 <span class="special">{</span>
-    <span class="keyword">return</span> <span class="identifier">transform</span><span class="special">(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">T</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">t</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">),</span>
-           <span class="identifier">transform</span><span class="special">(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">U</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">u</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">);</span>
+    <span class="keyword">return</span> <span class="identifier">transform</span><span class="special">(</span>
+               <span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">T</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">t</span><span class="special">)),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">),</span>
+           <span class="identifier">transform</span><span class="special">(</span>
+               <span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">U</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">u</span><span class="special">)),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">);</span>
 <span class="special">}</span>
 </pre>
 <p>
       </p>
 <p>
-        What this transformation does is transforms the left and right expressions,
-        and then use the built-in <code class="computeroutput"><span class="keyword">operator</span><span class="special">,()</span></code> on the result. The other operator evaluation
-        transformations do the same thing &#8212; evaluate the operands, then return
-        the result of applying the built-in operator to the operands.
+        What this transformation does is transform the left and right expressions,
+        and then use the built-in <code class="computeroutput"><span class="keyword">operator</span><span class="special">,()</span></code> on the result. The evaluation transformations
+        for the other operators do the same thing &#8212; evaluate the operands,
+        then return the result of applying the built-in operator to the operands.
       </p>
 <p>
         Function calls are done in a similar way, except that the callable is also
@@ -58,8 +60,9 @@
 <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="keyword">operator</span><span class="special">()(</span>
     <span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">call</span><span class="special">&gt;,</span> <span class="identifier">Callable</span> <span class="special">&amp;&amp;</span> <span class="identifier">callable</span><span class="special">,</span> <span class="identifier">Args</span> <span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span>
 <span class="special">{</span>
-    <span class="keyword">return</span> <span class="identifier">transform</span><span class="special">(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">Callable</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">callable</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)(</span>
-        <span class="identifier">transform</span><span class="special">(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">Args</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">args</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)...);</span>
+    <span class="keyword">return</span> <span class="identifier">transform</span><span class="special">(</span><span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">Callable</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">callable</span><span class="special">)),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)(</span>
+        <span class="identifier">transform</span><span class="special">(</span><span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">Args</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">args</span><span class="special">)),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)...</span>
+    <span class="special">);</span>
 <span class="special">}</span>
 </pre>
 <p>

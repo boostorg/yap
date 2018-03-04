@@ -42,14 +42,15 @@
 <span class="keyword">struct</span> <span class="identifier">m_expr</span>
 <span class="special">{</span>
     <span class="comment">// ...</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">times</span><span class="special">,</span> <span class="special">::</span><span class="identifier">m_expr</span><span class="special">)</span>
 <span class="special">};</span>
+
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">times</span><span class="special">,</span> <span class="identifier">m_expr</span><span class="special">,</span> <span class="identifier">m_expr</span><span class="special">)</span>
 
 <span class="keyword">template</span> <span class="special">&lt;...&gt;</span>
 <span class="keyword">struct</span> <span class="identifier">s_expr</span>
 <span class="special">{</span>
     <span class="comment">// ...</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">subscript</span><span class="special">,</span> <span class="special">::</span><span class="identifier">s_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_SUBSCRIPT_OPERATOR</span><span class="special">(::</span><span class="identifier">s_expr</span><span class="special">)</span>
 <span class="special">};</span>
 </pre>
 <p>

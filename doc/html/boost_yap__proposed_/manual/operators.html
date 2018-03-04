@@ -29,18 +29,20 @@
 
     <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
 
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">lazy_vector_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">lazy_vector_expr</span><span class="special">)</span>
-
     <span class="comment">// Note that this does not return an expression; it is greedily evaluated.</span>
     <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">[]</span> <span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> <span class="identifier">n</span><span class="special">)</span> <span class="keyword">const</span><span class="special">;</span>
 <span class="special">};</span>
+
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="identifier">lazy_vector_expr</span><span class="special">,</span> <span class="identifier">lazy_vector_expr</span><span class="special">)</span>
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="identifier">lazy_vector_expr</span><span class="special">,</span> <span class="identifier">lazy_vector_expr</span><span class="special">)</span>
 </pre>
 <p>
       </p>
 <p>
         Those macros are used to define operator overloads that return <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expressions</a>.
-        As shown here, that sort of operator can be mixed with normal, non-lazy ones.
+        As shown here, that sort of operator can be mixed with normal, non-lazy ones
+        &#8212; the <code class="computeroutput"><span class="keyword">operator</span><span class="special">[]</span></code>
+        is a normal eager function.
       </p>
 <p>
         Use of the macros is not necessary (you can write your own operators that
@@ -53,7 +55,8 @@
         for your use case.
       </p>
 <p>
-        Detailed documentation can be found later in the <a class="link" href="operator_macros.html" title="Operator Macros">Operator
+        Detailed documentation on all the available macros can be found later in
+        the <a class="link" href="operator_macros.html" title="Operator Macros">Operator
         Macros</a> section.
       </p>
 </div>

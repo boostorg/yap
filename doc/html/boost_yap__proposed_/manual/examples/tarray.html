@@ -80,23 +80,15 @@
 
     <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
 
-    <span class="comment">// Define operators +, -, *, and / for an expression on the left, and</span>
-    <span class="comment">// anythng on the right.</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">multiplies</span><span class="special">,</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">divides</span><span class="special">,</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">)</span>
-
     <span class="keyword">int</span> <span class="keyword">operator</span><span class="special">[]</span> <span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> <span class="identifier">n</span><span class="special">)</span> <span class="keyword">const</span>
     <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(*</span><span class="keyword">this</span><span class="special">,</span> <span class="identifier">take_nth</span><span class="special">{</span><span class="identifier">n</span><span class="special">}));</span> <span class="special">}</span>
 <span class="special">};</span>
 
-<span class="comment">// Define operators +, -, *, and / for any non-expression on the left, and an</span>
-<span class="comment">// expression on the right.</span>
-<span class="identifier">BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">)</span>
-<span class="identifier">BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">)</span>
-<span class="identifier">BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">multiplies</span><span class="special">,</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">)</span>
-<span class="identifier">BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">divides</span><span class="special">,</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">)</span>
+<span class="comment">// Define operators +, -, *, and /.</span>
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">plus</span><span class="special">,</span> <span class="identifier">tarray_expr</span><span class="special">,</span> <span class="identifier">tarray_expr</span><span class="special">)</span>
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">minus</span><span class="special">,</span> <span class="identifier">tarray_expr</span><span class="special">,</span> <span class="identifier">tarray_expr</span><span class="special">)</span>
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">multiplies</span><span class="special">,</span> <span class="identifier">tarray_expr</span><span class="special">,</span> <span class="identifier">tarray_expr</span><span class="special">)</span>
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">divides</span><span class="special">,</span> <span class="identifier">tarray_expr</span><span class="special">,</span> <span class="identifier">tarray_expr</span><span class="special">)</span>
 
 
 <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">&lt;</span><span class="identifier">tarray_expr</span><span class="special">,</span> <span class="keyword">int</span><span class="special">&gt;</span>
@@ -172,8 +164,8 @@
     <span class="identifier">tarray</span> <span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=</span> <span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">)</span>
     <span class="special">{</span>
         <span class="comment">// We use as_expr() here to make sure that the value passed to</span>
-        <span class="comment">// assign() is a tarray_expr expression.  as_expr() simply forwards</span>
-        <span class="comment">// expressions through, and wraps non-expressions as terminals.</span>
+        <span class="comment">// assign() is an expression.  as_expr() simply forwards expressions</span>
+        <span class="comment">// through, and wraps non-expressions as terminals.</span>
         <span class="keyword">return</span> <span class="identifier">assign</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">&lt;</span> <span class="special">::</span><span class="identifier">tarray_expr</span><span class="special">&gt;(</span><span class="identifier">t</span><span class="special">));</span>
     <span class="special">}</span>
 

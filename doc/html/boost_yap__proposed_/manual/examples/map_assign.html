@@ -44,7 +44,8 @@
         <span class="comment">// finds a match, it is finished with that matching subtree.  So</span>
         <span class="comment">// without this recursive call, only the top-level call expression is</span>
         <span class="comment">// matched by transform().</span>
-        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">fn</span><span class="special">,</span> <span class="special">*</span><span class="keyword">this</span><span class="special">);</span>
+        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="identifier">fn</span><span class="special">),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">);</span>
         <span class="identifier">map</span><span class="special">.</span><span class="identifier">emplace</span><span class="special">(</span>
             <span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Key2</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">key</span><span class="special">),</span>
             <span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Value2</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">value</span><span class="special">)</span>
@@ -77,7 +78,7 @@
         <span class="keyword">return</span> <span class="identifier">retval</span><span class="special">;</span>
     <span class="special">}</span>
 
-    <span class="identifier">BOOST_YAP_USER_MEMBER_CALL_OPERATOR</span><span class="special">(::</span><span class="identifier">map_list_of_expr</span><span class="special">)</span>
+    <span class="identifier">BOOST_YAP_USER_CALL_OPERATOR_N</span><span class="special">(::</span><span class="identifier">map_list_of_expr</span><span class="special">,</span> <span class="number">2</span><span class="special">)</span>
 <span class="special">};</span>
 
 <span class="comment">// A tag type for creating the map_list_of function terminal.</span>

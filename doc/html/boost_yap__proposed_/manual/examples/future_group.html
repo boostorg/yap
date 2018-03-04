@@ -43,10 +43,10 @@
 
     <span class="comment">// Returns the transformed/flattenen expression.</span>
     <span class="keyword">auto</span> <span class="identifier">get</span> <span class="special">()</span> <span class="keyword">const</span><span class="special">;</span>
-
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">logical_or</span><span class="special">,</span> <span class="special">::</span><span class="identifier">future_expr</span><span class="special">)</span>
-    <span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR_MEMBER</span><span class="special">(</span><span class="identifier">logical_and</span><span class="special">,</span> <span class="special">::</span><span class="identifier">future_expr</span><span class="special">)</span>
 <span class="special">};</span>
+
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">logical_or</span><span class="special">,</span> <span class="identifier">future_expr</span><span class="special">,</span> <span class="identifier">future_expr</span><span class="special">)</span>
+<span class="identifier">BOOST_YAP_USER_BINARY_OPERATOR</span><span class="special">(</span><span class="identifier">logical_and</span><span class="special">,</span> <span class="identifier">future_expr</span><span class="special">,</span> <span class="identifier">future_expr</span><span class="special">)</span>
 
 <span class="comment">// A special-cased future terminal that matches the semantics from the</span>
 <span class="comment">// original Proto example.</span>

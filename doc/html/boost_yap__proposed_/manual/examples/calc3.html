@@ -56,7 +56,7 @@
                                       <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">placeholder</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;)</span>
     <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">llong_c</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;;</span> <span class="special">}</span>
 
-    <span class="comment">// Base case 2: Match any other terminal.  Return 0; non-placeholders to</span>
+    <span class="comment">// Base case 2: Match any other terminal.  Return 0; non-placeholders do</span>
     <span class="comment">// not contribute to arity.</span>
     <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">&gt;</span>
     <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">&gt;,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;)</span>
@@ -72,7 +72,10 @@
     <span class="special">{</span>
         <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">maximum</span><span class="special">(</span>
             <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">make_tuple</span><span class="special">(</span>
-                <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Arg</span><span class="special">&gt;(</span><span class="identifier">arg</span><span class="special">),</span> <span class="identifier">get_arity</span><span class="special">{})...</span>
+                <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span>
+                    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Arg</span><span class="special">&gt;(</span><span class="identifier">arg</span><span class="special">)),</span>
+                    <span class="identifier">get_arity</span><span class="special">{}</span>
+                <span class="special">)...</span>
             <span class="special">)</span>
         <span class="special">);</span>
     <span class="special">}</span>
