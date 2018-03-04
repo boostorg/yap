@@ -18,7 +18,10 @@ int allocations = 0;
 void * operator new(std::size_t size)
 {
     ++allocations;
-    return malloc(size);
+    void * retval = malloc(size);
+    if (!retval)
+        throw std::bad_alloc();
+    return retval;
 }
 
 void operator delete(void * ptr) noexcept { free(ptr); }
@@ -44,14 +47,14 @@ struct lazy_vector_expr
 
     Tuple elements;
 
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::lazy_vector_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::lazy_vector_expr)
-
     auto operator[](std::size_t n) const
     {
         return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n}));
     }
 };
+
+BOOST_YAP_USER_BINARY_OPERATOR(plus, lazy_vector_expr, lazy_vector_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(minus, lazy_vector_expr, lazy_vector_expr)
 
 boost::yap::terminal<lazy_vector_expr, double> take_nth::operator()(
     boost::yap::terminal<lazy_vector_expr, std::vector<double>> const & expr)
@@ -85,14 +88,12 @@ struct lazy_vector : lazy_vector_expr<
 
 TEST(allocations, lazy_vector_alloc_text)
 {
-    // GTest apparently allocates a ton of strings.  We need to hit "reset"
-    // here to measure the allocations in the part of the code we really care
-    // about.
-    allocations = 0;
-
     lazy_vector v1{std::vector<double>(4, 1.0)};
     lazy_vector v2{std::vector<double>(4, 2.0)};
     lazy_vector v3{std::vector<double>(4, 3.0)};
+
+    // Reset allocation count.  There should be none from this point on.
+    allocations = 0;
 
     double d1 = (v2 + v3)[2];
     std::cout << d1 << "\n";
@@ -101,5 +102,5 @@ TEST(allocations, lazy_vector_alloc_text)
     std::cout << '{' << v1[0] << ',' << v1[1] << ',' << v1[2] << ',' << v1[3]
               << '}' << "\n";
 
-    EXPECT_EQ(allocations, 3);
+    EXPECT_EQ(allocations, 0);
 }

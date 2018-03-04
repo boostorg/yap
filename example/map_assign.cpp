@@ -25,7 +25,8 @@ struct map_list_of_transform
         // finds a match, it is finished with that matching subtree.  So
         // without this recursive call, only the top-level call expression is
         // matched by transform().
-        boost::yap::transform(fn, *this);
+        boost::yap::transform(
+            boost::yap::as_expr<boost::yap::minimal_expr>(fn), *this);
         map.emplace(
             std::forward<Key2 &&>(key),
             std::forward<Value2 &&>(value)
@@ -58,7 +59,7 @@ struct map_list_of_expr
         return retval;
     }
 
-    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::map_list_of_expr)
+    BOOST_YAP_USER_CALL_OPERATOR_N(::map_list_of_expr, 2)
 };
 
 // A tag type for creating the map_list_of function terminal.

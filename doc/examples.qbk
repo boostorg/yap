@@ -7,6 +7,9 @@ it cannot.
 Where possible, a Proto-derived example uses syntax in `main()` identical to
 that in the original Proto example.
 
+If you don't know anything about Proto, don't worry.  The examples are useful
+on their own.
+
 
 [section Hello World]
 
@@ -282,8 +285,8 @@ how you might implement it.
 [section Boost.Phoenix-style `let()`]
 
 Boost.Phoenix has a thing called _let_.  It introduces named reusable values
-are reused in subsequent expressions.  This is something simliar, though not
-exactly like Phoenix's version.  In Phoenix, a let placeholder is only
+that are usable in subsequent expressions.  This is something simliar, though
+not exactly like Phoenix's version.  In Phoenix, a let placeholder is only
 evaluated once, whereas the example below does something more like macro
 substitution; each let-placeholder is replaced with its initializing
 expression everywhere it is used.

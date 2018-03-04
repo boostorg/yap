@@ -45,23 +45,15 @@ struct tarray_expr
 
     Tuple elements;
 
-    // Define operators +, -, *, and / for an expression on the left, and
-    // anythng on the right.
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::tarray_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::tarray_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, ::tarray_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, ::tarray_expr)
-
     int operator[] (std::size_t n) const
     { return boost::yap::evaluate(boost::yap::transform(*this, take_nth{n})); }
 };
 
-// Define operators +, -, *, and / for any non-expression on the left, and an
-// expression on the right.
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(plus, ::tarray_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(minus, ::tarray_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(multiplies, ::tarray_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(divides, ::tarray_expr)
+// Define operators +, -, *, and /.
+BOOST_YAP_USER_BINARY_OPERATOR(plus, tarray_expr, tarray_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(minus, tarray_expr, tarray_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(multiplies, tarray_expr, tarray_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(divides, tarray_expr, tarray_expr)
 
 
 boost::yap::terminal<tarray_expr, int>
@@ -137,8 +129,8 @@ struct tarray :
     tarray & operator= (T const & t)
     {
         // We use as_expr() here to make sure that the value passed to
-        // assign() is a tarray_expr expression.  as_expr() simply forwards
-        // expressions through, and wraps non-expressions as terminals.
+        // assign() is an expression.  as_expr() simply forwards expressions
+        // through, and wraps non-expressions as terminals.
         return assign(boost::yap::as_expr< ::tarray_expr>(t));
     }
 

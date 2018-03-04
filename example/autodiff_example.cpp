@@ -27,18 +27,14 @@ struct autodiff_expr
     static boost::yap::expr_kind const kind = Kind;
 
     Tuple elements;
-
-    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(negate, ::autodiff_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(plus, ::autodiff_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(minus, ::autodiff_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(multiplies, ::autodiff_expr)
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(divides, ::autodiff_expr)
 };
 
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(plus, ::autodiff_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(minus, ::autodiff_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(multiplies, ::autodiff_expr)
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(divides, ::autodiff_expr)
+BOOST_YAP_USER_UNARY_OPERATOR(negate, autodiff_expr, autodiff_expr)
+
+BOOST_YAP_USER_BINARY_OPERATOR(plus, autodiff_expr, autodiff_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(minus, autodiff_expr, autodiff_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(multiplies, autodiff_expr, autodiff_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(divides, autodiff_expr, autodiff_expr)
 //]
 
 //[ autodiff_expr_literals_decl
@@ -60,7 +56,7 @@ struct autodiff_fn_expr :
         autodiff_expr {boost::hana::tuple<OPCODE>{Opcode}}
     {}
 
-    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::autodiff_expr);
+    BOOST_YAP_USER_CALL_OPERATOR_N(::autodiff_expr, 1);
 };
 
 // Someone included <math.h>, so we have to add trailing underscores.
@@ -95,14 +91,20 @@ struct xform
     Node * operator() (boost::yap::expr_tag<boost::yap::expr_kind::call>,
                        OPCODE opcode, Expr const & expr)
     {
-        return create_uary_op_node(opcode, boost::yap::transform(expr, *this));
+        return create_uary_op_node(
+            opcode,
+            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr), *this)
+        );
     }
 
     template <typename Expr>
     Node * operator() (boost::yap::expr_tag<boost::yap::expr_kind::negate>,
                        Expr const & expr)
     {
-        return create_uary_op_node(OP_NEG, boost::yap::transform(expr, *this));
+        return create_uary_op_node(
+            OP_NEG,
+            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr), *this)
+        );
     }
 
     // Define a mapping from binary arithmetic expr_kind to OPCODE...
@@ -125,8 +127,8 @@ struct xform
     {
         return create_binary_op_node(
             op_for_kind(Kind),
-            boost::yap::transform(expr1, *this),
-            boost::yap::transform(expr2, *this)
+            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr1), *this),
+            boost::yap::transform(boost::yap::as_expr<autodiff_expr>(expr2), *this)
         );
     }
 

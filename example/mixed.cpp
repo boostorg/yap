@@ -51,7 +51,7 @@ struct incr
     template <typename Iter>
     auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
                      iter_wrapper<Iter> & wrapper)
-        -> decltype(++wrapper.it, boost::yap::make_terminal(wrapper.it))
+        -> decltype(boost::yap::make_terminal(wrapper.it))
     {
         ++wrapper.it;
         // Since this transform is valuable for its side effects, and thus the
@@ -70,11 +70,12 @@ template <
     typename Expr,
     typename Op
 >
-Cont<T, A> & op_assign (Cont<T, A> & cont, Expr const & expr, Op && op)
+Cont<T, A> & op_assign (Cont<T, A> & cont, Expr const & e, Op && op)
 {
+    decltype(auto) expr = boost::yap::as_expr(e);
     // Transform the expression of sequences into an expression of
     // begin-iterators.
-    auto expr2 = boost::yap::transform(expr, begin{});
+    auto expr2 = boost::yap::transform(boost::yap::as_expr(expr), begin{});
     for (auto && x : cont) {
         // Transform the expression of iterators into an expression of
         // pointed-to-values, evaluate the resulting expression, and call op()
@@ -137,7 +138,7 @@ template <typename T, typename A>
 struct is_mixed<std::list<T, A>> : std::true_type {};
 
 // Define expression-producing operators over std::vectors and std::lists.
-BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(negate, boost::yap::expression, is_mixed); // -
+BOOST_YAP_USER_UDT_UNARY_OPERATOR(negate, boost::yap::expression, is_mixed); // -
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(multiplies, boost::yap::expression, is_mixed); // *
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(divides, boost::yap::expression, is_mixed); // /
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(modulus, boost::yap::expression, is_mixed); // %

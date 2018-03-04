@@ -62,7 +62,7 @@ namespace boost { namespace yap { namespace detail {
     struct rvalue_mover<true>
     {
         template<typename T>
-        decltype(auto) operator()(T && t)
+        std::remove_reference_t<T> operator()(T && t)
         {
             return std::move(t);
         }
@@ -82,12 +82,12 @@ namespace boost { namespace yap { namespace detail {
         operator()(expr_tag<expr_kind::terminal>, boost::yap::placeholder<I>)
         {
             static_assert(
-                I <= decltype(hana::size(std::declval<tuple_t>()))::value);
+                I <= decltype(hana::size(std::declval<tuple_t>()))::value,
+                "Out of range placeholder index,");
             using nth_type = nth_element<I - 1, PlaceholderArgs...>;
             return as_expr<minimal_expr>(
-                rvalue_mover < std::is_rvalue_reference<nth_type>::value &&
-                !std::is_const<nth_type>::value >
-                    {}(placeholder_args_[hana::llong<I - 1>{}]));
+                rvalue_mover<!std::is_lvalue_reference<nth_type>::value>{}(
+                    placeholder_args_[hana::llong<I - 1>{}]));
         }
 
         tuple_t placeholder_args_;
@@ -107,12 +107,11 @@ namespace boost { namespace yap { namespace detail {
         operator()(expr_tag<expr_kind::terminal>, boost::yap::placeholder<I>)
         {
             static_assert(
-                I <= decltype(hana::size(std::declval<tuple_t>()))::value);
+                I <= decltype(hana::size(std::declval<tuple_t>()))::value,
+                "Out of range placeholder index,");
             using nth_type = nth_element<I - 1, PlaceholderArgs...>;
-            return rvalue_mover<
-                std::is_rvalue_reference<nth_type>::value &&
-                !std::is_const<nth_type>::value
-            >{}(placeholder_args_[hana::llong<I - 1>{}]);
+            return rvalue_mover<!std::is_lvalue_reference<nth_type>::value>{}(
+                placeholder_args_[hana::llong<I - 1>{}]);
         }
 
         template<typename T>
@@ -125,7 +124,8 @@ namespace boost { namespace yap { namespace detail {
     template<typename T>                                                       \
     decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t)            \
     {                                                                          \
-        return op transform(static_cast<T &&>(t), *this);                      \
+        return op transform(                                                   \
+            as_expr<minimal_expr>(static_cast<T &&>(t)), *this);               \
     }
 
         BOOST_YAP_UNARY_OPERATOR_CASE(+, unary_plus)
@@ -140,12 +140,14 @@ namespace boost { namespace yap { namespace detail {
         template<typename T>
         decltype(auto) operator()(expr_tag<expr_kind::post_inc>, T && t)
         {
-            return transform(static_cast<T &&>(t), *this)++;
+            return transform(
+                as_expr<minimal_expr>(static_cast<T &&>(t)), *this)++;
         }
         template<typename T>
         decltype(auto) operator()(expr_tag<expr_kind::post_dec>, T && t)
         {
-            return transform(static_cast<T &&>(t), *this)--;
+            return transform(
+                as_expr<minimal_expr>(static_cast<T &&>(t)), *this)--;
         }
 
 #undef BOOST_YAP_UNARY_OPERATOR_CASE
@@ -154,8 +156,8 @@ namespace boost { namespace yap { namespace detail {
     template<typename T, typename U>                                           \
     decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t, U && u)    \
     {                                                                          \
-        return transform(static_cast<T &&>(t), *this) op transform(            \
-            static_cast<U &&>(u), *this);                                      \
+        return transform(as_expr<minimal_expr>(static_cast<T &&>(t)), *this)   \
+            op transform(as_expr<minimal_expr>(static_cast<U &&>(u)), *this);  \
     }
 
         BOOST_YAP_BINARY_OPERATOR_CASE(<<, shift_left)
@@ -177,14 +179,18 @@ namespace boost { namespace yap { namespace detail {
         BOOST_YAP_BINARY_OPERATOR_CASE(|, bitwise_or)
         BOOST_YAP_BINARY_OPERATOR_CASE (^, bitwise_xor)
 
+        // clang-format off
 //[ evaluation_transform_comma
         template<typename T, typename U>
         decltype(auto) operator()(expr_tag<expr_kind::comma>, T && t, U && u)
         {
-            return transform(static_cast<T &&>(t), *this),
-                   transform(static_cast<U &&>(u), *this);
+            return transform(
+                       as_expr<minimal_expr>(static_cast<T &&>(t)), *this),
+                   transform(
+                       as_expr<minimal_expr>(static_cast<U &&>(u)), *this);
         }
 //]
+        // clang-format on
 
         BOOST_YAP_BINARY_OPERATOR_CASE(->*, mem_ptr)
         BOOST_YAP_BINARY_OPERATOR_CASE(=, assign)
@@ -204,8 +210,8 @@ namespace boost { namespace yap { namespace detail {
         operator()(expr_tag<expr_kind::subscript>, T && t, U && u)
         {
             return transform(
-                static_cast<T &&>(t),
-                *this)[transform(static_cast<U &&>(u), *this)];
+                as_expr<minimal_expr>(static_cast<T &&>(t)), *this)[transform(
+                as_expr<minimal_expr>(static_cast<U &&>(u)), *this)];
         }
 
 #undef BOOST_YAP_BINARY_OPERATOR_CASE
@@ -214,31 +220,32 @@ namespace boost { namespace yap { namespace detail {
         decltype(auto)
         operator()(expr_tag<expr_kind::if_else>, T && t, U && u, V && v)
         {
-            return transform(static_cast<T &&>(t), *this)
-                       ? transform(static_cast<U &&>(u), *this)
-                       : transform(static_cast<V &&>(v), *this);
+            return transform(as_expr<minimal_expr>(static_cast<T &&>(t)), *this)
+                       ? transform(
+                             as_expr<minimal_expr>(static_cast<U &&>(u)), *this)
+                       : transform(
+                             as_expr<minimal_expr>(static_cast<V &&>(v)),
+                             *this);
         }
 
+        // clang-format off
 //[ evaluation_transform_call
         template<typename Callable, typename... Args>
         decltype(auto) operator()(
             expr_tag<expr_kind::call>, Callable && callable, Args &&... args)
         {
-            return transform(static_cast<Callable &&>(callable), *this)(
-                transform(static_cast<Args &&>(args), *this)...);
+            return transform(as_expr<minimal_expr>(static_cast<Callable &&>(callable)), *this)(
+                transform(as_expr<minimal_expr>(static_cast<Args &&>(args)), *this)...
+            );
         }
 //]
+        // clang-format on
 
         tuple_t placeholder_args_;
     };
 
 
-    template<
-        bool Strict,
-        typename Expr,
-        typename TransformTuple,
-        int I,
-        bool IsExprRef>
+    template<bool Strict, int I, bool IsExprRef>
     struct transform_impl;
 
     template<
@@ -301,13 +308,9 @@ namespace boost { namespace yap { namespace detail {
             hana::transform(static_cast<Tuple &&>(tuple), [&](auto && element) {
                 using element_t = decltype(element);
                 auto const kind = remove_cv_ref_t<element_t>::kind;
-                ::boost::yap::detail::transform_impl<
-                    false,
-                    element_t,
-                    TransformTuple,
-                    0,
-                    kind == expr_kind::expr_ref>
-                    xform;
+                ::boost::yap::detail::
+                    transform_impl<false, 0, kind == expr_kind::expr_ref>
+                        xform;
                 return xform(static_cast<element_t &&>(element), transforms);
             });
         auto const kind = remove_cv_ref_t<Expr>::kind;
@@ -350,13 +353,9 @@ namespace boost { namespace yap { namespace detail {
         {
             // Use the next transform.
             constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
-            return detail::transform_impl<
-                Strict,
-                Expr,
-                TransformTuple,
-                I + 1,
-                kind == expr_kind::expr_ref>{}(
-                static_cast<Expr &&>(expr), transforms);
+            return detail::
+                transform_impl<Strict, I + 1, kind == expr_kind::expr_ref>{}(
+                    static_cast<Expr &&>(expr), transforms);
         }
     };
 
@@ -558,14 +557,10 @@ namespace boost { namespace yap { namespace detail {
         }
     };
 
-    template<
-        bool Strict,
-        typename Expr,
-        typename TransformTuple,
-        int I,
-        bool IsExprRef>
+    template<bool Strict, int I, bool IsExprRef>
     struct transform_impl
     {
+        template<typename Expr, typename TransformTuple>
         decltype(auto) operator()(Expr && expr, TransformTuple transforms)
         {
             constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
@@ -579,21 +574,14 @@ namespace boost { namespace yap { namespace detail {
         }
     };
 
-    template<bool Strict, typename Expr, typename TransformTuple, int I>
-    struct transform_impl<Strict, Expr, TransformTuple, I, true>
+    template<bool Strict, int I>
+    struct transform_impl<Strict, I, true>
     {
-        decltype(auto) operator()(Expr && expr_, TransformTuple transforms)
+        template<typename Expr, typename TransformTuple>
+        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
         {
-            decltype(auto) expr = ::boost::yap::deref(expr_);
-            constexpr expr_kind kind =
-                detail::remove_cv_ref_t<decltype(expr)>::kind;
-            return detail::transform_impl<
-                Strict,
-                decltype(expr),
-                TransformTuple,
-                I,
-                kind == expr_kind::expr_ref>{}(
-                static_cast<decltype(expr) &&>(expr), transforms);
+            return detail::transform_impl<Strict, I, false>{}(
+                ::boost::yap::deref(static_cast<Expr &&>(expr)), transforms);
         }
     };
 

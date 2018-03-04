@@ -23,7 +23,7 @@ struct get_arity
                                       boost::yap::placeholder<I>)
     { return boost::hana::llong_c<I>; }
 
-    // Base case 2: Match any other terminal.  Return 0; non-placeholders to
+    // Base case 2: Match any other terminal.  Return 0; non-placeholders do
     // not contribute to arity.
     template <typename T>
     auto operator() (boost::yap::expr_tag<boost::yap::expr_kind::terminal>, T &&)
@@ -39,7 +39,10 @@ struct get_arity
     {
         return boost::hana::maximum(
             boost::hana::make_tuple(
-                boost::yap::transform(std::forward<Arg>(arg), get_arity{})...
+                boost::yap::transform(
+                    boost::yap::as_expr(std::forward<Arg>(arg)),
+                    get_arity{}
+                )...
             )
         );
     }

@@ -49,7 +49,8 @@ example:
     auto const arity = boost::yap::transform(expr, get_arity{});
     static_assert(arity.value == 2, "Called with wrong number of args.");
 
-In this case, _xform_ produces a non-_Expr_ value.
+In this case, _xform_ produces a non-_Expr_ value, all by itself.  We got our
+result without ever needing to call _eval_.
 
 [note Whether _xform_ returns an _Expr_ or non-_Expr_ is entirely up to the
 caller.  The transform object passed as the second argument to _xform_ defines

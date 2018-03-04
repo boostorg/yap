@@ -32,7 +32,7 @@ struct take_nth
         boost::yap::expr_tag<boost::yap::expr_kind::terminal>,
         std::vector<T> const & vec)
     {
-        return boost::yap::make_terminal(std::move(vec[n]));
+        return boost::yap::make_terminal(vec[n]);
     }
 
     std::size_t n;
@@ -59,28 +59,31 @@ template<typename Expr>
 bool equal_sizes(std::size_t size, Expr const & expr)
 {
     equal_sizes_impl impl{size, true};
-    boost::yap::transform(expr, impl);
+    boost::yap::transform(boost::yap::as_expr(expr), impl);
     return impl.value;
 }
 
 
 template<typename T, typename Expr>
-std::vector<T> & assign(std::vector<T> & vec, Expr const & expr)
+std::vector<T> & assign(std::vector<T> & vec, Expr const & e)
 {
+    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
-        vec[i] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));
+        vec[i] = boost::yap::evaluate(
+            boost::yap::transform(boost::yap::as_expr(expr), take_nth{i}));
     }
     return vec;
 }
 
 template<typename T, typename Expr>
-std::vector<T> & operator+=(std::vector<T> & vec, Expr const & expr)
+std::vector<T> & operator+=(std::vector<T> & vec, Expr const & e)
 {
+    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
-        vec[i] +=
-            boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));
+        vec[i] += boost::yap::evaluate(
+            boost::yap::transform(boost::yap::as_expr(expr), take_nth{i}));
     }
     return vec;
 }
@@ -95,7 +98,7 @@ struct is_vector<std::vector<T, A>> : std::true_type
 {
 };
 
-BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(
+BOOST_YAP_USER_UDT_UNARY_OPERATOR(
     negate, boost::yap::expression, is_vector); // -
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(
     multiplies, boost::yap::expression, is_vector); // *

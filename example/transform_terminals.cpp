@@ -28,7 +28,8 @@ struct iota_terminal_transform
         // terminal, it doesn't make a lot of sense to replace it with an int,
         // so we'll only transform the argument subexpressions.
         return boost::yap::make_expression<boost::yap::expr_kind::call>(
-            callable, boost::yap::transform(arg, *this)...);
+            boost::yap::as_expr(callable),
+            boost::yap::transform(boost::yap::as_expr(arg), *this)...);
     }
 
     int index_;

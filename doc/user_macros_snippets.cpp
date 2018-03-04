@@ -11,18 +11,18 @@
 
 #define user_expr user_expr_1
 
-/// [USER_UNARY_OPERATOR_MEMBER]
+/// [USER_UNARY_OPERATOR]
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
-
-    // Member operator overloads for operator!().
-    BOOST_YAP_USER_UNARY_OPERATOR_MEMBER(logical_not, ::user_expr)
 };
-/// [USER_UNARY_OPERATOR_MEMBER]
+
+// Operator overloads for operator!().
+BOOST_YAP_USER_UNARY_OPERATOR(logical_not, user_expr, user_expr)
+/// [USER_UNARY_OPERATOR]
 
 struct lazy_vector_1 :
     user_expr<
@@ -35,21 +35,18 @@ struct lazy_vector_1 :
 
 #define user_expr user_expr_2
 
-/// [USER_BINARY_OPERATOR_MEMBER]
+/// [USER_BINARY_OPERATOR]
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
     static const boost::yap::expr_kind kind = Kind;
 
     Tuple elements;
-
-    // Member operator overloads for operator&&().  These will match any value
-    // on the right-hand side, even another expression.  Left as-is, there is
-    // no matching overload for x && y, where x is not an expression and y is.
-    // BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR can help with that.
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, ::user_expr)
 };
-/// [USER_BINARY_OPERATOR_MEMBER]
+
+// Operator overloads for operator&&()
+BOOST_YAP_USER_BINARY_OPERATOR(logical_and, user_expr, user_expr)
+/// [USER_BINARY_OPERATOR]
 
 struct lazy_vector_2 :
     user_expr<
@@ -62,7 +59,7 @@ struct lazy_vector_2 :
 
 #define user_expr user_expr_3
 
-/// [USER_MEMBER_CALL_OPERATOR]
+/// [USER_CALL_OPERATOR]
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
@@ -73,9 +70,9 @@ struct user_expr
     // Member operator overloads for operator()().  These will match any
     // number of parameters.  Each one can be any type, even another
     // expression.
-    BOOST_YAP_USER_MEMBER_CALL_OPERATOR(::user_expr)
+    BOOST_YAP_USER_CALL_OPERATOR(::user_expr)
 };
-/// [USER_MEMBER_CALL_OPERATOR]
+/// [USER_CALL_OPERATOR]
 
 struct lazy_vector_3 :
     user_expr<
@@ -88,7 +85,7 @@ struct lazy_vector_3 :
 
 #define user_expr user_expr_4
 
-/// [USER_NONMEMBER_BINARY_OPERATOR]
+/// [USER_SUBSCRIPT_OPERATOR]
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
@@ -96,16 +93,12 @@ struct user_expr
 
     Tuple elements;
 
-    // Member operator overloads for operator&&().  These will match any value
+    // Member operator overloads for operator[]().  These will match any value
     // on the right-hand side, even another expression.
-    BOOST_YAP_USER_BINARY_OPERATOR_MEMBER(logical_and, ::user_expr)
+    BOOST_YAP_USER_SUBSCRIPT_OPERATOR(::user_expr)
 };
 
-// Free operator overloads for operator&&().  These will match any value on
-// the left-hand side, *except* an expression; the right-hand side must be an
-// expression.
-BOOST_YAP_USER_NONMEMBER_BINARY_OPERATOR(logical_and, ::user_expr)
-/// [USER_NONMEMBER_BINARY_OPERATOR]
+/// [USER_SUBSCRIPT_OPERATOR]
 
 struct lazy_vector_4 :
     user_expr<
@@ -314,7 +307,7 @@ struct lazy_vector_10 :
 
 #define user_expr user_expr_11
 
-/// [USER_ASSIGN_OPERATOR_MEMBER]
+/// [USER_ASSIGN_OPERATOR]
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct user_expr
 {
@@ -325,9 +318,9 @@ struct user_expr
     // Member operator overloads for operator=().  These will match any value
     // on the right-hand side, even another expression, except that it will
     // not conflict with the asignment or move assignment operators.
-    BOOST_YAP_USER_ASSIGN_OPERATOR_MEMBER(user_expr, ::user_expr)
+    BOOST_YAP_USER_ASSIGN_OPERATOR(user_expr, ::user_expr)
 };
-/// [USER_ASSIGN_OPERATOR_MEMBER]
+/// [USER_ASSIGN_OPERATOR]
 
 struct lazy_vector_11 :
     user_expr<
@@ -337,6 +330,31 @@ struct lazy_vector_11 :
 {};
 
 #undef user_expr
+
+#undef user_expr
+
+#define user_expr user_expr_12
+
+/// [USER_CALL_OPERATOR]
+template <boost::yap::expr_kind Kind, typename Tuple>
+struct user_expr
+{
+    static const boost::yap::expr_kind kind = Kind;
+
+    Tuple elements;
+
+    // Member operator overloads for operator()().  These will take exactly N
+    // parameters.  Each one can be any type, even another expression.
+    BOOST_YAP_USER_CALL_OPERATOR(::user_expr)
+};
+/// [USER_CALL_OPERATOR]
+
+struct lazy_vector_12 :
+    user_expr<
+        boost::yap::expr_kind::terminal,
+        boost::hana::tuple<std::vector<double>>
+    >
+{};
 
 
 int main ()
@@ -352,6 +370,7 @@ int main ()
     lazy_vector_9 v9;
     lazy_vector_10 v10;
     lazy_vector_11 v11;
+    lazy_vector_12 v12;
 
     return 0;
 }

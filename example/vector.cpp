@@ -44,7 +44,7 @@ template <typename Expr>
 bool equal_sizes (std::size_t size, Expr const & expr)
 {
     equal_sizes_impl impl{size, true};
-    boost::yap::transform(expr, impl);
+    boost::yap::transform(boost::yap::as_expr(expr), impl);
     return impl.value;
 }
 
@@ -52,22 +52,26 @@ bool equal_sizes (std::size_t size, Expr const & expr)
 // Assigns some expression e to the given vector by evaluating e elementwise,
 // to avoid temporaries and allocations.
 template <typename T, typename Expr>
-std::vector<T> & assign (std::vector<T> & vec, Expr const & expr)
+std::vector<T> & assign (std::vector<T> & vec, Expr const & e)
 {
+    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
-        vec[i] = boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));
+        vec[i] = boost::yap::evaluate(
+            boost::yap::transform(boost::yap::as_expr(expr), take_nth{i}));
     }
     return vec;
 }
 
 // As assign() above, just using +=.
 template <typename T, typename Expr>
-std::vector<T> & operator+= (std::vector<T> & vec, Expr const & expr)
+std::vector<T> & operator+= (std::vector<T> & vec, Expr const & e)
 {
+    decltype(auto) expr = boost::yap::as_expr(e);
     assert(equal_sizes(vec.size(), expr));
     for (std::size_t i = 0, size = vec.size(); i < size; ++i) {
-        vec[i] += boost::yap::evaluate(boost::yap::transform(expr, take_nth{i}));
+        vec[i] += boost::yap::evaluate(
+            boost::yap::transform(boost::yap::as_expr(expr), take_nth{i}));
     }
     return vec;
 }
@@ -82,7 +86,7 @@ struct is_vector<std::vector<T, A>> : std::true_type {};
 // Define all the expression-returning numeric operators we need.  Each will
 // accept any std::vector<> as any of its arguments, and then any value in the
 // remaining argument, if any -- some of the operators below are unary.
-BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(negate, boost::yap::expression, is_vector); // -
+BOOST_YAP_USER_UDT_UNARY_OPERATOR(negate, boost::yap::expression, is_vector); // -
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(multiplies, boost::yap::expression, is_vector); // *
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(divides, boost::yap::expression, is_vector); // /
 BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(modulus, boost::yap::expression, is_vector); // %
