@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <gtest/gtest.h>
+#include <boost/test/minimal.hpp>
 
 #include <sstream>
 
@@ -93,7 +93,10 @@ namespace user {
     struct eval_xform_both
     {
         decltype(auto) operator()(
-            yap::expr_tag<yap::expr_kind::call>, tag_type, user::number a, double b)
+            yap::expr_tag<yap::expr_kind::call>,
+            tag_type,
+            user::number a,
+            double b)
         {
             return tag_function(a.value, b);
         }
@@ -129,65 +132,69 @@ namespace user {
 }
 
 
-TEST(call_expr, test_call_expr)
+int test_main(int, char * [])
 {
-    using namespace boost::yap::literals;
-
     {
-        auto plus = yap::make_terminal(user::tag_type{});
-        auto expr = plus(user::number{13}, 1);
+        using namespace boost::yap::literals;
 
         {
-            transform(expr, user::empty_xform{});
+            auto plus = yap::make_terminal(user::tag_type{});
+            auto expr = plus(user::number{13}, 1);
+
+            {
+                transform(expr, user::empty_xform{});
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_tag{});
+                BOOST_CHECK(result.value == 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_expr{});
+                BOOST_CHECK(result.value == 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_both{});
+                BOOST_CHECK(result.value == 14);
+            }
         }
 
         {
-            user::number result = transform(expr, user::eval_xform_tag{});
-            EXPECT_EQ(result.value, 14);
+            auto plus = yap::make_terminal(user::tag_type{});
+            auto thirteen = yap::make_terminal(user::number{13});
+            auto expr = plus(thirteen, 1);
+
+            {
+                user::number result = transform(expr, user::eval_xform_tag{});
+                BOOST_CHECK(result.value == 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_expr{});
+                BOOST_CHECK(result.value == 14);
+            }
+
+            {
+                user::number result = transform(expr, user::eval_xform_both{});
+                BOOST_CHECK(result.value == 14);
+            }
         }
 
         {
-            user::number result = transform(expr, user::eval_xform_expr{});
-            EXPECT_EQ(result.value, 14);
-        }
+            term<user::number> a{{1.0}};
+            term<user::number> x{{42.0}};
+            term<user::number> y{{3.0}};
+            auto n = yap::make_terminal(user::naxpy);
 
-        {
-            user::number result = transform(expr, user::eval_xform_both{});
-            EXPECT_EQ(result.value, 14);
+            auto expr = n(a, x, y);
+            {
+                user::number result = evaluate(expr);
+                BOOST_CHECK(result.value == 55);
+            }
         }
     }
 
-    {
-        auto plus = yap::make_terminal(user::tag_type{});
-        auto thirteen = yap::make_terminal(user::number{13});
-        auto expr = plus(thirteen, 1);
-
-        {
-            user::number result = transform(expr, user::eval_xform_tag{});
-            EXPECT_EQ(result.value, 14);
-        }
-
-        {
-            user::number result = transform(expr, user::eval_xform_expr{});
-            EXPECT_EQ(result.value, 14);
-        }
-
-        {
-            user::number result = transform(expr, user::eval_xform_both{});
-            EXPECT_EQ(result.value, 14);
-        }
-    }
-
-    {
-        term<user::number> a{{1.0}};
-        term<user::number> x{{42.0}};
-        term<user::number> y{{3.0}};
-        auto n = yap::make_terminal(user::naxpy);
-
-        auto expr = n(a, x, y);
-        {
-            user::number result = evaluate(expr);
-            EXPECT_EQ(result.value, 55);
-        }
-    }
+    return 0;
 }

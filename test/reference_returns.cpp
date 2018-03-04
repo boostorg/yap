@@ -7,7 +7,7 @@
 
 #include <boost/mpl/assert.hpp>
 
-#include <gtest/gtest.h>
+#include <boost/test/minimal.hpp>
 
 
 template<typename T>
@@ -30,50 +30,56 @@ namespace reference_returning {
     number & operator-(number a, number b) { return a_result; }
 }
 
-TEST(reference_returns, test_reference_returns)
+int test_main(int, char * [])
 {
-    term<reference_returning::number> unity = {{1.0}};
-    auto plus_expr = unity + reference_returning::number{1.0};
-
     {
-        reference_returning::number const & n = evaluate(plus_expr);
-        EXPECT_EQ(&n, &reference_returning::the_result);
+        term<reference_returning::number> unity = {{1.0}};
+        auto plus_expr = unity + reference_returning::number{1.0};
+
+        {
+            reference_returning::number const & n = evaluate(plus_expr);
+            BOOST_CHECK(&n == &reference_returning::the_result);
+        }
+
+        BOOST_MPL_ASSERT((std::is_same<
+                          decltype(evaluate(plus_expr)),
+                          reference_returning::number const &>));
+
+        auto minus_expr = unity - reference_returning::number{1.0};
+
+        {
+            reference_returning::number & n = evaluate(minus_expr);
+            BOOST_CHECK(&n == &reference_returning::a_result);
+        }
+
+        BOOST_MPL_ASSERT((std::is_same<
+                          decltype(evaluate(minus_expr)),
+                          reference_returning::number &>));
+
+        using namespace yap::literals;
+
+        {
+            reference_returning::number & n =
+                evaluate(1_p, reference_returning::a_result);
+            BOOST_CHECK(&n == &reference_returning::a_result);
+        }
+
+        BOOST_MPL_ASSERT(
+            (std::is_same<
+                decltype(evaluate(1_p, reference_returning::a_result)),
+                reference_returning::number &>));
+
+        {
+            reference_returning::number const & n =
+                evaluate(1_p, reference_returning::the_result);
+            BOOST_CHECK(&n == &reference_returning::the_result);
+        }
+
+        BOOST_MPL_ASSERT(
+            (std::is_same<
+                decltype(evaluate(1_p, reference_returning::the_result)),
+                reference_returning::number const &>));
     }
 
-    BOOST_MPL_ASSERT((std::is_same<
-                      decltype(evaluate(plus_expr)),
-                      reference_returning::number const &>));
-
-    auto minus_expr = unity - reference_returning::number{1.0};
-
-    {
-        reference_returning::number & n = evaluate(minus_expr);
-        EXPECT_EQ(&n, &reference_returning::a_result);
-    }
-
-    BOOST_MPL_ASSERT((std::is_same<
-                      decltype(evaluate(minus_expr)),
-                      reference_returning::number &>));
-
-    using namespace yap::literals;
-
-    {
-        reference_returning::number & n =
-            evaluate(1_p, reference_returning::a_result);
-        EXPECT_EQ(&n, &reference_returning::a_result);
-    }
-
-    BOOST_MPL_ASSERT((std::is_same<
-                      decltype(evaluate(1_p, reference_returning::a_result)),
-                      reference_returning::number &>));
-
-    {
-        reference_returning::number const & n =
-            evaluate(1_p, reference_returning::the_result);
-        EXPECT_EQ(&n, &reference_returning::the_result);
-    }
-
-    BOOST_MPL_ASSERT((std::is_same<
-                      decltype(evaluate(1_p, reference_returning::the_result)),
-                      reference_returning::number const &>));
+    return 0;
 }

@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <gtest/gtest.h>
+#include <boost/test/minimal.hpp>
 
 #include <sstream>
 
@@ -16,31 +16,32 @@ using term = boost::yap::terminal<boost::yap::expression, T>;
 namespace yap = boost::yap;
 
 
-TEST(right, depth_stress_test)
+int test_main(int, char * [])
 {
-    term<double> unity{1.0};
-
     {
-        auto expr =
-            unity + unity + unity + unity + unity + unity + unity + unity;
-        double result = boost::yap::evaluate(expr);
-        EXPECT_EQ(result, 8.0);
-    }
+        term<double> unity{1.0};
 
-    {
-        auto expr =
-            unity + unity + unity + unity + unity + unity + unity + unity +
-            unity + unity + unity + unity + unity + unity + unity + unity +
-            unity + unity + unity + unity + unity + unity + unity + unity +
-            unity + unity + unity + unity + unity + unity + unity + unity +
+        {
+            auto expr =
+                unity + unity + unity + unity + unity + unity + unity + unity;
+            double result = boost::yap::evaluate(expr);
+            BOOST_CHECK(result == 8.0);
+        }
 
-            unity + unity + unity + unity + unity + unity + unity + unity +
-            unity + unity + unity + unity + unity + unity + unity + unity +
-            unity + unity + unity + unity + unity + unity + unity + unity +
-            unity + unity + unity + unity + unity + unity + unity + unity;
-        double result = boost::yap::evaluate(expr);
-        EXPECT_EQ(result, 64.0);
-    }
+        {
+            auto expr =
+                unity + unity + unity + unity + unity + unity + unity + unity +
+                unity + unity + unity + unity + unity + unity + unity + unity +
+                unity + unity + unity + unity + unity + unity + unity + unity +
+                unity + unity + unity + unity + unity + unity + unity + unity +
+
+                unity + unity + unity + unity + unity + unity + unity + unity +
+                unity + unity + unity + unity + unity + unity + unity + unity +
+                unity + unity + unity + unity + unity + unity + unity + unity +
+                unity + unity + unity + unity + unity + unity + unity + unity;
+            double result = boost::yap::evaluate(expr);
+            BOOST_CHECK(result == 64.0);
+        }
 
 #if 0 // This makes the Travis VMs barf.
     {
@@ -60,7 +61,10 @@ TEST(right, depth_stress_test)
             expr + expr + expr + expr +    expr + expr + expr + expr +
             expr + expr + expr + expr +    expr + expr + expr + expr
         );
-        EXPECT_EQ(result, 64.0 * 32.0);
+        BOOST_CHECK(result == 64.0 * 32.0);
     }
 #endif
+    }
+
+    return 0;
 }

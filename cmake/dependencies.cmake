@@ -6,7 +6,7 @@
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost 1.64.0)
+find_package(Boost COMPONENTS)
 if (Boost_INCLUDE_DIRS)
   add_library(boost INTERFACE)
   target_include_directories(boost INTERFACE ${Boost_INCLUDE_DIRS})
@@ -31,18 +31,19 @@ endif ()
 
 
 ###############################################################################
-# GoogleTest
-###############################################################################
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/googletest-release-1.8.0)
-target_include_directories(gtest      INTERFACE ${CMAKE_HOME_DIRECTORY}/googletest-release-1.8.0/googletest/include)
-target_include_directories(gtest_main INTERFACE ${CMAKE_HOME_DIRECTORY}/googletest-release-1.8.0/googletest/include)
-
-
-###############################################################################
 # Google Benchmark
 ###############################################################################
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark-v1.1.0)
-target_include_directories(benchmark INTERFACE ${CMAKE_HOME_DIRECTORY}/benchmark-v1.1.0/include)
+execute_process(
+    COMMAND git clone https://github.com/google/benchmark.git
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+execute_process(
+    COMMAND git checkout v1.1.0
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/benchmark
+)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
+target_include_directories(benchmark INTERFACE ${CMAKE_HOME_DIRECTORY}/benchmark/include)
 
 
 ###############################################################################
