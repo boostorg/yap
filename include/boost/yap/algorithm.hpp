@@ -498,7 +498,7 @@ namespace boost { namespace yap {
        an expression.
     */
     template<template<expr_kind, class> class ExprTemplate, typename T>
-    auto make_terminal(T && t)
+    constexpr auto make_terminal(T && t)
     {
         static_assert(
             !is_expr<T>::value,

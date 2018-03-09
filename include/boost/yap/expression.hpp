@@ -279,7 +279,7 @@ namespace boost { namespace yap {
 
     /** Returns <code>make_terminal<boost::yap::expression>(t)</code>. */
     template<typename T>
-    auto make_terminal(T && t)
+    constexpr auto make_terminal(T && t)
     {
         return make_terminal<expression>(static_cast<T &&>(t));
     }
