@@ -473,7 +473,7 @@ namespace boost { namespace yap {
         template<expr_kind, class> class ExprTemplate,
         expr_kind Kind,
         typename... T>
-    auto make_expression(T &&... t)
+    constexpr auto make_expression(T &&... t)
     {
         constexpr detail::expr_arity arity = detail::arity_of<Kind>();
         static_assert(
