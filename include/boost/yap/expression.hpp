@@ -32,12 +32,6 @@ namespace boost { namespace yap {
 
         static const expr_kind kind = Kind;
 
-        /** Default constructor.  Does nothing. */
-        expression() {}
-
-        /** Moves \a rhs into the only data mamber, \c elements. */
-        expression(tuple_type && rhs) : elements(std::move(rhs)) {}
-
         tuple_type elements;
 
         /** A convenience member function that dispatches to the free function
@@ -111,15 +105,6 @@ namespace boost { namespace yap {
         using tuple_type = hana::tuple<T>;
 
         static const expr_kind kind = expr_kind::terminal;
-
-        /** Default constructor.  Does nothing. */
-        expression() {}
-
-        /** Forwards \a t into \c elements. */
-        expression(T && t) : elements(static_cast<T &&>(t)) {}
-
-        /** Moves \a rhs into the only data mamber, \c elements. */
-        expression(hana::tuple<T> && rhs) : elements(std::move(rhs)) {}
 
         tuple_type elements;
 
@@ -287,7 +272,7 @@ namespace boost { namespace yap {
     /** Returns <code>make_expression<boost::yap::expression, Kind>(...)</code>.
      */
     template<expr_kind Kind, typename... T>
-    auto make_expression(T &&... t)
+    constexpr auto make_expression(T &&... t)
     {
         return make_expression<expression, Kind>(static_cast<T &&>(t)...);
     }
