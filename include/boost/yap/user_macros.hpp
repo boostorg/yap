@@ -157,7 +157,7 @@
 #define BOOST_YAP_USER_BINARY_OPERATOR(                                        \
     op_name, expr_template, result_expr_template)                              \
     template<::boost::yap::expr_kind Kind, typename Tuple, typename Expr>      \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                            \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                  \
         expr_template<Kind, Tuple> const & lhs, Expr && rhs)                   \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::operand_type_t<                 \
@@ -174,7 +174,7 @@
                            static_cast<Expr &&>(rhs))}};                       \
     }                                                                          \
     template<::boost::yap::expr_kind Kind, typename Tuple, typename Expr>      \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                            \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                  \
         expr_template<Kind, Tuple> & lhs, Expr && rhs)                         \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::operand_type_t<                 \
@@ -191,7 +191,7 @@
                            static_cast<Expr &&>(rhs))}};                       \
     }                                                                          \
     template<::boost::yap::expr_kind Kind, typename Tuple, typename Expr>      \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                            \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                  \
         expr_template<Kind, Tuple> && lhs, Expr && rhs)                        \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::remove_cv_ref_t<                \
@@ -207,7 +207,7 @@
                            static_cast<Expr &&>(rhs))}};                       \
     }                                                                          \
     template<typename T, ::boost::yap::expr_kind Kind, typename Tuple>         \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                            \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                  \
         T && lhs, expr_template<Kind, Tuple> && rhs)                           \
         ->::boost::yap::detail::free_binary_op_result_t<                       \
             result_expr_template,                                              \
@@ -226,7 +226,7 @@
         return {tuple_type{lhs_type{static_cast<T &&>(lhs)}, std::move(rhs)}}; \
     }                                                                          \
     template<typename T, typename Expr>                                        \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, Expr & rhs)       \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, Expr & rhs) \
         ->::boost::yap::detail::free_binary_op_result_t<                       \
             result_expr_template,                                              \
             ::boost::yap::expr_kind::op_name,                                  \
@@ -277,7 +277,7 @@
         typename Expr,                                                         \
         typename = std::enable_if_t<                                           \
             !::boost::yap::detail::copy_or_move<this_type, Expr &&>::value>>   \
-    auto operator=(Expr && rhs) const &                                        \
+    constexpr auto operator=(Expr && rhs) const &                              \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, this_type const &>;                  \
@@ -293,7 +293,7 @@
         typename Expr,                                                         \
         typename = std::enable_if_t<                                           \
             !::boost::yap::detail::copy_or_move<this_type, Expr &&>::value>>   \
-    auto operator=(Expr && rhs) &                                              \
+    constexpr auto operator=(Expr && rhs) &                                    \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
@@ -309,7 +309,7 @@
         typename Expr,                                                         \
         typename = std::enable_if_t<                                           \
             !::boost::yap::detail::copy_or_move<this_type, Expr &&>::value>>   \
-    auto operator=(Expr && rhs) &&                                             \
+    constexpr auto operator=(Expr && rhs) &&                                   \
     {                                                                          \
         using rhs_type =                                                       \
             ::boost::yap::detail::operand_type_t<expr_template, Expr>;         \
@@ -344,7 +344,7 @@
 */
 #define BOOST_YAP_USER_SUBSCRIPT_OPERATOR(expr_template)                       \
     template<typename Expr>                                                    \
-    auto operator[](Expr && rhs) const &                                       \
+    constexpr auto operator[](Expr && rhs) const &                             \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
@@ -357,7 +357,7 @@
                            static_cast<Expr &&>(rhs))}};                       \
     }                                                                          \
     template<typename Expr>                                                    \
-    auto operator[](Expr && rhs) &                                             \
+    constexpr auto operator[](Expr && rhs) &                                   \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
@@ -370,7 +370,7 @@
                            static_cast<Expr &&>(rhs))}};                       \
     }                                                                          \
     template<typename Expr>                                                    \
-    auto operator[](Expr && rhs) &&                                            \
+    constexpr auto operator[](Expr && rhs) &&                                  \
     {                                                                          \
         using lhs_type =                                                       \
             ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>;            \
@@ -406,7 +406,7 @@
 */
 #define BOOST_YAP_USER_CALL_OPERATOR(expr_template)                            \
     template<typename... U>                                                    \
-    auto operator()(U &&... u) const &                                         \
+    constexpr auto operator()(U &&... u) const &                               \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
@@ -421,7 +421,7 @@
                     static_cast<U &&>(u))...}};                                \
     }                                                                          \
     template<typename... U>                                                    \
-    auto operator()(U &&... u) &                                               \
+    constexpr auto operator()(U &&... u) &                                     \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
@@ -436,7 +436,7 @@
                     static_cast<U &&>(u))...}};                                \
     }                                                                          \
     template<typename... U>                                                    \
-    auto operator()(U &&... u) &&                                              \
+    constexpr auto operator()(U &&... u) &&                                    \
     {                                                                          \
         using this_type =                                                      \
             ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>;            \
@@ -489,7 +489,7 @@
 */
 #define BOOST_YAP_USER_CALL_OPERATOR_N(expr_template, n)                       \
     template<BOOST_PP_ENUM_PARAMS(n, typename U)>                              \
-    auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) const &            \
+    constexpr auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) const &  \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
@@ -505,7 +505,7 @@
                            expr_template)}};                                   \
     }                                                                          \
     template<BOOST_PP_ENUM_PARAMS(n, typename U)>                              \
-    auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) &                  \
+    constexpr auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) &        \
     {                                                                          \
         using lhs_type = ::boost::yap::detail::                                \
             operand_type_t<expr_template, decltype(*this)>;                    \
@@ -521,7 +521,7 @@
                            expr_template)}};                                   \
     }                                                                          \
     template<BOOST_PP_ENUM_PARAMS(n, typename U)>                              \
-    auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) &&                 \
+    constexpr auto operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, U, &&u)) &&       \
     {                                                                          \
         using this_type =                                                      \
             ::boost::yap::detail::remove_cv_ref_t<decltype(*this)>;            \
@@ -558,7 +558,7 @@
 */
 #define BOOST_YAP_USER_EXPR_IF_ELSE(expr_template)                             \
     template<typename Expr1, typename Expr2, typename Expr3>                   \
-    auto if_else(Expr1 && expr1, Expr2 && expr2, Expr3 && expr3)               \
+    constexpr auto if_else(Expr1 && expr1, Expr2 && expr2, Expr3 && expr3)     \
         ->::boost::yap::detail::                                               \
             ternary_op_result_t<expr_template, Expr1, Expr2, Expr3>            \
     {                                                                          \
@@ -600,7 +600,7 @@
 */
 #define BOOST_YAP_USER_UDT_ANY_IF_ELSE(expr_template, udt_trait)               \
     template<typename Expr1, typename Expr2, typename Expr3>                   \
-    auto if_else(Expr1 && expr1, Expr2 && expr2, Expr3 && expr3)               \
+    constexpr auto if_else(Expr1 && expr1, Expr2 && expr2, Expr3 && expr3)     \
         ->::boost::yap::detail::udt_any_ternary_op_result_t<                   \
             expr_template,                                                     \
             Expr1,                                                             \
@@ -653,7 +653,7 @@
 */
 #define BOOST_YAP_USER_UDT_UNARY_OPERATOR(op_name, expr_template, udt_trait)   \
     template<typename T>                                                       \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && x)                     \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && x)           \
         ->::boost::yap::detail::udt_unary_op_result_t<                         \
             expr_template,                                                     \
             ::boost::yap::expr_kind::op_name,                                  \
@@ -705,7 +705,7 @@
 #define BOOST_YAP_USER_UDT_UDT_BINARY_OPERATOR(                                \
     op_name, expr_template, t_udt_trait, u_udt_trait)                          \
     template<typename T, typename U>                                           \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, U && rhs)         \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, U && rhs) \
         ->::boost::yap::detail::udt_udt_binary_op_result_t<                    \
             expr_template,                                                     \
             ::boost::yap::expr_kind::op_name,                                  \
@@ -761,7 +761,7 @@
 #define BOOST_YAP_USER_UDT_ANY_BINARY_OPERATOR(                                \
     op_name, expr_template, udt_trait)                                         \
     template<typename T, typename U>                                           \
-    auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, U && rhs)         \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, U && rhs) \
         ->::boost::yap::detail::udt_any_binary_op_result_t<                    \
             expr_template,                                                     \
             ::boost::yap::expr_kind::op_name,                                  \
