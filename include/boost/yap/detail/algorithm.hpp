@@ -226,7 +226,7 @@ namespace boost { namespace yap { namespace detail {
     struct make_operand
     {
         template<typename U>
-        auto operator()(U && u)
+        constexpr auto operator()(U && u)
         {
             return T{static_cast<U &&>(u)};
         }
