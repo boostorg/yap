@@ -158,7 +158,7 @@ namespace boost { namespace yap {
     decltype(auto) evaluate(Expr && expr, T &&... t);
 
     template<typename Expr, typename Transform, typename... Transforms>
-    decltype(auto) transform(
+    constexpr decltype(auto) transform(
         Expr && expr, Transform && transform, Transforms &&... transforms);
 
     template<typename Expr, typename Transform, typename... Transforms>
