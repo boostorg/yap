@@ -126,16 +126,20 @@ namespace boost { namespace yap {
         Expr,
         detail::void_t<decltype(detail::remove_cv_ref_t<Expr>::kind)>,
         detail::void_t<decltype(std::declval<Expr>().elements)>>
-        : std::integral_constant<
-              bool,
-              std::is_same<
-                  std::remove_cv_t<decltype(
-                      detail::remove_cv_ref_t<Expr>::kind)>,
-                  expr_kind>{} &&
-                  hana::is_a<
-                      hana::tuple_tag,
-                      decltype(std::declval<Expr>().elements)>()>
+        : std::true_type
     {
+        static_assert(
+            std::is_same<
+                std::remove_cv_t<decltype(detail::remove_cv_ref_t<Expr>::kind)>,
+                expr_kind
+            >::value,
+            "expression template needs a yap::expr_kind tag");
+        static_assert(
+            hana::is_a<
+                hana::tuple_tag,
+                decltype(std::declval<Expr>().elements)
+            >(),
+            "expression template needs a hana tuple like container for elements");
     };
 
 #endif // BOOST_YAP_DOXYGEN
