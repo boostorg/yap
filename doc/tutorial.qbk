@@ -152,7 +152,7 @@ below.
 
 The overall effect of this is that _xform_ effectively copies an `expr` node
 that does not match `xform`, and returns a transformed node for an `expr` node
-that does not match `xform`.
+that does match `xform`.
 
 _xform_ can also take multiple transform objects.  If you call it with N
 transform objects, it will attempt to match each of the N transforms to a
