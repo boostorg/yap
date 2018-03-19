@@ -224,26 +224,6 @@
         using rhs_type = typename result_types::rhs_type;                      \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
         return {tuple_type{lhs_type{static_cast<T &&>(lhs)}, std::move(rhs)}}; \
-    }                                                                          \
-    template<typename T, typename Expr>                                        \
-    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, Expr & rhs) \
-        ->::boost::yap::detail::free_binary_op_result_t<                       \
-            result_expr_template,                                              \
-            ::boost::yap::expr_kind::op_name,                                  \
-            T,                                                                 \
-            Expr &>                                                            \
-    {                                                                          \
-        using result_types = ::boost::yap::detail::free_binary_op_result<      \
-            result_expr_template,                                              \
-            ::boost::yap::expr_kind::op_name,                                  \
-            T,                                                                 \
-            Expr &>;                                                           \
-        using lhs_type = typename result_types::lhs_type;                      \
-        using rhs_type = typename result_types::rhs_type;                      \
-        using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
-        using rhs_tuple_type = typename result_types::rhs_tuple_type;          \
-        return {tuple_type{lhs_type{static_cast<T &&>(lhs)},                   \
-                           rhs_type{rhs_tuple_type{std::addressof(rhs)}}}};    \
     }
 
 
