@@ -697,7 +697,7 @@ namespace boost { namespace yap {
     {
         static_assert(
             is_expr<Expr>::value,
-            "transfrm() is only defined for expressions.");
+            "transform() is only defined for expressions.");
         return detail::transform_<false>{}(
             static_cast<Expr &&>(expr), transform, transforms...);
     }
