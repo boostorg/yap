@@ -57,8 +57,7 @@ representing `std::sqrt(3.0)`:
 This expression is a call expression.  The first operand to the call
 expression is the callable entity, in this case a pointer to `std::sqrt`.  The
 remaining operands are the arguments to pass to the callable; in this case,
-there's only one operand after the callable, `3.0`.  Here's just the
-`std::sqrt(3.0)` subexpression:
+there's only one operand after the callable, `3.0`.
 
 The children of the `std::sqrt(3.0)` subexpression are terminals.  This means
 that they are leaf nodes in our notional AST.
@@ -70,7 +69,7 @@ expression.  It is also a terminal:
 
 Notice a couple of things here: 1) non-terminals (the top-level plus operation
 and the call opertion in our example) have tuple elements that are *all* _yap_
-expressions, and 2) terminals have tuple elements, *none if which* are _yap_
+expressions, and 2) terminals have tuple elements, *none of which* are _yap_
 expressions (they're just normal types like `float` and `double (*)(double)`).
 
 [note From here on, I'll use the terms "expression" and "node" interchangably,

@@ -37,13 +37,12 @@ unnecessary, because the final (or perhaps only) transform does all the
 evaluation we need.
 
 For instance, here is the `get_arity` transform object used in the _calc3_
-example:
+example (don't worry too much about the implementation _emdash_ we'll return
+to this later in the docs in much greater detail):
 
 [calc3_get_arity_xform]
 
-Don't worry too much about the implementation _emdash_ we'll return to this
-later in the docs in much greater detail.  The point is how it is used.  For
-example:
+Here is how this might be used:
 
     auto expr = 1_p * 2_p;
     auto const arity = boost::yap::transform(expr, get_arity{});

@@ -138,7 +138,7 @@
     Note that this does not work for yap::expr_kinds assign, subscript, or
     call.  Use BOOST_YAP_USER_ASSIGN_OPERATOR,
     BOOST_YAP_USER_SUBSCRIPT_OPERATOR, or BOOST_YAP_USER_CALL_OPERATOR for
-    that, respectively.
+    those, respectively.
 
     Example:
     \snippet user_macros_snippets.cpp USER_BINARY_OPERATOR
@@ -538,10 +538,11 @@
     }
 
 
-/** Defines a function <code>if_else()</code> that acts as an analogue to the
-    ternary operator (<code>?:</code>), since the ternary operator is not
-    user-overloadable.  The return type of <code>if_else()</code> is an
-    expression instantiated from the \a expr_template expression template.
+/** Defines a 3-parameter function <code>if_else()</code> that acts as an
+    analogue to the ternary operator (<code>?:</code>), since the ternary
+    operator is not user-overloadable.  The return type of
+    <code>if_else()</code> is an expression instantiated from the \a
+    expr_template expression template.
 
     At least one parameter to <code>if_else()</code> must be an expression.
 
@@ -632,8 +633,8 @@
     that produces an expression instantiated from the \a expr_template
     expression template.
 
-    The \a x parameter to the defined operator overload may be any type that
-    is \b not an expression and for which \code
+    The parameter to the defined operator overload may be any type that is \b
+    not an expression and for which \code
     udt_trait<std::remove_cv_t<std::remove_reference_t<T>>>::value \endcode is
     true.  The parameter is wrapped in a terminal expression.
 

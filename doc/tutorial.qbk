@@ -5,13 +5,11 @@ that takes an expression will accept any type that models the _Expr_ concept.
 
 For a type `T` to model the _Expr_ concept, `T` must contain at least an
 _kind_ (terminal, plus-operation, etc.) and a _tuple_ of values.  That's it.
-This means that user-defined templates modeling _ExprTmpl_ are very
-straightforward to make.
 
-[note The _tuple_ of values is also constrained, based on the kind of the
+[note The _tuple_ of values is constrained, based on the kind of the
 expression; see the full _Expr_ documentation for details.]
 
-Here's an example:
+Here's an example of an expression:
 
 [minimal_template]
 
@@ -27,13 +25,6 @@ that take an _Expr_.  Let's make a _yap_ plus-expression manually:
 If we evaluate it using _eval_, it does what you would expect:
 
 [minimal_template_evaluation]
-
-[note There is a reference model of the _ExprTmpl_ concept that comes with
-_yap_: _expr_.  It has all the overloadable operators defined for it.
-
-_expr_ is great for prototyping, and for quick-and-dirty uses of _ets_, but
-its use of every single operator makes it a suboptimal choice for most use
-cases.]
 
 One more thing.  It is important to remember that _yap_ expressions are
 all-lazy, all the time.  There is no auto-evaluation of a _yap_ expression
@@ -76,16 +67,16 @@ To use these with _yap_ I might write an expression template for each:
 
 With this, I might write a _yap_ expression like:
 
-    lookup_matrix(S("my_matrix")) * some_matrix
+    some_expr_producing_func(S("my_matrix")) * some_matrix
 
 I can transform this expression however I like, and do not have to worry about
 the fact that it contains expressions instantiated from different templates.
 
 If _yap_ required an expression to be instantiated from a single expression
-template `expr<>`, `expr<>` would have both operators.  This means that all of
-a sudden `s * s` and `m[0]` would be well-formed expressions within a _yap_
-expression, but *not* for the real types `S` and `M` respectively.  That would
-be super weird.
+template `expr<>`, `expr<>` would have to have both operators.  This means
+that all of a sudden `s * s` and `m[0]` would be well-formed expressions
+within a _yap_ expression, but *not* for the real types `S` and `M`
+respectively.  That would be super weird.
 
 [endsect]
 
@@ -151,8 +142,8 @@ those transformed operands.  What I mean by "match" is covered in detail
 below.
 
 The overall effect of this is that _xform_ effectively copies an `expr` node
-that does not match `xform`, and returns a transformed node for an `expr` node
-that does not match `xform`.
+that *does not* match `xform`, and returns a transformed node for an `expr`
+node that *does* match `xform`.
 
 _xform_ can also take multiple transform objects.  If you call it with N
 transform objects, it will attempt to match each of the N transforms to a
@@ -357,7 +348,7 @@ Here are the operator macros and their uses:
     [[_udt_any_binary_m_] [Free operators defined over pairs of non-_Expr_ types, one constrained by a type trait and one not (e.g. a `std::list<>` on either side, and anything on the other).] [Any non-_Expr_.] [--] [At least one parameter must satisfy the given type trait.]]
 ]
 
-Some operators may only be defines as member functions, and so are not covered
+Some operators may only be defined as member functions, and so are not covered
 by general-purpose the unary and binary operator macros above:
 
 [table The Member-Only Operator Macros
@@ -443,9 +434,9 @@ reference to an expression.  This additional level of indirection causes some
 complications at times, as you can see in the examples.  Fortunately, the
 complications are not overly cumbersome.
 
-So, given the rules so far, here is a comprehensive breakdown of what happens
-when an operand is passed to a _yap_ operator.  In this table, `expr_tmpl` is an
-_ExprTmpl_, and `T` is a non-_Expr_ type.  `E` refers to any non-`expr_ref`
+So, given the rules above, here is a comprehensive breakdown of what happens
+when an operand is passed to a _yap_ operator.  In this table, `expr_tmpl` is
+an _ExprTmpl_, and `T` is a non-_Expr_ type.  `E` refers to any non-`expr_ref`
 _Expr_.  _yap_ does a partial decay on non-_Expr_ operands, in which `cv` and
 reference qualifiers are left unchanged, but arrays are decayed to pointers
 and functions are decayed to function pointers. `PARTIAL_DECAY(T)` indicates
