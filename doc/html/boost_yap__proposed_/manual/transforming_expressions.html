@@ -50,9 +50,9 @@
 <p>
         The overall effect of this is that <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
         effectively copies an <code class="computeroutput"><span class="identifier">expr</span></code>
-        node that does not match <code class="computeroutput"><span class="identifier">xform</span></code>,
+        node that <span class="bold"><strong>does not</strong></span> match <code class="computeroutput"><span class="identifier">xform</span></code>,
         and returns a transformed node for an <code class="computeroutput"><span class="identifier">expr</span></code>
-        node that does not match <code class="computeroutput"><span class="identifier">xform</span></code>.
+        node that <span class="bold"><strong>does</strong></span> match <code class="computeroutput"><span class="identifier">xform</span></code>.
       </p>
 <p>
         <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code> can also take multiple transform
@@ -185,7 +185,7 @@
           requires an <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
           as its first parameter. In situations when you want to make sure that the
           first parameter you pass to <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
-          is always a Boost.YAP expression, use the <code class="computeroutput"><a class="link" href="../../boost/yap/as_expr_idm14591.html" title="Function template as_expr">as_expr()</a></code>
+          is always a Boost.YAP expression, use the <code class="computeroutput"><a class="link" href="../../boost/yap/as_expr_idm14581.html" title="Function template as_expr">as_expr()</a></code>
           function. This is commonly needed when writing a transform in which you
           manually recurse by calling <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code>
           inside one of your transform overloads.

@@ -27,9 +27,7 @@
         <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
         concept, <code class="computeroutput"><span class="identifier">T</span></code> must contain at
         least an <code class="computeroutput"><a class="link" href="../../boost/yap/expr_kind.html" title="Type expr_kind">expr_kind</a></code>
-        (terminal, plus-operation, etc.) and a <code class="computeroutput"><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;&gt;</span></code> of values. That's it. This means
-        that user-defined templates modeling <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>
-        are very straightforward to make.
+        (terminal, plus-operation, etc.) and a <code class="computeroutput"><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;&gt;</span></code> of values. That's it.
       </p>
 <div class="note"><table border="0" summary="Note">
 <tr>
@@ -38,13 +36,13 @@
 </tr>
 <tr><td align="left" valign="top"><p>
           The <code class="computeroutput"><span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;&gt;</span></code>
-          of values is also constrained, based on the kind of the expression; see
-          the full <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
+          of values is constrained, based on the kind of the expression; see the
+          full <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
           documentation for details.
         </p></td></tr>
 </table></div>
 <p>
-        Here's an example:
+        Here's an example of an expression:
       </p>
 <p>
 </p>
@@ -92,24 +90,6 @@
 </pre>
 <p>
       </p>
-<div class="note"><table border="0" summary="Note">
-<tr>
-<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../images/note.png"></td>
-<th align="left">Note</th>
-</tr>
-<tr><td align="left" valign="top">
-<p>
-          There is a reference model of the <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>
-          concept that comes with Boost.YAP: <code class="computeroutput"><a class="link" href="../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;</a></code>.
-          It has all the overloadable operators defined for it.
-        </p>
-<p>
-          <code class="computeroutput"><a class="link" href="../../boost/yap/expression.html" title="Struct template expression">expression&lt;&gt;</a></code> is great for prototyping,
-          and for quick-and-dirty uses of expression templates, but its use of every
-          single operator makes it a suboptimal choice for most use cases.
-        </p>
-</td></tr>
-</table></div>
 <p>
         One more thing. It is important to remember that Boost.YAP expressions are
         all-lazy, all the time. There is no auto-evaluation of a Boost.YAP expression

@@ -146,7 +146,6 @@
         is the callable entity, in this case a pointer to <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">sqrt</span></code>.
         The remaining operands are the arguments to pass to the callable; in this
         case, there's only one operand after the callable, <code class="computeroutput"><span class="number">3.0</span></code>.
-        Here's just the <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">sqrt</span><span class="special">(</span><span class="number">3.0</span><span class="special">)</span></code> subexpression:
       </p>
 <p>
         The children of the <code class="computeroutput"><span class="identifier">std</span><span class="special">::</span><span class="identifier">sqrt</span><span class="special">(</span><span class="number">3.0</span><span class="special">)</span></code> subexpression are terminals. This means
@@ -168,7 +167,7 @@
 <p>
         Notice a couple of things here: 1) non-terminals (the top-level plus operation
         and the call opertion in our example) have tuple elements that are <span class="bold"><strong>all</strong></span> Boost.YAP expressions, and 2) terminals have tuple
-        elements, <span class="bold"><strong>none if which</strong></span> are Boost.YAP expressions
+        elements, <span class="bold"><strong>none of which</strong></span> are Boost.YAP expressions
         (they're just normal types like <code class="computeroutput"><span class="keyword">float</span></code>
         and <code class="computeroutput"><span class="keyword">double</span> <span class="special">(*)(</span><span class="keyword">double</span><span class="special">)</span></code>).
       </p>

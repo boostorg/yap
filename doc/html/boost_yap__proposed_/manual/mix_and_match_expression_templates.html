@@ -56,7 +56,7 @@
 <p>
         With this, I might write a Boost.YAP expression like:
       </p>
-<pre class="programlisting"><span class="identifier">lookup_matrix</span><span class="special">(</span><span class="identifier">S</span><span class="special">(</span><span class="string">"my_matrix"</span><span class="special">))</span> <span class="special">*</span> <span class="identifier">some_matrix</span>
+<pre class="programlisting"><span class="identifier">some_expr_producing_func</span><span class="special">(</span><span class="identifier">S</span><span class="special">(</span><span class="string">"my_matrix"</span><span class="special">))</span> <span class="special">*</span> <span class="identifier">some_matrix</span>
 </pre>
 <p>
         I can transform this expression however I like, and do not have to worry
@@ -66,7 +66,7 @@
         If Boost.YAP required an expression to be instantiated from a single expression
         template <code class="computeroutput"><span class="identifier">expr</span><span class="special">&lt;&gt;</span></code>,
         <code class="computeroutput"><span class="identifier">expr</span><span class="special">&lt;&gt;</span></code>
-        would have both operators. This means that all of a sudden <code class="computeroutput"><span class="identifier">s</span> <span class="special">*</span> <span class="identifier">s</span></code>
+        would have to have both operators. This means that all of a sudden <code class="computeroutput"><span class="identifier">s</span> <span class="special">*</span> <span class="identifier">s</span></code>
         and <code class="computeroutput"><span class="identifier">m</span><span class="special">[</span><span class="number">0</span><span class="special">]</span></code> would be
         well-formed expressions within a Boost.YAP expression, but <span class="bold"><strong>not</strong></span>
         for the real types <code class="computeroutput"><span class="identifier">S</span></code> and

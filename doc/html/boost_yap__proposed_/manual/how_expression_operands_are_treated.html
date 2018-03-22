@@ -45,7 +45,7 @@
         to be an rvalue, whether wrapped in a terminal or not.
       </p>
 <p>
-        Let's take a quick look at <code class="computeroutput"><a class="link" href="../../boost/yap/make_terminal_idm14574.html" title="Function template make_terminal">make_terminal()</a></code>.
+        Let's take a quick look at <code class="computeroutput"><a class="link" href="../../boost/yap/make_terminal_idm14564.html" title="Function template make_terminal">make_terminal()</a></code>.
         If you call it with a <code class="computeroutput"><span class="identifier">T</span></code> rvalue,
         the terminal's value type is a <code class="computeroutput"><span class="identifier">T</span></code>,
         and the rvalue gets moved into it. If you call it with a <code class="computeroutput"><span class="identifier">T</span>
@@ -85,7 +85,7 @@
 <p>
         Ok, so since you can build these lazy Boost.YAP expressions up from subexpressions,
         how do we treat the subexpressions? We treat them in exactly the same way
-        as <code class="computeroutput"><a class="link" href="../../boost/yap/make_terminal_idm14574.html" title="Function template make_terminal">make_terminal()</a></code> treats its parameter. Rvalues
+        as <code class="computeroutput"><a class="link" href="../../boost/yap/make_terminal_idm14564.html" title="Function template make_terminal">make_terminal()</a></code> treats its parameter. Rvalues
         are moved in, and lvalues are captured by (possibly <code class="computeroutput"><span class="keyword">const</span></code>)
         reference.
       </p>
@@ -112,7 +112,7 @@
         are not overly cumbersome.
       </p>
 <p>
-        So, given the rules so far, here is a comprehensive breakdown of what happens
+        So, given the rules above, here is a comprehensive breakdown of what happens
         when an operand is passed to a Boost.YAP operator. In this table, <code class="computeroutput"><span class="identifier">expr_tmpl</span></code> is an <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expressiontemplate">ExpressionTemplate</a>,
         and <code class="computeroutput"><span class="identifier">T</span></code> is a non-<a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>
         type. <code class="computeroutput"><span class="identifier">E</span></code> refers to any non-<code class="computeroutput"><span class="identifier">expr_ref</span></code> <a class="link" href="../concepts.html#boost_yap__proposed_.concepts.expression">Expression</a>.

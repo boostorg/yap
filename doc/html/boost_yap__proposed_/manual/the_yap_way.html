@@ -67,7 +67,8 @@
 <p>
         For instance, here is the <code class="computeroutput"><span class="identifier">get_arity</span></code>
         transform object used in the <a class="link" href="examples/calc3.html" title="Calc3">Calc3</a>
-        example:
+        example (don't worry too much about the implementation &#8212; we'll return
+        to this later in the docs in much greater detail):
       </p>
 <p>
 </p>
@@ -108,9 +109,7 @@
 <p>
       </p>
 <p>
-        Don't worry too much about the implementation &#8212; we'll return to this
-        later in the docs in much greater detail. The point is how it is used. For
-        example:
+        Here is how this might be used:
       </p>
 <pre class="programlisting"><span class="keyword">auto</span> <span class="identifier">expr</span> <span class="special">=</span> <span class="number">1</span><span class="identifier">_p</span> <span class="special">*</span> <span class="number">2</span><span class="identifier">_p</span><span class="special">;</span>
 <span class="keyword">auto</span> <span class="keyword">const</span> <span class="identifier">arity</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">,</span> <span class="identifier">get_arity</span><span class="special">{});</span>
