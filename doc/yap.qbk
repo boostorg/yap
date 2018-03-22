@@ -141,6 +141,7 @@
 [def _examples_            [link boost_yap__proposed_.manual.examples Examples]]
 [def _calc3_               [link boost_yap__proposed_.manual.examples.calc3 Calc3]]
 [def _mixed_               [link boost_yap__proposed_.manual.examples.mixed Mixed]]
+[def _vector_              [link boost_yap__proposed_.manual.examples.vector Vector]]
 [def _lazy_vector_         [link boost_yap__proposed_.manual.examples.lazy_vector Lazy Vector]]
 [def _tarray_              [link boost_yap__proposed_.manual.examples.tarray TArray]]
 

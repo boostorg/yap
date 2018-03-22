@@ -66,7 +66,7 @@ take_nth::operator() (boost::yap::terminal<lazy_vector_expr, std::vector<double>
 
 // In order to define the += operator with the semantics we want, it's
 // convenient to derive a terminal type from a terminal instantiation of
-// lazy_vector_expr.  note that we could have written a template
+// lazy_vector_expr.  Note that we could have written a template
 // specialization here instead -- either one would work.  That would of course
 // have required more typing.
 struct lazy_vector :

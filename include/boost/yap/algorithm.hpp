@@ -661,7 +661,7 @@ namespace boost { namespace yap {
     namespace detail {
 
         template<typename... Transforms>
-        auto make_transform_tuple(Transforms &... transforms)
+        constexpr auto make_transform_tuple(Transforms &... transforms)
         {
             return hana::tuple<Transforms *...>{&transforms...};
         }
@@ -670,8 +670,8 @@ namespace boost { namespace yap {
         struct transform_
         {
             template<typename Expr, typename Transform, typename... Transforms>
-            decltype(auto) operator()(
-                Expr && expr, Transform & transform, Transforms &... transforms)
+            constexpr decltype(auto) operator()(
+                Expr && expr, Transform & transform, Transforms &... transforms) const
             {
                 auto transform_tuple =
                     detail::make_transform_tuple(transform, transforms...);
@@ -692,7 +692,7 @@ namespace boost { namespace yap {
         combination of these.
     */
     template<typename Expr, typename Transform, typename... Transforms>
-    decltype(auto)
+    constexpr decltype(auto)
     transform(Expr && expr, Transform && transform, Transforms &&... transforms)
     {
         static_assert(

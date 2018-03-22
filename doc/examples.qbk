@@ -37,7 +37,7 @@ place.  In this simple example, we don't really need it.
 [section Minimal]
 
 `minimal_expr` below models _ExprTmpl_; since it has no operators, an
-expression is built manually.
+expression must be built manually.
 
 First, the template itself:
 
@@ -285,9 +285,9 @@ how you might implement it.
 [section Boost.Phoenix-style `let()`]
 
 Boost.Phoenix has a thing called _let_.  It introduces named reusable values
-that are usable in subsequent expressions.  This is something simliar, though
-not exactly like Phoenix's version.  In Phoenix, a let placeholder is only
-evaluated once, whereas the example below does something more like macro
+that are usable in subsequent expressions.  This example is something simliar,
+though not exactly like Phoenix's version.  In Phoenix, a let placeholder is
+only evaluated once, whereas the example below does something more like macro
 substitution; each let-placeholder is replaced with its initializing
 expression everywhere it is used.
 

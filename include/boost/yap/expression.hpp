@@ -33,22 +33,30 @@ namespace boost { namespace yap {
         static const expr_kind kind = Kind;
 
         /** Default constructor.  Does nothing. */
-        expression() {}
+        constexpr expression() {}
 
         /** Moves \a rhs into the only data mamber, \c elements. */
-        expression(tuple_type && rhs) : elements(std::move(rhs)) {}
+        constexpr expression(tuple_type && rhs) :
+            elements(static_cast<tuple_type &&>(rhs))
+        {}
 
         tuple_type elements;
 
         /** A convenience member function that dispatches to the free function
             <code>value()</code>. */
-        decltype(auto) value() & { return ::boost::yap::value(*this); }
+        constexpr decltype(auto) value() &
+        {
+            return ::boost::yap::value(*this);
+        }
 
 #ifndef BOOST_YAP_DOXYGEN
 
-        decltype(auto) value() const & { return ::boost::yap::value(*this); }
+        constexpr decltype(auto) value() const &
+        {
+            return ::boost::yap::value(*this);
+        }
 
-        decltype(auto) value() &&
+        constexpr decltype(auto) value() &&
         {
             return ::boost::yap::value(std::move(*this));
         }
@@ -57,13 +65,16 @@ namespace boost { namespace yap {
 
         /** A convenience member function that dispatches to the free function
             <code>left()</code>. */
-        decltype(auto) left() & { return ::boost::yap::left(*this); }
+        constexpr decltype(auto) left() & { return ::boost::yap::left(*this); }
 
 #ifndef BOOST_YAP_DOXYGEN
 
-        decltype(auto) left() const & { return ::boost::yap::left(*this); }
+        constexpr decltype(auto) left() const &
+        {
+            return ::boost::yap::left(*this);
+        }
 
-        decltype(auto) left() &&
+        constexpr decltype(auto) left() &&
         {
             return ::boost::yap::left(std::move(*this));
         }
@@ -72,13 +83,19 @@ namespace boost { namespace yap {
 
         /** A convenience member function that dispatches to the free function
             <code>right()</code>. */
-        decltype(auto) right() & { return ::boost::yap::right(*this); }
+        constexpr decltype(auto) right() &
+        {
+            return ::boost::yap::right(*this);
+        }
 
 #ifndef BOOST_YAP_DOXYGEN
 
-        decltype(auto) right() const & { return ::boost::yap::right(*this); }
+        constexpr decltype(auto) right() const &
+        {
+            return ::boost::yap::right(*this);
+        }
 
-        decltype(auto) right() &&
+        constexpr decltype(auto) right() &&
         {
             return ::boost::yap::right(std::move(*this));
         }
@@ -113,25 +130,35 @@ namespace boost { namespace yap {
         static const expr_kind kind = expr_kind::terminal;
 
         /** Default constructor.  Does nothing. */
-        expression() {}
+        constexpr expression() {}
 
         /** Forwards \a t into \c elements. */
-        expression(T && t) : elements(static_cast<T &&>(t)) {}
+        constexpr expression(T && t) : elements(static_cast<T &&>(t)) {}
+
+        /** Copies \a rhs into the only data mamber, \c elements. */
+        constexpr expression(hana::tuple<T> const & rhs) : elements(rhs) {}
 
         /** Moves \a rhs into the only data mamber, \c elements. */
-        expression(hana::tuple<T> && rhs) : elements(std::move(rhs)) {}
+        constexpr expression(hana::tuple<T> && rhs) : elements(std::move(rhs))
+        {}
 
         tuple_type elements;
 
         /** A convenience member function that dispatches to the free function
             <code>value()</code>. */
-        decltype(auto) value() & { return ::boost::yap::value(*this); }
+        constexpr decltype(auto) value() &
+        {
+            return ::boost::yap::value(*this);
+        }
 
 #ifndef BOOST_YAP_DOXYGEN
 
-        decltype(auto) value() const & { return ::boost::yap::value(*this); }
+        constexpr decltype(auto) value() const &
+        {
+            return ::boost::yap::value(*this);
+        }
 
-        decltype(auto) value() &&
+        constexpr decltype(auto) value() &&
         {
             return ::boost::yap::value(std::move(*this));
         }
@@ -194,114 +221,114 @@ namespace boost { namespace yap {
 
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator+(Expr &&);
+    constexpr auto operator+(Expr &&);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator-(Expr &&);
+    constexpr auto operator-(Expr &&);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator*(Expr &&);
+    constexpr auto operator*(Expr &&);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator~(Expr &&);
+    constexpr auto operator~(Expr &&);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator&(Expr &&);
+    constexpr auto operator&(Expr &&);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator!(Expr &&);
+    constexpr auto operator!(Expr &&);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator++(Expr &&);
+    constexpr auto operator++(Expr &&);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator--(Expr &&);
+    constexpr auto operator--(Expr &&);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator++(Expr &&, int);
+    constexpr auto operator++(Expr &&, int);
     /** \see BOOST_YAP_USER_UNARY_OPERATOR for full semantics. */
     template<typename Expr>
-    auto operator--(Expr &&, int);
+    constexpr auto operator--(Expr &&, int);
 
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator<<(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator<<(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator>>(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator>>(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator*(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator*(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator/(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator/(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator%(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator%(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator+(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator+(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator-(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator-(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator<(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator<(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator>(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator>(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator<=(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator<=(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator>=(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator>=(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator==(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator==(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator!=(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator!=(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator||(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator||(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator&&(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator&&(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator&(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator&(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator|(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator|(LExpr && lhs, RExpr && rhs);
     /** \see BOOST_YAP_USER_BINARY_OPERATOR for full semantics. */
     template<typename LExpr, typename RExpr>
-    auto operator^(LExpr && lhs, RExpr && rhs);
+    constexpr auto operator^(LExpr && lhs, RExpr && rhs);
 
     /** \see BOOST_YAP_USER_EXPR_IF_ELSE for full semantics. */
     template<typename Expr1, typename Expr2, typename Expr3>
-    auto if_else(Expr1 && expr1, Expr2 && expr2, Expr3 && expr3);
+    constexpr auto if_else(Expr1 && expr1, Expr2 && expr2, Expr3 && expr3);
 
 #endif
 
     /** Returns <code>make_expression<boost::yap::expression, Kind>(...)</code>.
      */
     template<expr_kind Kind, typename... T>
-    auto make_expression(T &&... t)
+    constexpr auto make_expression(T &&... t)
     {
         return make_expression<expression, Kind>(static_cast<T &&>(t)...);
     }
 
     /** Returns <code>make_terminal<boost::yap::expression>(t)</code>. */
     template<typename T>
-    auto make_terminal(T && t)
+    constexpr auto make_terminal(T && t)
     {
         return make_terminal<expression>(static_cast<T &&>(t));
     }
 
     /** Returns <code>as_expr<boost::yap::expression>(t)</code>. */
     template<typename T>
-    decltype(auto) as_expr(T && t)
+    constexpr decltype(auto) as_expr(T && t)
     {
         return as_expr<expression>(static_cast<T &&>(t));
     }

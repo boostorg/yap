@@ -22,7 +22,7 @@ struct future_expr
 
     Tuple elements;
 
-    // Returns the transformed/flattenen expression.
+    // Returns the transformed/flattened expression.
     auto get () const;
 };
 

@@ -52,7 +52,7 @@ namespace boost { namespace yap { namespace detail {
     struct rvalue_mover
     {
         template<typename T>
-        decltype(auto) operator()(T && t)
+        constexpr decltype(auto) operator()(T && t) const
         {
             return static_cast<T &&>(t);
         }
@@ -62,7 +62,7 @@ namespace boost { namespace yap { namespace detail {
     struct rvalue_mover<true>
     {
         template<typename T>
-        std::remove_reference_t<T> operator()(T && t)
+        constexpr std::remove_reference_t<T> operator()(T && t) const
         {
             return std::move(t);
         }
@@ -78,8 +78,8 @@ namespace boost { namespace yap { namespace detail {
         {}
 
         template<long long I>
-        decltype(auto)
-        operator()(expr_tag<expr_kind::terminal>, boost::yap::placeholder<I>)
+        constexpr decltype(auto)
+        operator()(expr_tag<expr_kind::terminal>, boost::yap::placeholder<I>) const
         {
             static_assert(
                 I <= decltype(hana::size(std::declval<tuple_t>()))::value,
@@ -103,8 +103,8 @@ namespace boost { namespace yap { namespace detail {
         {}
 
         template<long long I>
-        decltype(auto)
-        operator()(expr_tag<expr_kind::terminal>, boost::yap::placeholder<I>)
+        constexpr decltype(auto)
+        operator()(expr_tag<expr_kind::terminal>, boost::yap::placeholder<I>) const
         {
             static_assert(
                 I <= decltype(hana::size(std::declval<tuple_t>()))::value,
@@ -115,14 +115,14 @@ namespace boost { namespace yap { namespace detail {
         }
 
         template<typename T>
-        decltype(auto) operator()(expr_tag<expr_kind::terminal>, T && t)
+        constexpr decltype(auto) operator()(expr_tag<expr_kind::terminal>, T && t) const
         {
             return static_cast<T &&>(t);
         }
 
 #define BOOST_YAP_UNARY_OPERATOR_CASE(op, op_name)                             \
     template<typename T>                                                       \
-    decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t)            \
+    constexpr decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t) const \
     {                                                                          \
         return op transform(                                                   \
             as_expr<minimal_expr>(static_cast<T &&>(t)), *this);               \
@@ -138,13 +138,13 @@ namespace boost { namespace yap { namespace detail {
         BOOST_YAP_UNARY_OPERATOR_CASE(--, pre_dec)
 
         template<typename T>
-        decltype(auto) operator()(expr_tag<expr_kind::post_inc>, T && t)
+        constexpr decltype(auto) operator()(expr_tag<expr_kind::post_inc>, T && t) const
         {
             return transform(
                 as_expr<minimal_expr>(static_cast<T &&>(t)), *this)++;
         }
         template<typename T>
-        decltype(auto) operator()(expr_tag<expr_kind::post_dec>, T && t)
+        constexpr decltype(auto) operator()(expr_tag<expr_kind::post_dec>, T && t) const
         {
             return transform(
                 as_expr<minimal_expr>(static_cast<T &&>(t)), *this)--;
@@ -154,7 +154,7 @@ namespace boost { namespace yap { namespace detail {
 
 #define BOOST_YAP_BINARY_OPERATOR_CASE(op, op_name)                            \
     template<typename T, typename U>                                           \
-    decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t, U && u)    \
+    constexpr decltype(auto) operator()(expr_tag<expr_kind::op_name>, T && t, U && u) const \
     {                                                                          \
         return transform(as_expr<minimal_expr>(static_cast<T &&>(t)), *this)   \
             op transform(as_expr<minimal_expr>(static_cast<U &&>(u)), *this);  \
@@ -182,7 +182,7 @@ namespace boost { namespace yap { namespace detail {
         // clang-format off
 //[ evaluation_transform_comma
         template<typename T, typename U>
-        decltype(auto) operator()(expr_tag<expr_kind::comma>, T && t, U && u)
+        constexpr decltype(auto) operator()(expr_tag<expr_kind::comma>, T && t, U && u) const
         {
             return transform(
                        as_expr<minimal_expr>(static_cast<T &&>(t)), *this),
@@ -206,8 +206,8 @@ namespace boost { namespace yap { namespace detail {
         BOOST_YAP_BINARY_OPERATOR_CASE(^=, bitwise_xor_assign)
 
         template<typename T, typename U>
-        decltype(auto)
-        operator()(expr_tag<expr_kind::subscript>, T && t, U && u)
+        constexpr decltype(auto)
+        operator()(expr_tag<expr_kind::subscript>, T && t, U && u) const
         {
             return transform(
                 as_expr<minimal_expr>(static_cast<T &&>(t)), *this)[transform(
@@ -217,8 +217,8 @@ namespace boost { namespace yap { namespace detail {
 #undef BOOST_YAP_BINARY_OPERATOR_CASE
 
         template<typename T, typename U, typename V>
-        decltype(auto)
-        operator()(expr_tag<expr_kind::if_else>, T && t, U && u, V && v)
+        constexpr decltype(auto)
+        operator()(expr_tag<expr_kind::if_else>, T && t, U && u, V && v) const
         {
             return transform(as_expr<minimal_expr>(static_cast<T &&>(t)), *this)
                        ? transform(
@@ -231,8 +231,8 @@ namespace boost { namespace yap { namespace detail {
         // clang-format off
 //[ evaluation_transform_call
         template<typename Callable, typename... Args>
-        decltype(auto) operator()(
-            expr_tag<expr_kind::call>, Callable && callable, Args &&... args)
+        constexpr decltype(auto) operator()(
+            expr_tag<expr_kind::call>, Callable && callable, Args &&... args) const
         {
             return transform(as_expr<minimal_expr>(static_cast<Callable &&>(callable)), *this)(
                 transform(as_expr<minimal_expr>(static_cast<Args &&>(args)), *this)...
@@ -264,7 +264,7 @@ namespace boost { namespace yap { namespace detail {
     struct default_transform
     {
         template<typename Expr, typename TransformTuple>
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             return static_cast<Expr &&>(expr);
         }
@@ -280,7 +280,7 @@ namespace boost { namespace yap { namespace detail {
         // and one or more subexpression of 'expr' are not callable with any
         // overload in 'xform'.
         template<typename Expr, typename TransformTuple>
-        incomplete operator()(Expr && expr, TransformTuple transforms) const;
+        constexpr incomplete operator()(Expr && expr, TransformTuple transforms) const;
     };
 
     template<
@@ -288,20 +288,20 @@ namespace boost { namespace yap { namespace detail {
         template<expr_kind, class> class ExprTemplate,
         typename OldTuple,
         typename NewTuple>
-    auto make_expr_from_tuple(
+    constexpr auto make_expr_from_tuple(
         ExprTemplate<Kind, OldTuple> const & expr, NewTuple && tuple)
     {
         return ExprTemplate<Kind, NewTuple>{std::move(tuple)};
     }
 
     template<expr_kind Kind, typename Expr, typename NewTuple>
-    auto make_expr_from_tuple(Expr const & expr, NewTuple && tuple)
+    constexpr auto make_expr_from_tuple(Expr const & expr, NewTuple && tuple)
     {
         return minimal_expr<Kind, NewTuple>{std::move(tuple)};
     }
 
     template<typename Expr, typename Tuple, typename TransformTuple>
-    decltype(auto) transform_nonterminal(
+    constexpr decltype(auto) transform_nonterminal(
         Expr const & expr, Tuple && tuple, TransformTuple transforms)
     {
         auto transformed_tuple =
@@ -321,7 +321,7 @@ namespace boost { namespace yap { namespace detail {
     struct default_transform<true, false, false>
     {
         template<typename Expr, typename TransformTuple>
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             return transform_nonterminal(expr, expr.elements, transforms);
         }
@@ -349,7 +349,7 @@ namespace boost { namespace yap { namespace detail {
         bool NextTransformExists>
     struct next_or_default_transform
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             // Use the next transform.
             constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
@@ -362,7 +362,7 @@ namespace boost { namespace yap { namespace detail {
     template<bool Strict, typename Expr, typename TransformTuple, int I>
     struct next_or_default_transform<Strict, Expr, TransformTuple, I, false>
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             // No next transform exists; use the default transform.
             constexpr expr_kind kind = remove_cv_ref_t<Expr>::kind;
@@ -383,7 +383,7 @@ namespace boost { namespace yap { namespace detail {
         typename = detail::void_t<>>
     struct transform_expression_expr
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             // No expr-matching succeeded; use the next or default transform.
             return next_or_default_transform<
@@ -406,7 +406,7 @@ namespace boost { namespace yap { namespace detail {
         void_t<decltype((*std::declval<TransformTuple>()[hana::llong<I>{}])(
             std::declval<Expr>()))>>
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             return (*transforms[hana::llong<I>{}])(static_cast<Expr &&>(expr));
         }
@@ -424,7 +424,7 @@ namespace boost { namespace yap { namespace detail {
         typename>
     struct transform_expression_tag
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             // No tag-matching succeeded; try expr-matching.
             return transform_expression_expr<Strict, Expr, TransformTuple, I>{}(
@@ -450,7 +450,7 @@ namespace boost { namespace yap { namespace detail {
             expr_tag<remove_cv_ref_t<Expr>::kind>{},
             terminal_value(::boost::yap::value(std::declval<Expr>()))))>>
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             return (*transforms[hana::llong<I>{}])(
                 expr_tag<remove_cv_ref_t<Expr>::kind>{},
@@ -471,7 +471,7 @@ namespace boost { namespace yap { namespace detail {
             terminal_value(::boost::yap::left(std::declval<Expr>())),
             terminal_value(::boost::yap::right(std::declval<Expr>()))))>>
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             return (*transforms[hana::llong<I>{}])(
                 expr_tag<remove_cv_ref_t<Expr>::kind>{},
@@ -494,7 +494,7 @@ namespace boost { namespace yap { namespace detail {
             terminal_value(::boost::yap::then(std::declval<Expr>())),
             terminal_value(::boost::yap::else_(std::declval<Expr>()))))>>
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             return (*transforms[hana::llong<I>{}])(
                 expr_tag<remove_cv_ref_t<Expr>::kind>{},
@@ -509,10 +509,10 @@ namespace boost { namespace yap { namespace detail {
     struct transform_call_unpacker
     {
         template<long long... I>
-        auto operator()(
+        constexpr auto operator()(
             Expr && expr,
             Transform & transform,
-            std::integer_sequence<long long, I...>)
+            std::integer_sequence<long long, I...>) const
             -> decltype(transform(
                 expr_tag<expr_kind::call>{},
                 terminal_value(::boost::yap::get(
@@ -547,7 +547,7 @@ namespace boost { namespace yap { namespace detail {
                 *std::declval<TransformTuple>()[hana::llong<I>{}],
                 indices_for(std::declval<Expr>())))>>
     {
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             using transform_t = decltype(*transforms[hana::llong<I>{}]);
             return transform_call_unpacker<Expr, transform_t>{}(
@@ -561,7 +561,7 @@ namespace boost { namespace yap { namespace detail {
     struct transform_impl
     {
         template<typename Expr, typename TransformTuple>
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             constexpr expr_kind kind = detail::remove_cv_ref_t<Expr>::kind;
             return detail::transform_expression_tag<
@@ -578,7 +578,7 @@ namespace boost { namespace yap { namespace detail {
     struct transform_impl<Strict, I, true>
     {
         template<typename Expr, typename TransformTuple>
-        decltype(auto) operator()(Expr && expr, TransformTuple transforms)
+        constexpr decltype(auto) operator()(Expr && expr, TransformTuple transforms) const
         {
             return detail::transform_impl<Strict, I, false>{}(
                 ::boost::yap::deref(static_cast<Expr &&>(expr)), transforms);

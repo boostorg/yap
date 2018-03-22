@@ -6,8 +6,8 @@ _Expr_ is the central concept in _yap_.  It must contain at least an _kind_
 and a _tuple_ of values.
 
 Here is a summary of the requirements on _Expr_.  In the tables below, `E` is
-a type that models _Expr_; `e` is an object of type `E`; and `Tuple` is an
-instantiation of _tuple_.
+a type that models _Expr_; `e` is an object of type `E`; `Tuple` is an
+instantiation of _tuple_; and `t` is an object of type `Tuple`.
 
 [table Expression Requirements
     [[Expression]    [Type]     [Description]                           [Notes]]
