@@ -225,19 +225,41 @@
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
         return {tuple_type{lhs_type{static_cast<T &&>(lhs)}, std::move(rhs)}}; \
     }                                                                          \
-    template<typename T, typename Expr>                                        \
-    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(T && lhs, Expr & rhs) \
+    template<typename T, ::boost::yap::expr_kind Kind, typename Tuple>         \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                  \
+        T && lhs, expr_template<Kind, Tuple> const & rhs)                      \
         ->::boost::yap::detail::free_binary_op_result_t<                       \
             result_expr_template,                                              \
             ::boost::yap::expr_kind::op_name,                                  \
             T,                                                                 \
-            Expr &>                                                            \
+            expr_template<Kind, Tuple> const &>                                \
     {                                                                          \
         using result_types = ::boost::yap::detail::free_binary_op_result<      \
             result_expr_template,                                              \
             ::boost::yap::expr_kind::op_name,                                  \
             T,                                                                 \
-            Expr &>;                                                           \
+            expr_template<Kind, Tuple> const &>;                               \
+        using lhs_type = typename result_types::lhs_type;                      \
+        using rhs_type = typename result_types::rhs_type;                      \
+        using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
+        using rhs_tuple_type = typename result_types::rhs_tuple_type;          \
+        return {tuple_type{lhs_type{static_cast<T &&>(lhs)},                   \
+                           rhs_type{rhs_tuple_type{std::addressof(rhs)}}}};    \
+    }                                                                          \
+    template<typename T, ::boost::yap::expr_kind Kind, typename Tuple>         \
+    constexpr auto operator BOOST_YAP_INDIRECT_CALL(op_name)(                  \
+        T && lhs, expr_template<Kind, Tuple> & rhs)                            \
+        ->::boost::yap::detail::free_binary_op_result_t<                       \
+            result_expr_template,                                              \
+            ::boost::yap::expr_kind::op_name,                                  \
+            T,                                                                 \
+            expr_template<Kind, Tuple> &>                                      \
+    {                                                                          \
+        using result_types = ::boost::yap::detail::free_binary_op_result<      \
+            result_expr_template,                                              \
+            ::boost::yap::expr_kind::op_name,                                  \
+            T,                                                                 \
+            expr_template<Kind, Tuple> &>;                                     \
         using lhs_type = typename result_types::lhs_type;                      \
         using rhs_type = typename result_types::rhs_type;                      \
         using tuple_type = ::boost::hana::tuple<lhs_type, rhs_type>;           \
