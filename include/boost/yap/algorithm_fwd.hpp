@@ -32,9 +32,9 @@ namespace boost { namespace yap {
         address_of = 6,  ///< \c &
         logical_not = 7, ///< \c !
         pre_inc = 8,     ///< \c ++
-        pre_dec = 9,     ///< \c --
+        pre_dec = 9,     ///< \c \-\-
         post_inc = 10,   ///< \c ++(int)
-        post_dec = 11,   ///< \c --(int)
+        post_dec = 11,   ///< \c \-\-(int)
 
         // binary
         shift_left = 12,         ///< \c <<
