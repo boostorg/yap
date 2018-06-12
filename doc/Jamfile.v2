@@ -100,9 +100,10 @@ boostbook standalone
         <xsl:param>index.on.type=1
     ;
 
-install css : [ glob $(BOOST_ROOT)/doc/src/*.css ]
-    : <location>html ;
-install images : [ glob $(BOOST_ROOT)/doc/src/images/*.png ]
-    : <location>html/images ;
-explicit css ;
-explicit images ;
+alias boostdoc : yap : : : ;
+
+explicit boostdoc ;
+
+alias boostrelease ;
+
+explicit boostrelease ;
