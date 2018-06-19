@@ -301,7 +301,7 @@ call _xform_ on an expression using _replacements_ or _evaluation_ as the
 transform, respectively.
 
 The behavior of _evaluation_ is covered in the next section, [link
-boost_yap__proposed_.manual.evaluating_expressions Evaluating Expressions].
+boost_yap_.manual.evaluating_expressions Evaluating Expressions].
 
 [endsect]
 
