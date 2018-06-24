@@ -3,7 +3,7 @@
  / file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
  /]
 
-[library Boost.YAP (Proposed)
+[library Boost.YAP
     [quickbook 1.3]
     [authors [Laine, Zach]]
     [copyright 2018 T. Zachary Laine]
@@ -60,19 +60,19 @@
 
 [def _yap_                 Boost.YAP]
 
-[def _operators_           [link boost_yap__proposed_.manual.operators Operators]]
-[def _operator_macros_     [link boost_yap__proposed_.manual.operator_macros Operator Macros]]
+[def _operators_           [link boost_yap_.manual.operators Operators]]
+[def _operator_macros_     [link boost_yap_.manual.operator_macros Operator Macros]]
 
-[def _Expr_                [link boost_yap__proposed_.concepts.expression Expression]]
-[def _Exprs_               [link boost_yap__proposed_.concepts.expression Expressions]]
-[def _ExprTmpl_            [link boost_yap__proposed_.concepts.expressiontemplate ExpressionTemplate]]
-[def _ExprTmpls_           [link boost_yap__proposed_.concepts.expressiontemplate ExpressionTemplates]]
-[def _XForm_               [link boost_yap__proposed_.concepts.transform Transform]]
-[def _XForms_              [link boost_yap__proposed_.concepts.transform Transforms]]
-[def _ExprXForm_           [link boost_yap__proposed_.concepts.expressiontransform ExpressionTransform]]
-[def _ExprXForms_          [link boost_yap__proposed_.concepts.expressiontransform ExpressionTransforms]]
-[def _TagXForm_            [link boost_yap__proposed_.concepts.tagtransform TagTransform]]
-[def _TagXForms_           [link boost_yap__proposed_.concepts.tagtransform TagTransforms]]
+[def _Expr_                [link boost_yap_.concepts.expression Expression]]
+[def _Exprs_               [link boost_yap_.concepts.expression Expressions]]
+[def _ExprTmpl_            [link boost_yap_.concepts.expressiontemplate ExpressionTemplate]]
+[def _ExprTmpls_           [link boost_yap_.concepts.expressiontemplate ExpressionTemplates]]
+[def _XForm_               [link boost_yap_.concepts.transform Transform]]
+[def _XForms_              [link boost_yap_.concepts.transform Transforms]]
+[def _ExprXForm_           [link boost_yap_.concepts.expressiontransform ExpressionTransform]]
+[def _ExprXForms_          [link boost_yap_.concepts.expressiontransform ExpressionTransforms]]
+[def _TagXForm_            [link boost_yap_.concepts.tagtransform TagTransform]]
+[def _TagXForms_           [link boost_yap_.concepts.tagtransform TagTransforms]]
 [def _Callable_            [@http://en.cppreference.com/w/cpp/concept/Callable Callable]]
 [def _Callables_           [@http://en.cppreference.com/w/cpp/concept/Callable Callables]]
 [def _range_v3_            [@https://github.com/ericniebler/range-v3 Range-v3]]
@@ -136,17 +136,17 @@
 
 [def _emdash_              \u2014]
 
-[def _how_treated_         [link boost_yap__proposed_.manual.how_expression_operands_are_treated How Expression Operands Are Treated]]
+[def _how_treated_         [link boost_yap_.manual.how_expression_operands_are_treated How Expression Operands Are Treated]]
 
-[def _examples_            [link boost_yap__proposed_.manual.examples Examples]]
-[def _calc3_               [link boost_yap__proposed_.manual.examples.calc3 Calc3]]
-[def _mixed_               [link boost_yap__proposed_.manual.examples.mixed Mixed]]
-[def _vector_              [link boost_yap__proposed_.manual.examples.vector Vector]]
-[def _lazy_vector_         [link boost_yap__proposed_.manual.examples.lazy_vector Lazy Vector]]
-[def _tarray_              [link boost_yap__proposed_.manual.examples.tarray TArray]]
+[def _examples_            [link boost_yap_.manual.examples Examples]]
+[def _calc3_               [link boost_yap_.manual.examples.calc3 Calc3]]
+[def _mixed_               [link boost_yap_.manual.examples.mixed Mixed]]
+[def _vector_              [link boost_yap_.manual.examples.vector Vector]]
+[def _lazy_vector_         [link boost_yap_.manual.examples.lazy_vector Lazy Vector]]
+[def _tarray_              [link boost_yap_.manual.examples.tarray TArray]]
 
-[def _future_group_        [link boost_yap__proposed_.manual.examples.future_group Future Group]]
-[def _pipable_algorithms_  [link boost_yap__proposed_.manual.examples.pipable_algorithms Pipable Algorithms]]
+[def _future_group_        [link boost_yap_.manual.examples.future_group Future Group]]
+[def _pipable_algorithms_  [link boost_yap_.manual.examples.pipable_algorithms Pipable Algorithms]]
 
 [include intro.qbk]
 [include manual.qbk]
