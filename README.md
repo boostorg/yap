@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tzlaine/yap.svg?branch=master)](https://travis-ci.org/tzlaine/yap)
+[![Build Status](https://travis-ci.org/boostorg/yap.svg?branch=master)](https://travis-ci.org/boostorg/yap)
 [![codecov](https://codecov.io/gh/tzlaine/yap/branch/master/graph/badge.svg)](https://codecov.io/gh/tzlaine/yap)
 [![License](https://img.shields.io/badge/license-boost-brightgreen.svg)](LICENSE_1_0.txt)
 
