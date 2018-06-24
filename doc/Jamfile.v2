@@ -43,17 +43,14 @@ run_doxygen [ glob ../include/boost/yap/*.hpp ] : "Reference" ;
 xml yap
     :
         yap.qbk
+    :
+        <dependency>yap_reference
     ;
 
 boostbook standalone
     :
         yap
     :
-        <dependency>css
-        <dependency>images
-
-        <dependency>yap_reference
-
         # HTML options first:
         # Use graphics not text for navigation:
         <xsl:param>navig.graphics=1
