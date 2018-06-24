@@ -1,0 +1,164 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Vec3</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.YAP">
+<link rel="up" href="../examples.html" title="Examples">
+<link rel="prev" href="tarray.html" title="TArray">
+<link rel="next" href="vector.html" title="Vector">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="tarray.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="vector.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_yap.manual.examples.vec3"></a><a class="link" href="vec3.html" title="Vec3">Vec3</a>
+</h4></div></div></div>
+<p>
+          An example using 3-space vectors, a bit like the tarray example.
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">yap</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">array</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+
+
+<span class="keyword">struct</span> <span class="identifier">take_nth</span>
+<span class="special">{</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expression</span><span class="special">,</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">array</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="number">3</span><span class="special">&gt;&gt;</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">value</span><span class="special">(</span><span class="identifier">expr</span><span class="special">)[</span><span class="identifier">n</span><span class="special">];</span>
+        <span class="comment">// The move forces the terminal to store the value of x, not a</span>
+        <span class="comment">// reference.</span>
+        <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">move</span><span class="special">(</span><span class="identifier">x</span><span class="special">));</span>
+    <span class="special">}</span>
+
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">size_t</span> <span class="identifier">n</span><span class="special">;</span>
+<span class="special">};</span>
+
+<span class="comment">// Since this example doesn't constrain the operators defined on its</span>
+<span class="comment">// expressions, we can just use boost::yap::expression&lt;&gt; as the expression</span>
+<span class="comment">// template.</span>
+<span class="keyword">using</span> <span class="identifier">vec3_terminal</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expression</span><span class="special">&lt;</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">tuple</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">array</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="number">3</span><span class="special">&gt;&gt;</span>
+<span class="special">&gt;;</span>
+
+<span class="comment">// Customize the terminal type we use by adding index and assignment</span>
+<span class="comment">// operations.</span>
+<span class="keyword">struct</span> <span class="identifier">vec3</span> <span class="special">:</span> <span class="identifier">vec3_terminal</span>
+<span class="special">{</span>
+    <span class="keyword">explicit</span> <span class="identifier">vec3</span> <span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> <span class="keyword">int</span> <span class="identifier">j</span> <span class="special">=</span> <span class="number">0</span><span class="special">,</span> <span class="keyword">int</span> <span class="identifier">k</span> <span class="special">=</span> <span class="number">0</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">0</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">i</span><span class="special">;</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">1</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">j</span><span class="special">;</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">2</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">k</span><span class="special">;</span>
+    <span class="special">}</span>
+
+    <span class="keyword">explicit</span> <span class="identifier">vec3</span> <span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">array</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="number">3</span><span class="special">&gt;</span> <span class="identifier">a</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">0</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">a</span><span class="special">[</span><span class="number">0</span><span class="special">];</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">1</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">a</span><span class="special">[</span><span class="number">1</span><span class="special">];</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">2</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">a</span><span class="special">[</span><span class="number">2</span><span class="special">];</span>
+    <span class="special">}</span>
+
+    <span class="keyword">int</span> <span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">[]</span> <span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">ptrdiff_t</span> <span class="identifier">i</span><span class="special">)</span>
+    <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">value</span><span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="identifier">i</span><span class="special">];</span> <span class="special">}</span>
+
+    <span class="keyword">int</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">[]</span> <span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">ptrdiff_t</span> <span class="identifier">i</span><span class="special">)</span> <span class="keyword">const</span>
+    <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">value</span><span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="identifier">i</span><span class="special">];</span> <span class="special">}</span>
+
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">&gt;</span>
+    <span class="identifier">vec3</span> <span class="special">&amp;</span> <span class="keyword">operator</span><span class="special">=</span> <span class="special">(</span><span class="identifier">T</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="identifier">expr</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">t</span><span class="special">);</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">0</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">,</span> <span class="identifier">take_nth</span><span class="special">{</span><span class="number">0</span><span class="special">}));</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">1</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">,</span> <span class="identifier">take_nth</span><span class="special">{</span><span class="number">1</span><span class="special">}));</span>
+        <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">2</span><span class="special">]</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr</span><span class="special">,</span> <span class="identifier">take_nth</span><span class="special">{</span><span class="number">2</span><span class="special">}));</span>
+        <span class="keyword">return</span> <span class="special">*</span><span class="keyword">this</span><span class="special">;</span>
+    <span class="special">}</span>
+
+    <span class="keyword">void</span> <span class="identifier">print</span><span class="special">()</span> <span class="keyword">const</span>
+    <span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="char">'{'</span> <span class="special">&lt;&lt;</span> <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">0</span><span class="special">]</span>
+                  <span class="special">&lt;&lt;</span> <span class="string">", "</span> <span class="special">&lt;&lt;</span> <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">1</span><span class="special">]</span>
+                  <span class="special">&lt;&lt;</span> <span class="string">", "</span> <span class="special">&lt;&lt;</span> <span class="special">(*</span><span class="keyword">this</span><span class="special">)[</span><span class="number">2</span><span class="special">]</span>
+                  <span class="special">&lt;&lt;</span> <span class="char">'}'</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+<span class="special">};</span>
+
+<span class="comment">// This is a stateful transform that keeps a running count of the terminals it</span>
+<span class="comment">// has seen.</span>
+<span class="keyword">struct</span> <span class="identifier">count_leaves_impl</span>
+<span class="special">{</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">vec3_terminal</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="identifier">value</span> <span class="special">+=</span> <span class="number">1</span><span class="special">;</span>
+        <span class="keyword">return</span> <span class="identifier">expr</span><span class="special">;</span>
+    <span class="special">}</span>
+
+    <span class="keyword">int</span> <span class="identifier">value</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">};</span>
+
+<span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Expr</span><span class="special">&gt;</span>
+<span class="keyword">int</span> <span class="identifier">count_leaves</span> <span class="special">(</span><span class="identifier">Expr</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">expr</span><span class="special">)</span>
+<span class="special">{</span>
+    <span class="identifier">count_leaves_impl</span> <span class="identifier">impl</span><span class="special">;</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">expr</span><span class="special">),</span> <span class="identifier">impl</span><span class="special">);</span>
+    <span class="keyword">return</span> <span class="identifier">impl</span><span class="special">.</span><span class="identifier">value</span><span class="special">;</span>
+<span class="special">}</span>
+
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">()</span>
+<span class="special">{</span>
+    <span class="identifier">vec3</span> <span class="identifier">a</span><span class="special">,</span> <span class="identifier">b</span><span class="special">,</span> <span class="identifier">c</span><span class="special">;</span>
+
+    <span class="identifier">c</span> <span class="special">=</span> <span class="number">4</span><span class="special">;</span>
+
+    <span class="identifier">b</span><span class="special">[</span><span class="number">0</span><span class="special">]</span> <span class="special">=</span> <span class="special">-</span><span class="number">1</span><span class="special">;</span>
+    <span class="identifier">b</span><span class="special">[</span><span class="number">1</span><span class="special">]</span> <span class="special">=</span> <span class="special">-</span><span class="number">2</span><span class="special">;</span>
+    <span class="identifier">b</span><span class="special">[</span><span class="number">2</span><span class="special">]</span> <span class="special">=</span> <span class="special">-</span><span class="number">3</span><span class="special">;</span>
+
+    <span class="identifier">a</span> <span class="special">=</span> <span class="identifier">b</span> <span class="special">+</span> <span class="identifier">c</span><span class="special">;</span>
+
+    <span class="identifier">a</span><span class="special">.</span><span class="identifier">print</span><span class="special">();</span>
+
+    <span class="identifier">vec3</span> <span class="identifier">d</span><span class="special">;</span>
+    <span class="keyword">auto</span> <span class="identifier">expr1</span> <span class="special">=</span> <span class="identifier">b</span> <span class="special">+</span> <span class="identifier">c</span><span class="special">;</span>
+    <span class="identifier">d</span> <span class="special">=</span> <span class="identifier">expr1</span><span class="special">;</span>
+    <span class="identifier">d</span><span class="special">.</span><span class="identifier">print</span><span class="special">();</span>
+
+    <span class="keyword">int</span> <span class="identifier">num</span> <span class="special">=</span> <span class="identifier">count_leaves</span><span class="special">(</span><span class="identifier">expr1</span><span class="special">);</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">num</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+
+    <span class="identifier">num</span> <span class="special">=</span> <span class="identifier">count_leaves</span><span class="special">(</span><span class="identifier">b</span> <span class="special">+</span> <span class="number">3</span> <span class="special">*</span> <span class="identifier">c</span><span class="special">);</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">num</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+
+    <span class="identifier">num</span> <span class="special">=</span> <span class="identifier">count_leaves</span><span class="special">(</span><span class="identifier">b</span> <span class="special">+</span> <span class="identifier">c</span> <span class="special">*</span> <span class="identifier">d</span><span class="special">);</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">num</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+        </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tarray.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="vector.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Calc3</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.YAP">
+<link rel="up" href="../examples.html" title="Examples">
+<link rel="prev" href="calc2.html" title="Calc2">
+<link rel="next" href="lazy_vector.html" title="Lazy Vector">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="calc2.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="lazy_vector.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_yap.manual.examples.calc3"></a><a class="link" href="calc3.html" title="Calc3">Calc3</a>
+</h4></div></div></div>
+<p>
+          Here, we introduce a <a class="link" href="../../concepts.html#boost_yap.concepts.transform">Transform</a>
+          used to calculate expression arity, and <code class="computeroutput"><span class="keyword">static_assert</span><span class="special">()</span></code> that the number of parameters passed
+          by the caller matches the arity.
+        </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+            The <code class="computeroutput"><span class="identifier">get_arity</span></code> <a class="link" href="../../concepts.html#boost_yap.concepts.transform">Transform</a>
+            doesn't produce an <a class="link" href="../../concepts.html#boost_yap.concepts.expression">Expression</a>,
+            and it does not have to. <a class="link" href="../../concepts.html#boost_yap.concepts.transform">Transforms</a>
+            may produce <a class="link" href="../../concepts.html#boost_yap.concepts.expression">Expressions</a>
+            or arbitrary values. They may also have arbitrary side effects, and may
+            be stateful.
+          </p></td></tr>
+</table></div>
+<p>
+</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">expression</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">hana</span><span class="special">/</span><span class="identifier">maximum</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+
+
+<span class="comment">// Look! A transform!  This one transforms the expression tree into the arity</span>
+<span class="comment">// of the expression, based on its placeholders.</span>
+<span class="keyword">struct</span> <span class="identifier">get_arity</span>
+<span class="special">{</span>
+    <span class="comment">// Base case 1: Match a placeholder terminal, and return its arity as the</span>
+    <span class="comment">// result.</span>
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">long</span> <span class="keyword">long</span> <span class="identifier">I</span><span class="special">&gt;</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">llong</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">&gt;,</span>
+                                      <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">placeholder</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;)</span>
+    <span class="special">{</span> <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">llong_c</span><span class="special">&lt;</span><span class="identifier">I</span><span class="special">&gt;;</span> <span class="special">}</span>
+
+    <span class="comment">// Base case 2: Match any other terminal.  Return 0; non-placeholders do</span>
+    <span class="comment">// not contribute to arity.</span>
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">&gt;</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">terminal</span><span class="special">&gt;,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;)</span>
+    <span class="special">{</span>
+        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">literals</span><span class="special">;</span>
+        <span class="keyword">return</span> <span class="number">0</span><span class="identifier">_c</span><span class="special">;</span>
+    <span class="special">}</span>
+
+    <span class="comment">// Recursive case: Match any expression not covered above, and return the</span>
+    <span class="comment">// maximum of its children's arities.</span>
+    <span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">Arg</span><span class="special">&gt;</span>
+    <span class="keyword">auto</span> <span class="keyword">operator</span><span class="special">()</span> <span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">Kind</span><span class="special">&gt;,</span> <span class="identifier">Arg</span> <span class="special">&amp;&amp;...</span> <span class="identifier">arg</span><span class="special">)</span>
+    <span class="special">{</span>
+        <span class="keyword">return</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">maximum</span><span class="special">(</span>
+            <span class="identifier">boost</span><span class="special">::</span><span class="identifier">hana</span><span class="special">::</span><span class="identifier">make_tuple</span><span class="special">(</span>
+                <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span>
+                    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">as_expr</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">forward</span><span class="special">&lt;</span><span class="identifier">Arg</span><span class="special">&gt;(</span><span class="identifier">arg</span><span class="special">)),</span>
+                    <span class="identifier">get_arity</span><span class="special">{}</span>
+                <span class="special">)...</span>
+            <span class="special">)</span>
+        <span class="special">);</span>
+    <span class="special">}</span>
+<span class="special">};</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span> <span class="special">()</span>
+<span class="special">{</span>
+    <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">literals</span><span class="special">;</span>
+
+    <span class="comment">// These lambdas wrap our expressions as callables, and allow us to check</span>
+    <span class="comment">// the arity of each as we call it.</span>
+
+    <span class="keyword">auto</span> <span class="identifier">expr_1</span> <span class="special">=</span> <span class="number">1</span><span class="identifier">_p</span> <span class="special">+</span> <span class="number">2.0</span><span class="special">;</span>
+
+    <span class="keyword">auto</span> <span class="identifier">expr_1_fn</span> <span class="special">=</span> <span class="special">[</span><span class="identifier">expr_1</span><span class="special">](</span><span class="keyword">auto</span> <span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span> <span class="special">{</span>
+        <span class="keyword">auto</span> <span class="keyword">const</span> <span class="identifier">arity</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr_1</span><span class="special">,</span> <span class="identifier">get_arity</span><span class="special">{});</span>
+        <span class="keyword">static_assert</span><span class="special">(</span><span class="identifier">arity</span><span class="special">.</span><span class="identifier">value</span> <span class="special">==</span> <span class="keyword">sizeof</span><span class="special">...(</span><span class="identifier">args</span><span class="special">),</span> <span class="string">"Called with wrong number of args."</span><span class="special">);</span>
+        <span class="keyword">return</span> <span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">expr_1</span><span class="special">,</span> <span class="identifier">args</span><span class="special">...);</span>
+    <span class="special">};</span>
+
+    <span class="keyword">auto</span> <span class="identifier">expr_2</span> <span class="special">=</span> <span class="number">1</span><span class="identifier">_p</span> <span class="special">*</span> <span class="number">2</span><span class="identifier">_p</span><span class="special">;</span>
+
+    <span class="keyword">auto</span> <span class="identifier">expr_2_fn</span> <span class="special">=</span> <span class="special">[</span><span class="identifier">expr_2</span><span class="special">](</span><span class="keyword">auto</span> <span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span> <span class="special">{</span>
+        <span class="keyword">auto</span> <span class="keyword">const</span> <span class="identifier">arity</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr_2</span><span class="special">,</span> <span class="identifier">get_arity</span><span class="special">{});</span>
+        <span class="keyword">static_assert</span><span class="special">(</span><span class="identifier">arity</span><span class="special">.</span><span class="identifier">value</span> <span class="special">==</span> <span class="keyword">sizeof</span><span class="special">...(</span><span class="identifier">args</span><span class="special">),</span> <span class="string">"Called with wrong number of args."</span><span class="special">);</span>
+        <span class="keyword">return</span> <span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">expr_2</span><span class="special">,</span> <span class="identifier">args</span><span class="special">...);</span>
+    <span class="special">};</span>
+
+    <span class="keyword">auto</span> <span class="identifier">expr_3</span> <span class="special">=</span> <span class="special">(</span><span class="number">1</span><span class="identifier">_p</span> <span class="special">-</span> <span class="number">2</span><span class="identifier">_p</span><span class="special">)</span> <span class="special">/</span> <span class="number">2</span><span class="identifier">_p</span><span class="special">;</span>
+
+    <span class="keyword">auto</span> <span class="identifier">expr_3_fn</span> <span class="special">=</span> <span class="special">[</span><span class="identifier">expr_3</span><span class="special">](</span><span class="keyword">auto</span> <span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span> <span class="special">{</span>
+        <span class="keyword">auto</span> <span class="keyword">const</span> <span class="identifier">arity</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">transform</span><span class="special">(</span><span class="identifier">expr_3</span><span class="special">,</span> <span class="identifier">get_arity</span><span class="special">{});</span>
+        <span class="keyword">static_assert</span><span class="special">(</span><span class="identifier">arity</span><span class="special">.</span><span class="identifier">value</span> <span class="special">==</span> <span class="keyword">sizeof</span><span class="special">...(</span><span class="identifier">args</span><span class="special">),</span> <span class="string">"Called with wrong number of args."</span><span class="special">);</span>
+        <span class="keyword">return</span> <span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">expr_3</span><span class="special">,</span> <span class="identifier">args</span><span class="special">...);</span>
+    <span class="special">};</span>
+
+    <span class="comment">// Displays "5"</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">expr_1_fn</span><span class="special">(</span><span class="number">3.0</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+
+    <span class="comment">// Displays "6"</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">expr_2_fn</span><span class="special">(</span><span class="number">3.0</span><span class="special">,</span> <span class="number">2.0</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+
+    <span class="comment">// Displays "0.5"</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">expr_3_fn</span><span class="special">(</span><span class="number">3.0</span><span class="special">,</span> <span class="number">2.0</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+
+    <span class="comment">// Static-asserts with "Called with wrong number of args."</span>
+    <span class="comment">//std::cout &lt;&lt; expr_3_fn(3.0) &lt;&lt; std::endl;</span>
+
+    <span class="comment">// Static-asserts with "Called with wrong number of args."</span>
+    <span class="comment">//std::cout &lt;&lt; expr_3_fn(3.0, 2.0, 1.0) &lt;&lt; std::endl;</span>
+
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>
+        </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="calc2.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="lazy_vector.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

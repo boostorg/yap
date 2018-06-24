@@ -1,0 +1,83 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Evaluating Expressions</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Boost.YAP">
+<link rel="up" href="../manual.html" title="Manual">
+<link rel="prev" href="transforming_expressions.html" title="Transforming Expressions">
+<link rel="next" href="operator_macros.html" title="Operator Macros">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="transforming_expressions.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="operator_macros.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_yap.manual.evaluating_expressions"></a><a class="link" href="evaluating_expressions.html" title="Evaluating Expressions">Evaluating Expressions</a>
+</h3></div></div></div>
+<p>
+        Boost.YAP expressions are evaluated explicitly, by calling the <code class="computeroutput"><a class="link" href="../../boost/yap/evaluate.html" title="Function template evaluate">evaluate()</a></code> function or calling <code class="computeroutput"><a class="link" href="../../boost/yap/transform.html" title="Function template transform">transform()</a></code> using a transform object
+        returned from <code class="computeroutput"><a class="link" href="../../boost/yap/evaluation.html" title="Function template evaluation">evaluation()</a></code>. The former is a convenince
+        function that does the latter.
+      </p>
+<p>
+        <code class="computeroutput"><a class="link" href="../../boost/yap/evaluate.html" title="Function template evaluate">evaluate()</a></code> simply removes all the Boost.YAP
+        machinery from an expression and evaluates it exactly as it would have been
+        if Boost.YAP were not used. This means that functions are called, operators
+        evaluated, etc. all as normal. To illustrate this, take a look at the implementation
+        of <code class="computeroutput"><span class="keyword">operator</span><span class="special">,()</span></code>
+        used in <code class="computeroutput"><a class="link" href="../../boost/yap/evaluate.html" title="Function template evaluate">evaluate()</a></code>:
+      </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="keyword">operator</span><span class="special">()(</span><span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">comma</span><span class="special">&gt;,</span> <span class="identifier">T</span> <span class="special">&amp;&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="identifier">U</span> <span class="special">&amp;&amp;</span> <span class="identifier">u</span><span class="special">)</span> <span class="keyword">const</span>
+<span class="special">{</span>
+    <span class="keyword">return</span> <span class="identifier">transform</span><span class="special">(</span>
+               <span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">T</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">t</span><span class="special">)),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">),</span>
+           <span class="identifier">transform</span><span class="special">(</span>
+               <span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">U</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">u</span><span class="special">)),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">);</span>
+<span class="special">}</span>
+</pre>
+<p>
+      </p>
+<p>
+        What this transformation does is transform the left and right expressions,
+        and then use the built-in <code class="computeroutput"><span class="keyword">operator</span><span class="special">,()</span></code> on the result. The evaluation transformations
+        for the other operators do the same thing &#8212; evaluate the operands,
+        then return the result of applying the built-in operator to the operands.
+      </p>
+<p>
+        Function calls are done in a similar way, except that the callable is also
+        a subexpression that needs to be evaluated before being called:
+      </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">Callable</span><span class="special">,</span> <span class="keyword">typename</span><span class="special">...</span> <span class="identifier">Args</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="keyword">decltype</span><span class="special">(</span><span class="keyword">auto</span><span class="special">)</span> <span class="keyword">operator</span><span class="special">()(</span>
+    <span class="identifier">expr_tag</span><span class="special">&lt;</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">call</span><span class="special">&gt;,</span> <span class="identifier">Callable</span> <span class="special">&amp;&amp;</span> <span class="identifier">callable</span><span class="special">,</span> <span class="identifier">Args</span> <span class="special">&amp;&amp;...</span> <span class="identifier">args</span><span class="special">)</span> <span class="keyword">const</span>
+<span class="special">{</span>
+    <span class="keyword">return</span> <span class="identifier">transform</span><span class="special">(</span><span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">Callable</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">callable</span><span class="special">)),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)(</span>
+        <span class="identifier">transform</span><span class="special">(</span><span class="identifier">as_expr</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">Args</span> <span class="special">&amp;&amp;&gt;(</span><span class="identifier">args</span><span class="special">)),</span> <span class="special">*</span><span class="keyword">this</span><span class="special">)...</span>
+    <span class="special">);</span>
+<span class="special">}</span>
+</pre>
+<p>
+      </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="transforming_expressions.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="operator_macros.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

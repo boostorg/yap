@@ -1,0 +1,93 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Minimal</title>
+<link rel="stylesheet" href="../../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../../index.html" title="Chapter&#160;1.&#160;Boost.YAP">
+<link rel="up" href="../examples.html" title="Examples">
+<link rel="prev" href="hello_world_redux.html" title="Hello World Redux">
+<link rel="next" href="calc1.html" title="Calc1">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="hello_world_redux.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="calc1.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="boost_yap.manual.examples.minimal"></a><a class="link" href="minimal.html" title="Minimal">Minimal</a>
+</h4></div></div></div>
+<p>
+          <code class="computeroutput"><span class="identifier">minimal_expr</span></code> below models
+          <a class="link" href="../../concepts.html#boost_yap.concepts.expressiontemplate">ExpressionTemplate</a>;
+          since it has no operators, an expression must be built manually.
+        </p>
+<p>
+          First, the template itself:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">Kind</span><span class="special">,</span> <span class="keyword">typename</span> <span class="identifier">Tuple</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">minimal_expr</span>
+<span class="special">{</span>
+    <span class="keyword">static</span> <span class="keyword">const</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span> <span class="identifier">kind</span> <span class="special">=</span> <span class="identifier">Kind</span><span class="special">;</span>
+
+    <span class="identifier">Tuple</span> <span class="identifier">elements</span><span class="special">;</span>
+<span class="special">};</span>
+</pre>
+<p>
+        </p>
+<p>
+          This can be used to make a <code class="computeroutput"><span class="identifier">minimal_expr</span></code>
+          plus expression:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">auto</span> <span class="identifier">left</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="number">1</span><span class="special">);</span>
+<span class="keyword">auto</span> <span class="identifier">right</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">&lt;</span><span class="identifier">minimal_expr</span><span class="special">&gt;(</span><span class="number">41</span><span class="special">);</span>
+
+<span class="keyword">auto</span> <span class="identifier">expr</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_expression</span><span class="special">&lt;</span>
+    <span class="identifier">minimal_expr</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">plus</span>
+<span class="special">&gt;(</span><span class="identifier">left</span><span class="special">,</span> <span class="identifier">right</span><span class="special">);</span>
+</pre>
+<p>
+        </p>
+<p>
+          You can evaluate, transform, or otherwise operate on <code class="computeroutput"><span class="identifier">minimal_expr</span></code>
+          expressions using the functions in Boost.YAP that accept an <a class="link" href="../../concepts.html#boost_yap.concepts.expression">Expression</a>:
+        </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">auto</span> <span class="identifier">result</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">evaluate</span><span class="special">(</span><span class="identifier">expr</span><span class="special">);</span>
+
+<span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">result</span> <span class="special">&lt;&lt;</span> <span class="string">"\n"</span><span class="special">;</span> <span class="comment">// prints "42"</span>
+</pre>
+<p>
+        </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../../../images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+            Don't use Boost.YAP this way. Use the operator macros instead. This is
+            an example contrived only to show you the minimum requirements on a Boost.YAP-compatible
+            template.
+          </p></td></tr>
+</table></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="hello_world_redux.html"><img src="../../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../examples.html"><img src="../../../images/up.png" alt="Up"></a><a accesskey="h" href="../../../index.html"><img src="../../../images/home.png" alt="Home"></a><a accesskey="n" href="calc1.html"><img src="../../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

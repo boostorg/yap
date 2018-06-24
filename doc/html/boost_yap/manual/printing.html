@@ -1,0 +1,118 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Printing</title>
+<link rel="stylesheet" href="../../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="../../index.html" title="Chapter&#160;1.&#160;Boost.YAP">
+<link rel="up" href="../manual.html" title="Manual">
+<link rel="prev" href="how_expression_operands_are_treated.html" title="How Expression Operands Are Treated">
+<link rel="next" href="examples.html" title="Examples">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="spirit-nav">
+<a accesskey="p" href="how_expression_operands_are_treated.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="examples.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boost_yap.manual.printing"></a><a class="link" href="printing.html" title="Printing">Printing</a>
+</h3></div></div></div>
+<p>
+        Boost.YAP has a convenient <code class="computeroutput"><a class="link" href="../../boost/yap/print.html" title="Function template print">print()</a></code>
+        function, that prints an expression tree to a stream. It is not intended
+        for production work (for instance, it has no formatting options), but it
+        is excellent for debugging and instrumentation.
+      </p>
+<p>
+        Since it is only a debugging aid, <code class="computeroutput"><a class="link" href="../../boost/yap/print.html" title="Function template print">print()</a></code>
+        is found in a separate header not included when you include Boost.YAP with
+      </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">yap</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+</pre>
+<p>
+        You must include <code class="computeroutput"><span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">yap</span><span class="special">/</span><span class="identifier">print</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span></code>
+        explicitly.
+      </p>
+<p>
+        <code class="computeroutput"><a class="link" href="../../boost/yap/print.html" title="Function template print">print()</a></code> handles several patterns
+        of expression specially, to allow a concise representation of a given expression
+        tree. For example, given this definition:
+      </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">struct</span> <span class="identifier">thing</span> <span class="special">{};</span>
+</pre>
+<p>
+      </p>
+<p>
+        and this expression:
+      </p>
+<p>
+</p>
+<pre class="programlisting"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">literals</span><span class="special">;</span>
+
+<span class="keyword">auto</span> <span class="keyword">const</span> <span class="identifier">const_lvalue_terminal_containing_rvalue</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">(</span><span class="string">"lvalue terminal"</span><span class="special">);</span>
+
+<span class="keyword">double</span> <span class="keyword">const</span> <span class="identifier">d</span> <span class="special">=</span> <span class="number">1.0</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">rvalue_terminal_containing_lvalue</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">(</span><span class="identifier">d</span><span class="special">);</span>
+
+<span class="keyword">auto</span> <span class="identifier">thing_terminal</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">yap</span><span class="special">::</span><span class="identifier">make_terminal</span><span class="special">(</span><span class="identifier">thing</span><span class="special">{});</span>
+
+<span class="keyword">auto</span> <span class="identifier">expr</span> <span class="special">=</span>
+    <span class="number">4</span><span class="identifier">_p</span> <span class="special">+</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">move</span><span class="special">(</span><span class="identifier">rvalue_terminal_containing_lvalue</span><span class="special">)</span> <span class="special">*</span> <span class="identifier">thing_terminal</span> <span class="special">-</span>
+    <span class="identifier">const_lvalue_terminal_containing_rvalue</span><span class="special">;</span>
+</pre>
+<p>
+      </p>
+<p>
+        <code class="computeroutput"><a class="link" href="../../boost/yap/print.html" title="Function template print">print()</a></code> produces this output:
+      </p>
+<pre class="programlisting">expr&lt;-&gt;
+    expr&lt;+&gt;
+        term&lt;boost::yap::placeholder&lt;4ll&gt;&gt;[=4]
+        expr&lt;*&gt;
+            term&lt;double &amp;&gt;[=1]
+            term&lt;thing&gt;[=&lt;&lt;unprintable-value&gt;&gt;] &amp;
+    term&lt;char const*&gt;[=lvalue terminal] const &amp;
+</pre>
+<p>
+        As you can see, <code class="computeroutput"><a class="link" href="../../boost/yap/print.html" title="Function template print">print()</a></code> shows one node per line,
+        and represents the tree structure with indentation. It abbreviates non-terminal
+        nodes in the tree <code class="computeroutput"><span class="identifier">expr</span><span class="special">&lt;</span><span class="identifier">op</span><span class="special">&gt;</span></code>,
+        where <code class="computeroutput"><span class="identifier">op</span></code> is an operator symbol.
+        Terminal nodes are abbreviated <code class="computeroutput"><span class="identifier">term</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;</span></code>,
+        where <code class="computeroutput"><span class="identifier">T</span></code> is the type of value
+        contained in the terminal; this may be a reference type or a value.
+      </p>
+<p>
+        A <code class="computeroutput"><span class="identifier">term</span></code> node may not be a
+        terminal node at all, but an <a class="link" href="../../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a> expression containing a
+        terminal. Such a <a class="link" href="../../boost/yap/expr_kind.html#boost.yap.expr_kind.expr_ref"><code class="computeroutput"><span class="identifier">expr_kind</span><span class="special">::</span><span class="identifier">expr_ref</span></code></a> node has a <code class="computeroutput"><span class="special">&amp;</span></code> or <code class="computeroutput"><span class="keyword">const</span>
+        <span class="special">&amp;</span></code> suffix, to indicate that it
+        is a mutable or <code class="computeroutput"><span class="keyword">const</span></code> reference,
+        respectively.
+      </p>
+<p>
+        Each <code class="computeroutput"><span class="identifier">term</span></code> node has a bracketed
+        value near the end. The format is <code class="computeroutput"><span class="special">[=</span><span class="identifier">X</span><span class="special">]</span></code> where
+        <code class="computeroutput"><span class="identifier">X</span></code> is the value the terminal
+        contains. If the terminal contains a value for which no <code class="computeroutput"><span class="keyword">operator</span><span class="special">&lt;&lt;(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">ostream</span> <span class="special">&amp;,</span> <span class="special">...)</span></code>
+        overload exists (such as the <code class="computeroutput"><span class="identifier">thing</span></code>
+        type above), <code class="computeroutput"><span class="identifier">X</span></code> will be <code class="computeroutput"><span class="special">&lt;&lt;</span><span class="identifier">unprintable</span><span class="special">-</span><span class="identifier">value</span><span class="special">&gt;&gt;</span></code>.
+      </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2018 T. Zachary Laine<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="how_expression_operands_are_treated.html"><img src="../../images/prev.png" alt="Prev"></a><a accesskey="u" href="../manual.html"><img src="../../images/up.png" alt="Up"></a><a accesskey="h" href="../../index.html"><img src="../../images/home.png" alt="Home"></a><a accesskey="n" href="examples.html"><img src="../../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

@@ -1,18 +1,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Chapter&#160;1.&#160;Boost.YAP (Proposed)</title>
+<title>Chapter&#160;1.&#160;Boost.YAP</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
-<link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.YAP (Proposed)">
-<link rel="next" href="boost_yap__proposed_/introduction.html" title="Introduction">
+<link rel="home" href="index.html" title="Chapter&#160;1.&#160;Boost.YAP">
+<link rel="next" href="boost_yap/introduction.html" title="Introduction">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<div class="spirit-nav"><a accesskey="n" href="boost_yap__proposed_/introduction.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="boost_yap/introduction.html"><img src="images/next.png" alt="Next"></a></div>
 <div class="chapter">
 <div class="titlepage"><div>
 <div><h2 class="title">
-<a name="yap"></a>Chapter&#160;1.&#160;Boost.YAP (Proposed)</h2></div>
+<a name="yap"></a>Chapter&#160;1.&#160;Boost.YAP</h2></div>
 <div><div class="author"><h3 class="author">
 <span class="firstname">Zach</span> <span class="surname">Laine</span>
 </h3></div></div>
@@ -27,63 +27,55 @@
 <div class="toc">
 <p><b>Table of Contents</b></p>
 <dl class="toc">
-<dt><span class="section"><a href="boost_yap__proposed_/introduction.html">Introduction</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual.html">Manual</a></span></dt>
+<dt><span class="section"><a href="boost_yap/introduction.html">Introduction</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual.html">Manual</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/an_expression_template_primer.html">An
-      Expression Template Primer</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/the_yap_way.html">The YAP Way</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/expressions.html">Expressions</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/mix_and_match_expression_templates.html">Mix-and-Match
+<dt><span class="section"><a href="boost_yap/manual/an_expression_template_primer.html">An Expression
+      Template Primer</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/the_yap_way.html">The YAP Way</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/expressions.html">Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/mix_and_match_expression_templates.html">Mix-and-Match
       Expression Templates</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/kinds_of_expressions.html">Kinds
-      of Expressions</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/operators.html">Operators</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/transforming_expressions.html">Transforming
+<dt><span class="section"><a href="boost_yap/manual/kinds_of_expressions.html">Kinds of Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/operators.html">Operators</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/transforming_expressions.html">Transforming
       Expressions</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/evaluating_expressions.html">Evaluating
-      Expressions</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/operator_macros.html">Operator
-      Macros</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/how_expression_operands_are_treated.html">How
+<dt><span class="section"><a href="boost_yap/manual/evaluating_expressions.html">Evaluating Expressions</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/operator_macros.html">Operator Macros</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/how_expression_operands_are_treated.html">How
       Expression Operands Are Treated</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/printing.html">Printing</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples.html">Examples</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/printing.html">Printing</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples.html">Examples</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/hello_world.html">Hello
-        World</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/hello_world_redux.html">Hello
+<dt><span class="section"><a href="boost_yap/manual/examples/hello_world.html">Hello World</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/hello_world_redux.html">Hello
         World Redux</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/minimal.html">Minimal</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/calc1.html">Calc1</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/calc2.html">Calc2</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/calc3.html">Calc3</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/lazy_vector.html">Lazy
-        Vector</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/tarray.html">TArray</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/vec3.html">Vec3</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/vector.html">Vector</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/mixed.html">Mixed</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/map_assign.html">Map
-        Assign</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/future_group.html">Future
-        Group</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/autodiff.html">Autodiff</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/transforming_terminals_only.html">Transforming
+<dt><span class="section"><a href="boost_yap/manual/examples/minimal.html">Minimal</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/calc1.html">Calc1</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/calc2.html">Calc2</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/calc3.html">Calc3</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/lazy_vector.html">Lazy Vector</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/tarray.html">TArray</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/vec3.html">Vec3</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/vector.html">Vector</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/mixed.html">Mixed</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/map_assign.html">Map Assign</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/future_group.html">Future Group</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/autodiff.html">Autodiff</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/examples/transforming_terminals_only.html">Transforming
         Terminals Only</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/pipable_algorithms.html">Pipable
+<dt><span class="section"><a href="boost_yap/manual/examples/pipable_algorithms.html">Pipable
         Algorithms</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/examples/boost_phoenix_style__let___.html">Boost.Phoenix-style
+<dt><span class="section"><a href="boost_yap/manual/examples/boost_phoenix_style__let___.html">Boost.Phoenix-style
         <code class="computeroutput"><span class="identifier">let</span><span class="special">()</span></code></a></span></dt>
 </dl></dd>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/header_organization.html">Header
-      Organization</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/configuration.html">Configuration</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/manual/object_code.html">Object Code</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/header_organization.html">Header Organization</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/configuration.html">Configuration</a></span></dt>
+<dt><span class="section"><a href="boost_yap/manual/object_code.html">Object Code</a></span></dt>
 </dl></dd>
-<dt><span class="section"><a href="boost_yap__proposed_/concepts.html">Concepts</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/compiler_support.html">Compiler Support</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/dependencies.html">Dependencies</a></span></dt>
+<dt><span class="section"><a href="boost_yap/concepts.html">Concepts</a></span></dt>
+<dt><span class="section"><a href="boost_yap/compiler_support.html">Compiler Support</a></span></dt>
+<dt><span class="section"><a href="boost_yap/dependencies.html">Dependencies</a></span></dt>
 <dt><span class="section"><a href="reference.html">Reference</a></span></dt>
 <dd><dl>
 <dt><span class="section"><a href="header/boost/yap/algorithm_hpp.html">Header &lt;boost/yap/algorithm.hpp&gt;</a></span></dt>
@@ -102,15 +94,15 @@
 <dt><span class="section"><a href="index/s07.html">Class Index</a></span></dt>
 <dt><span class="section"><a href="index/s08.html">Function Index</a></span></dt>
 <dt><span class="section"><a href="index/s09.html">Macro Index</a></span></dt>
-<dt><span class="section"><a href="boost_yap__proposed_/rationale.html">Rationale</a></span></dt>
+<dt><span class="section"><a href="boost_yap/rationale.html">Rationale</a></span></dt>
 </dl>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised: March 23, 2018 at 02:26:53 GMT</small></p></td>
+<td align="left"><p><small>Last revised: June 24, 2018 at 04:44:13 GMT</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>
-<div class="spirit-nav"><a accesskey="n" href="boost_yap__proposed_/introduction.html"><img src="images/next.png" alt="Next"></a></div>
+<div class="spirit-nav"><a accesskey="n" href="boost_yap/introduction.html"><img src="images/next.png" alt="Next"></a></div>
 </body>
 </html>
