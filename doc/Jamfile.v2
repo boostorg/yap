@@ -38,7 +38,7 @@ doxygen yap_reference
 
 }
 
-run_doxygen [ glob ../include/boost/yap/*.hpp ] : "Reference" ;
+run_doxygen [ glob ../../../boost/yap/*.hpp ] : "Reference" ;
 
 xml yap
     :
