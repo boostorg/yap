@@ -94,6 +94,8 @@ boostbook standalone
         <auto-index-script>yap.idx
         <quickbook-define>enable_index
         <auto-index-prefix>../../..
+        <format>html:<auto-index-internal>on
+        <format>docbook:<auto-index-internal>on
         <xsl:param>index.on.type=1
     ;
 
