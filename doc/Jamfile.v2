@@ -6,7 +6,7 @@ import path ;
 import doxygen ;
 import quickbook ;
 
-using auto-index ;
+# using auto-index ;
 using doxygen ;
 using quickbook ;
 using boostbook ;
@@ -88,15 +88,15 @@ boostbook standalone
         # better use SVG's instead:
         # <xsl:param>admon.graphics.extension=".svg"
 
-        <auto-index>on
-        <auto-index-verbose>on
-        <auto-index-internal>on
-        <auto-index-script>yap.idx
-        <quickbook-define>enable_index
-        <auto-index-prefix>../../..
-        <format>html:<auto-index-internal>on
-        <format>docbook:<auto-index-internal>on
-        <xsl:param>index.on.type=1
+        # <auto-index>on
+        # <auto-index-verbose>on
+        # <auto-index-internal>on
+        # <auto-index-script>yap.idx
+        # <quickbook-define>enable_index
+        # <auto-index-prefix>../../..
+        # <format>html:<auto-index-internal>on
+        # <format>docbook:<auto-index-internal>on
+        # <xsl:param>index.on.type=1
     ;
 
 alias boostdoc : yap : : : ;
