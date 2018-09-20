@@ -4,7 +4,12 @@ include(CTest)
 
 enable_testing()
 
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -VV -C ${CMAKE_CFG_INTDIR})
+add_custom_target(yap_check COMMAND ${CMAKE_CTEST_COMMAND} -VV -C ${CMAKE_CFG_INTDIR})
+if (NOT TARGET check)
+    add_custom_target(check DEPENDS yap_check)
+else()
+    add_dependencies(check yap_check)
+endif()
 
 set(coverage_gcda_files)
 
