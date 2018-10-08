@@ -257,7 +257,7 @@ namespace boost { namespace yap { namespace detail {
         typename T,
         typename U,
         bool TNonExprUExpr = !is_expr<T>::value && is_expr<U>::value,
-        bool ULvalueRef = std::is_lvalue_reference<U>{}>
+        bool ULvalueRef = std::is_lvalue_reference<U>::value>
     struct free_binary_op_result;
 
     template<
