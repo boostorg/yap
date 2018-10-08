@@ -5,7 +5,18 @@
 # accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt
 
+import config : requires ;
 import testing ;
+
+project
+    : requirements
+        [ requires
+            cxx14_constexpr
+            cxx14_decltype_auto
+            cxx14_generic_lambdas
+            cxx14_return_type_deduction
+        ]
+    ;
 
 run deref.cpp ;
 run value.cpp ;
