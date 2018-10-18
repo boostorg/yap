@@ -14,8 +14,8 @@ else ()
   message("-- Boost was not found; attempting to download it if we haven't already...")
   include(ExternalProject)
   ExternalProject_Add(install-Boost
-    PREFIX ${CMAKE_BINARY_DIR}/dependencies/boost_1_64_0
-    URL https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.bz2
+    PREFIX ${CMAKE_BINARY_DIR}/dependencies/boost_1_68_0
+    URL https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
