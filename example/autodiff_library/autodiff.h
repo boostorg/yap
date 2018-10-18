@@ -7,6 +7,9 @@
 
 #ifndef AUTODIFF_H_
 #define AUTODIFF_H_
+
+#define BOOST_NO_AUTO_PTR
+
 #include <boost/unordered_set.hpp>
 #include <boost/serialization/array_wrapper.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
