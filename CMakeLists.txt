@@ -9,7 +9,7 @@ function(constexpr_if_std std_flag var)
         worked
         ${CMAKE_BINARY_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/constexpr_if.cpp
-        COMPILE_DEFINITIONS ${std_flag} -Wall -Werror -DCHECK_CONSTEXPR_IF=1
+        COMPILE_DEFINITIONS ${std_flag} -DCHECK_CONSTEXPR_IF=1
     )
     set(${var} ${worked} PARENT_SCOPE)
 endfunction ()
@@ -19,7 +19,7 @@ function(try_std_flag std_flag)
         std_supported
         ${CMAKE_BINARY_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/constexpr_if.cpp
-        COMPILE_DEFINITIONS ${std_flag} -Wall -Werror -DCHECK_CONSTEXPR_IF=0
+        COMPILE_DEFINITIONS ${std_flag} -DCHECK_CONSTEXPR_IF=0
     )
     if (std_supported)
         message("-- Checking compiler flag ${std_flag} -- success")
