@@ -95,8 +95,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
     endif ()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     add_definitions(${std_flag} -g -Wall)
-else ()
-    message(FATAL_ERROR "Only Clang or GCC with -std=c++14 or later will work")
 endif ()
 
 ##################################################
