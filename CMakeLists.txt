@@ -43,7 +43,9 @@ if (NOT std_flag)
 elseif (NOT std_flag)
     try_std_flag(-std=c++14)
 elseif (NOT std_flag)
-    message(FATAL_ERROR "Only Clang or GCC with -std=c++14 or later will work")
+    try_std_flag(/std:c++14)
+elseif (NOT std_flag)
+    message(FATAL_ERROR "Only c++14 or later will work")
 endif ()
 
 ##################################################
