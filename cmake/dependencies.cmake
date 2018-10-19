@@ -38,12 +38,12 @@ execute_process(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 execute_process(
-    COMMAND git checkout v1.1.0
+    COMMAND git checkout v1.2.0
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/benchmark
 )
 
+option(BENCHMARK_ENABLE_TESTING "Enable testing of the benchmark library." OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
-target_include_directories(benchmark INTERFACE ${CMAKE_HOME_DIRECTORY}/benchmark/include)
 
 
 ###############################################################################
