@@ -34,8 +34,6 @@ namespace user {
         return number{a.value * x.value + y.value + 10.0};
     }
 
-    inline auto max(int a, int b) { return a < b ? b : a; };
-
     struct tag_type
     {};
 
