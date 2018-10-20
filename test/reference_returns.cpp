@@ -41,8 +41,9 @@ int test_main(int, char * [])
             BOOST_CHECK(&n == &reference_returning::the_result);
         }
 
+        using plus_eval_type = decltype(evaluate(plus_expr));
         BOOST_MPL_ASSERT((std::is_same<
-                          decltype(evaluate(plus_expr)),
+                          plus_eval_type,
                           reference_returning::number const &>));
 
         auto minus_expr = unity - reference_returning::number{1.0};
@@ -52,8 +53,9 @@ int test_main(int, char * [])
             BOOST_CHECK(&n == &reference_returning::a_result);
         }
 
+        using minus_eval_type = decltype(evaluate(minus_expr));
         BOOST_MPL_ASSERT((std::is_same<
-                          decltype(evaluate(minus_expr)),
+                          minus_eval_type,
                           reference_returning::number &>));
 
         using namespace yap::literals;
@@ -64,9 +66,10 @@ int test_main(int, char * [])
             BOOST_CHECK(&n == &reference_returning::a_result);
         }
 
+        using a_eval_type = decltype(evaluate(1_p, reference_returning::a_result));
         BOOST_MPL_ASSERT(
             (std::is_same<
-                decltype(evaluate(1_p, reference_returning::a_result)),
+                a_eval_type,
                 reference_returning::number &>));
 
         {
@@ -75,9 +78,10 @@ int test_main(int, char * [])
             BOOST_CHECK(&n == &reference_returning::the_result);
         }
 
+        using the_eval_type = decltype(evaluate(1_p, reference_returning::the_result));
         BOOST_MPL_ASSERT(
             (std::is_same<
-                decltype(evaluate(1_p, reference_returning::the_result)),
+                the_eval_type,
                 reference_returning::number const &>));
     }
 

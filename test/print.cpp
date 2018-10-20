@@ -9,6 +9,7 @@
 #include <boost/test/minimal.hpp>
 
 #include <sstream>
+#include <regex>
 
 
 template<typename T>
@@ -39,6 +40,19 @@ using user_ref = boost::yap::expression_ref<user_expr, T>;
 
 struct thing
 {};
+
+std::string fix_tti(std::string s)
+{
+    // msvc: remove struct/class prefixes
+    static const std::regex estruct("(struct|class) ");
+    s = std::regex_replace(s, estruct, "");
+
+    // gcc/clang: strip integral literals suffixes
+    static const std::regex eint("(\\d)u?l{0,2}");
+    s = std::regex_replace(s, eint, "$1");
+
+    return s;
+}
 
 int test_main(int, char * [])
 {
@@ -156,7 +170,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -255,7 +269,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -278,7 +292,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -332,7 +346,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -355,7 +369,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -409,7 +423,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -432,7 +446,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -486,7 +500,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -509,7 +523,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -563,7 +577,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -586,7 +600,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -640,7 +654,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -663,7 +677,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -717,7 +731,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -740,7 +754,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -794,7 +808,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -817,7 +831,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -871,7 +885,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -894,7 +908,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -948,7 +962,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -971,7 +985,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -1025,7 +1039,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -1048,7 +1062,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -1102,7 +1116,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -1125,7 +1139,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -1179,7 +1193,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -1202,7 +1216,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -1256,7 +1270,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -1279,7 +1293,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -1333,7 +1347,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -1356,7 +1370,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -1410,7 +1424,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -1418,7 +1432,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -1472,7 +1486,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -1495,7 +1509,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }
@@ -1549,7 +1563,7 @@ int test_main(int, char * [])
         {
             std::ostringstream oss;
             yap::print(oss, a_thing);
-            BOOST_CHECK(oss.str() == R"(term<thing>[=<<unprintable-value>>]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<thing>[=<<unprintable-value>>]
 )");
         }
 
@@ -1572,7 +1586,7 @@ int test_main(int, char * [])
             using namespace yap::literals;
             std::ostringstream oss;
             yap::print(oss, 1_p);
-            BOOST_CHECK(oss.str() == R"(term<boost::yap::placeholder<1ll>>[=1]
+            BOOST_CHECK(fix_tti(oss.str()) == R"(term<boost::yap::placeholder<1>>[=1]
 )");
         }
     }

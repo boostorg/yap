@@ -112,8 +112,9 @@ int test_main(int, char * [])
             (term<int_callable>{{&call_count, &int_called}}(),
              term<void_callable>{{&call_count, &void_called}}());
 
+        using eval_type = decltype(evaluate(int_void_expr));
         BOOST_MPL_ASSERT(
-            (std::is_same<void, decltype(evaluate(int_void_expr))>));
+            (std::is_same<void, eval_type>));
 
         evaluate(int_void_expr);
         BOOST_CHECK(void_called == 1);
