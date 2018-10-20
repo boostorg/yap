@@ -64,4 +64,5 @@ add_library(autodiff_library
   ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/autodiff.cpp
 )
 target_include_directories(autodiff_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library)
+target_compile_definitions(autodiff_library PUBLIC BOOST_ALL_NO_LIB=1)
 target_link_libraries(autodiff_library boost)
