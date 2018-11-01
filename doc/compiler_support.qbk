@@ -9,8 +9,8 @@ will be usable in building _yap_.
 Clang versions 3.8 and later (which corresponds to XCode versions 7.3 or
 later), and GCC versions 6 and later should work.
 
-At the time of this writing, no version of MSVC's own C++ front-end (cl.exe)
-supports either set of requirements above, though the clang-cl and Clang/C2
-compilers for Windows should work fine.
+MSVC++ version 14.15 (Visual Studio 2017 version 15.8) is partially supported.
+The tests all pass, but some compilation errors can be found in some of the
+examples.
 
 [endsect]
