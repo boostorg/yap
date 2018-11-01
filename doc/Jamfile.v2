@@ -11,15 +11,14 @@ using doxygen ;
 using quickbook ;
 using boostbook ;
 
-rule run_doxygen ( files * : name : expand ? )
+path-constant here : . ;
+
+rule run_doxygen ( files * : name )
 {
-
-    expand ?= <doxygen:param>EXPAND_ONLY_PREDEF=YES ;
-
-doxygen yap_reference
-  :
-    $(files)
-  :
+    doxygen yap_reference
+      :
+        $(files)
+      :
         <doxygen:param>EXTRACT_ALL=YES
         # note that there is no detail::unspecified -- this is a hack to get all
         # the SFINAE code out of the API docs.
@@ -30,7 +29,7 @@ doxygen yap_reference
         <doxygen:param>EXTRACT_PRIVATE=NO
         <doxygen:param>ENABLE_PREPROCESSING=YES
         <doxygen:param>MACRO_EXPANSION=YES
-        $(expand)
+        <doxygen:param>EXPAND_ONLY_PREDEF=YES
         <doxygen:param>SEARCH_INCLUDES=NO
         <doxygen:param>EXAMPLE_PATH=.
         <reftitle>$(name)
@@ -38,7 +37,13 @@ doxygen yap_reference
 
 }
 
-run_doxygen [ glob ../../../boost/yap/*.hpp ] : "Reference" ;
+run_doxygen [ glob $(here)/../../../boost/yap/*.hpp ] : "Headers" ;
+
+install images_standalone : [ glob *.png ] : <location>html/yap/img ;
+explicit images_standalone ;
+
+install images_boostdoc : [ glob *.png ] : <location>../../../doc/html/yap/img ;
+explicit images_boostdoc ;
 
 xml yap
     :
@@ -65,7 +70,7 @@ boostbook standalone
         # How far down we go with TOC's
         <xsl:param>generate.section.toc.level=10
         # Set the path to the boost-root so we find our graphics:
-        #<xsl:param>boost.root="../../../.."
+        <xsl:param>boost.root="../../../.."
         # location of the main index file so our links work:
         #<xsl:param>boost.libraries=../../../../../libs/libraries.htm
 
@@ -97,12 +102,12 @@ boostbook standalone
         # <format>html:<auto-index-internal>on
         # <format>docbook:<auto-index-internal>on
         # <xsl:param>index.on.type=1
+
+        <dependency>images_standalone
     ;
 
-alias boostdoc : yap : : : ;
+alias boostdoc : yap : : : <dependency>images_boostdoc ;
 
 explicit boostdoc ;
-
 alias boostrelease ;
-
 explicit boostrelease ;

@@ -11,7 +11,7 @@ The compiler sees this and creates some representation of that expression
 inside the compiler.  This is typically an _ast_ (AST).  The AST for the
 expression above might be:
 
-[$../../doc/ast.png]
+[$yap/img/ast.png]
 
 This tree structure captures all the elements of the original C++ code.  The
 expression is a plus operation whose left side is a call to `std::sqrt(3.0)`
@@ -20,7 +20,7 @@ expression subtree consisting of a call node and its argument node.
 
 A _yap_ version of this same tree is:
 
-[$../../doc/expr.png]
+[$yap/img/expr.png]
 
 The `operator+()` is represented by a _yap_ expression whose kind is
 `yap::expr_kind::plus` and the call is represented by a _yap_ expression whose
