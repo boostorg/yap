@@ -33,6 +33,7 @@ add_sample(transform_terminals)
 add_sample(pipable_algorithms)
 if (constexpr_if_define STREQUAL "-DBOOST_NO_CONSTEXPR_IF=0")
     add_sample(let)
+    add_sample(self_evaluation)
 endif ()
 
 add_executable(autodiff autodiff_example.cpp)
