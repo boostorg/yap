@@ -88,7 +88,7 @@ template <boost::yap::expr_kind Kind, typename Tuple>
 struct self_evaluating_expr;
 
 template <boost::yap::expr_kind Kind, typename Tuple>
-matrix evaluate_matrix_expr(self_evaluating_expr<Kind, Tuple> const & expr);
+auto evaluate_matrix_expr(self_evaluating_expr<Kind, Tuple> const & expr);
 
 //[ self_evaluating_decl
 // This is the primary template for our expression template.  If you assign a
@@ -97,7 +97,7 @@ matrix evaluate_matrix_expr(self_evaluating_expr<Kind, Tuple> const & expr);
 template <boost::yap::expr_kind Kind, typename Tuple>
 struct self_evaluating_expr
 {
-    operator auto() const { return evaluate_matrix_expr(*this); }
+    operator auto() const;
 
     static const boost::yap::expr_kind kind = Kind;
 
@@ -114,11 +114,7 @@ struct self_evaluating_expr
 template <typename Tuple>
 struct self_evaluating_expr<boost::yap::expr_kind::assign, Tuple>
 {
-    ~self_evaluating_expr()
-    {
-        using namespace boost::hana::literals;
-        boost::yap::evaluate(elements[0_c]) = evaluate_matrix_expr(elements[1_c]);
-    }
+    ~self_evaluating_expr();
 
     static const boost::yap::expr_kind kind = boost::yap::expr_kind::assign;
 
@@ -189,15 +185,31 @@ struct use_daxpy
     }
 };
 
+
 // This is the heart of what self_evaluating_expr does.  If we had other
 // optimizations/transformations we wanted to do, we'd put them in this
 // function, either before or after the use_daxpy transformation.
 template <boost::yap::expr_kind Kind, typename Tuple>
-matrix evaluate_matrix_expr(self_evaluating_expr<Kind, Tuple> const & expr)
+auto evaluate_matrix_expr(self_evaluating_expr<Kind, Tuple> const & expr)
 {
     auto daxpy_form = boost::yap::transform(expr, use_daxpy{});
     return boost::yap::evaluate(daxpy_form);
 }
+
+template<boost::yap::expr_kind Kind, typename Tuple>
+self_evaluating_expr<Kind, Tuple>::operator auto() const
+{
+    return evaluate_matrix_expr(*this);
+}
+
+template<typename Tuple>
+self_evaluating_expr<boost::yap::expr_kind::assign, Tuple>::
+    ~self_evaluating_expr()
+{
+    using namespace boost::hana::literals;
+    boost::yap::evaluate(elements[0_c]) = evaluate_matrix_expr(elements[1_c]);
+}
+
 
 int main()
 {
