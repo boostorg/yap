@@ -16,7 +16,6 @@
 #include <vector>
 
 
-//[ matrix_decl
 // A super-basic matrix type, and a few associated operations.
 struct matrix
 {
@@ -66,7 +65,6 @@ matrix operator+(matrix const & lhs, matrix const & rhs)
     }
     return retval;
 }
-//]
 
 // daxpy() means Double-precision AX Plus Y.  This crazy name comes from BLAS.
 // It is more efficient than a naive implementation, because it does not
@@ -90,7 +88,6 @@ struct self_evaluating_expr;
 template <boost::yap::expr_kind Kind, typename Tuple>
 auto evaluate_matrix_expr(self_evaluating_expr<Kind, Tuple> const & expr);
 
-//[ self_evaluating_decl
 // This is the primary template for our expression template.  If you assign a
 // self_evaluating_expr to a matrix, its conversion operator transforms and
 // evaluates the expression with a call to evaluate_matrix_expr().
@@ -119,30 +116,6 @@ struct self_evaluating_expr<boost::yap::expr_kind::assign, Tuple>
     static const boost::yap::expr_kind kind = boost::yap::expr_kind::assign;
 
     Tuple elements;
-};
-
-BOOST_YAP_USER_BINARY_OPERATOR(plus, self_evaluating_expr, self_evaluating_expr)
-BOOST_YAP_USER_BINARY_OPERATOR(minus, self_evaluating_expr, self_evaluating_expr)
-BOOST_YAP_USER_BINARY_OPERATOR(multiplies, self_evaluating_expr, self_evaluating_expr)
-//]
-
-// In order to define the = operator with the semantics we want, it's
-// convenient to derive a terminal type from a terminal instantiation of
-// self_evaluating_expr.  Note that we could have written a template
-// specialization here instead -- either one would work.  That would of course
-// have required more typing.
-struct self_evaluating :
-    self_evaluating_expr<
-        boost::yap::expr_kind::terminal,
-        boost::hana::tuple<matrix>
-    >
-{
-    self_evaluating() {}
-
-    explicit self_evaluating(matrix m)
-    { elements = boost::hana::tuple<matrix>(std::move(m)); }
-
-    BOOST_YAP_USER_ASSIGN_OPERATOR(self_evaluating_expr, ::self_evaluating_expr);
 };
 
 struct use_daxpy
@@ -209,6 +182,29 @@ self_evaluating_expr<boost::yap::expr_kind::assign, Tuple>::
     using namespace boost::hana::literals;
     boost::yap::evaluate(elements[0_c]) = evaluate_matrix_expr(elements[1_c]);
 }
+
+// In order to define the = operator with the semantics we want, it's
+// convenient to derive a terminal type from a terminal instantiation of
+// self_evaluating_expr.  Note that we could have written a template
+// specialization here instead -- either one would work.  That would of course
+// have required more typing.
+struct self_evaluating :
+    self_evaluating_expr<
+        boost::yap::expr_kind::terminal,
+        boost::hana::tuple<matrix>
+    >
+{
+    self_evaluating() {}
+
+    explicit self_evaluating(matrix m)
+    { elements = boost::hana::tuple<matrix>(std::move(m)); }
+
+    BOOST_YAP_USER_ASSIGN_OPERATOR(self_evaluating_expr, ::self_evaluating_expr);
+};
+
+BOOST_YAP_USER_BINARY_OPERATOR(plus, self_evaluating_expr, self_evaluating_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(minus, self_evaluating_expr, self_evaluating_expr)
+BOOST_YAP_USER_BINARY_OPERATOR(multiplies, self_evaluating_expr, self_evaluating_expr)
 
 
 int main()
