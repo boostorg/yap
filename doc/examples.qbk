@@ -117,6 +117,26 @@ terminal type that does not.]
 [endsect]
 
 
+[section Self-Evaluating Expressions]
+
+In most of the examples, we've seen _yap_ expressions captured, transformed,
+and/or evaluated either manually, or within certain operations that always do
+certain transformations (as in the `operator[]` in the _lazy_vector_ example).
+
+Sometimes, you want the transfrmations to happen just before a _yap_
+expression is used by non-_yap_-aware code.  At other times, you might want an
+entire _yap_ expression to be evaluated if it appears by itself in a statement
+(i.e. as an expression statement).
+
+This example uses C++17's `if constexpr ()`, simply because it makes the
+example shorter and easier to digest.  The `if constexpr ()` bits are not
+strictly necessary.
+
+[self_evaluation]
+
+[endsect]
+
+
 [section TArray]
 
 Proto refers to this as the "mini-library for linear algebra" example.  It

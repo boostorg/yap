@@ -31,6 +31,7 @@
 [import ../example/calc2b.cpp]
 [import ../example/calc3.cpp]
 [import ../example/lazy_vector.cpp]
+[import ../example/self_evaluation.cpp]
 [import ../example/tarray.cpp]
 [import ../example/vec3.cpp]
 [import ../example/vector.cpp]
@@ -141,6 +142,7 @@
 [def _mixed_               [link boost_yap.manual.examples.mixed Mixed]]
 [def _vector_              [link boost_yap.manual.examples.vector Vector]]
 [def _lazy_vector_         [link boost_yap.manual.examples.lazy_vector Lazy Vector]]
+[def _self_eval_           [link boost_yap.manual.examples.self_evaluation Self-Evaluating Expressions]]
 [def _tarray_              [link boost_yap.manual.examples.tarray TArray]]
 
 [def _future_group_        [link boost_yap.manual.examples.future_group Future Group]]

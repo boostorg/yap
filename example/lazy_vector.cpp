@@ -4,8 +4,6 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //[ lazy_vector
-// Defining this allows the assignment below of an expression to a double
-// without writing any specific code to do so.
 #include <boost/yap/expression.hpp>
 
 #include <algorithm>
