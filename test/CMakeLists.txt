@@ -44,6 +44,7 @@ add_test_executable(comma)
 add_test_executable(if_else)
 add_test_executable(expression_function)
 add_test_executable(transform)
+add_test_executable(supplied_transforms)
 
 add_executable(
     compile_tests

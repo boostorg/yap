@@ -38,6 +38,7 @@ run comma.cpp ;
 run if_else.cpp ;
 run expression_function.cpp ;
 run transform.cpp ;
+run supplied_transforms.cpp ;
 
 compile compile_is_expr.cpp ;
 compile compile_const_term.cpp ;
