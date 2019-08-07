@@ -85,8 +85,9 @@ namespace boost { namespace yap { namespace detail {
                 I <= decltype(hana::size(std::declval<tuple_t>()))::value,
                 "Out of range placeholder index,");
             using nth_type = nth_element<I - 1, PlaceholderArgs...>;
-            return rvalue_mover<!std::is_lvalue_reference<nth_type>::value>{}(
-                placeholder_args_[hana::llong<I - 1>{}]);
+            return as_expr<minimal_expr>(
+                rvalue_mover<!std::is_lvalue_reference<nth_type>::value>{}(
+                    placeholder_args_[hana::llong<I - 1>{}]));
         }
 
         tuple_t placeholder_args_;
