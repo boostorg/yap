@@ -86,7 +86,7 @@ namespace boost { namespace yap { namespace detail {
                 "Out of range placeholder index,");
             using nth_type = nth_element<I - 1, PlaceholderArgs...>;
             return as_expr<minimal_expr>(
-                rvalue_mover<!std::is_lvalue_reference<nth_type>::value>::value(
+                rvalue_mover<!std::is_lvalue_reference<nth_type>::value>{}(
                     placeholder_args_[hana::llong<I - 1>{}]));
         }
 
