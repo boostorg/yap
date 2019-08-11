@@ -314,5 +314,14 @@ int test_main(int, char * [])
         }
     }
 
+    {
+        using term_t = term<int>;
+        constexpr auto expr = term_t{13} + term_t{42};
+        constexpr auto result1 = expr.left().value();
+        constexpr auto result2 = yap::value(left(expr));
+        (void)result1;
+        (void)result2;
+    }
+
     return 0;
 }
