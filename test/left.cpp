@@ -314,6 +314,7 @@ int test_main(int, char * [])
         }
     }
 
+#ifndef _MSC_VER // Tsk, tsk.
     {
         using term_t = term<int>;
         constexpr auto expr = term_t{13} + term_t{42};
@@ -322,6 +323,7 @@ int test_main(int, char * [])
         (void)result1;
         (void)result2;
     }
+#endif
 
     return 0;
 }
