@@ -23,12 +23,10 @@ int test_main(int, char * [])
         BOOST_CHECK(result == 54);
 
 #ifndef _MSC_VER // Tsk, tsk.
-        constexpr auto cxform    = yap::replacements(6,9);
-        constexpr auto cexpr_out = yap::transform(expr_in,cxform);
+        constexpr auto cxform    = yap::replacements(6);
+        constexpr auto cexpr_out = yap::transform(1_p,cxform);
         constexpr auto cresult   = yap::evaluate(cexpr_out);
-        (void)cxform;
-        (void)cexpr_out;
-        BOOST_CHECK(cresult == 54);
+        static_assert(cresult == 6);
 #endif
     }
 
@@ -43,10 +41,9 @@ int test_main(int, char * [])
         BOOST_CHECK(result == 70);
 
 #ifndef _MSC_VER // Tsk, tsk.
-        constexpr auto cxform    = yap::evaluation(7,10);
-        constexpr auto cresult   = yap::transform(expr_in,cxform);
-        (void)cxform;
-        BOOST_CHECK(cresult == 70);
+        constexpr auto cxform    = yap::evaluation(7);
+        constexpr auto cresult   = yap::transform(1_p,cxform);
+        static_assert(cresult == 7);
 #endif
     }
 
@@ -61,10 +58,9 @@ int test_main(int, char * [])
         BOOST_CHECK(result == 88);
 
 #ifndef _MSC_VER // Tsk, tsk.
-        constexpr auto cexpr_out = yap::replace_placeholders(expr_in,8,11);
+        constexpr auto cexpr_out = yap::replace_placeholders(1_p,8);
         constexpr auto cresult   = yap::evaluate(cexpr_out);
-        (void)cexpr_out;
-        BOOST_CHECK(cresult == 88);
+        static_assert(cresult == 8);
 #endif
     }
 
