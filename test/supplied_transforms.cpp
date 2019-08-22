@@ -22,10 +22,12 @@ int test_main(int, char * [])
         auto result   = yap::evaluate(expr_out);
         BOOST_CHECK(result == 54);
 
+#ifndef _MSC_VER // Tsk, tsk.
         constexpr auto cxform    = yap::replacements(6,9);
         constexpr auto cexpr_out = yap::transform(expr_in,cxform);
         constexpr auto cresult   = yap::evaluate(cexpr_out);
-        static_assert(cresult==54);
+        static_assert(cresult==54,"");
+#endif
     }
 
     // Test evaluation(), which returns a transform object
@@ -38,9 +40,11 @@ int test_main(int, char * [])
         auto result   = yap::transform(expr_in,xform);
         BOOST_CHECK(result == 70);
 
+#ifndef _MSC_VER // Tsk, tsk.
         constexpr auto cxform    = yap::evaluation(7,10);
         constexpr auto cresult   = yap::transform(expr_in,cxform);
-        static_assert(cresult==70);
+        static_assert(cresult==70,"");
+#endif
     }
 
     // Test replace_placeholders(), which returns an expression 
@@ -53,9 +57,11 @@ int test_main(int, char * [])
         auto result   = yap::evaluate(expr_out);
         BOOST_CHECK(result == 88);
 
+#ifndef _MSC_VER // Tsk, tsk.
         constexpr auto cexpr_out = yap::replace_placeholders(expr_in,8,11);
         constexpr auto cresult   = yap::evaluate(cexpr_out);
-        static_assert(cresult==88);
+        static_assert(cresult==88,"");
+#endif
     }
 
     return 0;
