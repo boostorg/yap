@@ -16,10 +16,16 @@ int test_main(int, char * [])
         using namespace boost::yap::literals;
 
         auto expr_in  = 1_p * 2_p;
+
         auto xform    = yap::replacements(6,9);
         auto expr_out = yap::transform(expr_in,xform);
         auto result   = yap::evaluate(expr_out);
         BOOST_CHECK(result == 54);
+
+        constexpr auto cxform    = yap::replacements(6,9);
+        constexpr auto cexpr_out = yap::transform(expr_in,cxform);
+        constexpr auto cresult   = yap::evaluate(cexpr_out);
+        static_assert(cresult==54);
     }
 
     // Test evaluation(), which returns a transform object
@@ -27,9 +33,14 @@ int test_main(int, char * [])
         using namespace boost::yap::literals;
 
         auto expr_in  = 1_p * 2_p;
+
         auto xform    = yap::evaluation(7,10);
         auto result   = yap::transform(expr_in,xform);
         BOOST_CHECK(result == 70);
+
+        constexpr auto cxform    = yap::evaluation(7,10);
+        constexpr auto cresult   = yap::transform(expr_in,cxform);
+        static_assert(cresult==70);
     }
 
     // Test replace_placeholders(), which returns an expression 
@@ -37,9 +48,14 @@ int test_main(int, char * [])
         using namespace boost::yap::literals;
 
         auto expr_in  = 1_p * 2_p;
+
         auto expr_out = yap::replace_placeholders(expr_in,8,11);
         auto result   = yap::evaluate(expr_out);
         BOOST_CHECK(result == 88);
+
+        constexpr auto cexpr_out = yap::replace_placeholders(expr_in,8,11);
+        constexpr auto cresult   = yap::evaluate(cexpr_out);
+        static_assert(cresult==88);
     }
 
     return 0;
