@@ -26,7 +26,7 @@ int test_main(int, char * [])
         constexpr auto cxform    = yap::replacements(6);
         constexpr auto cexpr_out = yap::transform(1_p,cxform);
         constexpr auto cresult   = yap::evaluate(cexpr_out);
-        static_assert(cresult == 6);
+        static_assert(cresult == 6,"");
 #endif
     }
 
@@ -43,7 +43,7 @@ int test_main(int, char * [])
 #ifndef _MSC_VER // Tsk, tsk.
         constexpr auto cxform    = yap::evaluation(7);
         constexpr auto cresult   = yap::transform(1_p,cxform);
-        static_assert(cresult == 7);
+        static_assert(cresult == 7,"");
 #endif
     }
 
@@ -60,7 +60,7 @@ int test_main(int, char * [])
 #ifndef _MSC_VER // Tsk, tsk.
         constexpr auto cexpr_out = yap::replace_placeholders(1_p,8);
         constexpr auto cresult   = yap::evaluate(cexpr_out);
-        static_assert(cresult == 8);
+        static_assert(cresult == 8,"");
 #endif
     }
 
