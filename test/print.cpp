@@ -1591,5 +1591,15 @@ int test_main(int, char * [])
         }
     }
 
+    {
+        using namespace yap::literals;
+        std::ostringstream oss;
+        yap::print(oss, replace_placeholders(1_p + 2_p,7,8));
+        BOOST_CHECK(fix_tti(oss.str()) == R"(expr<+>
+    term<int>[=7]
+    term<int>[=8]
+)");
+    }
+
     return 0;
 }

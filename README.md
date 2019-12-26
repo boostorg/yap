@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/boostorg/yap.svg?branch=master)](https://travis-ci.org/boostorg/yap)
-[![codecov](https://codecov.io/gh/tzlaine/yap/branch/master/graph/badge.svg)](https://codecov.io/gh/tzlaine/yap)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/tzlaine/yap?branch=master&svg=true)](https://ci.appveyor.com/project/tzlaine/yap)
 [![License](https://img.shields.io/badge/license-boost-brightgreen.svg)](LICENSE_1_0.txt)
 
 

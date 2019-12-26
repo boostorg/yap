@@ -260,5 +260,16 @@ int test_main(int, char * [])
         }
     }
 
+#ifndef _MSC_VER // Tsk, tsk.
+    {
+        using term_t = term<int>;
+        constexpr auto expr = term_t{13} + term_t{42};
+        constexpr auto result1 = expr.right().value();
+        constexpr auto result2 = yap::value(right(expr));
+        (void)result1;
+        (void)result2;
+    }
+#endif
+
     return 0;
 }
