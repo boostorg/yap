@@ -89,16 +89,16 @@ endif ()
 ##################################################
 # Clang+Linux support
 ##################################################
-set(clang_on_linux false)
-if (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
-    add_definitions(${std_flag} -stdlib=libc++ -g -Wall)
-    if (CMAKE_SYSTEM_NAME STREQUAL Linux)
-        set(clang_on_linux true)
-    endif ()
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
-    add_definitions(${std_flag} -g -Wall)
-endif ()
-
+# set(clang_on_linux false)
+# if (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
+#     add_definitions(${std_flag} -stdlib=libc++ -g -Wall)
+#     if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+#         set(clang_on_linux true)
+#     endif ()
+# elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+#     add_definitions(${std_flag} -g -Wall)
+# endif ()
+#
 ##################################################
 # Dependencies
 ##################################################
@@ -116,7 +116,21 @@ if (link_flags)
     target_compile_options(yap INTERFACE ${compile_flags})
 endif ()
 
-add_subdirectory(test)
-add_subdirectory(example)
-add_subdirectory(perf)
-add_subdirectory(doc) # Doesn't build docs, just the snippets files.
+macro(cond_build subdir)
+    set(SUBDIRU "")
+    string(TOUPPER ${subdir} SUBDIRU)
+    option(YAP_BUILD_${SUBDIRU} "Build ${subdir}" ON)
+    if(YAP_BUILD_${SUBDIRU})
+        add_subdirectory(${subdir})
+    endif()
+endmacro()
+
+cond_build(test)
+
+cond_build(example)
+
+if (YAP_BUILD_EXAMPLE)
+    cond_build(perf)
+endif()
+
+cond_build(doc) # Doesn't build docs, just the snippets files.
