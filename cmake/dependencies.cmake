@@ -43,7 +43,7 @@ if(YAP_BUILD_PERF)
       COMMAND git checkout v1.5.0
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/benchmark
   )
-
+  set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
 endif()
 
