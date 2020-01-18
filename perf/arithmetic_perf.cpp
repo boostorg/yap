@@ -138,4 +138,4 @@ BENCHMARK(BM_eval_as_yap_expr_4x);
 BENCHMARK(BM_eval_as_cpp_expr);
 BENCHMARK(BM_eval_as_cpp_expr_4x);
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();
