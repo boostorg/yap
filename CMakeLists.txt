@@ -89,16 +89,16 @@ endif ()
 ##################################################
 # Clang+Linux support
 ##################################################
-# set(clang_on_linux false)
-# if (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
-#     add_definitions(${std_flag} -stdlib=libc++ -g -Wall)
-#     if (CMAKE_SYSTEM_NAME STREQUAL Linux)
-#         set(clang_on_linux true)
-#     endif ()
-# elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
-#     add_definitions(${std_flag} -g -Wall)
-# endif ()
-#
+set(clang_on_linux false)
+if (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
+    add_definitions(${std_flag} -stdlib=libc++ -g -Wall)
+    if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+        set(clang_on_linux true)
+    endif ()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+    add_definitions(${std_flag} -g -Wall)
+endif ()
+
 ##################################################
 # Dependencies
 ##################################################
