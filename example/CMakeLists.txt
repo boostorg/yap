@@ -37,6 +37,7 @@ if (constexpr_if_define STREQUAL "-DBOOST_NO_CONSTEXPR_IF=0")
 endif ()
 
 add_executable(autodiff autodiff_example.cpp)
+add_dependencies(autodiff autodiff_library)
 target_link_libraries(autodiff yap boost autodiff_library)
 if (clang_on_linux)
     target_link_libraries(autodiff c++)

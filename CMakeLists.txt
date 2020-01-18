@@ -100,11 +100,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 endif ()
 
 ##################################################
-# Dependencies
-##################################################
-include(dependencies)
-
-##################################################
 # yap library
 ##################################################
 add_library(yap INTERFACE)
@@ -134,3 +129,8 @@ if (YAP_BUILD_EXAMPLE)
 endif()
 
 cond_build(doc) # Doesn't build docs, just the snippets files.
+
+##################################################
+# Dependencies
+##################################################
+include(dependencies)
