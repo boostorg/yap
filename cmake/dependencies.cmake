@@ -29,6 +29,7 @@ else ()
   unset(SOURCE_DIR)
 endif ()
 
+set_target_properties(boost PROPERTIES INTERFACE_COMPILE_FEATURES cxx_std_14)
 
 ###############################################################################
 # Google Benchmark
