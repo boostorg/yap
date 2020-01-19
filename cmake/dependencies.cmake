@@ -31,7 +31,7 @@ endif ()
 
 set_target_properties(boost
     PROPERTIES
-        INTERFACE_COMPILE_FEATURES "cxx_constexpr cxx_decltype_auto cxx_auto_type"
+        INTERFACE_COMPILE_FEATURES cxx_decltype_auto
         )
 
 ###############################################################################
