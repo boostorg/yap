@@ -29,26 +29,34 @@ else ()
   unset(SOURCE_DIR)
 endif ()
 
+set_target_properties(boost
+    PROPERTIES
+        INTERFACE_COMPILE_FEATURES cxx_decltype_auto
+        )
 
 ###############################################################################
 # Google Benchmark
 ###############################################################################
-execute_process(
-    COMMAND git clone https://github.com/google/benchmark.git
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
-execute_process(
-    COMMAND git checkout v1.2.0
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/benchmark
-)
 
-option(BENCHMARK_ENABLE_TESTING "Enable testing of the benchmark library." OFF)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
+if(YAP_BUILD_PERF)
+  execute_process(
+      COMMAND git clone https://github.com/google/benchmark.git
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+  execute_process(
+      COMMAND git checkout v1.5.0
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/benchmark
+  )
+  set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/benchmark)
+endif()
 
 
 ###############################################################################
 # Autodiff (see https://github.com/fqiang/autodiff_library)
 ###############################################################################
+
+if(YAP_BUILD_EXAMPLE)
 add_library(autodiff_library
   ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/ActNode.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library/BinaryOPNode.cpp
@@ -66,3 +74,4 @@ add_library(autodiff_library
 target_include_directories(autodiff_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/example/autodiff_library)
 target_compile_definitions(autodiff_library PUBLIC BOOST_ALL_NO_LIB=1)
 target_link_libraries(autodiff_library boost)
+endif()

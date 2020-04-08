@@ -16,6 +16,12 @@ set(coverage_gcda_files)
 macro(add_test_executable name)
     add_executable(${name} ${name}.cpp)
     target_link_libraries(${name} yap)
+    target_compile_features(${name}
+        PRIVATE
+            cxx_constexpr
+            cxx_decltype_auto
+            cxx_auto_type
+            )
     target_compile_definitions(${name} PRIVATE BOOST_NO_AUTO_PTR)
     add_test(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name})
     if (clang_on_linux)
