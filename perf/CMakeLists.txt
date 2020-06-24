@@ -16,6 +16,7 @@ add_code_gen_executable(lazy_vector_perf)
 
 macro(add_perf_executable name)
     add_executable(${name} ${name}.cpp)
+    add_dependencies(${name} benchmark)
     target_link_libraries(${name} yap benchmark)
     if (clang_on_linux)
         target_link_libraries(${name} c++)

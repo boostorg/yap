@@ -284,6 +284,9 @@ above logic applies to each one independently before the next one is used.  In
 other words, in the call `boost::yap::transform(expr, a, b)`, _xform_ tries to
 match any _TagXForm_ from `a` to an expression first, then any _ExprXForm_
 from `a`, then any _TagXForm_ from `b`, and finally any _ExprXForm_ from `b`.
+Only the first matching overload in this sequence is used; all overloads later
+in the sequence or in later transforms, whether they match or not, are simply
+ignored.
 
 [heading YAP-Supplied Transforms]
 

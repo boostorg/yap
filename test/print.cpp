@@ -120,6 +120,38 @@ int test_main(int, char * [])
     }
 
     {
+        std::ostringstream oss;
+        int i = 0;
+        bh::tuple<int> tuple{i};
+        yap::detail::print_type(oss, tuple);
+        BOOST_CHECK(oss.str() == "int");
+    }
+
+    {
+        std::ostringstream oss;
+        int const i = 0;
+        bh::tuple<int const> tuple{i};
+        yap::detail::print_type(oss, tuple);
+        BOOST_CHECK(oss.str() == "int const");
+    }
+
+    {
+        std::ostringstream oss;
+        int i = 0;
+        bh::tuple<int &> tuple{i};
+        yap::detail::print_type(oss, tuple);
+        BOOST_CHECK(oss.str() == "int &");
+    }
+
+    {
+        std::ostringstream oss;
+        int const i = 0;
+        bh::tuple<int const &> tuple{i};
+        yap::detail::print_type(oss, tuple);
+        BOOST_CHECK(oss.str() == "int const &");
+    }
+
+    {
         user_term<double> unity{1.0};
         int i_ = 42;
         user_term<int &&> i{std::move(i_)};

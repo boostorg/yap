@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
+project(YAP LANGUAGES CXX)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 ################################################## 
@@ -47,6 +49,7 @@ elseif (NOT std_flag)
 elseif (NOT std_flag)
     message(FATAL_ERROR "Only c++14 or later will work")
 endif ()
+
 
 ##################################################
 # Sanitizers
@@ -98,23 +101,38 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 endif ()
 
 ##################################################
-# Dependencies
-##################################################
-include(dependencies)
-
-##################################################
 # yap library
 ##################################################
 add_library(yap INTERFACE)
 target_include_directories(yap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(yap INTERFACE boost)
+target_compile_features(yap INTERFACE cxx_variadic_templates cxx_constexpr)
 target_compile_definitions(yap INTERFACE ${constexpr_if_define} BOOST_ALL_NO_LIB=1)
 if (link_flags)
     target_link_libraries(yap INTERFACE ${link_flags})
     target_compile_options(yap INTERFACE ${compile_flags})
 endif ()
 
-add_subdirectory(test)
-add_subdirectory(example)
-add_subdirectory(perf)
-add_subdirectory(doc) # Doesn't build docs, just the snippets files.
+macro(cond_build subdir)
+    set(SUBDIRU "")
+    string(TOUPPER ${subdir} SUBDIRU)
+    option(YAP_BUILD_${SUBDIRU} "Build ${subdir}" ON)
+    if(YAP_BUILD_${SUBDIRU})
+        add_subdirectory(${subdir})
+    endif()
+endmacro()
+
+cond_build(test)
+
+cond_build(example)
+
+if (YAP_BUILD_EXAMPLE)
+    cond_build(perf)
+endif()
+
+cond_build(doc) # Doesn't build docs, just the snippets files.
+
+##################################################
+# Dependencies
+##################################################
+include(dependencies)
