@@ -7,7 +7,7 @@
 
 #include <boost/mpl/assert.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 #include <sstream>
 
@@ -56,7 +56,7 @@ struct double_callable
 };
 
 
-int test_main(int, char * [])
+int main()
 {
 {
     {
@@ -68,9 +68,9 @@ int test_main(int, char * [])
             (term<int_callable>{{&call_count, &int_called}}(),
              term<double_callable>{{&call_count, &double_called}}());
 
-        BOOST_CHECK(evaluate(int_double_expr) == 13.0);
-        BOOST_CHECK(int_called == 0);
-        BOOST_CHECK(double_called == 1);
+        BOOST_TEST(evaluate(int_double_expr) == 13.0);
+        BOOST_TEST(int_called == 0);
+        BOOST_TEST(double_called == 1);
     }
 
     {
@@ -82,9 +82,9 @@ int test_main(int, char * [])
             (term<double_callable>{{&call_count, &double_called}}(),
              term<int_callable>{{&call_count, &int_called}}());
 
-        BOOST_CHECK(evaluate(double_int_expr) == 42);
-        BOOST_CHECK(int_called == 1);
-        BOOST_CHECK(double_called == 0);
+        BOOST_TEST(evaluate(double_int_expr) == 42);
+        BOOST_TEST(int_called == 1);
+        BOOST_TEST(double_called == 0);
     }
 }
 
@@ -98,9 +98,9 @@ int test_main(int, char * [])
             (term<void_callable>{{&call_count, &void_called}}(),
              term<int_callable>{{&call_count, &int_called}}());
 
-        BOOST_CHECK(evaluate(void_int_expr) == 42);
-        BOOST_CHECK(void_called == 0);
-        BOOST_CHECK(int_called == 1);
+        BOOST_TEST(evaluate(void_int_expr) == 42);
+        BOOST_TEST(void_called == 0);
+        BOOST_TEST(int_called == 1);
     }
 
     {
@@ -117,10 +117,10 @@ int test_main(int, char * [])
             (std::is_same<void, eval_type>));
 
         evaluate(int_void_expr);
-        BOOST_CHECK(void_called == 1);
-        BOOST_CHECK(int_called == 0);
+        BOOST_TEST(void_called == 1);
+        BOOST_TEST(int_called == 0);
     }
 }
 
-return 0;
+return boost::report_errors();
 }

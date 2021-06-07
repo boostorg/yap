@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 #include <sstream>
 
@@ -52,7 +52,7 @@ struct side_effect_callable_2
 };
 
 
-int test_main(int, char * [])
+int main()
 {
     {
         int one = 0;
@@ -63,9 +63,9 @@ int test_main(int, char * [])
             term<callable>{}(),
             term<side_effect_callable_1>{{&one}}());
 
-        BOOST_CHECK(yap::evaluate(true_nothrow_throw_expr) == 42);
-        BOOST_CHECK(one == 0);
-        BOOST_CHECK(two == 0);
+        BOOST_TEST(yap::evaluate(true_nothrow_throw_expr) == 42);
+        BOOST_TEST(one == 0);
+        BOOST_TEST(two == 0);
     }
 
     {
@@ -77,9 +77,9 @@ int test_main(int, char * [])
             term<callable>{}(),
             term<side_effect_callable_1>{{&one}}());
 
-        BOOST_CHECK(yap::evaluate(false_nothrow_throw_expr) == 0);
-        BOOST_CHECK(one == 1);
-        BOOST_CHECK(two == 0);
+        BOOST_TEST(yap::evaluate(false_nothrow_throw_expr) == 0);
+        BOOST_TEST(one == 1);
+        BOOST_TEST(two == 0);
     }
 
     {
@@ -91,9 +91,9 @@ int test_main(int, char * [])
             term<side_effect_callable_1>{{&one}}(),
             term<side_effect_callable_2>{{&two}}());
 
-        BOOST_CHECK(yap::evaluate(true_throw1_throw2_expr) == 0);
-        BOOST_CHECK(one == 1);
-        BOOST_CHECK(two == 0);
+        BOOST_TEST(yap::evaluate(true_throw1_throw2_expr) == 0);
+        BOOST_TEST(one == 1);
+        BOOST_TEST(two == 0);
     }
 
     {
@@ -105,10 +105,10 @@ int test_main(int, char * [])
             term<side_effect_callable_1>{{&one}}(),
             term<side_effect_callable_2>{{&two}}());
 
-        BOOST_CHECK(yap::evaluate(false_throw1_throw2_expr) == 0);
-        BOOST_CHECK(one == 0);
-        BOOST_CHECK(two == 2);
+        BOOST_TEST(yap::evaluate(false_throw1_throw2_expr) == 0);
+        BOOST_TEST(one == 0);
+        BOOST_TEST(two == 2);
     }
 
-    return 0;
+    return boost::report_errors();
 }

@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 
 template<typename T>
@@ -61,7 +61,7 @@ auto make_ref(Expr && expr)
     return yap::detail::make_operand<type>{}(static_cast<Expr &&>(expr));
 }
 
-int test_main(int, char * [])
+int main()
 {
 {
     {
@@ -69,50 +69,50 @@ int test_main(int, char * [])
 
         {
             user::number result = transform(a, user::eval_xform{});
-            BOOST_CHECK(result.value == 1);
+            BOOST_TEST(result.value == 1);
         }
 
         {
             user::number result = transform(make_ref(a), user::eval_xform{});
-            BOOST_CHECK(result.value == 1);
+            BOOST_TEST(result.value == 1);
         }
 
         {
             user::number result = transform(-a, user::eval_xform{});
-            BOOST_CHECK(result.value == -1);
+            BOOST_TEST(result.value == -1);
         }
 
         {
             auto expr = make_ref(a);
             user::number result = transform(-expr, user::eval_xform{});
-            BOOST_CHECK(result.value == -1);
+            BOOST_TEST(result.value == -1);
         }
 
         {
             auto expr = -a;
             user::number result = transform(expr, user::eval_xform{});
-            BOOST_CHECK(result.value == -1);
+            BOOST_TEST(result.value == -1);
         }
 
         {
             auto expr1 = make_ref(a);
             auto expr2 = make_ref(expr1);
             user::number result = transform(expr2, user::eval_xform{});
-            BOOST_CHECK(result.value == 1);
+            BOOST_TEST(result.value == 1);
         }
 
         {
             auto expr1 = -a;
             auto expr2 = make_ref(expr1);
             user::number result = transform(expr2, user::eval_xform{});
-            BOOST_CHECK(result.value == -1);
+            BOOST_TEST(result.value == -1);
         }
 
         {
             auto expr1 = make_ref(a);
             auto expr2 = -expr1;
             user::number result = transform(expr2, user::eval_xform{});
-            BOOST_CHECK(result.value == -1);
+            BOOST_TEST(result.value == -1);
         }
 
         {
@@ -120,7 +120,7 @@ int test_main(int, char * [])
             auto expr2 = make_ref(expr1);
             auto expr3 = make_ref(expr2);
             user::number result = transform(expr3, user::eval_xform{});
-            BOOST_CHECK(result.value == 1);
+            BOOST_TEST(result.value == 1);
         }
 
         {
@@ -128,7 +128,7 @@ int test_main(int, char * [])
             auto expr2 = make_ref(expr1);
             auto expr3 = make_ref(expr2);
             user::number result = transform(expr3, user::eval_xform{});
-            BOOST_CHECK(result.value == -1);
+            BOOST_TEST(result.value == -1);
         }
 
         {
@@ -136,7 +136,7 @@ int test_main(int, char * [])
             auto expr2 = -expr1;
             auto expr3 = make_ref(expr2);
             user::number result = transform(expr3, user::eval_xform{});
-            BOOST_CHECK(result.value == -1);
+            BOOST_TEST(result.value == -1);
         }
 
         {
@@ -144,14 +144,14 @@ int test_main(int, char * [])
             auto expr2 = make_ref(expr1);
             auto expr3 = -expr2;
             user::number result = transform(expr3, user::eval_xform{});
-            BOOST_CHECK(result.value == -1);
+            BOOST_TEST(result.value == -1);
         }
     }
 
     {
         user::number result =
             transform(-term<user::number>{{1.0}}, user::eval_xform{});
-        BOOST_CHECK(result.value == -1);
+        BOOST_TEST(result.value == -1);
     }
 }
 
@@ -161,97 +161,97 @@ int test_main(int, char * [])
 
     {
         user::number result = transform(a + x, user::eval_xform{});
-        BOOST_CHECK(result.value == 42);
+        BOOST_TEST(result.value == 42);
     }
 
 
     {
         user::number result =
             transform(make_ref(a) + make_ref(x), user::eval_xform{});
-        BOOST_CHECK(result.value == 42);
+        BOOST_TEST(result.value == 42);
     }
 
     {
         user::number result = transform(make_ref(a) + x, user::eval_xform{});
-        BOOST_CHECK(result.value == 42);
+        BOOST_TEST(result.value == 42);
     }
 
     {
         user::number result = transform(a + make_ref(x), user::eval_xform{});
-        BOOST_CHECK(result.value == 42);
+        BOOST_TEST(result.value == 42);
     }
 
     {
         user::number result = transform(a + x, user::eval_xform{});
-        BOOST_CHECK(result.value == 42);
+        BOOST_TEST(result.value == 42);
     }
 
 
     {
         user::number result =
             transform(-make_ref(a) + make_ref(x), user::eval_xform{});
-        BOOST_CHECK(result.value == 40);
+        BOOST_TEST(result.value == 40);
     }
 
     {
         user::number result = transform(-make_ref(a) + x, user::eval_xform{});
-        BOOST_CHECK(result.value == 40);
+        BOOST_TEST(result.value == 40);
     }
 
     {
         user::number result = transform(-a + make_ref(x), user::eval_xform{});
-        BOOST_CHECK(result.value == 40);
+        BOOST_TEST(result.value == 40);
     }
 
     {
         user::number result = transform(-a + x, user::eval_xform{});
-        BOOST_CHECK(result.value == 40);
+        BOOST_TEST(result.value == 40);
     }
 
 
     {
         user::number result =
             transform(make_ref(a) + -make_ref(x), user::eval_xform{});
-        BOOST_CHECK(result.value == -40);
+        BOOST_TEST(result.value == -40);
     }
 
     {
         user::number result = transform(make_ref(a) + -x, user::eval_xform{});
-        BOOST_CHECK(result.value == -40);
+        BOOST_TEST(result.value == -40);
     }
 
     {
         user::number result = transform(a + -make_ref(x), user::eval_xform{});
-        BOOST_CHECK(result.value == -40);
+        BOOST_TEST(result.value == -40);
     }
 
     {
         user::number result = transform(a + -x, user::eval_xform{});
-        BOOST_CHECK(result.value == -40);
+        BOOST_TEST(result.value == -40);
     }
 
 
     {
         user::number result =
             transform(-make_ref(a) + -make_ref(x), user::eval_xform{});
-        BOOST_CHECK(result.value == -42);
+        BOOST_TEST(result.value == -42);
     }
 
     {
         user::number result = transform(-make_ref(a) + -x, user::eval_xform{});
-        BOOST_CHECK(result.value == -42);
+        BOOST_TEST(result.value == -42);
     }
 
     {
         user::number result = transform(-a + -make_ref(x), user::eval_xform{});
-        BOOST_CHECK(result.value == -42);
+        BOOST_TEST(result.value == -42);
     }
 
     {
         user::number result = transform(-a + -x, user::eval_xform{});
-        BOOST_CHECK(result.value == -42);
+        BOOST_TEST(result.value == -42);
     }
 }
 
-return 0;
+return boost::report_errors();
 }

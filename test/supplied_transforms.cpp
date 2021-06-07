@@ -5,11 +5,11 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/yap.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 namespace yap = boost::yap;
 
-int test_main(int, char * [])
+int main()
 {
     // Test replacements(), which returns a transform object
     {
@@ -20,7 +20,7 @@ int test_main(int, char * [])
         auto xform    = yap::replacements(6,9);
         auto expr_out = yap::transform(expr_in,xform);
         auto result   = yap::evaluate(expr_out);
-        BOOST_CHECK(result == 54);
+        BOOST_TEST(result == 54);
 
 #ifndef _MSC_VER // Tsk, tsk.
         constexpr auto cxform    = yap::replacements(6);
@@ -38,7 +38,7 @@ int test_main(int, char * [])
 
         auto xform    = yap::evaluation(7,10);
         auto result   = yap::transform(expr_in,xform);
-        BOOST_CHECK(result == 70);
+        BOOST_TEST(result == 70);
 
 #ifndef _MSC_VER // Tsk, tsk.
         constexpr auto cxform    = yap::evaluation(7);
@@ -55,7 +55,7 @@ int test_main(int, char * [])
 
         auto expr_out = yap::replace_placeholders(expr_in,8,11);
         auto result   = yap::evaluate(expr_out);
-        BOOST_CHECK(result == 88);
+        BOOST_TEST(result == 88);
 
 #ifndef _MSC_VER // Tsk, tsk.
         constexpr auto cexpr_out = yap::replace_placeholders(1_p,8);
@@ -64,6 +64,6 @@ int test_main(int, char * [])
 #endif
     }
 
-    return 0;
+    return boost::report_errors();
 }
 

@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 
 template<typename T>
@@ -450,11 +450,11 @@ auto double_to_float(term<double> expr)
 auto check_unique_ptrs_equal_7(term<std::unique_ptr<int>> && expr)
 {
     using namespace boost::hana::literals;
-    BOOST_CHECK(*expr.elements[0_c] == 7);
+    BOOST_TEST(*expr.elements[0_c] == 7);
     return std::move(expr);
 }
 
-int test_main(int, char * [])
+int main()
 {
     {
         term<user::number> a{{1.0}};
@@ -465,30 +465,30 @@ int test_main(int, char * [])
             auto expr = a;
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 1);
+                BOOST_TEST(result.value == 1);
             }
 
             {
                 auto transformed_expr = transform(expr, user::empty_xform{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 1);
+                BOOST_TEST(result.value == 1);
             }
 
             {
                 auto transformed_expr = transform(expr, user::eval_xform_tag{});
-                BOOST_CHECK(transformed_expr.value == 1);
+                BOOST_TEST(transformed_expr.value == 1);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::eval_xform_expr{});
-                BOOST_CHECK(transformed_expr.value == 1);
+                BOOST_TEST(transformed_expr.value == 1);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::eval_xform_both{});
-                BOOST_CHECK(transformed_expr.value == 1);
+                BOOST_TEST(transformed_expr.value == 1);
             }
         }
 
@@ -496,28 +496,28 @@ int test_main(int, char * [])
             auto expr = x + y;
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::plus_to_minus_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39);
+                BOOST_TEST(result.value == 39);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::plus_to_minus_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39);
+                BOOST_TEST(result.value == 39);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::plus_to_minus_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39);
+                BOOST_TEST(result.value == 39);
             }
         }
 
@@ -525,28 +525,28 @@ int test_main(int, char * [])
             auto expr = x + user::number{3.0};
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
         }
 
@@ -554,28 +554,28 @@ int test_main(int, char * [])
             auto expr = x + y;
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
         }
 
@@ -583,7 +583,7 @@ int test_main(int, char * [])
             auto expr = (x + y) + user::number{1.0};
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 46);
+                BOOST_TEST(result.value == 46);
             }
 
             {
@@ -592,21 +592,21 @@ int test_main(int, char * [])
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 40 * 2);
+                BOOST_TEST(result.value == 40 * 2);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 38 * 2);
+                BOOST_TEST(result.value == 38 * 2);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::term_nonterm_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 38 * 2);
+                BOOST_TEST(result.value == 38 * 2);
             }
         }
 
@@ -614,25 +614,25 @@ int test_main(int, char * [])
             auto expr = x + user::number{3.0};
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_tag{});
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_expr{});
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_both{});
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
         }
 
@@ -640,25 +640,25 @@ int test_main(int, char * [])
             auto expr = x + y;
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_tag{});
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_expr{});
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_both{});
-                BOOST_CHECK(result.value == 39 * 2);
+                BOOST_TEST(result.value == 39 * 2);
             }
         }
 
@@ -666,25 +666,25 @@ int test_main(int, char * [])
             auto expr = (x + y) + user::number{1.0};
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 46);
+                BOOST_TEST(result.value == 46);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_tag{});
-                BOOST_CHECK(result.value == 38 * 2);
+                BOOST_TEST(result.value == 38 * 2);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_expr{});
-                BOOST_CHECK(result.value == 38 * 2);
+                BOOST_TEST(result.value == 38 * 2);
             }
 
             {
                 user::number result =
                     transform(expr, user::eval_term_nonterm_xform_both{});
-                BOOST_CHECK(result.value == 38 * 2);
+                BOOST_TEST(result.value == 38 * 2);
             }
         }
 
@@ -692,14 +692,14 @@ int test_main(int, char * [])
             auto expr = a * x + y;
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             auto transformed_expr =
                 transform(expr, user::naxpy_eager_nontemplate_xform);
             {
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 55);
+                BOOST_TEST(result.value == 55);
             }
         }
 
@@ -707,14 +707,14 @@ int test_main(int, char * [])
             auto expr = a + (a * x + y);
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 46);
+                BOOST_TEST(result.value == 46);
             }
 
             auto transformed_expr =
                 transform(expr, user::naxpy_eager_nontemplate_xform);
             {
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 56);
+                BOOST_TEST(result.value == 56);
             }
         }
 
@@ -722,14 +722,14 @@ int test_main(int, char * [])
             auto expr = a * x + y;
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             auto transformed_expr =
                 transform(expr, user::naxpy_lazy_nontemplate_xform);
             {
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 55);
+                BOOST_TEST(result.value == 55);
             }
         }
 
@@ -737,14 +737,14 @@ int test_main(int, char * [])
             auto expr = a + (a * x + y);
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 46);
+                BOOST_TEST(result.value == 46);
             }
 
             auto transformed_expr =
                 transform(expr, user::naxpy_lazy_nontemplate_xform);
             {
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 56);
+                BOOST_TEST(result.value == 56);
             }
         }
 
@@ -752,13 +752,13 @@ int test_main(int, char * [])
             auto expr = (a * x + y) * (a * x + y) + (a * x + y);
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 45 * 45 + 45);
+                BOOST_TEST(result.value == 45 * 45 + 45);
             }
 
             auto transformed_expr = transform(expr, user::naxpy_xform{});
             {
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 55 * 55 + 55 + 10);
+                BOOST_TEST(result.value == 55 * 55 + 55 + 10);
             }
         }
     }
@@ -796,28 +796,28 @@ int test_main(int, char * [])
             auto expr = -x;
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == -42);
+                BOOST_TEST(result.value == -42);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 42);
+                BOOST_TEST(result.value == 42);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 42);
+                BOOST_TEST(result.value == 42);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 42);
+                BOOST_TEST(result.value == 42);
             }
         }
 
@@ -825,28 +825,28 @@ int test_main(int, char * [])
             auto expr = a * -x + y;
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == -39);
+                BOOST_TEST(result.value == -39);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
         }
 
@@ -854,28 +854,28 @@ int test_main(int, char * [])
             auto expr = -(x + y);
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == -45);
+                BOOST_TEST(result.value == -45);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::disable_negate_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 45);
+                BOOST_TEST(result.value == 45);
             }
         }
     }
@@ -889,28 +889,28 @@ int test_main(int, char * [])
             auto expr = if_else(0 < a, x, y);
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 42);
+                BOOST_TEST(result.value == 42);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::ternary_to_else_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 3);
+                BOOST_TEST(result.value == 3);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::ternary_to_else_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 3);
+                BOOST_TEST(result.value == 3);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::ternary_to_else_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 3);
+                BOOST_TEST(result.value == 3);
             }
         }
 
@@ -918,31 +918,31 @@ int test_main(int, char * [])
             auto expr = y * if_else(0 < a, x, y) + user::number{0.0};
             {
                 user::number result = evaluate(expr);
-                BOOST_CHECK(result.value == 126);
+                BOOST_TEST(result.value == 126);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::ternary_to_else_xform_tag{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 9);
+                BOOST_TEST(result.value == 9);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::ternary_to_else_xform_expr{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 9);
+                BOOST_TEST(result.value == 9);
             }
 
             {
                 auto transformed_expr =
                     transform(expr, user::ternary_to_else_xform_both{});
                 user::number result = evaluate(transformed_expr);
-                BOOST_CHECK(result.value == 9);
+                BOOST_TEST(result.value == 9);
             }
         }
     }
 
-    return 0;
+    return boost::report_errors();
 }
