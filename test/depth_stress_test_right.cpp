@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 #include <sstream>
 
@@ -16,7 +16,7 @@ using term = boost::yap::terminal<boost::yap::expression, T>;
 namespace yap = boost::yap;
 
 
-int test_main(int, char * [])
+int main()
 {
     {
         term<double> unity{1.0};
@@ -25,7 +25,7 @@ int test_main(int, char * [])
             auto expr =
                 unity + unity + unity + unity + unity + unity + unity + unity;
             double result = boost::yap::evaluate(expr);
-            BOOST_CHECK(result == 8.0);
+            BOOST_TEST(result == 8.0);
         }
 
         {
@@ -40,7 +40,7 @@ int test_main(int, char * [])
                 unity + unity + unity + unity + unity + unity + unity + unity +
                 unity + unity + unity + unity + unity + unity + unity + unity;
             double result = boost::yap::evaluate(expr);
-            BOOST_CHECK(result == 64.0);
+            BOOST_TEST(result == 64.0);
         }
 
 #if 0 // This makes the Travis VMs barf.
@@ -61,10 +61,10 @@ int test_main(int, char * [])
             expr + expr + expr + expr +    expr + expr + expr + expr +
             expr + expr + expr + expr +    expr + expr + expr + expr
         );
-        BOOST_CHECK(result == 64.0 * 32.0);
+        BOOST_TEST(result == 64.0 * 32.0);
     }
 #endif
     }
 
-    return 0;
+    return boost::report_errors();
 }

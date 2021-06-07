@@ -10,7 +10,7 @@
 #include <iostream>
 #include <vector>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 
 int allocations = 0;
@@ -86,7 +86,7 @@ struct lazy_vector : lazy_vector_expr<
 };
 
 
-int test_main(int, char * [])
+int main()
 {
     lazy_vector v1{std::vector<double>(4, 1.0)};
     lazy_vector v2{std::vector<double>(4, 2.0)};
@@ -102,7 +102,7 @@ int test_main(int, char * [])
     std::cout << '{' << v1[0] << ',' << v1[1] << ',' << v1[2] << ',' << v1[3]
               << '}' << "\n";
 
-    BOOST_CHECK(allocations == 0);
+    BOOST_TEST(allocations == 0);
 
-    return 0;
+    return boost::report_errors();
 }

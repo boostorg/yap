@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 
 template<typename T>
@@ -18,7 +18,7 @@ namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
-int test_main(int, char * [])
+int main()
 {
     {
         term<double> unity{1.0};
@@ -50,54 +50,54 @@ int test_main(int, char * [])
 
         {
             double result = evaluate(unity);
-            BOOST_CHECK(result == 1);
+            BOOST_TEST(result == 1);
         }
 
         {
             double result = evaluate(expr);
-            BOOST_CHECK(result == -41);
+            BOOST_TEST(result == -41);
         }
 
         {
             double result = evaluate(unevaluated_expr_1);
-            BOOST_CHECK(result == -40);
+            BOOST_TEST(result == -40);
         }
 
         {
             double result = evaluate(unevaluated_expr_2);
-            BOOST_CHECK(result == 2);
+            BOOST_TEST(result == 2);
         }
 
         {
             double result = evaluate(unevaluated_expr_3);
-            BOOST_CHECK(result == 2);
+            BOOST_TEST(result == 2);
         }
 
         {
             double result = evaluate(unity, 5, 6, 7);
-            BOOST_CHECK(result == 1);
+            BOOST_TEST(result == 1);
         }
 
         {
             double result = evaluate(expr);
-            BOOST_CHECK(result == -41);
+            BOOST_TEST(result == -41);
         }
 
         {
             double result = evaluate(unevaluated_expr_1, std::string("15"));
-            BOOST_CHECK(result == -40);
+            BOOST_TEST(result == -40);
         }
 
         {
             double result = evaluate(unevaluated_expr_2, std::string("15"));
-            BOOST_CHECK(result == 2);
+            BOOST_TEST(result == 2);
         }
 
         {
             double result = evaluate(unevaluated_expr_3, std::string("15"));
-            BOOST_CHECK(result == 2);
+            BOOST_TEST(result == 2);
         }
     }
 
-    return 0;
+    return boost::report_errors();
 }

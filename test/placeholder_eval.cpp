@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 #include <boost/yap/expression.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 #include <sstream>
 
@@ -24,7 +24,7 @@ namespace yap = boost::yap;
 namespace bh = boost::hana;
 
 
-int test_main(int, char * [])
+int main()
 {
     {
         using namespace boost::yap::literals;
@@ -47,19 +47,19 @@ int test_main(int, char * [])
 
         {
             double result = evaluate(p3, 5, 6, 7);
-            BOOST_CHECK(result == 7);
+            BOOST_TEST(result == 7);
         }
 
         {
             double result = evaluate(expr, std::string("15"), 3, 1);
-            BOOST_CHECK(result == 43);
+            BOOST_TEST(result == 43);
         }
 
         {
             double result = evaluate(unevaluated_expr, std::string("15"), 2, 3);
-            BOOST_CHECK(result == 48);
+            BOOST_TEST(result == 48);
         }
     }
 
-    return 0;
+    return boost::report_errors();
 }

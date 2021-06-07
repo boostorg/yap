@@ -7,7 +7,7 @@
 
 #include <boost/mpl/assert.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 
 template<typename T>
@@ -37,7 +37,7 @@ template<typename T>
 using user_ref = boost::yap::expression_ref<user_expr, T>;
 
 
-int test_main(int, char * [])
+int main()
 {
     {
         term<double> unity = {{1.0}};
@@ -52,21 +52,21 @@ int test_main(int, char * [])
             BOOST_MPL_ASSERT((std::is_same<
                               decltype(yap::deref(std::move(ref))),
                               term<double> &>));
-            BOOST_CHECK(yap::value(ref) == 1.0);
+            BOOST_TEST(yap::value(ref) == 1.0);
         }
 
         {
             ref<term<double> &> ref = bh::front(plus_expr.elements);
             BOOST_MPL_ASSERT(
                 (std::is_same<decltype(yap::deref(ref)), term<double> &>));
-            BOOST_CHECK(yap::value(ref) == 1.0);
+            BOOST_TEST(yap::value(ref) == 1.0);
         }
 
         {
             ref<term<double> &> const ref = bh::front(plus_expr.elements);
             BOOST_MPL_ASSERT(
                 (std::is_same<decltype(yap::deref(ref)), term<double> &>));
-            BOOST_CHECK(yap::value(ref) == 1.0);
+            BOOST_TEST(yap::value(ref) == 1.0);
         }
 
         {
@@ -81,7 +81,7 @@ int test_main(int, char * [])
                 BOOST_MPL_ASSERT((std::is_same<
                                   decltype(yap::deref(std::move(ref))),
                                   term<double> const &>));
-                BOOST_CHECK(yap::value(ref) == 1.0);
+                BOOST_TEST(yap::value(ref) == 1.0);
             }
 
             {
@@ -89,7 +89,7 @@ int test_main(int, char * [])
                 BOOST_MPL_ASSERT((std::is_same<
                                   decltype(yap::deref(ref)),
                                   term<double> const &>));
-                BOOST_CHECK(yap::value(ref) == 1.0);
+                BOOST_TEST(yap::value(ref) == 1.0);
             }
 
             {
@@ -98,7 +98,7 @@ int test_main(int, char * [])
                 BOOST_MPL_ASSERT((std::is_same<
                                   decltype(yap::deref(ref)),
                                   term<double> const &>));
-                BOOST_CHECK(yap::value(ref) == 1.0);
+                BOOST_TEST(yap::value(ref) == 1.0);
             }
         }
     }
@@ -116,14 +116,14 @@ int test_main(int, char * [])
             BOOST_MPL_ASSERT((std::is_same<
                               decltype(yap::deref(std::move(ref))),
                               user_term<double> &>));
-            BOOST_CHECK(yap::value(ref) == 1.0);
+            BOOST_TEST(yap::value(ref) == 1.0);
         }
 
         {
             user_ref<user_term<double> &> ref = bh::front(plus_expr.elements);
             BOOST_MPL_ASSERT(
                 (std::is_same<decltype(yap::deref(ref)), user_term<double> &>));
-            BOOST_CHECK(yap::value(ref) == 1.0);
+            BOOST_TEST(yap::value(ref) == 1.0);
         }
 
         {
@@ -131,7 +131,7 @@ int test_main(int, char * [])
                 bh::front(plus_expr.elements);
             BOOST_MPL_ASSERT(
                 (std::is_same<decltype(yap::deref(ref)), user_term<double> &>));
-            BOOST_CHECK(yap::value(ref) == 1.0);
+            BOOST_TEST(yap::value(ref) == 1.0);
         }
 
         {
@@ -147,7 +147,7 @@ int test_main(int, char * [])
                 BOOST_MPL_ASSERT((std::is_same<
                                   decltype(yap::deref(std::move(ref))),
                                   user_term<double> const &>));
-                BOOST_CHECK(yap::value(ref) == 1.0);
+                BOOST_TEST(yap::value(ref) == 1.0);
             }
 
             {
@@ -156,7 +156,7 @@ int test_main(int, char * [])
                 BOOST_MPL_ASSERT((std::is_same<
                                   decltype(yap::deref(ref)),
                                   user_term<double> const &>));
-                BOOST_CHECK(yap::value(ref) == 1.0);
+                BOOST_TEST(yap::value(ref) == 1.0);
             }
 
             {
@@ -165,10 +165,10 @@ int test_main(int, char * [])
                 BOOST_MPL_ASSERT((std::is_same<
                                   decltype(yap::deref(ref)),
                                   user_term<double> const &>));
-                BOOST_CHECK(yap::value(ref) == 1.0);
+                BOOST_TEST(yap::value(ref) == 1.0);
             }
         }
     }
 
-    return 0;
+    return boost::report_errors();
 }

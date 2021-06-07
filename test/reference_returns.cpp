@@ -7,7 +7,7 @@
 
 #include <boost/mpl/assert.hpp>
 
-#include <boost/test/minimal.hpp>
+#include <boost/core/lightweight_test.hpp>
 
 
 template<typename T>
@@ -30,7 +30,7 @@ namespace reference_returning {
     number & operator-(number a, number b) { return a_result; }
 }
 
-int test_main(int, char * [])
+int main()
 {
     {
         term<reference_returning::number> unity = {{1.0}};
@@ -38,7 +38,7 @@ int test_main(int, char * [])
 
         {
             reference_returning::number const & n = evaluate(plus_expr);
-            BOOST_CHECK(&n == &reference_returning::the_result);
+            BOOST_TEST(&n == &reference_returning::the_result);
         }
 
         using plus_eval_type = decltype(evaluate(plus_expr));
@@ -50,7 +50,7 @@ int test_main(int, char * [])
 
         {
             reference_returning::number & n = evaluate(minus_expr);
-            BOOST_CHECK(&n == &reference_returning::a_result);
+            BOOST_TEST(&n == &reference_returning::a_result);
         }
 
         using minus_eval_type = decltype(evaluate(minus_expr));
@@ -63,7 +63,7 @@ int test_main(int, char * [])
         {
             reference_returning::number & n =
                 evaluate(1_p, reference_returning::a_result);
-            BOOST_CHECK(&n == &reference_returning::a_result);
+            BOOST_TEST(&n == &reference_returning::a_result);
         }
 
         using a_eval_type = decltype(evaluate(1_p, reference_returning::a_result));
@@ -75,7 +75,7 @@ int test_main(int, char * [])
         {
             reference_returning::number const & n =
                 evaluate(1_p, reference_returning::the_result);
-            BOOST_CHECK(&n == &reference_returning::the_result);
+            BOOST_TEST(&n == &reference_returning::the_result);
         }
 
         using the_eval_type = decltype(evaluate(1_p, reference_returning::the_result));
@@ -85,5 +85,5 @@ int test_main(int, char * [])
                 reference_returning::number const &>));
     }
 
-    return 0;
+    return boost::report_errors();
 }
