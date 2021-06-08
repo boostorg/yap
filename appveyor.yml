@@ -1,30 +1,41 @@
+version: 1.0.{build}-{branch}
+
+shallow_clone: true
+
+branches:
+  only:
+    - master
+    - develop
+
 environment:
   matrix:
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    GENERATOR: "Visual Studio 15 2017 Win64"
-    CONFIG: Debug
-  
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    GENERATOR: "Visual Studio 15 2017 Win64"
-    CONFIG: Release
-  
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    GENERATOR: "Visual Studio 15 2017"
-    CONFIG: Debug
-  
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    GENERATOR: "Visual Studio 15 2017"
-    CONFIG: Release
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      TOOLSET: msvc-14.0
+      ADDRMD: 32,64
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      TOOLSET: msvc-14.1
+      ADDRMD: 32,64
+      CXXSTD: 14,17
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      TOOLSET: clang-win
+      ADDRMD: 32,64
+      CXXSTD: 14,17
 
-matrix:
-  fast_finish: true
+install:
+  - set BOOST_BRANCH=develop
+  - if "%APPVEYOR_REPO_BRANCH%" == "master" set BOOST_BRANCH=master
+  - cd ..
+  - git clone -b %BOOST_BRANCH% https://github.com/boostorg/boost.git boost
+  - cd boost
+  - git submodule update --init tools/boostdep
+  - xcopy /s /e /q %APPVEYOR_BUILD_FOLDER% libs\yap\
+  - python tools/boostdep/depinst/depinst.py yap
+  - cmd /c bootstrap
+  - b2 -d0 headers
 
-build_script:
- - cmd: set PATH=C:\Program Files (x86)\CMake\bin;%PATH%
- - cmd: set CTEST_OUTPUT_ON_FAILURE=1
- - cmd: cmake --version
- - cmd: mkdir build
- - cmd: cd build
- - cmd: cmake .. -DBOOST_ROOT=C:\Libraries\boost_1_68_0 -G"%GENERATOR%"
- - cmd: cmake --build . --config %CONFIG%
- - cmd: cmake --build . --config %CONFIG% --target check
+build: off
+
+test_script:
+  - PATH=%ADDPATH%%PATH%
+  - if not "%CXXSTD%" == "" set CXXSTD=cxxstd=%CXXSTD%
+  - b2 -j3 libs/yap/test toolset=%TOOLSET% %CXXSTD% variant=debug,release
