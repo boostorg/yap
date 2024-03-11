@@ -1,0 +1,22 @@
+# Copyright René Ferdinand Rivera Morell 2023
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+import project ;
+
+project /boost/yap
+    : common-requirements
+        <source>/boost/hana//boost_hana
+        <source>/boost/preprocessor//boost_preprocessor
+        <source>/boost/type_index//boost_type_index
+        <include>include
+    ;
+
+explicit
+    [ alias boost_yap ]
+    [ alias all : boost_yap test ]
+    ;
+
+call-if : boost-library yap
+    ;
