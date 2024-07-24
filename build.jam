@@ -5,18 +5,21 @@
 
 require-b2 5.2 ;
 
+constant boost_dependencies :
+    /boost/hana//boost_hana
+    /boost/preprocessor//boost_preprocessor
+    /boost/type_index//boost_type_index ;
+
 project /boost/yap
     : common-requirements
-        <library>/boost/hana//boost_hana
-        <library>/boost/preprocessor//boost_preprocessor
-        <library>/boost/type_index//boost_type_index
         <include>include
     ;
 
 explicit
-    [ alias boost_yap ]
+    [ alias boost_yap : : : : <library>$(boost_dependencies) ]
     [ alias all : boost_yap test ]
     ;
 
 call-if : boost-library yap
     ;
+
